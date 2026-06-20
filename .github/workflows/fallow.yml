@@ -1,0 +1,94 @@
+name: Fallow analysis
+on: [push, pull_request]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint (Biome)
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: FSD architecture lint (Steiger)
+        run: npm run lint:fsd
+
+      - name: Unit tests
+        run: npm test
+
+  fallow:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run fallow analysis (SARIF)
+        continue-on-error: true
+        run: npx fallow --format sarif --quiet > fallow-results.sarif
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: fallow-sarif
+          path: fallow-results.sarif
+
+  badge:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: fallow
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate health badge JSON
+        run: |
+          mkdir -p badge-out
+          npx fallow health --format json --score --quiet 2>/dev/null \
+            | jq '{
+                schemaVersion: 1,
+                label: "fallow",
+                message: "\(.health_score.grade) (\(.health_score.score | floor))",
+                color: (
+                  if   .health_score.score >= 85 then "brightgreen"
+                  elif .health_score.score >= 70 then "green"
+                  elif .health_score.score >= 55 then "yellow"
+                  elif .health_score.score >= 40 then "orange"
+                  else "red" end
+                )
+              }' > badge-out/health-badge.json
+
+      - name: Publish to badges branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: badges
+          publish_dir: ./badge-out
+          keep_files: false
