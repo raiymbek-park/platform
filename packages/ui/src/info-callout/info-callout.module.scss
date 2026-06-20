@@ -1,0 +1,41 @@
+.callout {
+  align-items: flex-start;
+  border-radius: var(--radius-lg);
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-base);
+
+  &-variant-info {
+    background: color-mix(in srgb, var(--link) 10%, transparent);
+
+    .icon {
+      color: var(--link);
+    }
+  }
+
+  &-variant-danger {
+    background: color-mix(in srgb, var(--danger) 10%, transparent);
+
+    .icon {
+      color: var(--danger);
+    }
+  }
+
+  &-variant-warning {
+    background: color-mix(in srgb, var(--warning) 12%, transparent);
+
+    .icon {
+      color: var(--warning);
+    }
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.message {
+  color: var(--text-secondary);
+  font-size: var(--font-size-base);
+  margin: 0;
+}
