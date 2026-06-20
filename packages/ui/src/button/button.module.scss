@@ -1,0 +1,44 @@
+.button {
+  align-items: center;
+  background: var(--action);
+  border: 0;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--action) 45%, transparent);
+  color: var(--action-foreground);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  gap: var(--spacing-sm);
+  justify-content: center;
+  min-height: 58px;
+  padding: 0 var(--spacing-lg);
+  transition: background 0.15s ease;
+
+  &:active {
+    background: var(--action-strong);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &-icon-position-right {
+    flex-direction: row-reverse;
+  }
+
+  &-is-loading {
+    opacity: 0.7;
+  }
+}
+
+.spinner {
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

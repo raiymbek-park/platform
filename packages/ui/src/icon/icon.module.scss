@@ -1,0 +1,7 @@
+.icon {
+  display: inline;
+  fill: currentColor;
+  overflow: visible;
+  transform: rotate(var(--rotation, 0deg));
+  transition: transform 300ms;
+}
