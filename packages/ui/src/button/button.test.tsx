@@ -21,3 +21,9 @@ test('becomes disabled and shows a spinner while loading', () => {
   expect(screen.getByRole('button')).toBeDisabled()
   expect(container.querySelector('[data-glyph="loader-circle"]')).not.toBeNull()
 })
+
+test('applies the secondary variant class', () => {
+  render(<Button variant='secondary'>Отмена</Button>)
+
+  expect(screen.getByRole('button').className).toContain('VariantSecondary')
+})
