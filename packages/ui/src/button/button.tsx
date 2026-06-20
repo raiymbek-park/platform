@@ -4,7 +4,7 @@ import type { IconGlyph } from '../icon'
 import { Icon } from '../icon'
 import css from './button.module.scss'
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconGlyph
   iconPosition?: 'left' | 'right'
   isLoading?: boolean
