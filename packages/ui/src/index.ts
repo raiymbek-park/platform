@@ -1,5 +1,6 @@
 export type { BlockCardProps } from './block-card/block-card'
 export { BlockCard } from './block-card/block-card'
+export type { ButtonProps } from './button/button'
 export { Button } from './button/button'
 export type { DividerProps } from './divider/divider'
 export { Divider } from './divider/divider'
