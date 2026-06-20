@@ -27,3 +27,17 @@ test('applies the secondary variant class', () => {
 
   expect(screen.getByRole('button').className).toContain('VariantSecondary')
 })
+
+test('S8 — secondary variant button is enabled and shows no spinner by default', () => {
+  render(<Button variant='secondary'>Повторить</Button>)
+
+  const btn = screen.getByRole('button', { name: 'Повторить' })
+  expect(btn).not.toBeDisabled()
+  expect(btn.querySelector('[data-glyph="loader-circle"]')).toBeNull()
+})
+
+test('forwards arbitrary attributes via rest props', () => {
+  render(<Button data-testid='next-btn'>Далее</Button>)
+
+  expect(screen.getByTestId('next-btn')).toBeInTheDocument()
+})

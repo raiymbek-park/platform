@@ -23,6 +23,20 @@ test('emits only the digit and rejects non-digits', () => {
   expect(onChange).toHaveBeenLastCalledWith('7')
 })
 
+test('S6 — emits the new digit when a digit replaces a filled cell', () => {
+  const onChange = vi.fn()
+  render(<OtpInput aria-label='cell' onChange={onChange} />)
+
+  fireEvent.change(screen.getByLabelText('cell'), { target: { value: '35' } })
+  expect(onChange).toHaveBeenLastCalledWith('5')
+})
+
+test('applies the error state class', () => {
+  const { container } = render(<OtpInput aria-label='cell' state='error' />)
+
+  expect(container.querySelector('input')?.className).toContain('StateError')
+})
+
 test('forwards arbitrary attributes via rest props', () => {
   render(<OtpInput data-testid='otp-1' />)
 
