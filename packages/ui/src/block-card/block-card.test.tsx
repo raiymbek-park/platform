@@ -15,6 +15,12 @@ test('reflects the selected state via aria-pressed', () => {
   expect(screen.getByRole('button')).toHaveAttribute('aria-pressed', 'true')
 })
 
+test('S5/S9 — aria-pressed is falsy when not selected', () => {
+  render(<BlockCard title='Квартира' />)
+
+  expect(screen.getByRole('button')).not.toHaveAttribute('aria-pressed', 'true')
+})
+
 test('stays selected when re-tapped (controlled, no internal toggle)', () => {
   const onClick = vi.fn()
   render(<BlockCard isSelected title='Квартира' onClick={onClick} />)

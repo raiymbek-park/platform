@@ -21,6 +21,18 @@ test('applies the error state class', () => {
   expect(container.querySelector('label')?.className).toContain('StateError')
 })
 
+test('applies the success state class', () => {
+  const { container } = render(<Input state='success' />)
+
+  expect(container.querySelector('label')?.className).toContain('StateSuccess')
+})
+
+test('does not render an icon when icon prop is omitted', () => {
+  const { container } = render(<Input placeholder='Имя' />)
+
+  expect(container.querySelector('[data-glyph]')).toBeNull()
+})
+
 test('forwards arbitrary attributes via rest props', () => {
   render(<Input data-testid='name-input' />)
 

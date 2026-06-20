@@ -16,6 +16,13 @@ test('shows the check glyph and aria-pressed when selected', () => {
   expect(container.querySelector('[data-glyph="check"]')).not.toBeNull()
 })
 
+test('S5/S9 — hides the check glyph and aria-pressed is falsy when not selected', () => {
+  const { container } = render(<OptionRow label='Русский' />)
+
+  expect(screen.getByRole('button')).not.toHaveAttribute('aria-pressed', 'true')
+  expect(container.querySelector('[data-glyph="check"]')).toBeNull()
+})
+
 test('stays selected when re-tapped (controlled, no internal toggle)', () => {
   const onClick = vi.fn()
   render(<OptionRow isSelected label='Русский' onClick={onClick} />)

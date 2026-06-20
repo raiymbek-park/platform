@@ -15,6 +15,14 @@ test('defaults to the info variant', () => {
   expect(container.querySelector('aside')?.className).toContain('VariantInfo')
 })
 
+test('info variant shows the message-circle glyph by default', () => {
+  const { container } = render(<InfoCallout>Инфо</InfoCallout>)
+
+  expect(
+    container.querySelector('[data-glyph="message-circle"]'),
+  ).not.toBeNull()
+})
+
 test('applies the warning variant with its default glyph', () => {
   const { container } = render(
     <InfoCallout variant='warning'>Внимание</InfoCallout>,
@@ -24,6 +32,15 @@ test('applies the warning variant with its default glyph', () => {
     'VariantWarning',
   )
   expect(container.querySelector('[data-glyph="zap"]')).not.toBeNull()
+})
+
+test('applies the danger variant with its default glyph', () => {
+  const { container } = render(
+    <InfoCallout variant='danger'>Ошибка</InfoCallout>,
+  )
+
+  expect(container.querySelector('aside')?.className).toContain('VariantDanger')
+  expect(container.querySelector('[data-glyph="droplet-off"]')).not.toBeNull()
 })
 
 test('forwards arbitrary attributes via rest props', () => {
