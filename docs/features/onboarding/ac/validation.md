@@ -58,4 +58,11 @@
   Given: a cooldown is running on `/onboarding/verify`, "Paste code from clipboard" is visible
   When:  the timer reaches 0:00
   Then:  "Paste code from clipboard" disappears
-         a `<Button variant="secondary">Resend</Button>` appears
+         a "Resend" button appears in its secondary style
+
+## Scenario 9: Tapping the already-selected card or option keeps it selected
+
+  Given: the user is on `/onboarding/welcome`, and a block card or a role option is already selected
+  When:  the user taps the same selected card or option again
+  Then:  the selection does not change
+         the group still shows exactly one selected item
