@@ -8,6 +8,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconGlyph
   iconPosition?: 'left' | 'right'
   isLoading?: boolean
+  variant?: 'action' | 'secondary'
 }
 
 const buttonCss = pickCss(css, css.button)
@@ -20,13 +21,14 @@ export const Button = ({
   iconPosition = 'left',
   isLoading,
   type = 'button',
+  variant = 'action',
   ...restProps
 }: ButtonProps) => {
   const glyph: IconGlyph | undefined = isLoading ? 'loader-circle' : icon
 
   return (
     <button
-      className={buttonCss({ iconPosition, isLoading }, className)}
+      className={buttonCss({ iconPosition, isLoading, variant }, className)}
       disabled={disabled || isLoading}
       type={type}
       {...restProps}
