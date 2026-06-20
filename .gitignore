@@ -1,0 +1,26 @@
+*.local
+*.log
+
+.DS_Store
+.fallow/
+.idea
+.spm
+.tanstack
+.turbo
+.vscode/*
+!.vscode/extensions.json
+
+*.d.scss.ts
+dist
+dist-ssr
+logs
+node_modules
+npm-debug.log*
+
+# testing & analysis
+coverage
+playwright-report
+test-results
+.playwright
+.stryker-tmp
+reports/mutation
