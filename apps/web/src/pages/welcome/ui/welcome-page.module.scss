@@ -1,0 +1,23 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 480px;
+  min-height: 100svh;
+  padding: var(--spacing-base);
+}
+
+.title {
+  color: var(--foreground);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  margin: 0;
+}
+
+.body {
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
