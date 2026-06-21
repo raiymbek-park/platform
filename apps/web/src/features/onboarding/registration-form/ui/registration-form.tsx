@@ -136,30 +136,28 @@ export const RegistrationForm = () => {
         )}
       </form.Field>
 
-      <form.Subscribe selector={state => state.values.block}>
-        {block => (
-          <form.Field
-            name='apartment'
-            validators={{
-              onChange: ({ value }) => validateApartment(value, block),
-            }}
-          >
-            {field => (
-              <Input
-                icon='door-closed'
-                inputMode='numeric'
-                placeholder='Номер квартиры'
-                state={field.state.meta.errors.length > 0 ? 'error' : undefined}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={event =>
-                  field.handleChange(event.target.value.replace(/\D/g, ''))
-                }
-              />
-            )}
-          </form.Field>
+      <form.Field
+        name='apartment'
+        validators={{
+          onChangeListenTo: ['block'],
+          onChange: ({ value, fieldApi }) =>
+            validateApartment(value, fieldApi.form.getFieldValue('block')),
+        }}
+      >
+        {field => (
+          <Input
+            icon='door-closed'
+            inputMode='numeric'
+            placeholder='Номер квартиры'
+            state={field.state.meta.errors.length > 0 ? 'error' : undefined}
+            value={field.state.value}
+            onBlur={field.handleBlur}
+            onChange={event =>
+              field.handleChange(event.target.value.replace(/\D/g, ''))
+            }
+          />
         )}
-      </form.Subscribe>
+      </form.Field>
 
       <SectionHeader title='Вы' />
       <form.Field
