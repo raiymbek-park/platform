@@ -6,7 +6,7 @@ import { useOnboardingStore } from '@/features/onboarding/registration-form'
 import { useAuthStore } from '@/shared/auth'
 
 import { formatPhoneDisplay } from '../lib/format-phone-display'
-import { isServerError } from '../lib/is-server-error'
+import { isVerifyRejection } from '../lib/is-verify-rejection'
 import { useClipboardCode } from '../lib/use-clipboard-code'
 import { useCountdown } from '../lib/use-countdown'
 import { useOtpStatus } from '../model/use-otp-status'
@@ -38,14 +38,22 @@ export const OtpVerify = () => {
 
   const [cells, setCells] = useState(emptyCells)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [canRetryRegister, setCanRetryRegister] = useState(false)
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   const isChecking = verifyOtp.isPending || registerResident.isPending
 
   const focusCell = (index: number) => inputRefs.current[index]?.focus()
 
+  // The phone is already verified once we reach here, so registration can be
+  // retried directly without re-entering the (now spent) code.
   const register = async () => {
-    if (draft.block === null || draft.role === null) return
+    if (draft.block === null || draft.role === null) {
+      setErrorMessage(registerError)
+      return
+    }
+    setErrorMessage(null)
+    setCanRetryRegister(false)
     try {
       const pair = await registerResident.mutateAsync({
         apartment: Number(draft.apartment),
@@ -58,17 +66,19 @@ export const OtpVerify = () => {
       navigate({ to: '/home' })
     } catch {
       setErrorMessage(registerError)
+      setCanRetryRegister(true)
     }
   }
 
   const verify = async (code: string) => {
     if (pendingPhone === null) return
     setErrorMessage(null)
+    setCanRetryRegister(false)
     try {
       await verifyOtp.mutateAsync({ code, phone: pendingPhone })
       await register()
     } catch (error) {
-      if (isServerError(error)) {
+      if (isVerifyRejection(error)) {
         setCells(emptyCells)
         setErrorMessage(verifyError)
         focusCell(0)
@@ -113,6 +123,7 @@ export const OtpVerify = () => {
   const handleResend = async () => {
     if (pendingPhone === null) return
     setErrorMessage(null)
+    setCanRetryRegister(false)
     setCells(emptyCells)
     try {
       await resendOtp.mutateAsync({ phone: pendingPhone })
@@ -152,6 +163,17 @@ export const OtpVerify = () => {
 
       {errorMessage !== null && (
         <InfoCallout variant='danger'>{errorMessage}</InfoCallout>
+      )}
+
+      {canRetryRegister && (
+        <Button
+          className={css.action}
+          isLoading={registerResident.isPending}
+          variant='secondary'
+          onClick={register}
+        >
+          Повторить попытку
+        </Button>
       )}
 
       <footer className={css.footer}>

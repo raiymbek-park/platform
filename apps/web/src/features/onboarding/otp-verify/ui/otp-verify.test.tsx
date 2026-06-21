@@ -533,6 +533,82 @@ test('error S6 — register network error stores no tokens and keeps user on ver
   })
 })
 
+test('error S6 — after register fails, retry re-runs registration and navigates on success', async () => {
+  mockVerifyMutateAsync.mockResolvedValue({ verified: true })
+  mockRegisterMutateAsync
+    .mockRejectedValueOnce(new Error('Network error'))
+    .mockResolvedValueOnce(tokenPair)
+  seedStore()
+  const user = userEvent.setup()
+  render(<OtpVerify />)
+
+  await fillCells(user, '1234')
+
+  // Verify is spent, but a retry button lets registration run again directly
+  const retryBtn = await screen.findByRole('button', {
+    name: /Повторить попытку/,
+  })
+  await user.click(retryBtn)
+
+  await waitFor(() => {
+    expect(mockRegisterMutateAsync).toHaveBeenCalledTimes(2)
+    expect(mockVerifyMutateAsync).toHaveBeenCalledTimes(1)
+    expect(useAuthStore.getState().tokens).toEqual(tokenPair)
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/home' })
+  })
+})
+
+// ---------------------------------------------------------------------------
+// error S7 — incomplete draft surfaces an error instead of stalling silently
+// ---------------------------------------------------------------------------
+
+test('error S7 — verified code with incomplete draft shows registration error', async () => {
+  mockVerifyMutateAsync.mockResolvedValue({ verified: true })
+  act(() => {
+    useOnboardingStore.getState().setDraft({
+      name: '',
+      phone: PENDING_PHONE,
+      block: null,
+      apartment: '',
+      role: null,
+    })
+    useOnboardingStore.getState().setPendingPhone(PENDING_PHONE)
+  })
+  const user = userEvent.setup()
+  render(<OtpVerify />)
+
+  await fillCells(user, '1234')
+
+  await waitFor(() => {
+    expect(
+      screen.getByText(/Не удалось завершить регистрацию/),
+    ).toBeInTheDocument()
+    expect(mockRegisterMutateAsync).not.toHaveBeenCalled()
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
+})
+
+// ---------------------------------------------------------------------------
+// error S4 — locked number (FORBIDDEN) is treated as network/unknown, not wrong code
+// ---------------------------------------------------------------------------
+
+test('error S4 — FORBIDDEN (locked) shows network error and keeps the digits', async () => {
+  mockVerifyMutateAsync.mockRejectedValue({ data: { code: 'FORBIDDEN' } })
+  seedStore()
+  const user = userEvent.setup()
+  render(<OtpVerify />)
+
+  await fillCells(user, '1234')
+
+  await waitFor(() =>
+    expect(screen.getByText(/Не удалось проверить код/)).toBeInTheDocument(),
+  )
+
+  // Not a wrong-code rejection: cells are NOT cleared, no "Неверный код"
+  expect(cellAt(0)).toHaveValue('1')
+  expect(screen.queryByText(/Неверный код/)).not.toBeInTheDocument()
+})
+
 // ---------------------------------------------------------------------------
 // edge S1 — countdown label shows remaining time from resendAvailableAt
 // ---------------------------------------------------------------------------
