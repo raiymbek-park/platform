@@ -81,9 +81,17 @@ export const OtpVerify = () => {
   const code = cells.join('')
   const verifyRef = useRef(verify)
   verifyRef.current = verify
+  const submittedRef = useRef(false)
 
   useEffect(() => {
-    if (code.length === 4 && !isChecking) verifyRef.current(code)
+    if (code.length < 4) {
+      submittedRef.current = false
+      return
+    }
+    if (!isChecking && !submittedRef.current) {
+      submittedRef.current = true
+      verifyRef.current(code)
+    }
   }, [code, isChecking])
 
   const handleDigit = (index: number, value: string) => {
