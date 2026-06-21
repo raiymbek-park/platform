@@ -66,3 +66,48 @@
   When:  the user taps the same selected card or option again
   Then:  the selection does not change
          the group still shows exactly one selected item
+
+## Scenario 10: Name at the lower boundary
+
+  Given: the "Name" field on `/onboarding/welcome`
+  When:  exactly 2 characters (after trim) are entered
+  Then:  the name is valid and does not block "Next"
+  When:  exactly 1 character (after trim) is entered
+  Then:  the name is invalid and "Next" is disabled
+
+## Scenario 11: Name at the upper boundary
+
+  Given: the "Name" field on `/onboarding/welcome`
+  When:  exactly 60 characters (after trim) are entered
+  Then:  the name is valid and does not block "Next"
+  When:  exactly 61 characters (after trim) are entered
+  Then:  the name is invalid and "Next" is disabled
+
+## Scenario 12: Whitespace-only name is invalid
+
+  Given: the "Name" field on `/onboarding/welcome`
+  When:  the user enters only spaces or whitespace characters (trimmed length is 0)
+  Then:  the name is invalid and "Next" is disabled
+
+## Scenario 13: Apartment boundary exact values per block
+
+  Given: a block is selected and the "Apartment number" field is on `/onboarding/welcome`
+  When:  the apartment number equals the last valid value for the selected block
+         (block 1 → 70, block 2 → 139, block 3 → 63, block 4 → 126)
+  Then:  the field is valid
+  When:  the apartment number equals one above the last valid value for the selected block
+         (block 1 → 71, block 2 → 140, block 3 → 64, block 4 → 127)
+  Then:  the field is invalid and "Next" is disabled
+  When:  the apartment number equals the first valid value for the selected block
+         (block 1 → 1, block 2 → 71, block 3 → 1, block 4 → 64)
+  Then:  the field is valid
+  When:  the apartment number equals one below the first valid value for the selected block
+         (block 1 → 0, block 2 → 70, block 3 → 0, block 4 → 63)
+  Then:  the field is invalid and "Next" is disabled
+
+## Scenario 14: Changing block re-validates the apartment number
+
+  Given: the user has selected block 1 and entered apartment 70 (valid for block 1)
+  When:  the user switches to block 2 (whose range starts at 71)
+  Then:  apartment 70 is no longer valid for block 2
+         the apartment field becomes invalid and "Next" is disabled
