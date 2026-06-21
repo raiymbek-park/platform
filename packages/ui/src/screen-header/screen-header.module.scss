@@ -1,0 +1,23 @@
+.screen {
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: space-between;
+  min-height: 55px;
+  padding: 0 var(--spacing-base);
+}
+
+.slot {
+  align-items: center;
+  display: inline-flex;
+  min-width: 44px;
+}
+
+.title {
+  color: var(--foreground);
+  flex: 1;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}
