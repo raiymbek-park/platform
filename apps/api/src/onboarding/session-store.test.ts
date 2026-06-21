@@ -19,7 +19,7 @@ beforeEach(() => {
 
 describe('getSession — unseen phone returns neutral state (edge S9)', () => {
   it('never-seen phone has sendCount 0, no code, no cooldown, no lock', () => {
-    const session = getSession(PHONE)
+    const session = getSession(PHONE, NOW)
     expect(session.sendCount).toBe(0)
     expect(session.code).toBeNull()
     expect(session.resendAvailableAt).toBeNull()
@@ -48,7 +48,7 @@ describe('recordSend — first send (happy S2)', () => {
 
   it('verifyUsed is reset to false after a fresh send (error S3 restore)', () => {
     recordSend(PHONE, NOW)
-    recordVerify(PHONE, '9999')
+    recordVerify(PHONE, '9999', NOW)
     const after = recordSend(PHONE, NOW + 65_000)
     expect(after.verifyUsed).toBe(false)
   })
@@ -93,7 +93,7 @@ describe('recordSend — 5th send locks the number (edge S2)', () => {
 describe('recordVerify — correct code sets verified (happy S5)', () => {
   it('correct code 1234 → verified becomes true', () => {
     recordSend(PHONE, NOW)
-    const result = recordVerify(PHONE, '1234')
+    const result = recordVerify(PHONE, '1234', NOW)
     expect(result.verified).toBe(true)
     expect(result.verifyUsed).toBe(true)
   })
@@ -102,9 +102,33 @@ describe('recordVerify — correct code sets verified (happy S5)', () => {
 describe('recordVerify — wrong code burns the attempt (error S1)', () => {
   it('wrong code → verified stays false, verifyUsed becomes true', () => {
     recordSend(PHONE, NOW)
-    const result = recordVerify(PHONE, '9999')
+    const result = recordVerify(PHONE, '9999', NOW)
     expect(result.verified).toBe(false)
     expect(result.verifyUsed).toBe(true)
+  })
+})
+
+describe('getSession — expired lockout resets to neutral (edge S5)', () => {
+  it('after lockedUntil passes, the session reads as neutral (sendCount 0, no code)', () => {
+    for (let i = 0; i <= maxSends; i++) {
+      recordSend(PHONE, NOW + i * 700_000)
+    }
+    const lockExpiry = NOW + maxSends * 700_000 + lockDurationSeconds * 1000
+    const cleared = getSession(PHONE, lockExpiry + 1)
+    expect(cleared.sendCount).toBe(0)
+    expect(cleared.code).toBeNull()
+    expect(cleared.lockedUntil).toBeNull()
+  })
+
+  it('the first send after the lockout expires starts a fresh 60 s cooldown', () => {
+    for (let i = 0; i <= maxSends; i++) {
+      recordSend(PHONE, NOW + i * 700_000)
+    }
+    const lockExpiry = NOW + maxSends * 700_000 + lockDurationSeconds * 1000
+    const fresh = recordSend(PHONE, lockExpiry + 1)
+    expect(fresh.sendCount).toBe(1)
+    expect(fresh.resendAvailableAt).toBe(lockExpiry + 1 + 60 * 1000)
+    expect(fresh.lockedUntil).toBeNull()
   })
 })
 
@@ -194,7 +218,7 @@ describe('resetStore — state isolation between tests', () => {
   it('after reset, a previously sent phone has no session', () => {
     recordSend(PHONE, NOW)
     resetStore()
-    const session = getSession(PHONE)
+    const session = getSession(PHONE, NOW)
     expect(session.sendCount).toBe(0)
     expect(session.code).toBeNull()
   })
