@@ -59,3 +59,17 @@
   Then:  a silent `auth.refresh` runs, a new token pair is issued, and the request is retried
   When:  `auth.refresh` also fails
   Then:  the tokens are cleared and the app goes to `/onboarding/welcome`
+
+## Scenario 9: Resend requested while cooldown is still active
+
+  Given: a code has been sent for a number and the cooldown period has not yet elapsed
+  When:  `otp.send` is called for that number again before the cooldown expires
+  Then:  the server rejects the request with a "cooldown active" error
+         the current code and cooldown remain unchanged
+
+## Scenario 10: Verify called while the number is locked
+
+  Given: a number has been locked for 24 hours after exhausting all sends
+  When:  `otp.verify` is called for that number
+  Then:  the server rejects the request with a "number locked" error, including the time remaining until unlock
+         no verification attempt is consumed
