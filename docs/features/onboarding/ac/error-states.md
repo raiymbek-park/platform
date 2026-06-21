@@ -4,25 +4,32 @@
 
   Given: a cooldown is running on `/onboarding/verify`, and the attempt for the current code
          is unused
-  When:  the user enters 4 digits that aren't `1234`
-  Then:  `otp.verify` returns an error (wrong code)
-         the attempt for this code is marked used (`verifyUsed = true`)
-         the cells clear and an error message is shown
-         no move to `/home` happens
+  When:  the user enters 4 digits that form an incorrect code
+  Then:  the cells clear and an error message is shown
+         the app stays on `/onboarding/verify`
+
+  Given: an incorrect code was just entered on `/onboarding/verify`
+  When:  the user enters 4 digits again without requesting a new code
+  Then:  the check is rejected ("attempt used up, request a new code" or equivalent)
+         the app stays on `/onboarding/verify`
 
 ## Scenario 2: Re-checking an already-used code is rejected
 
-  Given: the attempt for the current code is already used (`verifyUsed = true`), cooldown running
+  Given: the single attempt for the current code has already been used (a previous check was made),
+         the cooldown is still running
   When:  the user enters 4 digits again
-  Then:  `otp.verify` rejects the request ("attempt used up, request a new code")
-         a new attempt requires resending the code
+  Then:  the check is rejected with a message indicating the attempt is exhausted
+         the cells clear and no move to `/home` happens
+         the "Resend" button is not shown until the cooldown ends
 
 ## Scenario 3: A new code restores the right to one attempt
 
-  Given: the attempt for the previous code is used up, the timer expired, "Resend" is visible
-  When:  the user taps "Resend" and `otp.send` successfully issues a new code
-  Then:  `verifyUsed` resets — one verification attempt is available again
-         the timer restarts with the increased cooldown per the schedule
+  Given: the attempt for the previous code is used up, the cooldown timer has expired,
+         and the "Resend" button is visible
+  When:  the user taps "Resend" and a new code is successfully issued
+  Then:  one verification attempt becomes available again
+         the countdown timer restarts with the next cooldown duration per the schedule
+         the cells are empty and ready for a new code
 
 ## Scenario 4: Network error while submitting the form
 
@@ -34,16 +41,20 @@
 ## Scenario 5: Network error during the auto-check
 
   Given: 4 digits are entered on `/onboarding/verify`
-  When:  `otp.verify` fails with a network error (not a "wrong code" response)
-  Then:  the verification attempt is NOT counted as used
-         an error message is shown, and the code stays for a repeat auto-check
+  When:  the verification call fails with a network error (not a "wrong code" response)
+  Then:  the cells retain the entered digits
+         an error message is shown
+
+  Given: the verification call failed with a network error (not a "wrong code" response)
+  When:  the user corrects or re-enters the same 4 digits
+  Then:  the check runs again automatically — the attempt is not marked as used by a network failure
 
 ## Scenario 6: Network error registering after the correct code
 
-  Given: `otp.verify` confirmed the code `1234`
-  When:  `resident.register` fails with a network error
-  Then:  no tokens are issued and no move to `/home` happens
-         an error message is shown with the option to retry registration
+  Given: the correct code has been verified on `/onboarding/verify`
+  When:  the registration call fails with a network error
+  Then:  no tokens are stored and the app stays on `/onboarding/verify`
+         an error message is shown with an option to retry registration
 
 ## Scenario 7: Token refresh fails on startup
 
