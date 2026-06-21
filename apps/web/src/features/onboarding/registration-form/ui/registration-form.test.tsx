@@ -255,16 +255,21 @@ test('happy S8 — Next is disabled while otp.send is pending', async () => {
 })
 
 // error S4 — network error: stays on page, shows error callout, Next is re-enabled
-test('error S4 — network error shows error callout and does not navigate', async () => {
-  // Simulate isError=true from the start (as if a previous attempt failed)
-  mockSendOtp.isError = true
+test('error S4 — a failed otp.send keeps the form and does not navigate', async () => {
   mockMutateAsync.mockRejectedValue(new Error('Network error'))
-
+  // The hook reflects the failed mutation (the static mock cannot self-update).
+  mockSendOtp.isError = true
+  const user = userEvent.setup()
   render(<RegistrationForm />)
 
-  // Error callout should be visible
-  expect(screen.getByText(/Не удалось отправить код/)).toBeInTheDocument()
+  await fillValidForm(user)
+  await user.click(screen.getByRole('button', { name: /Далее/ }))
 
-  // No navigation happened
+  // The submit reached otp.send with the normalized phone…
+  await waitFor(() => {
+    expect(mockMutateAsync).toHaveBeenCalledWith({ phone: NORMALIZED_PHONE })
+  })
+  // …but the rejection kept the user on the form: no navigation, error shown.
   expect(mockNavigate).not.toHaveBeenCalled()
+  expect(screen.getByText(/Не удалось отправить код/)).toBeInTheDocument()
 })

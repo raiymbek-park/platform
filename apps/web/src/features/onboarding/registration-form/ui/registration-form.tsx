@@ -64,7 +64,11 @@ export const RegistrationForm = () => {
       }
       setDraft(draft)
       setPendingPhone(phone)
-      await sendOtp.mutateAsync({ phone })
+      try {
+        await sendOtp.mutateAsync({ phone })
+      } catch {
+        return
+      }
       navigate({ to: '/onboarding/verify' })
     },
   })
