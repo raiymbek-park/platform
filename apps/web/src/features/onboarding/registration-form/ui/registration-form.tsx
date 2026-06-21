@@ -29,6 +29,22 @@ const roles: { id: Role; label: string }[] = [
   { id: 'tenant', label: 'Арендатор' },
 ]
 
+type FormValues = {
+  name: string
+  phone: string
+  block: BlockId | null
+  apartment: string
+  role: Role | null
+}
+
+const defaultValues: FormValues = {
+  name: '',
+  phone: '',
+  block: null,
+  apartment: '',
+  role: null,
+}
+
 export const RegistrationForm = () => {
   const navigate = useNavigate()
   const sendOtp = useSendOtp()
@@ -36,13 +52,7 @@ export const RegistrationForm = () => {
   const setPendingPhone = useOnboardingStore(state => state.setPendingPhone)
 
   const form = useForm({
-    defaultValues: {
-      name: '',
-      phone: '',
-      block: null as BlockId | null,
-      apartment: '',
-      role: null as Role | null,
-    },
+    defaultValues,
     onSubmit: async ({ value }) => {
       const phone = normalizePhone(value.phone)
       const draft = {
