@@ -7,6 +7,6 @@
     },
     "types": ["vite/client"]
   },
-  "include": ["src", "vite-env.d.ts"],
+  "include": ["src", "vite-env.d.ts", "../../vitest.setup.ts"],
   "exclude": ["src/test"]
 }

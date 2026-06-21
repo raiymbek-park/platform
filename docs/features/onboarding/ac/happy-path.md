@@ -58,3 +58,10 @@
   Then:  the 4 cells fill with the digits `1234`
          `otp.verify` runs automatically and passes
          the app moves to `/home`
+
+## Scenario 8: "Next" is disabled while the code request is in flight
+
+  Given: the form on `/onboarding/welcome` is fully valid and the user taps "Next"
+  When:  the code request is in flight (the response has not yet arrived)
+  Then:  "Next" is disabled for the duration of the request
+         the form cannot be submitted a second time
