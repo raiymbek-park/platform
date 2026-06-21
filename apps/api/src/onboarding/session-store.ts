@@ -51,8 +51,14 @@ const emptySession = (): Session => ({
   verifyUsed: false,
 })
 
-export const getSession = (phone: string): Session =>
-  sessions.get(phone) ?? emptySession()
+export const getSession = (phone: string, now: number): Session => {
+  const session = sessions.get(phone)
+  if (!session) return emptySession()
+  if (session.lockedUntil !== null && session.lockedUntil <= now) {
+    return emptySession()
+  }
+  return session
+}
 
 const saveSession = (phone: string, session: Session) => {
   sessions.set(phone, session)
@@ -60,7 +66,7 @@ const saveSession = (phone: string, session: Session) => {
 }
 
 export const recordSend = (phone: string, now: number): Session => {
-  const sendCount = getSession(phone).sendCount + 1
+  const sendCount = getSession(phone, now).sendCount + 1
   const reachesLock = sendCount >= maxSends + 1
 
   const session: Session = {
@@ -76,8 +82,12 @@ export const recordSend = (phone: string, now: number): Session => {
   return saveSession(phone, session)
 }
 
-export const recordVerify = (phone: string, code: string): Session => {
-  const current = getSession(phone)
+export const recordVerify = (
+  phone: string,
+  code: string,
+  now: number,
+): Session => {
+  const current = getSession(phone, now)
   const verified = current.code === code
 
   return saveSession(phone, {

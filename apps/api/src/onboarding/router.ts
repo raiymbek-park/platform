@@ -16,21 +16,24 @@ import {
   parseVerifyInput,
 } from './validators'
 
-const isLocked = (lockedUntil: number | null, now: number) =>
-  lockedUntil !== null && lockedUntil > now
-
 const isCoolingDown = (resendAvailableAt: number | null, now: number) =>
   resendAvailableAt !== null && resendAvailableAt > now
+
+const secondsUntil = (timestamp: number, now: number) =>
+  Math.ceil((timestamp - now) / 1000)
 
 export const otpRouter = router({
   send: publicProcedure
     .input(parseSendInput)
     .mutation(({ input: { phone } }) => {
       const now = Date.now()
-      const session = getSession(phone)
+      const session = getSession(phone, now)
 
-      if (isLocked(session.lockedUntil, now)) {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Number is locked' })
+      if (session.lockedUntil !== null && session.lockedUntil > now) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: `Number is locked. ${secondsUntil(session.lockedUntil, now)}s until unlock`,
+        })
       }
       if (isCoolingDown(session.resendAvailableAt, now)) {
         throw new TRPCError({
@@ -50,7 +53,8 @@ export const otpRouter = router({
   status: publicProcedure
     .input(parseStatusInput)
     .query(({ input: { phone } }) => {
-      const session = getSession(phone)
+      const now = Date.now()
+      const session = getSession(phone, now)
       return {
         hasActiveCode: session.code !== null,
         lockedUntil: session.lockedUntil,
@@ -64,10 +68,13 @@ export const otpRouter = router({
     .input(parseVerifyInput)
     .mutation(({ input: { code, phone } }) => {
       const now = Date.now()
-      const session = getSession(phone)
+      const session = getSession(phone, now)
 
-      if (isLocked(session.lockedUntil, now)) {
-        throw new TRPCError({ code: 'FORBIDDEN', message: 'Number is locked' })
+      if (session.lockedUntil !== null && session.lockedUntil > now) {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: `Number is locked. ${secondsUntil(session.lockedUntil, now)}s until unlock`,
+        })
       }
       if (session.verifyUsed) {
         throw new TRPCError({
@@ -76,7 +83,7 @@ export const otpRouter = router({
         })
       }
 
-      const next = recordVerify(phone, code)
+      const next = recordVerify(phone, code, now)
       if (!next.verified) {
         throw new TRPCError({ code: 'BAD_REQUEST', message: 'Wrong code' })
       }
@@ -90,7 +97,7 @@ export const residentRouter = router({
     .input(parseRegisterInput)
     .mutation(({ input: resident }) => {
       const now = Date.now()
-      const session = getSession(resident.phone)
+      const session = getSession(resident.phone, now)
 
       if (!session.verified) {
         throw new TRPCError({
