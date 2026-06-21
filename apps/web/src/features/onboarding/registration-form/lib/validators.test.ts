@@ -39,7 +39,7 @@ test('validation S2 — trimmed name at 1 char is invalid', () => {
 })
 
 // validatePhone — validation S3
-// phoneDigits strips leading 8 (trunk) then leading 7 (country code).
+// phoneDigits drops a single leading trunk/country digit from an 11-digit number.
 // A full +7XXXXXXXXXX number yields 10 local digits → valid.
 
 test('validation S3 — full +7-prefixed number yields 10 local digits → valid', () => {

@@ -2,18 +2,17 @@ import { expect, test } from 'vitest'
 
 import { formatPhoneMask, normalizePhone, phoneDigits } from './phone'
 
-// phoneDigits — strips non-digits, handles 8/+7 prefixes
-// The function strips the leading 8 (trunk prefix), then strips a leading 7
-// (country code), leaving at most 10 local digits.
-// Valid 10-digit result requires full international input, e.g. +77071234567.
+// phoneDigits — strips non-digits and a single leading trunk/country digit
+// (7 or 8), then caps at 10 local digits. The masked input always carries the
+// +7 prefix, so the leading 7/8 is the prefix, never part of the local number.
 
 test('phoneDigits strips non-digit characters from a formatted number', () => {
   expect(phoneDigits('+7 (707) 123-45-67')).toBe('7071234567')
 })
 
-test('phoneDigits drops the leading 8 trunk prefix and the 7 country code', () => {
-  // 87071234567 = trunk 8 + country 7 + 071234567 (9 local digits → truncated)
-  expect(phoneDigits('87071234567')).toBe('071234567')
+test('phoneDigits drops the leading 8 trunk prefix, leaving 10 local digits', () => {
+  // 87071234567 = trunk 8 + 7071234567 (10 local digits)
+  expect(phoneDigits('87071234567')).toBe('7071234567')
 })
 
 test('phoneDigits drops the +7 country prefix, leaving 10 local digits', () => {
