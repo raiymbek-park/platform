@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OnboardingWelcomeRouteImport } from './routes/onboarding.welcome'
+import { Route as OnboardingVerifyRouteImport } from './routes/onboarding.verify'
 
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
@@ -22,31 +24,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingWelcomeRoute = OnboardingWelcomeRouteImport.update({
+  id: '/onboarding/welcome',
+  path: '/onboarding/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingVerifyRoute = OnboardingVerifyRouteImport.update({
+  id: '/onboarding/verify',
+  path: '/onboarding/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
+  '/onboarding/verify': typeof OnboardingVerifyRoute
+  '/onboarding/welcome': typeof OnboardingWelcomeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
+  '/onboarding/verify': typeof OnboardingVerifyRoute
+  '/onboarding/welcome': typeof OnboardingWelcomeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
+  '/onboarding/verify': typeof OnboardingVerifyRoute
+  '/onboarding/welcome': typeof OnboardingWelcomeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home'
+  fullPaths: '/' | '/home' | '/onboarding/verify' | '/onboarding/welcome'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home'
-  id: '__root__' | '/' | '/home'
+  to: '/' | '/home' | '/onboarding/verify' | '/onboarding/welcome'
+  id: '__root__' | '/' | '/home' | '/onboarding/verify' | '/onboarding/welcome'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HomeRoute: typeof HomeRoute
+  OnboardingVerifyRoute: typeof OnboardingVerifyRoute
+  OnboardingWelcomeRoute: typeof OnboardingWelcomeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/welcome': {
+      id: '/onboarding/welcome'
+      path: '/onboarding/welcome'
+      fullPath: '/onboarding/welcome'
+      preLoaderRoute: typeof OnboardingWelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding/verify': {
+      id: '/onboarding/verify'
+      path: '/onboarding/verify'
+      fullPath: '/onboarding/verify'
+      preLoaderRoute: typeof OnboardingVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HomeRoute: HomeRoute,
+  OnboardingVerifyRoute: OnboardingVerifyRoute,
+  OnboardingWelcomeRoute: OnboardingWelcomeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
