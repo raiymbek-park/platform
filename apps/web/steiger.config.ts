@@ -15,4 +15,13 @@ export default defineConfig([
       'fsd/insignificant-slice': 'off',
     },
   },
+  {
+    // otp-verify reads the onboarding draft/pendingPhone written by
+    // registration-form via its public API — they form one onboarding vertical
+    // sharing a single persisted store. The cross-import is intentional here.
+    files: ['./src/features/onboarding/otp-verify/**'],
+    rules: {
+      'fsd/forbidden-imports': 'off',
+    },
+  },
 ])
