@@ -1,7 +1,8 @@
 export const phoneDigits = (value: string) => {
   const digits = value.replace(/\D/g, '')
-  const local = digits.startsWith('8') ? digits.slice(1) : digits
-  return (local.startsWith('7') ? local.slice(1) : local).slice(0, 10)
+  const local =
+    digits.startsWith('7') || digits.startsWith('8') ? digits.slice(1) : digits
+  return local.slice(0, 10)
 }
 
 export const formatPhoneMask = (value: string) => {
