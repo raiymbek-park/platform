@@ -1,0 +1,31 @@
+.cell {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  height: 55px;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.15s ease;
+  width: 55px;
+
+  &:focus {
+    border-color: var(--action);
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &-state-error {
+    border-color: var(--danger);
+  }
+
+  &-state-success {
+    border-color: var(--success);
+  }
+}

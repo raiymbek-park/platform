@@ -1,0 +1,25 @@
+.card {
+  background: color-mix(in srgb, var(--brand) 12%, var(--surface));
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+}
+
+.icon {
+  color: var(--brand);
+}
+
+.title {
+  color: var(--foreground);
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  margin: 0;
+}
+
+.description {
+  color: var(--text-secondary);
+  font-size: var(--font-size-md);
+  margin: 0;
+}
