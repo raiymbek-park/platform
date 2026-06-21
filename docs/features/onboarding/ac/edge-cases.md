@@ -59,3 +59,17 @@
   When:  they launch the app
   Then:  the session wins: `auth.refresh` succeeds → `/home`
          the onboarding state (`pendingPhone`) is ignored
+
+## Scenario 9: Status query for a phone with no prior session returns neutral state
+
+  Given: a phone number that has never been used to request a code
+  When:  `otp.status` is called for that number
+  Then:  the server returns a response indicating no active session — no code pending,
+         no cooldown, no lockout
+
+## Scenario 10: Token rotation — used refresh token is rejected on a second call
+
+  Given: `auth.refresh` was called with a valid refresh token and returned a new token pair
+  When:  the same (now-rotated-out) refresh token is submitted to `auth.refresh` again
+  Then:  the server rejects the request as invalid
+         the newly issued pair remains valid and unaffected
