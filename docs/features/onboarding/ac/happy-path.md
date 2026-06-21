@@ -22,9 +22,16 @@
 
   Given: the user reached `/onboarding/verify` after a send
   When:  the screen loads
-  Then:  the entered number is shown in the format `+7 707 123 45 67`
-         4 empty code cells are shown, with focus on the first
-         a "Resend in 0:59" timer and a "Paste code from clipboard" button are visible
+  Then:  the entered phone number is displayed in the format `+7 707 123 45 67`
+
+  Given: the user reached `/onboarding/verify` after a send
+  When:  the screen loads
+  Then:  4 empty code cells are shown, with focus on the first cell
+
+  Given: the user reached `/onboarding/verify` after a send
+  When:  the screen loads
+  Then:  a countdown label in the format "Resend in M:SS" is visible
+         a "Paste code from clipboard" button is visible
 
 ## Scenario 4: Focus auto-advances between cells while typing
 
@@ -37,10 +44,16 @@
 
   Given: 3 of the 4 digits are entered on `/onboarding/verify`, and the attempt for this code
          hasn't been used yet
-  When:  the user enters the fourth digit, forming the code `1234`
-  Then:  `otp.verify({ phone, code: '1234' })` is called automatically and returns success
-         `resident.register({ name, phone, block, apartment, role })` is called (mock)
-         the server returns an `accessToken` (1 h) and a `refreshToken` (30 days), saved to `authStore`
+  When:  the user enters the fourth digit, forming the correct code
+  Then:  the code is checked automatically (no button tap required)
+
+  Given: the correct code is entered on `/onboarding/verify`
+  When:  the verification succeeds
+  Then:  the resident is registered with the details from the registration form
+
+  Given: registration succeeds after code verification
+  When:  the server returns tokens
+  Then:  an access token and a refresh token are saved to persistent session storage
          the app moves to `/home`
 
 ## Scenario 6: A returning user with a valid refresh lands on home
@@ -56,8 +69,11 @@
   Given: a cooldown is running on `/onboarding/verify`, and the clipboard holds `1234`
   When:  the user taps the enabled "Paste code from clipboard"
   Then:  the 4 cells fill with the digits `1234`
-         `otp.verify` runs automatically and passes
-         the app moves to `/home`
+
+  Given: the 4 cells were filled by pasting a valid 4-digit clipboard value
+  When:  the cells are full
+  Then:  the code is checked automatically
+         the app moves to `/home` on a correct code
 
 ## Scenario 8: "Next" is disabled while the code request is in flight
 
@@ -65,3 +81,20 @@
   When:  the code request is in flight (the response has not yet arrived)
   Then:  "Next" is disabled for the duration of the request
          the form cannot be submitted a second time
+
+## Scenario 9: Cells are non-interactive while the auto-check is in flight
+
+  Given: 4 digits have been entered on `/onboarding/verify` and the verification check is in flight
+  When:  the response has not yet arrived
+  Then:  the cells do not accept new input for the duration of the request
+         the user cannot modify the code while the check is pending
+
+## Scenario 10: Backspace key moves focus to the previous cell
+
+  Given: focus is on the second, third, or fourth cell on `/onboarding/verify`
+  When:  the user presses backspace on an empty cell
+  Then:  focus moves to the previous cell
+
+  Given: focus is on the first cell
+  When:  the user presses backspace
+  Then:  focus stays on the first cell

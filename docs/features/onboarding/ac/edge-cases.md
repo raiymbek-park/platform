@@ -2,10 +2,21 @@
 
 ## Scenario 1: Growing resend timer
 
-  Given: the user resends one after another on `/onboarding/verify`
-  When:  they tap "Resend" again and again (sends 2, 3, 4)
-  Then:  each cooldown grows by the schedule: 60 → 120 → 300 → 600 s
-         every timer comes from the server (`resendAvailableAt`) and isn't reset by the client
+  Given: the user is on `/onboarding/verify` and the cooldown has expired after the initial send
+  When:  they tap "Resend" (send 2)
+  Then:  the countdown resets to 2:00 (120 s) and begins counting down
+
+  Given: the 120 s cooldown expires and the user taps "Resend" again (send 3)
+  When:  the new cooldown begins
+  Then:  the countdown shows 5:00 (300 s)
+
+  Given: the 300 s cooldown expires and the user taps "Resend" again (send 4)
+  When:  the new cooldown begins
+  Then:  the countdown shows 10:00 (600 s)
+
+  Given: the user closes and reopens the app while a resend cooldown is running
+  When:  the verify screen loads
+  Then:  the timer shows the remaining time of the current cooldown — it does not reset to the full duration
 
 ## Scenario 2: Number locked after the 4 sends are used
 
@@ -73,3 +84,10 @@
   When:  the same (now-rotated-out) refresh token is submitted to `auth.refresh` again
   Then:  the server rejects the request as invalid
          the newly issued pair remains valid and unaffected
+
+## Scenario 11: Clipboard read is unavailable or denied
+
+  Given: the user is on `/onboarding/verify` during a cooldown
+  When:  the Clipboard API is unavailable or the user has denied clipboard access
+  Then:  the "Paste code from clipboard" button is disabled
+         no error is surfaced to the user — the button simply stays disabled
