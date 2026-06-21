@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { act } from 'react'
-import { afterEach, beforeEach, expect, test, vi } from 'vitest'
+import { beforeEach, expect, test, vi } from 'vitest'
 
 import { useOnboardingStore } from '@/features/onboarding/registration-form'
 import { useAuthStore } from '@/shared/auth'
@@ -72,6 +72,13 @@ const tokenPair = {
   refreshTokenExpiresAt: Date.now() + 86400_000,
 }
 
+/** Fresh-query the OTP cell at position `index`, asserting it exists. */
+const cellAt = (index: number) => {
+  const cell = screen.getAllByRole('textbox')[index]
+  if (!cell) throw new Error(`No OTP cell at index ${index}`)
+  return cell
+}
+
 /** Seed the onboarding store with a valid draft so OtpVerify has pendingPhone + draft. */
 const seedStore = () => {
   act(() => {
@@ -86,25 +93,21 @@ const seedStore = () => {
   })
 }
 
-/** Type one digit into the input at position `index` (0-based). */
-const typeDigit = async (
+/** Type one digit into the cell at position `index` (0-based). */
+const typeDigit = (
   user: ReturnType<typeof userEvent.setup>,
   index: number,
   digit: string,
-) => {
-  const inputs = screen.getAllByRole('textbox')
-  await user.type(inputs[index], digit)
-}
+) => user.type(cellAt(index), digit)
 
-/** Fill all four cells by firing change events directly. */
-const fillCells = async (
-  user: ReturnType<typeof userEvent.setup>,
-  digits: string,
-) => {
-  for (let i = 0; i < digits.length; i++) {
-    await typeDigit(user, i, digits[i] ?? '')
-  }
-}
+/** Fill the cells in order, one digit per cell. */
+const fillCells = (user: ReturnType<typeof userEvent.setup>, digits: string) =>
+  digits
+    .split('')
+    .reduce(
+      (chain, digit, index) => chain.then(() => typeDigit(user, index, digit)),
+      Promise.resolve(),
+    )
 
 // ---------------------------------------------------------------------------
 // Setup / teardown
@@ -150,7 +153,9 @@ test('happy S3 — shows 4 empty cells and countdown label on load', () => {
 
   const inputs = screen.getAllByRole('textbox')
   expect(inputs).toHaveLength(4)
-  inputs.forEach(input => expect(input).toHaveValue(''))
+  inputs.forEach(input => {
+    expect(input).toHaveValue('')
+  })
 
   expect(screen.getByText(/Повторная отправка через/)).toBeInTheDocument()
   expect(
@@ -167,11 +172,9 @@ test('happy S4 — typing a digit advances focus to the next cell', async () => 
   const user = userEvent.setup()
   render(<OtpVerify />)
 
-  const inputs = screen.getAllByRole('textbox')
-
   // Type into first cell — focus should move to second
-  await user.type(inputs[0], '1')
-  expect(inputs[1]).toHaveFocus()
+  await typeDigit(user, 0, '1')
+  expect(cellAt(1)).toHaveFocus()
 })
 
 test('happy S4 — after the fourth digit focus stays on the fourth cell', async () => {
@@ -182,31 +185,25 @@ test('happy S4 — after the fourth digit focus stays on the fourth cell', async
   const user = userEvent.setup()
   render(<OtpVerify />)
 
-  const inputs = screen.getAllByRole('textbox')
-  await user.type(inputs[0], '1')
-  await user.type(inputs[1], '2')
-  await user.type(inputs[2], '3')
-  await user.type(inputs[3], '4')
+  await fillCells(user, '1234')
 
-  // After typing the 4th digit, focus stays on cell 3 (auto-advance only goes to next)
-  expect(inputs[3]).toHaveFocus()
+  // After typing the 4th digit, focus stays on the 4th cell (auto-advance only goes to next)
+  expect(cellAt(3)).toHaveFocus()
 })
 
 // ---------------------------------------------------------------------------
 // validation S6 — single digit per cell
 // ---------------------------------------------------------------------------
 
-test('validation S6 — non-digit character is ignored, cell stays empty', async () => {
+test('validation S6 — non-digit character is ignored, cell stays empty', () => {
   seedStore()
-  const user = userEvent.setup()
   render(<OtpVerify />)
 
-  const inputs = screen.getAllByRole('textbox')
   // OtpInput uses inputMode=numeric and its onChange strips non-digits via lastDigit()
   // Firing change with a non-digit value produces empty string → cell stays empty
-  fireEvent.change(inputs[0], { target: { value: 'a' } })
+  fireEvent.change(cellAt(0), { target: { value: 'a' } })
 
-  expect(inputs[0]).toHaveValue('')
+  expect(cellAt(0)).toHaveValue('')
 })
 
 // ---------------------------------------------------------------------------
@@ -218,12 +215,11 @@ test('happy S10 — backspace on empty second cell moves focus to first cell', a
   const user = userEvent.setup()
   render(<OtpVerify />)
 
-  const inputs = screen.getAllByRole('textbox')
   // Focus second cell manually, then press Backspace
-  await user.click(inputs[1])
+  await user.click(cellAt(1))
   await user.keyboard('{Backspace}')
 
-  expect(inputs[0]).toHaveFocus()
+  expect(cellAt(0)).toHaveFocus()
 })
 
 test('happy S10 — backspace on empty first cell keeps focus on first cell', async () => {
@@ -231,11 +227,10 @@ test('happy S10 — backspace on empty first cell keeps focus on first cell', as
   const user = userEvent.setup()
   render(<OtpVerify />)
 
-  const inputs = screen.getAllByRole('textbox')
-  inputs[0].focus()
+  cellAt(0).focus()
   await user.keyboard('{Backspace}')
 
-  expect(inputs[0]).toHaveFocus()
+  expect(cellAt(0)).toHaveFocus()
 })
 
 // ---------------------------------------------------------------------------
@@ -311,11 +306,10 @@ test('happy S7 — paste button fills cells with clipboard code and triggers ver
   })
   await user.click(pasteBtn)
 
-  const inputs = screen.getAllByRole('textbox')
-  expect(inputs[0]).toHaveValue('4')
-  expect(inputs[1]).toHaveValue('3')
-  expect(inputs[2]).toHaveValue('2')
-  expect(inputs[3]).toHaveValue('1')
+  expect(cellAt(0)).toHaveValue('4')
+  expect(cellAt(1)).toHaveValue('3')
+  expect(cellAt(2)).toHaveValue('2')
+  expect(cellAt(3)).toHaveValue('1')
 
   await waitFor(() =>
     expect(mockVerifyMutateAsync).toHaveBeenCalledWith({
@@ -360,7 +354,9 @@ test('happy S9 — cells are disabled while verify is pending', () => {
 
   // The fieldset has disabled, which cascades to each input
   const inputs = screen.getAllByRole('textbox')
-  inputs.forEach(input => expect(input).toBeDisabled())
+  inputs.forEach(input => {
+    expect(input).toBeDisabled()
+  })
 })
 
 test('happy S9 — cells are disabled while register is pending', () => {
@@ -369,7 +365,9 @@ test('happy S9 — cells are disabled while register is pending', () => {
   render(<OtpVerify />)
 
   const inputs = screen.getAllByRole('textbox')
-  inputs.forEach(input => expect(input).toBeDisabled())
+  inputs.forEach(input => {
+    expect(input).toBeDisabled()
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -404,7 +402,9 @@ test('error S1 — wrong code (server rejection) clears cells and shows error me
 
   await waitFor(() => {
     const inputs = screen.getAllByRole('textbox')
-    inputs.forEach(input => expect(input).toHaveValue(''))
+    inputs.forEach(input => {
+      expect(input).toHaveValue('')
+    })
     expect(screen.getByText(/Неверный код/)).toBeInTheDocument()
     expect(mockNavigate).not.toHaveBeenCalled()
   })
@@ -425,7 +425,9 @@ test('error S2 — attempt-used server rejection clears cells and shows error, n
   await waitFor(() => {
     expect(screen.getByText(/Неверный код/)).toBeInTheDocument()
     const inputs = screen.getAllByRole('textbox')
-    inputs.forEach(input => expect(input).toHaveValue(''))
+    inputs.forEach(input => {
+      expect(input).toHaveValue('')
+    })
     expect(mockNavigate).not.toHaveBeenCalled()
   })
 })
@@ -450,7 +452,9 @@ test('error S3 — tapping Resend calls resendOtp, refetches status, and clears 
   })
 
   const inputs = screen.getAllByRole('textbox')
-  inputs.forEach(input => expect(input).toHaveValue(''))
+  inputs.forEach(input => {
+    expect(input).toHaveValue('')
+  })
 })
 
 // ---------------------------------------------------------------------------
@@ -473,11 +477,10 @@ test('error S5 — network verify failure keeps digits, shows error, does NOT au
   })
 
   // Cells retain the digits (network failure does not clear them)
-  const inputs = screen.getAllByRole('textbox')
-  expect(inputs[0]).toHaveValue('5')
-  expect(inputs[1]).toHaveValue('5')
-  expect(inputs[2]).toHaveValue('5')
-  expect(inputs[3]).toHaveValue('5')
+  expect(cellAt(0)).toHaveValue('5')
+  expect(cellAt(1)).toHaveValue('5')
+  expect(cellAt(2)).toHaveValue('5')
+  expect(cellAt(3)).toHaveValue('5')
 
   // Verify was called exactly once — submittedRef prevents auto-retry
   expect(mockVerifyMutateAsync).toHaveBeenCalledTimes(1)
@@ -498,12 +501,11 @@ test('error S5 — after network failure, editing a cell and re-completing trigg
   await waitFor(() => expect(mockVerifyMutateAsync).toHaveBeenCalledTimes(1))
 
   // User clears cell 3 and retypes it — code goes <4 then back to 4
-  const inputs = screen.getAllByRole('textbox')
-  fireEvent.change(inputs[2], { target: { value: '' } })
+  fireEvent.change(cellAt(2), { target: { value: '' } })
 
-  await waitFor(() => expect(inputs[2]).toHaveValue(''))
+  await waitFor(() => expect(cellAt(2)).toHaveValue(''))
 
-  await user.type(inputs[2], '5')
+  await typeDigit(user, 2, '5')
 
   // submittedRef reset when code < 4, so verify runs again
   await waitFor(() => expect(mockVerifyMutateAsync).toHaveBeenCalledTimes(2))
