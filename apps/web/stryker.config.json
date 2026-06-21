@@ -3,6 +3,10 @@
   "testRunner": "vitest",
   "coverageAnalysis": "perTest",
   "incremental": true,
+  "vitest": {
+    "related": false,
+    "configFile": "vitest.stryker.config.ts"
+  },
   "mutate": [
     "src/**/model/**/*.ts",
     "src/**/lib/**/*.ts",
