@@ -20,11 +20,11 @@ export const AccountLocked = () => {
   const [hours, minutes, seconds] = formatHms(remaining).split(':')
 
   useEffect(() => {
-    if (!status.isLoading && remaining === 0) {
+    if (status.isSuccess && remaining === 0) {
       useLockedPhoneStore.getState().clearLockedPhone()
       navigate({ to: '/onboarding/verification' })
     }
-  }, [navigate, remaining, status.isLoading])
+  }, [navigate, remaining, status.isSuccess])
 
   return (
     <section className={css.content}>

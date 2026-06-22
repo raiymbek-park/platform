@@ -5,6 +5,7 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 const mockOtpStatus = {
   data: null as { lockedUntil: number | null } | null,
   isLoading: false,
+  isSuccess: true,
 }
 vi.mock('@/features/onboarding/otp-verification', () => ({
   useOtpStatus: () => mockOtpStatus,
@@ -21,6 +22,8 @@ vi.mock('@/features/onboarding/registration-form', () => ({
     selector: (state: { draft: { phone: string } }) => unknown,
   ) => mockUseOnboardingStore(selector),
 }))
+
+import { useLockedPhoneStore } from '@/shared/auth'
 
 import { AccountLocked } from './account-locked'
 
@@ -40,6 +43,8 @@ beforeEach(() => {
   mockNavigate.mockReset()
   mockOtpStatus.data = { lockedUntil: FUTURE_LOCKED_UNTIL }
   mockOtpStatus.isLoading = false
+  mockOtpStatus.isSuccess = true
+  useLockedPhoneStore.getState().clearLockedPhone()
   seedPhone()
 })
 
@@ -112,7 +117,20 @@ test('lockout S16 — lockedUntil null on arrival navigates to /onboarding/verif
 test('lockout S16 — does not navigate while status is still loading', () => {
   mockOtpStatus.data = null
   mockOtpStatus.isLoading = true
+  mockOtpStatus.isSuccess = false
   render(<AccountLocked />)
 
   expect(mockNavigate).not.toHaveBeenCalled()
+})
+
+test('lockout S17 — a failed status query keeps the lock pin and stays put', () => {
+  mockOtpStatus.data = null
+  mockOtpStatus.isLoading = false
+  mockOtpStatus.isSuccess = false
+  useLockedPhoneStore.getState().setLockedPhone(PENDING_PHONE)
+
+  render(<AccountLocked />)
+
+  expect(mockNavigate).not.toHaveBeenCalled()
+  expect(useLockedPhoneStore.getState().lockedPhone).toBe(PENDING_PHONE)
 })
