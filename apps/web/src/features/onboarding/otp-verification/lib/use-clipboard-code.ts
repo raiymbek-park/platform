@@ -1,8 +1,6 @@
 import { OTP_CODE_LENGTH } from '@raiymbek-park/api/contract'
 import { useCallback, useEffect, useState } from 'react'
 
-// Pull the digits out of whatever is on the clipboard ("Your code: 1234" → "1234")
-// and accept them only when there are exactly OTP_CODE_LENGTH of them.
 const readClipboardCode = async () => {
   try {
     const text = await navigator.clipboard?.readText()
