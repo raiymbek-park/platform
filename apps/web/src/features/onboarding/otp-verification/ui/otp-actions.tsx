@@ -30,6 +30,7 @@ export const OtpActions = ({
   return (
     <div className={css.actions}>
       <Button
+        aria-label='Назад'
         icon='arrow-left'
         variant='icon'
         onClick={() => navigate({ to: '/onboarding/welcome' })}

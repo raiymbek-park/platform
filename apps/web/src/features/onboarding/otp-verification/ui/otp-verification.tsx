@@ -59,7 +59,8 @@ export const OtpVerification = () => {
   }
 
   const status = useOtpStatus(phone || null)
-  const isAttemptUsed = Boolean(status.data?.verifyUsed)
+  const isWrongCodeError = verifyOtp.isError && isWrongCode(verifyOtp.error)
+  const isAttemptUsed = Boolean(status.data?.verifyUsed) || isWrongCodeError
   const isDisabled = isChecking || isAttemptUsed
 
   const otp = useOtpCells({ disabled: isDisabled, onComplete: verify })
