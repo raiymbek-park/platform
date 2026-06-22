@@ -6,7 +6,7 @@
   When:  they enter a valid name, a valid phone, pick a block, enter an apartment number within
          that block's range, and pick a role
   Then:  every field is valid and "Next" becomes enabled
-         the header scrolls with the content while "Next" stays fixed at the bottom
+         the header stays pinned at the top while the content — "Next" included — scrolls beneath it
 
 ## Scenario 2: Submitting the form requests a code and opens the code screen
 
@@ -56,7 +56,8 @@
 
   Given: the resident has a valid, unexpired session and launches the app
   When:  the app starts
-  Then:  the session is renewed and the app opens home, skipping onboarding
+  Then:  the session is renewed (a fresh session replaces the previous one)
+         the app opens home, skipping onboarding
 
 ## Scenario 7: Pasting the code from the clipboard triggers the check
 

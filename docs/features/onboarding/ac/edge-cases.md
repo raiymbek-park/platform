@@ -74,10 +74,11 @@
 
 ## Scenario 8: A valid session takes priority over onboarding
 
-  Given: the resident has a valid session and also still has onboarding in progress for a number
+  Given: the resident has a valid session and also still has onboarding in progress for a
+         number (the number may or may not be locked)
   When:  they launch the app
   Then:  the session wins — they open home
-         the onboarding-in-progress state is ignored
+         the onboarding-in-progress state (including any active lock) is ignored
 
 ## Scenario 9: Checking a never-used number reports a neutral state
 
@@ -133,3 +134,36 @@
   When:  the lock state finishes loading
   Then:  the app moves to the code screen — the lockout screen is never shown with a zeroed
          countdown
+
+## Scenario 17: The lockout persists even after clearing local storage
+
+  Given: a number is locked (the server lock is in effect) and the user clears the app's
+         local storage for that number to remove the stored pending-phone record
+  When:  the user reloads the app or navigates to any other screen
+  Then:  the server confirms the lock is still active
+         the app returns to the lockout screen — the lock cannot be bypassed by removing
+         local data
+
+## Scenario 18: A valid session overrides an active lockout
+
+  Given: the user has a valid session and that same number is also actively locked on the
+         server
+  When:  the app starts (or the user navigates to any onboarding screen)
+  Then:  the valid session takes priority — the app opens home
+         the lockout screen is not shown
+
+## Scenario 19: Unauthenticated direct navigation to home redirects to welcome
+
+  Given: the user has no valid session (no stored tokens, or the session has expired)
+  When:  the user navigates directly to the home screen (e.g. by typing the URL or using a
+         deep link)
+  Then:  the app redirects to the welcome screen
+         the home screen content is not shown
+
+## Scenario 20: Cold-start with no session and no pending number lands on welcome
+
+  Given: the app has never been used, or all tokens and pending-number state have been
+         cleared (there is no session and no pending phone number in storage)
+  When:  the app starts
+  Then:  the app opens the welcome screen directly — no routing to code or lockout screens
+         occurs

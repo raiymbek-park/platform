@@ -49,7 +49,6 @@ type FormOverrides = {
   role?: RegExp
 }
 
-// Each field defaults to a valid value — override the field(s) under test.
 const fillForm = async (
   user: ReturnType<typeof userEvent.setup>,
   {
@@ -160,7 +159,6 @@ test('validation S14 — switching from block 1 to block 2 invalidates apartment
   const user = renderForm()
   await fillForm(user, { apartment: '70' })
 
-  // All valid for block 1 (range 1–70)
   await waitFor(() => expect(next()).not.toBeDisabled())
 
   // Switch to block 2 (range 71–139): apartment 70 auto-revalidates as out of

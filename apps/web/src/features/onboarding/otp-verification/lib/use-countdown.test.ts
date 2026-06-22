@@ -108,7 +108,6 @@ test('edge S1 — changing resendAvailableAt resets the countdown', () => {
   const { result, rerender } = renderHook(() => useCountdown(target))
   expect(result.current.remaining).toBe(60)
 
-  // Update to a 2-minute cooldown (simulates server returning new resendAvailableAt after resend)
   target = now + 120_000
   rerender()
 
@@ -126,7 +125,6 @@ test('edge S1 — interval stops ticking after reaching 0', () => {
   act(() => vi.advanceTimersByTime(1000))
   expect(result.current.remaining).toBe(0)
 
-  // Advancing further should not change the value (interval was cleared)
   act(() => vi.advanceTimersByTime(5000))
   expect(result.current.remaining).toBe(0)
 })

@@ -22,5 +22,6 @@ coverage
 playwright-report
 test-results
 .playwright
+.playwright-mcp/
 .stryker-tmp
 **/reports/

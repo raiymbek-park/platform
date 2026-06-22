@@ -9,6 +9,7 @@
 }
 
 html {
+  -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -31,7 +32,7 @@ main {
   display: flex;
   flex-direction: column;
   min-height: 100svh;
-  padding: 0 20px;
+  padding: 0 var(--spacing-20);
 }
 
 img,

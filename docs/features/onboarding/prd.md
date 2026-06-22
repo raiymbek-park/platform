@@ -21,8 +21,8 @@ onboarding entirely.
 ### In scope
 
 - **Welcome screen** (`/onboarding/welcome`) — the registration form. Every field is required, and
-  "Next" is enabled only once the whole form is valid. The header scrolls with the content while
-  "Next" stays fixed at the bottom. Coming back to this screen (e.g. to fix a phone typo after
+  "Next" is enabled only once the whole form is valid. The header stays pinned at the top while the
+  form — "Next" included, at its end — scrolls beneath it. Coming back to this screen (e.g. to fix a phone typo after
   reaching the code screen) restores everything already entered — name, phone, block, apartment, and
   role are pre-filled, not lost.
 - **Code screen** (`/onboarding/verify`) — entry of the 4-digit code: focus moves between cells on
@@ -152,8 +152,9 @@ residents who haven't signed in.
 
 ## Experience Requirements
 
-- **Mobile-first, single column**, full-viewport height. The header scrolls with the page; the
-  primary action stays fixed at the bottom — "Next" on welcome, the action buttons on the code screen.
+- **Mobile-first, single column**, full-viewport height. The header stays pinned at the top; the
+  primary action sits at the end of the content and scrolls with the page — "Next" on welcome, the
+  action buttons on the code screen (anchored to the bottom of the viewport when the content is short).
 - **Clipboard detection ignores surrounding text:** it keeps only the digits and accepts the result
   only when it's exactly 4 digits, so a code embedded in a message is still detected while clipboard
   content without a 4-digit code leaves the paste action disabled. If the clipboard can't be read or
