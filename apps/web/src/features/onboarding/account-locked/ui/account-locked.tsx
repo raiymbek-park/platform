@@ -8,32 +8,13 @@ import { useCountdown } from '@/shared/lib'
 import { formatHms } from '../lib/format-hms'
 import css from './account-locked.module.scss'
 
-const units = ['hours', 'minutes', 'seconds'] as const
-
-const toGroups = (hms: string) =>
-  hms.split(':').map((value, index) => ({ unit: units[index] ?? '', value }))
-
-const renderTimer = (hms: string) =>
-  toGroups(hms).flatMap(({ unit, value }, index) => [
-    ...(index > 0
-      ? [
-          <span className={css.colon} key={`colon-${unit}`}>
-            :
-          </span>,
-        ]
-      : []),
-    <span className={css.num} key={unit}>
-      {value}
-    </span>,
-  ])
-
 export const AccountLocked = () => {
   const navigate = useNavigate()
   const phone = useOnboardingStore(state => state.draft.phone)
   const status = useOtpStatus(phone || null)
   const lockedUntil = status.data?.lockedUntil ?? null
   const remaining = useCountdown(lockedUntil)
-  const hms = formatHms(remaining)
+  const [hours, minutes, seconds] = formatHms(remaining).split(':')
 
   useEffect(() => {
     if (!status.isLoading && remaining === 0) {
@@ -54,7 +35,13 @@ export const AccountLocked = () => {
 
       <p className={css.hint}>До разблокировки осталось</p>
 
-      <output className={css.timer}>{renderTimer(hms)}</output>
+      <output className={css.timer}>
+        <span className={css.num}>{hours}</span>
+        <span className={css.colon}>:</span>
+        <span className={css.num}>{minutes}</span>
+        <span className={css.colon}>:</span>
+        <span className={css.num}>{seconds}</span>
+      </output>
     </section>
   )
 }
