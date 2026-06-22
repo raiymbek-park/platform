@@ -56,7 +56,8 @@
 
   Given: the resident has a valid, unexpired session and launches the app
   When:  the app starts
-  Then:  the session is renewed and the app opens home, skipping onboarding
+  Then:  the session is renewed (a fresh session replaces the previous one)
+         the app opens home, skipping onboarding
 
 ## Scenario 7: Pasting the code from the clipboard triggers the check
 
