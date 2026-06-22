@@ -1,19 +1,40 @@
-import { pickCss } from '@raiymbek-park/shared'
-import type { ComponentProps } from 'react'
+import type { ComponentProps, ReactNode } from 'react'
 import type { IconGlyph } from '../icon'
+
+import { joinCss, pickCss } from '@raiymbek-park/shared'
+
 import { Icon } from '../icon'
+import { IconChip } from '../icon-chip/icon-chip'
 import css from './input.module.scss'
 
 export type InputProps = ComponentProps<'input'> & {
   icon?: IconGlyph
+  label?: ReactNode
   state?: 'error' | 'success'
 }
 
-const inputCss = pickCss(css, css.input)
+const boxCss = pickCss(css, css.box)
 
-export const Input = ({ className, icon, state, ...restProps }: InputProps) => (
-  <label className={inputCss({ state }, className)}>
-    {icon && <Icon className={css.icon} glyph={icon} size={20} />}
-    <input className={css.field} {...restProps} />
+const statusGlyph: Record<NonNullable<InputProps['state']>, IconGlyph> = {
+  error: 'circle-alert',
+  success: 'check',
+}
+
+export const Input = ({
+  className,
+  icon,
+  label,
+  state,
+  ...restProps
+}: InputProps) => (
+  <label className={joinCss(css.input, className)}>
+    {label && <span className={css.label}>{label}</span>}
+    <span className={boxCss({ state })}>
+      {icon && <IconChip glyph={icon} iconSize={18} size={34} />}
+      <input className={css.field} {...restProps} />
+      {state && (
+        <Icon className={css.status} glyph={statusGlyph[state]} size={18} />
+      )}
+    </span>
   </label>
 )

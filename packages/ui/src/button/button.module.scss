@@ -2,8 +2,8 @@
   align-items: center;
   background: var(--action);
   border: 0;
-  border-radius: var(--radius-lg);
-  box-shadow: 0 10px 20px color-mix(in srgb, var(--action) 45%, transparent);
+  border-radius: var(--radius-18);
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--action) 50%, transparent);
   color: var(--action-foreground);
   cursor: pointer;
   display: inline-flex;
@@ -18,9 +18,13 @@
 
   &:active {
     background: var(--action-strong);
+    box-shadow: 0 4px 10px color-mix(in srgb, var(--action) 50%, transparent);
   }
 
   &:disabled {
+    background: var(--disabled-surface);
+    box-shadow: none;
+    color: var(--disabled-foreground);
     cursor: not-allowed;
   }
 
@@ -34,11 +38,26 @@
 
   &-variant-secondary {
     background: var(--surface);
-    box-shadow: none;
+    box-shadow: 0 4px 12px rgba(43, 52, 64, 0.06);
     color: var(--foreground);
 
     &:active {
-      background: var(--border);
+      background: var(--background);
+      box-shadow: none;
+    }
+  }
+
+  &-variant-icon {
+    background: var(--surface);
+    box-shadow: 0 4px 12px rgba(43, 52, 64, 0.06);
+    color: var(--foreground);
+    min-height: 58px;
+    padding: 0;
+    width: 58px;
+
+    &:active {
+      background: var(--background);
+      box-shadow: none;
     }
   }
 }

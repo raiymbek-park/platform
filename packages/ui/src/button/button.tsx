@@ -1,6 +1,8 @@
-import { pickCss } from '@raiymbek-park/shared'
 import type { ButtonHTMLAttributes } from 'react'
 import type { IconGlyph } from '../icon'
+
+import { pickCss } from '@raiymbek-park/shared'
+
 import { Icon } from '../icon'
 import css from './button.module.scss'
 
@@ -8,7 +10,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconGlyph
   iconPosition?: 'left' | 'right'
   isLoading?: boolean
-  variant?: 'action' | 'secondary'
+  variant?: 'action' | 'icon' | 'secondary'
 }
 
 const buttonCss = pickCss(css, css.button)

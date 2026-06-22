@@ -1,25 +1,60 @@
 .card {
-  background: color-mix(in srgb, var(--brand) 12%, var(--surface));
-  border-radius: var(--radius-lg);
+  background: var(--brand-subtle);
+  border-radius: var(--radius-28);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-lg);
+  gap: var(--spacing-md);
+  isolation: isolate;
+  overflow: hidden;
+  padding: var(--spacing-22);
+  position: relative;
+
+  &::before,
+  &::after {
+    border-radius: 50%;
+    content: '';
+    position: absolute;
+    z-index: -1;
+  }
+
+  &::before {
+    background: var(--surface);
+    height: 170px;
+    opacity: 0.32;
+    right: -70px;
+    top: -60px;
+    width: 170px;
+  }
+
+  &::after {
+    background: var(--brand);
+    height: 110px;
+    opacity: 0.14;
+    right: -60px;
+    top: 120px;
+    width: 110px;
+  }
 }
 
 .icon {
   color: var(--brand);
+  position: relative;
 }
 
 .title {
   color: var(--foreground);
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
+  font-size: var(--font-size-22);
+  font-weight: 800;
   margin: 0;
+  position: relative;
 }
 
 .description {
-  color: var(--text-secondary);
-  font-size: var(--font-size-md);
+  color: var(--foreground);
+  font-size: var(--font-size-13);
+  font-weight: 500;
+  line-height: 1.5;
   margin: 0;
+  opacity: 0.78;
+  position: relative;
 }

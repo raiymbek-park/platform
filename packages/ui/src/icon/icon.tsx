@@ -1,7 +1,9 @@
-import { cssVariables, joinCss } from '@raiymbek-park/shared'
 import type { ComponentProps } from 'react'
-import css from './icon.module.scss'
 import type { IconGlyph } from './types'
+
+import { cssVariables, joinCss } from '@raiymbek-park/shared'
+
+import css from './icon.module.scss'
 
 export type IconProps = ComponentProps<'svg'> & {
   glyph: IconGlyph

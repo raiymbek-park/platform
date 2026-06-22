@@ -1,6 +1,8 @@
-import { joinCss } from '@raiymbek-park/shared'
 import type { ComponentProps, ReactNode } from 'react'
 import type { IconGlyph } from '../icon'
+
+import { joinCss } from '@raiymbek-park/shared'
+
 import { Icon } from '../icon'
 import css from './welcome-card.module.scss'
 
