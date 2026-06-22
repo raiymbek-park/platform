@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@raiymbek-park/api": "*",
-    "@raiymbek-park/shared": "*",
     "@raiymbek-park/ui": "*",
     "@tanstack/react-form": "1.33.0",
     "@tanstack/react-query": "5.101.0",
@@ -25,6 +24,7 @@
     "@trpc/tanstack-react-query": "11.18.0",
     "react": "19.2.7",
     "react-dom": "19.2.7",
+    "zod": "4.4.3",
     "zustand": "5.0.14"
   },
   "devDependencies": {

@@ -1,41 +1,28 @@
 .callout {
-  align-items: flex-start;
-  border-radius: var(--radius-lg);
+  align-items: center;
+  border-radius: var(--radius-18);
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-12);
   padding: var(--spacing-base);
 
   &-variant-info {
-    background: color-mix(in srgb, var(--link) 10%, transparent);
-
-    .icon {
-      color: var(--link);
-    }
+    background: var(--brand-subtle);
   }
 
   &-variant-danger {
-    background: color-mix(in srgb, var(--danger) 10%, transparent);
-
-    .icon {
-      color: var(--danger);
-    }
+    background: var(--danger-soft);
   }
 
   &-variant-warning {
-    background: color-mix(in srgb, var(--warning) 12%, transparent);
-
-    .icon {
-      color: var(--warning);
-    }
+    background: var(--warning-soft);
   }
 }
 
-.icon {
-  flex-shrink: 0;
-}
-
 .message {
-  color: var(--text-secondary);
-  font-size: var(--font-size-base);
+  color: var(--foreground);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  line-height: 1.5;
   margin: 0;
+  opacity: 0.8;
 }

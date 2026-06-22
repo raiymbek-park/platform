@@ -1,23 +1,46 @@
 .screen {
   align-items: center;
   display: flex;
-  gap: var(--spacing-sm);
   justify-content: space-between;
-  min-height: 55px;
-  padding: 0 var(--spacing-base);
+  min-height: 64px;
+  padding: 0;
 }
 
-.slot {
+.logo {
   align-items: center;
-  display: inline-flex;
-  min-width: 44px;
+  display: flex;
+  gap: var(--spacing-sm);
 }
 
-.title {
+.brand {
   color: var(--foreground);
-  flex: 1;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-17);
+  font-weight: 800;
+}
+
+.switcher {
+  background: var(--surface);
+  border-radius: var(--radius-round);
+  box-shadow: 0 2px 6px rgba(24, 28, 33, 0.08);
+  display: flex;
+  gap: var(--spacing-xs);
+  padding: 5px var(--spacing-6);
+}
+
+.chip {
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-round);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
   font-weight: 700;
-  margin: 0;
-  text-align: center;
+  min-height: 30px;
+  padding: var(--spacing-2xs) var(--spacing-md);
+
+  &-is-active {
+    background: var(--action);
+    color: var(--action-foreground);
+  }
 }

@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingWelcomeRouteImport } from './routes/onboarding.welcome'
-import { Route as OnboardingVerifyRouteImport } from './routes/onboarding.verify'
+import { Route as OnboardingVerificationRouteImport } from './routes/onboarding.verification'
 
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
@@ -25,52 +31,77 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingWelcomeRoute = OnboardingWelcomeRouteImport.update({
-  id: '/onboarding/welcome',
-  path: '/onboarding/welcome',
-  getParentRoute: () => rootRouteImport,
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => OnboardingRoute,
 } as any)
-const OnboardingVerifyRoute = OnboardingVerifyRouteImport.update({
-  id: '/onboarding/verify',
-  path: '/onboarding/verify',
-  getParentRoute: () => rootRouteImport,
+const OnboardingVerificationRoute = OnboardingVerificationRouteImport.update({
+  id: '/verification',
+  path: '/verification',
+  getParentRoute: () => OnboardingRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
-  '/onboarding/verify': typeof OnboardingVerifyRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
+  '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
-  '/onboarding/verify': typeof OnboardingVerifyRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
+  '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/home': typeof HomeRoute
-  '/onboarding/verify': typeof OnboardingVerifyRoute
+  '/onboarding': typeof OnboardingRouteWithChildren
+  '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/home' | '/onboarding/verify' | '/onboarding/welcome'
+  fullPaths:
+    | '/'
+    | '/home'
+    | '/onboarding'
+    | '/onboarding/verification'
+    | '/onboarding/welcome'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/home' | '/onboarding/verify' | '/onboarding/welcome'
-  id: '__root__' | '/' | '/home' | '/onboarding/verify' | '/onboarding/welcome'
+  to:
+    | '/'
+    | '/home'
+    | '/onboarding'
+    | '/onboarding/verification'
+    | '/onboarding/welcome'
+  id:
+    | '__root__'
+    | '/'
+    | '/home'
+    | '/onboarding'
+    | '/onboarding/verification'
+    | '/onboarding/welcome'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HomeRoute: typeof HomeRoute
-  OnboardingVerifyRoute: typeof OnboardingVerifyRoute
-  OnboardingWelcomeRoute: typeof OnboardingWelcomeRoute
+  OnboardingRoute: typeof OnboardingRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/home': {
       id: '/home'
       path: '/home'
@@ -87,26 +118,39 @@ declare module '@tanstack/react-router' {
     }
     '/onboarding/welcome': {
       id: '/onboarding/welcome'
-      path: '/onboarding/welcome'
+      path: '/welcome'
       fullPath: '/onboarding/welcome'
       preLoaderRoute: typeof OnboardingWelcomeRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof OnboardingRoute
     }
-    '/onboarding/verify': {
-      id: '/onboarding/verify'
-      path: '/onboarding/verify'
-      fullPath: '/onboarding/verify'
-      preLoaderRoute: typeof OnboardingVerifyRouteImport
-      parentRoute: typeof rootRouteImport
+    '/onboarding/verification': {
+      id: '/onboarding/verification'
+      path: '/verification'
+      fullPath: '/onboarding/verification'
+      preLoaderRoute: typeof OnboardingVerificationRouteImport
+      parentRoute: typeof OnboardingRoute
     }
   }
 }
 
+interface OnboardingRouteChildren {
+  OnboardingVerificationRoute: typeof OnboardingVerificationRoute
+  OnboardingWelcomeRoute: typeof OnboardingWelcomeRoute
+}
+
+const OnboardingRouteChildren: OnboardingRouteChildren = {
+  OnboardingVerificationRoute: OnboardingVerificationRoute,
+  OnboardingWelcomeRoute: OnboardingWelcomeRoute,
+}
+
+const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
+  OnboardingRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HomeRoute: HomeRoute,
-  OnboardingVerifyRoute: OnboardingVerifyRoute,
-  OnboardingWelcomeRoute: OnboardingWelcomeRoute,
+  OnboardingRoute: OnboardingRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

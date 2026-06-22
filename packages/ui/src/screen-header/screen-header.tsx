@@ -1,21 +1,43 @@
-import { joinCss } from '@raiymbek-park/shared'
-import type { ComponentProps, ReactNode } from 'react'
+import type { ComponentProps } from 'react'
+
+import { joinCss, pickCss } from '@raiymbek-park/shared'
+import { useState } from 'react'
+
+import { IconChip } from '../icon-chip/icon-chip'
 import css from './screen-header.module.scss'
 
-export type ScreenHeaderProps = ComponentProps<'header'> & {
-  backAction?: ReactNode
-  title?: ReactNode
-}
+const languages = ['KZ', 'RU', 'EN'] as const
+
+type Language = (typeof languages)[number]
+
+const chipCss = pickCss(css, css.chip)
+
+export type ScreenHeaderProps = ComponentProps<'header'>
 
 export const ScreenHeader = ({
-  backAction,
   className,
-  title,
   ...restProps
-}: ScreenHeaderProps) => (
-  <header className={joinCss(css.screen, className)} {...restProps}>
-    <span className={css.slot}>{backAction}</span>
-    {title && <h1 className={css.title}>{title}</h1>}
-    <span className={css.slot} />
-  </header>
-)
+}: ScreenHeaderProps) => {
+  const [language, setLanguage] = useState<Language>('RU')
+
+  return (
+    <header className={joinCss(css.screen, className)} {...restProps}>
+      <div className={css.logo}>
+        <IconChip glyph='building-2' iconSize={24} size={40} />
+        <span className={css.brand}>Raiymbek Park</span>
+      </div>
+      <div className={css.switcher}>
+        {languages.map(code => (
+          <button
+            key={code}
+            className={chipCss({ isActive: language === code })}
+            type='button'
+            onClick={() => setLanguage(code)}
+          >
+            {code}
+          </button>
+        ))}
+      </div>
+    </header>
+  )
+}

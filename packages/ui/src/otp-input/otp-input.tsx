@@ -1,5 +1,7 @@
-import { pickCss } from '@raiymbek-park/shared'
 import type { ChangeEvent, ComponentProps } from 'react'
+
+import { pickCss } from '@raiymbek-park/shared'
+
 import css from './otp-input.module.scss'
 
 export type OtpInputProps = Omit<ComponentProps<'input'>, 'onChange'> & {

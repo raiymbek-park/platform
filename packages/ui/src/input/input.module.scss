@@ -1,36 +1,37 @@
+@use '../mixins' as *;
+
 .input {
-  align-items: center;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
   display: flex;
-  gap: var(--spacing-sm);
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.label {
+  color: var(--foreground);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+}
+
+.box {
+  @include field-surface;
+
+  align-items: center;
+  display: flex;
+  gap: var(--spacing-12);
   min-height: 55px;
-  padding: 0 var(--spacing-base);
-  transition: border-color 0.15s ease;
+  padding: var(--spacing-12) var(--spacing-base);
 
-  &:focus-within {
-    border-color: var(--action);
+  &-state-error .status {
+    color: var(--danger);
   }
 
-  &:has(:disabled) {
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-
-  &-state-error {
-    border-color: var(--danger);
-    background: color-mix(in srgb, var(--danger) 6%, transparent);
-  }
-
-  &-state-success {
-    border-color: var(--success);
-    background: color-mix(in srgb, var(--success) 6%, transparent);
+  &-state-success .status {
+    color: var(--success);
   }
 }
 
-.icon {
-  color: var(--text-muted);
+.status {
   flex-shrink: 0;
 }
 
@@ -40,11 +41,16 @@
   color: var(--foreground);
   flex: 1;
   font-family: inherit;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-15);
+  font-weight: 500;
   min-width: 0;
   outline: none;
 
   &::placeholder {
     color: var(--text-muted);
+  }
+
+  &:disabled {
+    color: var(--text-secondary);
   }
 }

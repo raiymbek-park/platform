@@ -1,0 +1,35 @@
+@use '../mixins' as *;
+
+.chip {
+  --chip-bg: var(--brand-soft);
+  --chip-fg: var(--brand);
+
+  @include chip(var(--chip-size, 40px), var(--radius-13));
+
+  background: var(--chip-bg);
+  color: var(--chip-fg);
+
+  &-tone-danger {
+    --chip-bg: var(--danger-soft);
+    --chip-fg: var(--danger);
+  }
+
+  &-tone-accent {
+    --chip-bg: var(--accent-soft);
+    --chip-fg: var(--accent);
+  }
+
+  &-tone-info {
+    --chip-bg: var(--info-soft);
+    --chip-fg: var(--info);
+  }
+
+  &-tone-warning {
+    --chip-bg: var(--warning-soft);
+    --chip-fg: var(--warning);
+  }
+
+  &-surface {
+    --chip-bg: var(--surface);
+  }
+}

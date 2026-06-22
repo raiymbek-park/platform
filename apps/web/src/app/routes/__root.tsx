@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query'
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
-
 import type { trpc } from '@/shared/api'
+
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router'
 
 type RouterContext = {
   queryClient: QueryClient

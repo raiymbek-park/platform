@@ -1,0 +1,12 @@
+// Pulls the tRPC error code (e.g. 'BAD_REQUEST', 'TOO_MANY_REQUESTS') out of a
+// thrown client error, or undefined when the shape doesn't match.
+export const trpcErrorCode = (error: unknown): string | undefined => {
+  if (typeof error !== 'object' || error === null || !('data' in error)) {
+    return undefined
+  }
+  const { data } = error
+  if (typeof data !== 'object' || data === null || !('code' in data)) {
+    return undefined
+  }
+  return typeof data.code === 'string' ? data.code : undefined
+}

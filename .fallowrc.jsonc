@@ -3,6 +3,7 @@
   "entry": [
     "apps/web/codecept.conf.ts",
     "apps/web/src/test/**/*.e2e.ts",
-    "apps/web/steiger.config.ts"
+    "apps/web/steiger.config.ts",
+    "apps/web/vitest.stryker.config.ts"
   ]
 }

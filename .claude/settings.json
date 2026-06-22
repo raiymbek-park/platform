@@ -1,7 +1,6 @@
 {
-  "permissions": {
-    "deny": [
-      "mcp__pencil"
-    ]
+  "enabledPlugins": {
+    "context7@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true
   }
 }
