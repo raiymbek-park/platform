@@ -1,9 +1,13 @@
 .screen {
   align-items: center;
+  background: var(--background);
   display: flex;
   justify-content: space-between;
   min-height: 64px;
   padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .logo {

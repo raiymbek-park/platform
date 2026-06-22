@@ -9,11 +9,9 @@ import {
   useLockedPhoneStore,
 } from '@/shared/auth'
 
-import css from './onboarding.module.scss'
-
 const OnboardingLayout = () => (
   <>
-    <ScreenHeader className={css.header} />
+    <ScreenHeader />
     <Outlet />
   </>
 )
