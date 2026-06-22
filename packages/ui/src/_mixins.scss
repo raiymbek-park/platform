@@ -30,7 +30,6 @@
   }
 }
 
-// Centered, non-shrinking square box for an icon chip or a round badge.
 // The caller sets background/color (they carry the semantic meaning); pass
 // `var(--radius-circle)` as the radius for a round badge.
 @mixin chip($size, $radius) {

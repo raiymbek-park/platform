@@ -48,7 +48,6 @@ describe('useLockedPhoneStore', () => {
   test('S17: "onboarding" key does not contain lockedPhone', () => {
     act(() => useLockedPhoneStore.getState().setLockedPhone(PHONE))
 
-    // Clearing the onboarding key must not affect the locked-phone store.
     localStorage.removeItem('onboarding')
     expect(localStorage.getItem('locked-phone')).not.toBeNull()
   })

@@ -42,10 +42,6 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-// ---------------------------------------------------------------------------
-// hasValidAccessToken
-// ---------------------------------------------------------------------------
-
 describe('hasValidAccessToken', () => {
   test('returns false when no tokens are stored', () => {
     expect(hasValidAccessToken()).toBe(false)
@@ -68,10 +64,6 @@ describe('hasValidAccessToken', () => {
     expect(hasValidAccessToken()).toBe(false)
   })
 })
-
-// ---------------------------------------------------------------------------
-// hasValidRefreshToken
-// ---------------------------------------------------------------------------
 
 describe('hasValidRefreshToken', () => {
   test('returns false when no tokens are stored', () => {
@@ -108,10 +100,6 @@ describe('hasValidRefreshToken', () => {
   })
 })
 
-// ---------------------------------------------------------------------------
-// isLocked
-// ---------------------------------------------------------------------------
-
 describe('isLocked', () => {
   test('returns false for null', () => {
     expect(isLocked(null)).toBe(false)
@@ -129,10 +117,6 @@ describe('isLocked', () => {
     expect(isLocked(NOW + 1)).toBe(true)
   })
 })
-
-// ---------------------------------------------------------------------------
-// refreshSession
-// ---------------------------------------------------------------------------
 
 describe('refreshSession', () => {
   test('returns false immediately when no tokens are stored', async () => {
@@ -171,10 +155,6 @@ describe('refreshSession', () => {
     expect(useAuthStore.getState().tokens).toBeNull()
   })
 })
-
-// ---------------------------------------------------------------------------
-// getLockRemaining
-// ---------------------------------------------------------------------------
 
 describe('getLockRemaining', () => {
   test('returns lockedUntil from otp.status', async () => {

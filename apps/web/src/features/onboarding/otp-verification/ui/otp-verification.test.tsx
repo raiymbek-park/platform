@@ -135,7 +135,6 @@ const fillCells = (user: ReturnType<typeof userEvent.setup>, digits: string) =>
       Promise.resolve(),
     )
 
-// Settle the verify mutation inline via its onSuccess/onError callbacks.
 const makeVerifySucceed = (result = { verified: true }) => {
   mockVerifyMutate.mockImplementation(
     (_args: unknown, callbacks: { onSuccess?: (r: unknown) => void }) => {
@@ -370,7 +369,6 @@ test('happy S9 — cells are disabled while register is pending', () => {
 })
 
 test('validation S8 — Resend button appears when timer ends, paste button disappears', () => {
-  // remaining = 0 when resendAvailableAt is in the past
   mockOtpStatus.data = { resendAvailableAt: Date.now() - 1000 }
   renderVerify()
 
@@ -398,7 +396,6 @@ test('error S1 — wrong code (server rejection) locks cells and keeps the enter
   expect(screen.getByText(/Неверный код/)).toBeInTheDocument()
   expect(mockNavigate).not.toHaveBeenCalled()
 
-  // Cells keep the digits and lock (the spent code cannot be retyped).
   expectCellValues('9999')
   expectCellsDisabled()
 })
@@ -410,7 +407,6 @@ test('error S2 — spent attempt keeps cells locked until a fresh code is reques
   await fillCells(user, '1111')
   await waitFor(() => expect(mockVerifyMutate).toHaveBeenCalledTimes(1))
 
-  // Refetched status reports the spent attempt — this is what keeps cells locked.
   mockOtpStatus.data = {
     resendAvailableAt: Date.now() + 60_000,
     verifyUsed: true,
@@ -420,7 +416,6 @@ test('error S2 — spent attempt keeps cells locked until a fresh code is reques
   expect(screen.getByText(/Неверный код/)).toBeInTheDocument()
   expectCellsDisabled()
 
-  // Resend button is not visible (wait hasn't ended)
   expect(
     screen.queryByRole('button', { name: /Отправить повторно/ }),
   ).not.toBeInTheDocument()
@@ -488,12 +483,10 @@ test('error S5 — after network failure, re-completing the cells triggers verif
   makeRegisterSucceed()
   const { user } = renderVerify()
 
-  // First fill — triggers verify (fails with network error, cells clear)
   await fillCells(user, '5555')
   await waitFor(() => expect(mockVerifyMutate).toHaveBeenCalledTimes(1))
   await waitFor(() => expect(cellAt(0)).toHaveValue(''))
 
-  // User re-enters all 4 digits — verify fires again
   await fillCells(user, '5555')
   await waitFor(() => expect(mockVerifyMutate).toHaveBeenCalledTimes(2))
 })
@@ -563,10 +556,7 @@ test('error S4 — FORBIDDEN (locked) shows network error and clears the cells',
     expect(screen.getByText(/Не удалось проверить код/)).toBeInTheDocument(),
   )
 
-  // Not a wrong-code rejection: "Неверный код" is not shown
   expect(screen.queryByText(/Неверный код/)).not.toBeInTheDocument()
-
-  // Cells clear (treated as network error, not a spent attempt)
   expectCellsEmpty()
 })
 

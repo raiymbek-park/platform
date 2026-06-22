@@ -1,7 +1,5 @@
 import { z } from 'zod'
 
-// ── Shared domain rules (single source of truth, client + server) ──
-
 export const blockIds = [1, 2, 3, 4] as const
 
 export type BlockId = (typeof blockIds)[number]
@@ -49,8 +47,6 @@ export const phoneDigits = (value: string) => {
 
 export const normalizePhone = (value: string) => `+7${phoneDigits(value)}`
 
-// ── Reusable field rules (shared by the client form and the server) ──
-
 export const nameSchema = z
   .string()
   .refine(
@@ -67,8 +63,6 @@ export const phoneSchema = z
   .refine(v => phoneDigits(v).length === 10, 'Введите 10 цифр номера')
 
 export const APARTMENT_RANGE_MESSAGE = 'Квартира вне диапазона выбранного блока'
-
-// ── tRPC input schemas (wire/domain shape) ──
 
 // Server inputs additionally normalize the phone to +7XXXXXXXXXX.
 const phone = phoneSchema.transform(normalizePhone)

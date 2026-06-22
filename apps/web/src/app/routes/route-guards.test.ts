@@ -20,8 +20,6 @@ import type { QueryClient } from '@tanstack/react-query'
 import { act } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
-// ─── network boundary mocks ──────────────────────────────────────────────────
-
 // vi.hoisted creates the fn before vi.mock's factory is hoisted to the top.
 const { mockRefreshMutate } = vi.hoisted(() => ({
   mockRefreshMutate: vi.fn(),
@@ -42,7 +40,6 @@ import { Route as OnboardingLockedRoute } from './onboarding.locked'
 
 const NOW = 1_700_000_000_000
 
-// A token pair where both access and refresh are valid.
 const validPair = {
   accessToken: 'access',
   accessTokenExpiresAt: NOW + 3_600_000,
@@ -50,7 +47,6 @@ const validPair = {
   refreshTokenExpiresAt: NOW + 86_400_000,
 }
 
-// A token pair where access is expired but refresh is still valid.
 const expiredAccessPair = {
   accessToken: 'stale-access',
   accessTokenExpiresAt: NOW - 1,
@@ -58,7 +54,6 @@ const expiredAccessPair = {
   refreshTokenExpiresAt: NOW + 86_400_000,
 }
 
-// A fresh pair returned by a successful auth.refresh call.
 const freshPair = {
   accessToken: 'fresh-access',
   accessTokenExpiresAt: NOW + 7_200_000,
@@ -68,7 +63,6 @@ const freshPair = {
 
 const PHONE = '+77071234567'
 
-// Build a mock router context with a custom fetchQuery implementation.
 const makeContext = (fetchQuery: (opts: unknown) => Promise<unknown>) => ({
   queryClient: { fetchQuery } as unknown as QueryClient,
   trpc: {
@@ -90,7 +84,6 @@ const isRedirectError = (err: unknown): err is RedirectError =>
   'options' in err &&
   typeof (err as RedirectError).options?.to === 'string'
 
-// Extracts the redirect destination from a thrown redirect error.
 const redirectTo = async (fn: () => Promise<unknown>): Promise<string> => {
   try {
     await fn()
@@ -103,7 +96,6 @@ const redirectTo = async (fn: () => Promise<unknown>): Promise<string> => {
   }
 }
 
-// Returns true when the guard resolves without throwing a redirect.
 // Re-throws unexpected non-redirect errors so they surface as real failures.
 const guardPasses = async (fn: () => Promise<unknown>): Promise<boolean> => {
   try {
@@ -155,18 +147,12 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-// ─── / → /onboarding (index route) ───────────────────────────────────────────
-// The root index guard always redirects to /onboarding — tested separately as
-// it has no async logic or store reads.
-
 describe('/ root guard', () => {
   test('always redirects to /onboarding', async () => {
     const dest = await redirectTo(() => runGuard(RootRoute, undefined))
     expect(dest).toBe('/onboarding')
   })
 })
-
-// ─── /onboarding index guard (Startup Restore Priority) ──────────────────────
 
 describe('/onboarding index guard — happy S6, S18: valid session → /home', () => {
   test('S6/S18: valid refresh token + successful refresh → redirects to /home', async () => {
@@ -179,7 +165,6 @@ describe('/onboarding index guard — happy S6, S18: valid session → /home', (
     )
 
     expect(dest).toBe('/home')
-    // Session rotated: fresh tokens stored
     expect(useAuthStore.getState().tokens).toEqual(freshPair)
   })
 
@@ -187,7 +172,6 @@ describe('/onboarding index guard — happy S6, S18: valid session → /home', (
     act(() => useAuthStore.getState().setTokens(expiredAccessPair))
     mockRefreshMutate.mockRejectedValue(new Error('UNAUTHORIZED'))
 
-    // No pending phone → goes straight to welcome
     const ctx = makeContext(() => Promise.resolve({ lockedUntil: null }))
     const dest = await redirectTo(() =>
       runGuard(OnboardingIndexRoute, { context: ctx }),
@@ -272,7 +256,6 @@ describe('/onboarding index guard — S17: lock survives clearing the onboarding
   test('S17: lockedPhone persisted, draft cleared → still routes to /onboarding/locked', async () => {
     // Simulate: lock was active, phone was pinned, then onboarding draft wiped.
     act(() => useLockedPhoneStore.getState().setLockedPhone(PHONE))
-    // draft.phone is '' (reset in beforeEach)
 
     const ctx = makeContext(() =>
       Promise.resolve({
@@ -297,13 +280,10 @@ describe('/onboarding index guard — S17: lock survives clearing the onboarding
         resendAvailableAt: NOW - 1,
       }),
     )
-    // Lock elapsed → goes to welcome, and the stale pin is cleared.
     await redirectTo(() => runGuard(OnboardingIndexRoute, { context: ctx }))
     expect(useLockedPhoneStore.getState().lockedPhone).toBeNull()
   })
 })
-
-// ─── /home guard ─────────────────────────────────────────────────────────────
 
 describe('/home guard', () => {
   test('S6/S18: valid access token → guard passes (no redirect)', async () => {
@@ -351,13 +331,11 @@ describe('/home guard', () => {
   })
 })
 
-// ─── /onboarding layout hard-lock guard ──────────────────────────────────────
-
 describe('/onboarding layout hard-lock guard', () => {
   const makeLocation = (pathname: string) => ({ pathname }) as never
 
   test('S18: valid session → guard passes immediately (session beats lock)', async () => {
-    act(() => useAuthStore.getState().setTokens(expiredAccessPair)) // refresh valid
+    act(() => useAuthStore.getState().setTokens(expiredAccessPair))
     const fetchQuery = vi.fn()
     const ctx = makeContext(fetchQuery)
 
@@ -401,7 +379,6 @@ describe('/onboarding layout hard-lock guard', () => {
 
   test('S17: lockedPhone persisted, draft empty, active lock → redirects to /onboarding/locked', async () => {
     act(() => useLockedPhoneStore.getState().setLockedPhone(PHONE))
-    // draft.phone is '' (cleared in beforeEach)
     const ctx = makeContext(() =>
       Promise.resolve({ lockedUntil: NOW + 86_400_000 }),
     )
@@ -442,11 +419,9 @@ describe('/onboarding layout hard-lock guard', () => {
   })
 })
 
-// ─── /onboarding/locked guard ────────────────────────────────────────────────
-
 describe('/onboarding/locked guard', () => {
   test('S18: valid session → redirects to /home (session beats lock)', async () => {
-    act(() => useAuthStore.getState().setTokens(expiredAccessPair)) // refresh valid
+    act(() => useAuthStore.getState().setTokens(expiredAccessPair))
     const ctx = makeContext(() =>
       Promise.resolve({ lockedUntil: NOW + 86_400_000 }),
     )
@@ -491,7 +466,6 @@ describe('/onboarding/locked guard', () => {
   })
 
   test('S5/S16: lock elapsed uses lockedPhone when draft was cleared', async () => {
-    // draft.phone is '' but lockedPhone is set — guard still resolves the phone
     act(() => useLockedPhoneStore.getState().setLockedPhone(PHONE))
     const ctx = makeContext(() => Promise.resolve({ lockedUntil: null }))
 
@@ -503,7 +477,6 @@ describe('/onboarding/locked guard', () => {
 
   test('S17: lockedPhone persisted + active lock → guard passes (lock holds)', async () => {
     act(() => useLockedPhoneStore.getState().setLockedPhone(PHONE))
-    // draft cleared (beforeEach)
     const ctx = makeContext(() =>
       Promise.resolve({ lockedUntil: NOW + 86_400_000 }),
     )
