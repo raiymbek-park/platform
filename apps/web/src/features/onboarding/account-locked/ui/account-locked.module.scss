@@ -3,13 +3,11 @@
   flex: 1;
   flex-direction: column;
   gap: var(--spacing-lg);
-  padding: var(--spacing-base) var(--spacing-20) var(--spacing-lg);
 }
 
 .hero {
   border-radius: var(--radius-24);
   display: block;
-  height: 367px;
   object-fit: cover;
   width: 100%;
 }

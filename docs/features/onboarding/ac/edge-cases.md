@@ -125,3 +125,11 @@
   Then:  it counts down from the remaining time supplied by the server — not from a fixed
          24-hour value — so relaunching the app mid-lockout shows the correct remaining time,
          not a reset countdown
+
+## Scenario 16: Opening the lockout screen with no active lock returns to the code screen
+
+  Given: the lockout screen is opened but, once the server lock state has loaded, no time
+         remains (the lock has already elapsed or no lock is in effect)
+  When:  the lock state finishes loading
+  Then:  the app moves to the code screen — the lockout screen is never shown with a zeroed
+         countdown

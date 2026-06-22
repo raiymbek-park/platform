@@ -34,10 +34,10 @@ export const AccountLocked = () => {
   const { remaining, hms } = useLockCountdown(lockedUntil)
 
   useEffect(() => {
-    if (lockedUntil !== null && remaining === 0) {
+    if (!status.isLoading && remaining === 0) {
       navigate({ to: '/onboarding/verification' })
     }
-  }, [lockedUntil, navigate, remaining])
+  }, [navigate, remaining, status.isLoading])
 
   return (
     <section className={css.content}>
