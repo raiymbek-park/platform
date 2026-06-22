@@ -6,7 +6,7 @@
   When:  they enter a valid name, a valid phone, pick a block, enter an apartment number within
          that block's range, and pick a role
   Then:  every field is valid and "Next" becomes enabled
-         the header scrolls with the content while "Next" stays fixed at the bottom
+         the header stays pinned at the top while the content — "Next" included — scrolls beneath it
 
 ## Scenario 2: Submitting the form requests a code and opens the code screen
 
