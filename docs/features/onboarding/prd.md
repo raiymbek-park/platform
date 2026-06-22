@@ -1,224 +1,180 @@
-# Onboarding — Resident Registration + WhatsApp OTP + Session
+# Onboarding — Resident Registration, WhatsApp Code, and Session
 
 ## Problem and Goal
 
-A resident's first entry into the "Raiymbek Park" app. Before using the app, a person
-introduces themselves once (name, block, apartment, role) and confirms ownership of their
-phone number with a 4-digit code from WhatsApp. On success they get a session (token) that
-lasts a month and is refreshed on every app launch, so a returning user lands straight on the
-home screen.
+A resident's first entry into the "Raiymbek Park" app. Before using the app, a person introduces
+themselves once (name, block, apartment, role) and proves they own their phone number with a 4-digit
+code sent over WhatsApp. On success they get a session that lasts a month and is renewed each time the
+app launches, so a returning resident lands straight on the home screen.
 
-The goal is to carry a new resident from the form to a confirmed number and an active session
-in a single pass, with protection against code brute-forcing (a growing resend timer and a
-24-hour lockout).
+The goal is to carry a new resident from the form to a confirmed number and an active session in a
+single pass, with protection against code guessing (a growing resend wait and a 24-hour lockout).
 
 ## Users
 
-New residents — owners and tenants of apartments in the complex — opening the app on mobile for
-the first time. One user equals one phone number. A returning user with a valid session skips
+New residents — owners and tenants of apartments in the complex — opening the app on a phone for the
+first time. One person equals one phone number. A returning resident with a valid session skips
 onboarding entirely.
 
 ## Scope
 
 ### In scope
 
-- **`/onboarding/welcome` screen** — the registration form. Every field is required; the "Next"
-  button is enabled only when the whole form is valid (built on **TanStack Form**). The header is
-  sticky at the top, "Next" is sticky/fixed at the bottom.
-- **`/onboarding/verify` screen** — 4-digit code entry: focus moves between cells automatically,
-  the code is checked automatically once the cells are full, the resend timer comes from the
-  server, codes can be pasted from the clipboard, and a resend button appears when the timer runs
-  out.
-- **`/onboarding/locked` screen** — the 24-hour lockout after resends are exhausted. Per the
-  design (`design/home-screen.pen`, "Account Locked" frame): an illustration, the "Access blocked"
-  heading, the "You've used up your code attempts. You can try again in 24 hours." subheading, and
-  a large `HH:MM:SS` countdown. **There are no controls** (no button, no back) — the screen can't
-  be left; when the countdown reaches zero the app moves to `/onboarding/verify` with a "Send code"
-  CTA.
-- **`/onboarding` entry point** — an index guard that routes by state (session / draft / lockout).
-- **`/home` screen** — the existing placeholder, behind a guard (a session is required). Its
+- **Welcome screen** (`/onboarding/welcome`) — the registration form. Every field is required, and
+  "Next" is enabled only once the whole form is valid. The header scrolls with the content while
+  "Next" stays fixed at the bottom. Coming back to this screen (e.g. to fix a phone typo after
+  reaching the code screen) restores everything already entered — name, phone, block, apartment, and
+  role are pre-filled, not lost.
+- **Code screen** (`/onboarding/verify`) — entry of the 4-digit code: focus moves between cells on
+  its own, the code is checked the moment all four digits are in, the resend timer is shown, and the
+  code can be pasted from the clipboard. After a wrong code the cells are locked — the spent attempt
+  can't be retyped — and stay locked until the resident requests a fresh code, which only becomes
+  possible once the resend timer runs out.
+- **Lockout screen** (`/onboarding/locked`) — the 24-hour lockout shown once a resident exhausts
+  their code requests: an illustration, an "Access blocked" heading, a short "you've used up your
+  attempts, try again in 24 hours" message, and a large `HH:MM:SS` countdown. It has no controls and
+  can't be left; when the countdown reaches zero the app returns to the code screen with a "Send
+  code" action.
+- **Entry point** (`/onboarding`) — on launch, sends the resident to the right screen based on their
+  state (active session, onboarding in progress, or lockout).
+- **Home screen** (`/home`) — the existing placeholder, reachable only with a valid session. Its
   content is out of scope.
-- **Session:** an access token (1 h) plus a refresh token (30 days). On app launch the token is
-  refreshed through `auth.refresh`. An invalid or expired refresh token sends the user to
-  `/onboarding/welcome`.
-- **Mock tRPC procedures** (nothing is actually sent over WhatsApp): `otp.send`, `otp.status`,
-  `otp.verify`, `resident.register`, `auth.refresh`. The correct code is `1234`.
+- **Session** — sign-in lasts 30 days and is renewed on each launch; the working access window
+  refreshes silently while the app is in use. An expired or invalid session returns the resident to
+  the welcome screen.
+
+Everything is mocked end to end: no real WhatsApp message is sent, the resident isn't really
+persisted, and the only code that works is **1234**.
 
 ### Out of scope
 
-- Real code delivery over WhatsApp (mocked; the correct code is hard-wired to `1234`).
-- Real persistence of the resident (`resident.register` is mocked — it returns success and tokens).
-- Home screen content (the existing placeholder only).
+- Real code delivery over WhatsApp (mocked; the only valid code is 1234).
+- Real persistence of the resident.
+- Home screen content (placeholder only).
 - Country codes other than `+7` (mask `+7 (___) ___-__-__`, exactly 10 digits).
-- Logout and changing the phone number after sign-in.
+- Signing out and changing the phone number after sign-in.
 - Editing registration data after confirmation.
-- Localization (the language switcher in the DS header is hidden; Russian only).
-- Keyboard accessibility (mobile-only, per project rules).
+- Localization (Russian only; the language switcher is hidden).
+- Keyboard accessibility (mobile-only).
 
 ## User Journey
 
-The user opens the app → the `/onboarding` index guard checks state. With a valid refresh token,
-the app refreshes the session and opens `/home` right away. Otherwise the onboarding form appears.
-The user fills in name and phone, picks a block and role, enters an apartment number → "Next"
-becomes enabled → they tap it → the server "sends" the code (mock) and opens a session keyed by
-the number → the app moves to `/onboarding/verify`. There the user sees their number and four
-cells, and types the code (the cells advance on their own); once four digits are in, the code is
-checked automatically. On `1234` the resident is registered (mock), a token pair is issued, and the
-app moves to `/home`. On a wrong code the single attempt for that code is spent; a new attempt needs
-a fresh resend. The resend timer lives on the server per number and does not reset when the app is
-closed. Once resends are exhausted the number is locked for a day (`/onboarding/locked`); when the
-lockout ends the user returns to `/onboarding/verify` and can request a fresh code.
+The resident opens the app. With a valid session they go straight to home. Otherwise the
+registration form appears. They fill in name and phone, pick a block and role, and enter an apartment
+number; "Next" enables once everything is valid. Tapping it requests a code for their number and
+opens the code screen. There they see their number and four cells and type the code — the cells
+advance on their own, and once four digits are in the code is checked automatically. With the correct
+code the resident is registered, a session starts, and the app moves to home. A wrong code spends the
+one attempt that code allows; getting another attempt requires a fresh code. The resend wait runs on
+the server per number and keeps counting even if the app is closed. Once a resident exhausts their
+code requests the number is locked for a day; when the lockout ends they return to the code screen and
+can request a fresh code.
 
-## Verification, Resend, and Lockout Behavior (exact parameters)
+## Verification, Resend, and Lockout Rules
 
-**Terms:**
+The exact numbers below are fixed business rules.
 
-- *Sending a code* — `otp.send`: the server generates a fresh 4-digit code for the number (mock,
-  never actually delivered). The first send happens on "Next" (or "Send code" after a lockout);
-  every send after that is a *resend*.
-- *Verification attempt* — `otp.verify`. Each issued code allows **exactly one** attempt. Once it's
-  used (whatever the result), no further check against that code is allowed until a new send.
-- *Phone* is normalized to E.164 (`+7XXXXXXXXXX`) and serves as the key for the server-side session.
+- **Sending a code.** The first code is requested by tapping "Next" (or "Send code" after a lockout);
+  any further code for the same number is a *resend*.
+- **One attempt per code.** Each code allows exactly one verification attempt. Once it's used — right
+  or wrong — that code is spent, and no further check against it is allowed until a new code is sent.
+  This is enforced on the server, so it holds even against a direct request outside the app, not just
+  the UI; the app reflects it by locking the cells after an attempt until a fresh code is sent.
+- **The phone number is the identity** for the whole flow.
 
-**Cooldown schedule (server-side, per number).** The cooldown is the wait until the next resend
-becomes available; it counts down from `resendAvailableAt`, which the server returns:
+**Resend wait (per number).** After each send, a wait counts down before the next resend is allowed:
 
-| Send | sendCount | Cooldown until next resend |
-|---|---|---|
-| Initial ("Next" / "Send code") | 1 | 60 s |
-| Resend 1 | 2 | 120 s |
-| Resend 2 | 3 | 300 s |
-| Resend 3 | 4 | 600 s |
-| Request for a 5th send (4th resend) | — | **number locked for 86 400 s (24 h)** |
+| Code request | Wait until next resend |
+|---|---|
+| Initial ("Next" / "Send code") | 60 s |
+| 1st resend | 120 s |
+| 2nd resend | 300 s |
+| 3rd resend | 600 s |
+| Any request beyond that | **number locked for 24 h** |
 
-- While a cooldown is running: "Didn't get the code? Resend in M:SS" is shown, along with a
-  **"Paste code from clipboard"** button (`ButtonAction`).
-- When the cooldown hits 0: "Paste code from clipboard" **disappears** and
-  `<Button variant="secondary">Resend</Button>` appears.
-- "Paste code from clipboard" is **disabled** while the clipboard doesn't hold a string of exactly
-  4 digits (`^\d{4}$`); when it does, the button is enabled, and tapping it fills the cells and
-  triggers the automatic check.
-- A number gets **4 sends total** — the initial send plus 3 resends. Requesting a 5th send returns a
-  lockout: the number is locked for 86 400 s (24 h), verification and resend are disabled, and the
-  app moves to `/onboarding/locked` with a countdown to unlock.
-- When the lockout ends the app moves to `/onboarding/verify`: the cells are empty, the send counter
-  is reset (`sendCount = 0`), and the CTA is **"Send code"** (which starts a fresh send with a 60 s
-  cooldown).
+- While the wait runs: a "Didn't get the code? Resend in M:SS" line is shown, together with a
+  **"Paste code from clipboard"** action.
+- When the wait reaches zero: the paste action is replaced by a **"Resend"** button.
+- **Paste from clipboard** reads the clipboard and pulls the digits out of it; it is enabled only when
+  exactly 4 digits are found (so "Your code is 1234" works) and stays disabled for any other digit
+  count — none, fewer, or more. When enabled, tapping it fills the cells and triggers the automatic
+  check. The clipboard is re-read whenever the app regains focus, so copying the code elsewhere and
+  coming back enables the action without any manual step.
+- A number gets **4 code requests total** — the initial one plus 3 resends. A 5th request locks the
+  number for 24 hours: verification and resend are disabled, and the lockout screen takes over with a
+  countdown to unlock.
+- When the lockout ends, the app returns to the code screen with empty cells, the request count
+  reset, and a "Send code" action that starts a fresh send (60 s wait).
 
-**Timer source:** `resendAvailableAt` and `lockedUntil` come from the server for the specific
-number. The client doesn't store the timer — it only displays the time left from the server. When
-the app is closed and reopened, the client restores the screen (`verify` / `locked`) from the saved
-`pendingPhone` and pulls the current state through `otp.status` — the timer keeps running, it
-doesn't reset.
+**Timer source.** The resend wait and the lockout countdown are server truth, per number. The app
+only displays the time left — it never keeps its own copy. After a relaunch the app restores the
+right screen (code or lockout) and shows the live remaining time; the timer keeps running, it doesn't
+reset.
 
-## Session and Token Refresh
+## Session and Renewal
 
-- After a successful check, `resident.register` returns a pair: `accessToken` (lives 3600 s / 1 h)
-  and `refreshToken` (lives 2 592 000 s / 30 days), plus their `expiresAt` and a `resident` object.
-- On app launch the index guard calls `auth.refresh({ refreshToken })`:
-  - valid and not expired → it returns a **new pair** of tokens (rotation) and the app opens
-    `/home`;
-  - expired or invalid → the tokens are cleared and the app opens `/onboarding/welcome`.
-- `/home` is protected: it's reachable only with a valid access token. If the access token expires
-  mid-session, a silent `auth.refresh` runs; if the refresh fails → `/onboarding/welcome`.
-- Tokens live in a dedicated persistent Zustand store (`authStore`, localStorage):
-  `{ accessToken, refreshToken, accessTokenExpiresAt, refreshTokenExpiresAt, resident }`.
-  On web that's localStorage; a later Tauri build will use secure storage (out of scope this
-  iteration).
+- After a correct code the resident is registered and a session begins. The session is valid for
+  **30 days** and renews on each launch; within a session, access refreshes silently about every hour
+  so the resident never notices.
+- On launch the app renews the session: still valid → the resident goes to home; expired or invalid →
+  the session is cleared and the resident goes to the welcome screen.
+- Home is reachable only with a valid session. If access lapses mid-session the app renews silently;
+  if renewal fails, it returns to the welcome screen.
+- Renewal is single-use: once a session has been renewed, the previous renewal can no longer be used.
 
-## Routes and Startup Restore Priority
+## Startup Restore Priority
 
-```
-/onboarding              -> index guard (no UI), decides where to route
-/onboarding/welcome      -> registration form
-/onboarding/verify       -> OTP entry
-/onboarding/locked       -> 24 h lockout
-/home                    -> placeholder (guarded: session required)
-```
+On launch the app decides where to land, in this order:
 
-Index-guard priority on startup:
+1. A valid session → renew it → **home**.
+2. Otherwise, an onboarding in progress for a number → check that number's state:
+   - locked → **lockout screen**;
+   - an active code or a running wait → **code screen**;
+   - otherwise → **welcome screen**.
+3. Otherwise → **welcome screen**.
 
-1. A `refreshToken` exists and isn't expired → `auth.refresh` → success → `/home`.
-2. Otherwise a `pendingPhone` exists → `otp.status(phone)`:
-   - `lockedUntil` in the future → `/onboarding/locked`;
-   - an active code session (an unspent code / a running cooldown) → `/onboarding/verify`;
-   - otherwise → `/onboarding/welcome`.
-3. Otherwise → `/onboarding/welcome`.
+### The lockout can't be escaped
 
-### Hard navigation lock during a lockout
-
-While `lockedUntil` for `pendingPhone` is in the future, the lockout takes priority over everything
-else. A global guard forces `/onboarding/locked` on **any** navigation attempt:
-
-- typing any URL directly (`/onboarding/welcome`, `/onboarding/verify`, `/home`, `/`) → redirect to
-  `/onboarding/locked`;
-- reloading the app → `/onboarding/locked` again;
-- a system back swipe / the browser's back button → the user stays on `/onboarding/locked` (the
-  lockout screen can't be left).
-
-The lock state is server truth (`otp.status` → `lockedUntil`); the client can't get around it by
-clearing localStorage for the same number. The guard lifts only once `lockedUntil` passes — at which
-point the app moves to `/onboarding/verify` (see the schedule above). Exception: a valid refresh
-token takes priority (the lockout only affects users who haven't signed in through onboarding).
+While a number is locked, the lockout takes priority over everything else. Any attempt to go
+elsewhere — typing a URL directly, reloading, or using the system/browser back gesture — returns the
+resident to the lockout screen. The lock is server truth and can't be bypassed by clearing the app's
+local data for the same number. It lifts only when the countdown ends, at which point the app moves
+to the code screen. The one exception: a valid session takes priority — the lockout only affects
+residents who haven't signed in.
 
 ## Success Metrics
 
-- The funnel is instrumented: `form submitted → code issued → code confirmed → resident registered
-  → session active` — both throughput and drop-off points are measurable.
-- On the mock: 100% of forms with the correct code `1234` reach `/home`; a returning user with a
-  valid refresh token reaches `/home` without onboarding.
+- The funnel is measurable end to end: form submitted → code issued → code confirmed → resident
+  registered → session active, with both throughput and drop-off visible.
+- On the mock: 100% of forms completed with the correct code (1234) reach home; a returning resident
+  with a valid session reaches home without onboarding.
 - Target onboarding completion ≥ 80% after the real WhatsApp integration.
 
-## Non-functional Requirements
+## Experience Requirements
 
-- **Form (welcome):** state and validation run on **TanStack Form**; the "Next" button's enabled
-  state derives from form validity.
-- **Server state:** every API call goes through **TanStack Query**; keys come from the `otpKeys` and
-  `authKeys` factories. Mutations: `otp.send`, `otp.verify`, `resident.register`, `auth.refresh`;
-  query: `otp.status`.
-- **UI / flow state:** **Zustand** (`persist`, localStorage). `onboardingStore` holds the
-  registration draft (`name, phone, block, apartment, role`) and `pendingPhone`. `authStore` holds
-  the tokens. The timer isn't duplicated in the store — it's derived from the server's
-  `resendAvailableAt` / `lockedUntil`.
-- **State boundaries:** server truth → Query, navigation → Router, UI / flow → Zustand
-  (per `.claude/rules/state-boundaries.md`).
-- **Layout:** single column, `max-width: 480px`, `100svh`; header sticky at the top, "Next"
-  sticky/fixed at the bottom (welcome); semantic tags (`<form>`, `<header>`, `<footer>`,
-  `<fieldset>` for the block and role choices).
-- **Clipboard:** 4-digit code detection via the Clipboard API (`navigator.clipboard.readText`),
-  polled on focus / screen visibility change.
-- **Mock server:** per-number session state lives in the api process memory
-  (`{ code, sendCount, resendAvailableAt, verifyUsed, lockedUntil, verified, refreshToken }`). That's
-  enough for the mock; a real backend will persist it in a database. Tokens are opaque strings,
-  validated server-side by their lifetime.
+- **Mobile-first, single column**, full-viewport height. The header scrolls with the page; the
+  primary action stays fixed at the bottom — "Next" on welcome, the action buttons on the code screen.
+- **Clipboard detection ignores surrounding text:** it keeps only the digits and accepts the result
+  only when it's exactly 4 digits, so a code embedded in a message is still detected while clipboard
+  content without a 4-digit code leaves the paste action disabled. If the clipboard can't be read or
+  access is denied, the paste action simply stays disabled — no error is shown.
+- **Russian only** this iteration.
 
 ## Field Validation (welcome)
 
-- **Name:** non-empty after trim, 2–60 characters.
+- **Name:** non-empty after trimming, 2–60 characters.
 - **Phone:** `+7` plus exactly 10 digits (mask `+7 (___) ___-__-__`); valid once all 10 digits are
-  present; normalized to `+7XXXXXXXXXX`.
-- **Block:** exactly one value from 1 to 4.
+  present.
+- **Block:** exactly one of 1–4.
 - **Apartment:** digits only, within the selected block's range:
-  - block 1 → 1 to 70
-  - block 2 → 71 to 139
-  - block 3 → 1 to 63
-  - block 4 → 64 to 126
-- **Role:** `owner` | `tenant` (exactly one).
-- **OTP code:** 4 cells, each taking a single digit (`0–9`); the correct code is `1234`.
-
-## Dependencies
-
-- Add the `@tanstack/react-form` package (not installed yet).
-- New mock tRPC procedures in `apps/api/src/router.ts`: `otp.send`, `otp.status`, `otp.verify`,
-  `resident.register`, `auth.refresh`.
-- New design-system components from `design/*.pen` (the code currently has only `Button` and
-  `Icon`): a text `Input` (with icon), `OtpInput` (a cell), `SectionHeader`, `WelcomeCard`,
-  `BlockCard` (selectable), `OptionRow` (selectable), `InfoCallout`, `ScreenHeader`, `Divider`; plus
-  a `variant` prop on `Button` (`action` by default | `secondary`).
-- Clipboard API, Zustand `persist`.
+  - block 1 → 1–70
+  - block 2 → 71–139
+  - block 3 → 1–63
+  - block 4 → 64–126
+- **Role:** owner or tenant (exactly one).
+- **Code:** 4 cells, one digit (`0–9`) each; the only correct code is 1234.
 
 ## Open Questions
 
-None — every threshold, format, and timing is fixed above. Exact message copy (including the lockout
-screen text and the wrong-code error) comes from the `design/home-screen.pen` design during layout —
-an implementation detail, not a blocker.
+None — every threshold, format, and timing is fixed above. Exact wording (the lockout copy and the
+wrong-code message) comes from the design during layout — an implementation detail, not a blocker.
