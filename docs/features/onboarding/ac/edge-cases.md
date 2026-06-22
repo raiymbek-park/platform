@@ -25,7 +25,10 @@
          and the last wait is running
   When:  the wait expires and the user requests another code
   Then:  the number is locked for 24 hours
-         the app moves to the lockout screen with a countdown to unlock
+
+  Given: the number was just locked by a 5th code request
+  When:  the 5th request completes
+  Then:  the app moves to the lockout screen
 
 ## Scenario 3: The lockout can't be escaped — direct URL and reload
 
@@ -46,8 +49,14 @@
   Given: the user is on the lockout screen and the countdown is running
   When:  the lockout time passes (the countdown reaches 0)
   Then:  the app moves to the code screen
-         the cells are empty, the code-request count is reset, and one attempt is available
-         the action is "Send code" (which starts a fresh send with a 60 s wait)
+
+  Given: the app has just moved to the code screen after the lockout expired
+  When:  the code screen loads
+  Then:  the cells are empty and one verification attempt is available
+
+  Given: the app has just moved to the code screen after the lockout expired
+  When:  the code screen loads
+  Then:  the primary action shown is "Send code"
 
 ## Scenario 6: Relaunch during a wait restores the code screen
 
@@ -89,3 +98,30 @@
   When:  the clipboard cannot be read or the user has denied clipboard access
   Then:  the "Paste code from clipboard" action stays disabled
          no error is surfaced to the user — the action simply stays disabled
+
+## Scenario 12: Lockout screen shows the required content on arrival
+
+  Given: the app has just navigated to the lockout screen after the number was locked
+  When:  the screen renders
+  Then:  an illustration, an "Access blocked" heading, and a subheading about used-up attempts
+         are all visible
+
+## Scenario 13: Lockout countdown is shown in HH:MM:SS format
+
+  Given: the user is on the lockout screen and the lockout has time remaining
+  When:  the countdown is displayed
+  Then:  the remaining time is shown in HH:MM:SS format (e.g. "23:59:42")
+
+## Scenario 14: Lockout screen has no controls
+
+  Given: the user is on the lockout screen and the lockout is in effect
+  When:  the screen is visible
+  Then:  no button, no resend action, and no back control are present on the screen
+
+## Scenario 15: Lockout countdown derives from server-provided expiry time
+
+  Given: the user arrives on the lockout screen (whether by fresh navigation or relaunch)
+  When:  the countdown starts
+  Then:  it counts down from the remaining time supplied by the server — not from a fixed
+         24-hour value — so relaunching the app mid-lockout shows the correct remaining time,
+         not a reset countdown
