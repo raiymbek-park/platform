@@ -18,7 +18,6 @@ const OnboardingLayout = () => (
 
 export const Route = createFileRoute('/onboarding')({
   beforeLoad: async ({ context, location }) => {
-    // A valid session beats the lock — let the index/home guards route to /home.
     if (hasValidRefreshToken()) return
     // The locked screen is exempt, otherwise the redirect would loop on itself.
     if (location.pathname === '/onboarding/locked') return
@@ -38,7 +37,6 @@ export const Route = createFileRoute('/onboarding')({
     if (isLocked(lockedUntil)) {
       throw redirect({ to: '/onboarding/locked' })
     }
-    // The server lock lifted — drop the stale pin so it can't strand the user.
     if (lockedPhone !== null) clearLockedPhone()
   },
   component: OnboardingLayout,

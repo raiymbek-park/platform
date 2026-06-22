@@ -28,7 +28,6 @@ export const Route = createFileRoute('/onboarding/')({
     if (isLocked(status.lockedUntil)) {
       throw redirect({ to: '/onboarding/locked' })
     }
-    // No active lock — drop the stale pin so it can't strand the user.
     if (lockedPhone !== null) clearLockedPhone()
     if (status.hasActiveCode || isCoolingDown(status.resendAvailableAt)) {
       throw redirect({ to: '/onboarding/verification' })

@@ -25,10 +25,10 @@
 .switcher {
   background: var(--surface);
   border-radius: var(--radius-round);
-  box-shadow: 0 2px 6px rgba(24, 28, 33, 0.08);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--foreground) 8%, transparent);
   display: flex;
   gap: var(--spacing-xs);
-  padding: 5px var(--spacing-6);
+  padding: var(--spacing-5) var(--spacing-6);
 }
 
 .chip {

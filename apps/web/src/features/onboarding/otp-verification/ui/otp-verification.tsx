@@ -98,7 +98,7 @@ export const OtpVerification = () => {
   const errorMessage = resolveError()
 
   return (
-    <div className={css.content}>
+    <section className={css.content}>
       <img alt='' className={css.hero} src='/images/whatsapp.png' />
 
       <OtpHeading />
@@ -141,6 +141,6 @@ export const OtpVerification = () => {
           />
         </>
       )}
-    </div>
+    </section>
   )
 }
