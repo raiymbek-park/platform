@@ -109,7 +109,8 @@ When TypeScript complains about types:
 - Avoid `for`/`for...of` loops — prefer chaining array methods (`.map`, `.filter`, `.reduce`, `Object.fromEntries`, etc.)
 - Minimize `if-else` and `switch`; prefer early returns
 - Don't wrap a single-await body in `async () => { await x() }` — return the promise directly with `() => x()`. The `async` keyword only earns its keep when the callback has multiple awaits, conditional control flow, or side-effects between awaits
-- No comments unless explaining workarounds or non-obvious logic
+- Don't add comments. The only justified comment explains a genuine hack or workaround — code forced to do something out of the ordinary by a bug, a third-party quirk, or an environment constraint — where the *why* isn't recoverable from the code itself.
+- A comment explaining ordinary code is a smell: it signals the code isn't clear enough. Rewrite it instead — better names, smaller functions, early returns — until it reads on its own, rather than narrating it with a comment.
 - Use descriptive naming instead of comments
 
 ## Naming Conventions
