@@ -115,6 +115,19 @@ const guardPasses = async (fn: () => Promise<unknown>): Promise<boolean> => {
   }
 }
 
+// `Route.options.beforeLoad` is typed as optional, so narrow it to a callable
+// before invoking. This also funnels the single unavoidable router-arg cast
+// (the synthetic context is a partial of TanStack's real BeforeLoadContext)
+// through one place instead of every call site.
+const runGuard = (
+  route: { options: { beforeLoad?: (arg: never) => unknown } },
+  arg: unknown,
+): Promise<unknown> => {
+  const { beforeLoad } = route.options
+  if (!beforeLoad) throw new Error('route is missing a beforeLoad guard')
+  return Promise.resolve(beforeLoad(arg as never))
+}
+
 const seedDraftPhone = (phone: string) => {
   act(() =>
     useOnboardingStore.getState().setDraft({
@@ -147,14 +160,9 @@ afterEach(() => {
 // it has no async logic or store reads.
 
 describe('/ root guard', () => {
-  test('always redirects to /onboarding', () => {
-    const beforeLoad = RootRoute.options.beforeLoad as () => never
-    expect(() => beforeLoad()).toThrow()
-    try {
-      beforeLoad()
-    } catch (err) {
-      expect(isRedirectError(err) && err.options.to).toBe('/onboarding')
-    }
+  test('always redirects to /onboarding', async () => {
+    const dest = await redirectTo(() => runGuard(RootRoute, undefined))
+    expect(dest).toBe('/onboarding')
   })
 })
 
@@ -167,7 +175,7 @@ describe('/onboarding index guard — happy S6, S18: valid session → /home', (
 
     const ctx = makeContext(() => Promise.resolve({ lockedUntil: null }))
     const dest = await redirectTo(() =>
-      OnboardingIndexRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingIndexRoute, { context: ctx }),
     )
 
     expect(dest).toBe('/home')
@@ -182,7 +190,7 @@ describe('/onboarding index guard — happy S6, S18: valid session → /home', (
     // No pending phone → goes straight to welcome
     const ctx = makeContext(() => Promise.resolve({ lockedUntil: null }))
     const dest = await redirectTo(() =>
-      OnboardingIndexRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingIndexRoute, { context: ctx }),
     )
 
     expect(dest).toBe('/onboarding/welcome')
@@ -194,7 +202,7 @@ describe('/onboarding index guard — cold-start restore from pending phone', ()
   test('S20: no session, no pending phone → /onboarding/welcome', async () => {
     const ctx = makeContext(() => Promise.resolve({ lockedUntil: null }))
     const dest = await redirectTo(() =>
-      OnboardingIndexRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingIndexRoute, { context: ctx }),
     )
     expect(dest).toBe('/onboarding/welcome')
   })
@@ -209,7 +217,7 @@ describe('/onboarding index guard — cold-start restore from pending phone', ()
       }),
     )
     const dest = await redirectTo(() =>
-      OnboardingIndexRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingIndexRoute, { context: ctx }),
     )
     expect(dest).toBe('/onboarding/locked')
   })
@@ -224,7 +232,7 @@ describe('/onboarding index guard — cold-start restore from pending phone', ()
       }),
     )
     const dest = await redirectTo(() =>
-      OnboardingIndexRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingIndexRoute, { context: ctx }),
     )
     expect(dest).toBe('/onboarding/verification')
   })
@@ -239,7 +247,7 @@ describe('/onboarding index guard — cold-start restore from pending phone', ()
       }),
     )
     const dest = await redirectTo(() =>
-      OnboardingIndexRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingIndexRoute, { context: ctx }),
     )
     expect(dest).toBe('/onboarding/verification')
   })
@@ -254,7 +262,7 @@ describe('/onboarding index guard — cold-start restore from pending phone', ()
       }),
     )
     const dest = await redirectTo(() =>
-      OnboardingIndexRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingIndexRoute, { context: ctx }),
     )
     expect(dest).toBe('/onboarding/welcome')
   })
@@ -274,7 +282,7 @@ describe('/onboarding index guard — S17: lock survives clearing the onboarding
       }),
     )
     const dest = await redirectTo(() =>
-      OnboardingIndexRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingIndexRoute, { context: ctx }),
     )
     expect(dest).toBe('/onboarding/locked')
   })
@@ -290,9 +298,7 @@ describe('/onboarding index guard — S17: lock survives clearing the onboarding
       }),
     )
     // Lock elapsed → goes to welcome, and the stale pin is cleared.
-    await redirectTo(() =>
-      OnboardingIndexRoute.options.beforeLoad({ context: ctx } as never),
-    )
+    await redirectTo(() => runGuard(OnboardingIndexRoute, { context: ctx }))
     expect(useLockedPhoneStore.getState().lockedPhone).toBeNull()
   })
 })
@@ -302,9 +308,7 @@ describe('/onboarding index guard — S17: lock survives clearing the onboarding
 describe('/home guard', () => {
   test('S6/S18: valid access token → guard passes (no redirect)', async () => {
     act(() => useAuthStore.getState().setTokens(validPair))
-    const passed = await guardPasses(() =>
-      HomeRoute.options.beforeLoad({} as never),
-    )
+    const passed = await guardPasses(() => runGuard(HomeRoute, {}))
     expect(passed).toBe(true)
     expect(mockRefreshMutate).not.toHaveBeenCalled()
   })
@@ -313,9 +317,7 @@ describe('/home guard', () => {
     act(() => useAuthStore.getState().setTokens(expiredAccessPair))
     mockRefreshMutate.mockResolvedValue(freshPair)
 
-    const passed = await guardPasses(() =>
-      HomeRoute.options.beforeLoad({} as never),
-    )
+    const passed = await guardPasses(() => runGuard(HomeRoute, {}))
     expect(passed).toBe(true)
     expect(useAuthStore.getState().tokens).toEqual(freshPair)
   })
@@ -324,17 +326,13 @@ describe('/home guard', () => {
     act(() => useAuthStore.getState().setTokens(expiredAccessPair))
     mockRefreshMutate.mockRejectedValue(new Error('UNAUTHORIZED'))
 
-    const dest = await redirectTo(() =>
-      HomeRoute.options.beforeLoad({} as never),
-    )
+    const dest = await redirectTo(() => runGuard(HomeRoute, {}))
     expect(dest).toBe('/onboarding/welcome')
     expect(useAuthStore.getState().tokens).toBeNull()
   })
 
   test('S19: no session → redirects to /onboarding/welcome', async () => {
-    const dest = await redirectTo(() =>
-      HomeRoute.options.beforeLoad({} as never),
-    )
+    const dest = await redirectTo(() => runGuard(HomeRoute, {}))
     expect(dest).toBe('/onboarding/welcome')
   })
 
@@ -347,9 +345,7 @@ describe('/home guard', () => {
         refreshTokenExpiresAt: NOW - 1,
       }),
     )
-    const dest = await redirectTo(() =>
-      HomeRoute.options.beforeLoad({} as never),
-    )
+    const dest = await redirectTo(() => runGuard(HomeRoute, {}))
     expect(dest).toBe('/onboarding/welcome')
     expect(mockRefreshMutate).not.toHaveBeenCalled()
   })
@@ -366,10 +362,10 @@ describe('/onboarding layout hard-lock guard', () => {
     const ctx = makeContext(fetchQuery)
 
     const passed = await guardPasses(() =>
-      OnboardingLayoutRoute.options.beforeLoad({
+      runGuard(OnboardingLayoutRoute, {
         context: ctx,
         location: makeLocation('/onboarding/welcome'),
-      } as never),
+      }),
     )
     expect(passed).toBe(true)
     expect(fetchQuery).not.toHaveBeenCalled()
@@ -381,10 +377,10 @@ describe('/onboarding layout hard-lock guard', () => {
       Promise.resolve({ lockedUntil: NOW + 86_400_000 }),
     )
     const dest = await redirectTo(() =>
-      OnboardingLayoutRoute.options.beforeLoad({
+      runGuard(OnboardingLayoutRoute, {
         context: ctx,
         location: makeLocation('/onboarding/welcome'),
-      } as never),
+      }),
     )
     expect(dest).toBe('/onboarding/locked')
   })
@@ -395,10 +391,10 @@ describe('/onboarding layout hard-lock guard', () => {
       Promise.resolve({ lockedUntil: NOW + 86_400_000 }),
     )
     const passed = await guardPasses(() =>
-      OnboardingLayoutRoute.options.beforeLoad({
+      runGuard(OnboardingLayoutRoute, {
         context: ctx,
         location: makeLocation('/onboarding/locked'),
-      } as never),
+      }),
     )
     expect(passed).toBe(true)
   })
@@ -410,10 +406,10 @@ describe('/onboarding layout hard-lock guard', () => {
       Promise.resolve({ lockedUntil: NOW + 86_400_000 }),
     )
     const dest = await redirectTo(() =>
-      OnboardingLayoutRoute.options.beforeLoad({
+      runGuard(OnboardingLayoutRoute, {
         context: ctx,
         location: makeLocation('/onboarding/verification'),
-      } as never),
+      }),
     )
     expect(dest).toBe('/onboarding/locked')
   })
@@ -423,10 +419,10 @@ describe('/onboarding layout hard-lock guard', () => {
     const ctx = makeContext(() => Promise.resolve({ lockedUntil: null }))
 
     const passed = await guardPasses(() =>
-      OnboardingLayoutRoute.options.beforeLoad({
+      runGuard(OnboardingLayoutRoute, {
         context: ctx,
         location: makeLocation('/onboarding/welcome'),
-      } as never),
+      }),
     )
     expect(passed).toBe(true)
     expect(useLockedPhoneStore.getState().lockedPhone).toBeNull()
@@ -436,10 +432,10 @@ describe('/onboarding layout hard-lock guard', () => {
     const fetchQuery = vi.fn()
     const ctx = makeContext(fetchQuery)
     const passed = await guardPasses(() =>
-      OnboardingLayoutRoute.options.beforeLoad({
+      runGuard(OnboardingLayoutRoute, {
         context: ctx,
         location: makeLocation('/onboarding/welcome'),
-      } as never),
+      }),
     )
     expect(passed).toBe(true)
     expect(fetchQuery).not.toHaveBeenCalled()
@@ -456,7 +452,7 @@ describe('/onboarding/locked guard', () => {
     )
 
     const dest = await redirectTo(() =>
-      OnboardingLockedRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingLockedRoute, { context: ctx }),
     )
     expect(dest).toBe('/home')
   })
@@ -466,7 +462,7 @@ describe('/onboarding/locked guard', () => {
       Promise.resolve({ lockedUntil: NOW + 86_400_000 }),
     )
     const dest = await redirectTo(() =>
-      OnboardingLockedRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingLockedRoute, { context: ctx }),
     )
     expect(dest).toBe('/onboarding/welcome')
   })
@@ -477,7 +473,7 @@ describe('/onboarding/locked guard', () => {
       Promise.resolve({ lockedUntil: NOW + 86_400_000 }),
     )
     const passed = await guardPasses(() =>
-      OnboardingLockedRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingLockedRoute, { context: ctx }),
     )
     expect(passed).toBe(true)
   })
@@ -488,7 +484,7 @@ describe('/onboarding/locked guard', () => {
     const ctx = makeContext(() => Promise.resolve({ lockedUntil: null }))
 
     const dest = await redirectTo(() =>
-      OnboardingLockedRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingLockedRoute, { context: ctx }),
     )
     expect(dest).toBe('/onboarding/verification')
     expect(useLockedPhoneStore.getState().lockedPhone).toBeNull()
@@ -500,7 +496,7 @@ describe('/onboarding/locked guard', () => {
     const ctx = makeContext(() => Promise.resolve({ lockedUntil: null }))
 
     const dest = await redirectTo(() =>
-      OnboardingLockedRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingLockedRoute, { context: ctx }),
     )
     expect(dest).toBe('/onboarding/verification')
   })
@@ -512,7 +508,7 @@ describe('/onboarding/locked guard', () => {
       Promise.resolve({ lockedUntil: NOW + 86_400_000 }),
     )
     const passed = await guardPasses(() =>
-      OnboardingLockedRoute.options.beforeLoad({ context: ctx } as never),
+      runGuard(OnboardingLockedRoute, { context: ctx }),
     )
     expect(passed).toBe(true)
   })
