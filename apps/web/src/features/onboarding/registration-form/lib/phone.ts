@@ -1,9 +1,6 @@
-export const phoneDigits = (value: string) => {
-  const digits = value.replace(/\D/g, '')
-  const local =
-    digits.startsWith('7') || digits.startsWith('8') ? digits.slice(1) : digits
-  return local.slice(0, 10)
-}
+import { phoneDigits } from '@raiymbek-park/api/contract'
+
+export { normalizePhone } from '@raiymbek-park/api/contract'
 
 export const formatPhoneMask = (value: string) => {
   const digits = phoneDigits(value)
@@ -18,5 +15,3 @@ export const formatPhoneMask = (value: string) => {
   if (digits.length <= 8) return `+7 (${area}) ${prefix}-${lineA}`
   return `+7 (${area}) ${prefix}-${lineA}-${lineB}`
 }
-
-export const normalizePhone = (value: string) => `+7${phoneDigits(value)}`

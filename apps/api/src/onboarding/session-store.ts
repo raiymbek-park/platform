@@ -8,7 +8,7 @@ import {
 
 export type Resident = {
   apartment: number
-  block: string
+  block: number
   name: string
   phone: string
   role: string
@@ -24,7 +24,7 @@ export type Session = {
   verifyUsed: boolean
 }
 
-export type RefreshRecord = {
+type RefreshRecord = {
   active: boolean
   refreshExpiresAt: number
   resident: Resident

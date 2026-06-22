@@ -11,10 +11,10 @@ const PHONE_8 = '87071234567'
 
 const validResident = {
   apartment: 42,
-  block: 'A',
+  block: 1,
   name: 'Test Resident',
   phone: PHONE,
-  role: 'resident',
+  role: 'owner' as const,
 }
 
 beforeEach(() => {
@@ -28,8 +28,6 @@ const expectTrpcCode = async (promise: Promise<unknown>, code: string) => {
   )
 }
 
-// Helper: mock Date.now() to return a sequence of values, one per call.
-// Each send/verify resolver calls Date.now() once.
 const mockNowSequence = (values: number[]) => {
   let idx = 0
   vi.spyOn(Date, 'now').mockImplementation(
@@ -37,9 +35,25 @@ const mockNowSequence = (values: number[]) => {
   )
 }
 
-// ---------------------------------------------------------------------------
-// otp.send
-// ---------------------------------------------------------------------------
+const LOCK_AT = 1_700_001_084_000 // 5th send trips the 24 h lock
+const LOCK_NOW = [
+  1_700_000_000_000,
+  1_700_000_061_000,
+  1_700_000_182_000,
+  1_700_000_483_000,
+  LOCK_AT,
+]
+
+const sendOtp = () => caller.otp.send({ phone: PHONE })
+
+const reachLock = async (...afterLock: number[]) => {
+  mockNowSequence([...LOCK_NOW, ...afterLock])
+  await sendOtp()
+  await sendOtp()
+  await sendOtp()
+  await sendOtp()
+  return sendOtp()
+}
 
 describe('otp.send — first send opens session (happy S2)', () => {
   it('returns sendCount=1 and resendAvailableAt ≈ now+60 s', async () => {
@@ -87,59 +101,39 @@ describe('otp.send — growing cooldown (edge S1)', () => {
 
 describe('otp.send — 5th send locks the number (edge S2)', () => {
   it('5th send returns lockedUntil = now+86400 s', async () => {
-    const T = 1_700_000_000_000
-    // 5 sends; each at a timestamp past the previous cooldown.
-    // Cooldowns after sends 1-4: 60, 120, 300, 600 s.
-    mockNowSequence([
-      T,
-      T + 61_000,
-      T + 182_000,
-      T + 483_000,
-      T + 1_084_000, // send 5 — past 600 s cooldown → triggers lock
-    ])
-
-    await caller.otp.send({ phone: PHONE })
-    await caller.otp.send({ phone: PHONE })
-    await caller.otp.send({ phone: PHONE })
-    await caller.otp.send({ phone: PHONE })
-    const locked = await caller.otp.send({ phone: PHONE })
-
-    expect(locked.lockedUntil).toBe(T + 1_084_000 + 86400 * 1000)
+    const locked = await reachLock()
+    expect(locked.lockedUntil).toBe(LOCK_AT + 86400 * 1000)
   })
 })
 
 describe('otp.send — locked number is rejected (edge S2 guard)', () => {
   it('send while locked → FORBIDDEN', async () => {
-    const T = 1_700_000_000_000
-    // 5 sends to reach lock, then a 6th send while lock is still active.
-    mockNowSequence([
-      T,
-      T + 61_000,
-      T + 182_000,
-      T + 483_000,
-      T + 1_084_000, // send 5 → lock set, lockedUntil = T+1_084_000+86400_000
-      T + 1_100_000, // send 6 — within the 24 h lock window → FORBIDDEN
-    ])
-
-    await caller.otp.send({ phone: PHONE })
-    await caller.otp.send({ phone: PHONE })
-    await caller.otp.send({ phone: PHONE })
-    await caller.otp.send({ phone: PHONE })
-    await caller.otp.send({ phone: PHONE })
-    await expectTrpcCode(caller.otp.send({ phone: PHONE }), 'FORBIDDEN')
+    await reachLock(1_700_001_100_000) // 6th send — within the 24 h lock window
+    await expectTrpcCode(sendOtp(), 'FORBIDDEN')
   })
 })
 
-describe('otp.send — active cooldown is rejected (error S9)', () => {
-  it('second send before cooldown expires → TOO_MANY_REQUESTS', async () => {
+describe('otp.send — active cooldown is rejected (error-states S9)', () => {
+  it('second send before the wait elapses → TOO_MANY_REQUESTS', async () => {
     await caller.otp.send({ phone: PHONE })
     await expectTrpcCode(caller.otp.send({ phone: PHONE }), 'TOO_MANY_REQUESTS')
   })
-})
 
-// ---------------------------------------------------------------------------
-// otp.status
-// ---------------------------------------------------------------------------
+  it('the refused resend leaves the code and the running wait unchanged (error-states S9)', async () => {
+    const T = 1_700_000_000_000
+    // send 1 at T (wait → T+60s), refused resend attempted 30s later (within wait).
+    mockNowSequence([T, T + 30_000, T + 30_000])
+
+    const first = await caller.otp.send({ phone: PHONE })
+    await expectTrpcCode(caller.otp.send({ phone: PHONE }), 'TOO_MANY_REQUESTS')
+
+    const status = await caller.otp.status({ phone: PHONE })
+    // The active code is still live and the wait timestamp did not move.
+    expect(status.hasActiveCode).toBe(true)
+    expect(status.sendCount).toBe(first.sendCount)
+    expect(status.resendAvailableAt).toBe(first.resendAvailableAt)
+  })
+})
 
 describe('otp.status — unseen phone returns neutral state (edge S9)', () => {
   it('never-seen phone: sendCount=0, no code, no cooldown, no lock', async () => {
@@ -164,19 +158,11 @@ describe('otp.status — reflects session after sends', () => {
   })
 
   it('status after lock shows lockedUntil (edge S7 restore on relaunch)', async () => {
-    const T = 1_700_000_000_000
-    mockNowSequence([T, T + 61_000, T + 182_000, T + 483_000, T + 1_084_000])
-    for (let i = 0; i < 5; i++) {
-      await caller.otp.send({ phone: PHONE })
-    }
+    await reachLock()
     const status = await caller.otp.status({ phone: PHONE })
     expect(status.lockedUntil).not.toBeNull()
   })
 })
-
-// ---------------------------------------------------------------------------
-// otp.verify
-// ---------------------------------------------------------------------------
 
 describe('otp.verify — correct code succeeds (happy S5)', () => {
   it('correct code 1234 → returns { verified: true }', async () => {
@@ -226,30 +212,34 @@ describe('otp.verify — fresh send restores the attempt (error S3)', () => {
   })
 })
 
-describe('otp.verify — locked number is rejected (error S10)', () => {
-  it('verify while locked → FORBIDDEN', async () => {
-    const T = 1_700_000_000_000
-    mockNowSequence([
-      T,
-      T + 61_000,
-      T + 182_000,
-      T + 483_000,
-      T + 1_084_000, // send 5 → lock
-      T + 1_100_000, // verify timestamp — still within lock window
-    ])
-    for (let i = 0; i < 5; i++) {
-      await caller.otp.send({ phone: PHONE })
-    }
+describe('otp.verify — a check while locked is refused without consuming an attempt (error-states S10)', () => {
+  it('verify while locked → FORBIDDEN with the time remaining until unlock in the message', async () => {
+    await reachLock(1_700_001_100_000) // verify attempt within the lock window
+    await expect(
+      caller.otp.verify({ code: '1234', phone: PHONE }),
+    ).rejects.toSatisfy(
+      e =>
+        e instanceof TRPCError &&
+        e.code === 'FORBIDDEN' &&
+        /locked/i.test(e.message) &&
+        /\d+s until unlock/.test(e.message),
+    )
+  })
+
+  it('the refused check does not consume the verification attempt — verifyUsed stays false (error-states S10)', async () => {
+    await reachLock(
+      1_700_001_100_000, // verify attempt — within lock window, refused
+      1_700_001_200_000, // status read
+    )
     await expectTrpcCode(
       caller.otp.verify({ code: '1234', phone: PHONE }),
       'FORBIDDEN',
     )
+
+    const status = await caller.otp.status({ phone: PHONE })
+    expect(status.verifyUsed).toBe(false)
   })
 })
-
-// ---------------------------------------------------------------------------
-// resident.register
-// ---------------------------------------------------------------------------
 
 describe('resident.register — verified phone issues token pair (happy S5)', () => {
   it('returns accessToken, refreshToken, expiresAt, and resident after verify', async () => {
@@ -278,10 +268,6 @@ describe('resident.register — unverified phone is rejected', () => {
     )
   })
 })
-
-// ---------------------------------------------------------------------------
-// auth.refresh
-// ---------------------------------------------------------------------------
 
 describe('auth.refresh — valid token is rotated (happy S6)', () => {
   it('returns a new token pair distinct from the original', async () => {

@@ -2,19 +2,19 @@ import { TRPCError } from '@trpc/server'
 
 import { publicProcedure, router } from '../trpc'
 import {
+  refreshInputSchema,
+  registerInputSchema,
+  sendInputSchema,
+  statusInputSchema,
+  verifyInputSchema,
+} from './contract'
+import {
   getSession,
   issueTokens,
   recordSend,
   recordVerify,
   rotateRefresh,
 } from './session-store'
-import {
-  parseRefreshInput,
-  parseRegisterInput,
-  parseSendInput,
-  parseStatusInput,
-  parseVerifyInput,
-} from './validators'
 
 const isCoolingDown = (resendAvailableAt: number | null, now: number) =>
   resendAvailableAt !== null && resendAvailableAt > now
@@ -24,7 +24,7 @@ const secondsUntil = (timestamp: number, now: number) =>
 
 export const otpRouter = router({
   send: publicProcedure
-    .input(parseSendInput)
+    .input(sendInputSchema)
     .mutation(({ input: { phone } }) => {
       const now = Date.now()
       const session = getSession(phone, now)
@@ -51,7 +51,7 @@ export const otpRouter = router({
     }),
 
   status: publicProcedure
-    .input(parseStatusInput)
+    .input(statusInputSchema)
     .query(({ input: { phone } }) => {
       const now = Date.now()
       const session = getSession(phone, now)
@@ -61,11 +61,12 @@ export const otpRouter = router({
         resendAvailableAt: session.resendAvailableAt,
         sendCount: session.sendCount,
         verified: session.verified,
+        verifyUsed: session.verifyUsed,
       }
     }),
 
   verify: publicProcedure
-    .input(parseVerifyInput)
+    .input(verifyInputSchema)
     .mutation(({ input: { code, phone } }) => {
       const now = Date.now()
       const session = getSession(phone, now)
@@ -94,7 +95,7 @@ export const otpRouter = router({
 
 export const residentRouter = router({
   register: publicProcedure
-    .input(parseRegisterInput)
+    .input(registerInputSchema)
     .mutation(({ input: resident }) => {
       const now = Date.now()
       const session = getSession(resident.phone, now)
@@ -113,7 +114,7 @@ export const residentRouter = router({
 
 export const authRouter = router({
   refresh: publicProcedure
-    .input(parseRefreshInput)
+    .input(refreshInputSchema)
     .mutation(({ input: { refreshToken } }) => {
       const tokens = rotateRefresh(refreshToken, Date.now())
       if (!tokens) {

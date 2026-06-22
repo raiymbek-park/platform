@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export type TokenPair = {
+type TokenPair = {
   accessToken: string
   accessTokenExpiresAt: number
   refreshToken: string
