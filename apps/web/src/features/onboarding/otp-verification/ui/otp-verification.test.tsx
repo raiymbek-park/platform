@@ -44,7 +44,12 @@ vi.mock('../model/use-resend-otp', () => ({
 }))
 
 const mockOtpStatus = {
-  data: null as { resendAvailableAt: number; verifyUsed?: boolean } | null,
+  data: null as {
+    resendAvailableAt: number
+    verifyUsed?: boolean
+    hasActiveCode?: boolean
+    sendCount?: number
+  } | null,
 }
 vi.mock('../model/use-otp-status', () => ({
   useOtpStatus: () => mockOtpStatus,
@@ -425,8 +430,13 @@ test('error S2 — spent attempt keeps cells locked until a fresh code is reques
 test('error S3 — tapping Resend calls resendOtp and clears cells', async () => {
   mockOtpStatus.data = { resendAvailableAt: Date.now() - 1000 }
   mockResendMutate.mockImplementation(
-    (_args: unknown, callbacks: { onSuccess?: () => void }) => {
-      Promise.resolve().then(() => callbacks?.onSuccess?.())
+    (
+      _args: unknown,
+      callbacks: { onSuccess?: (r: { lockedUntil: null }) => void },
+    ) => {
+      Promise.resolve().then(() =>
+        callbacks?.onSuccess?.({ lockedUntil: null }),
+      )
     },
   )
   const { user } = renderVerify()
@@ -566,4 +576,37 @@ test('edge S1 — countdown label shows time derived from resendAvailableAt', ()
 
   // The exact seconds may vary by 1 due to ceil, but minutes part is 2
   expect(screen.getByText(/Повторно через 2:/)).toBeInTheDocument()
+})
+
+test('lockout S2 — resend returning lockedUntil navigates to /onboarding/locked', async () => {
+  mockOtpStatus.data = { resendAvailableAt: Date.now() - 1000 }
+  const lockedUntil = Date.now() + 86_400_000
+  mockResendMutate.mockImplementation(
+    (_args: unknown, callbacks: { onSuccess?: (r: unknown) => void }) => {
+      Promise.resolve().then(() => callbacks?.onSuccess?.({ lockedUntil }))
+    },
+  )
+  const { user } = renderVerify()
+
+  await user.click(screen.getByRole('button', { name: /Отправить повторно/ }))
+
+  await waitFor(() =>
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/onboarding/locked' }),
+  )
+})
+
+test('lockout S5 CTA — fresh session (hasActiveCode false, sendCount 0) labels primary action "Отправить код"', () => {
+  mockOtpStatus.data = {
+    resendAvailableAt: Date.now() - 1000,
+    hasActiveCode: false,
+    sendCount: 0,
+  }
+  renderVerify()
+
+  expect(
+    screen.getByRole('button', { name: /Отправить код/ }),
+  ).toBeInTheDocument()
+  expect(
+    screen.queryByRole('button', { name: /Отправить повторно/ }),
+  ).not.toBeInTheDocument()
 })
