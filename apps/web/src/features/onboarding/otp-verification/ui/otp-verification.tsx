@@ -70,7 +70,18 @@ export const OtpVerification = () => {
     otp.reset()
     verifyOtp.reset()
     registerResident.reset()
-    resendOtp.mutate({ phone }, { onSuccess: () => otp.focusCell(0) })
+    resendOtp.mutate(
+      { phone },
+      {
+        onSuccess: result => {
+          if (result.lockedUntil !== null) {
+            navigate({ to: '/onboarding/locked' })
+            return
+          }
+          otp.focusCell(0)
+        },
+      },
+    )
   }
 
   const resolveError = () => {

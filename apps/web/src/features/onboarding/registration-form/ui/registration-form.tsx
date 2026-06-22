@@ -51,7 +51,13 @@ export const RegistrationForm = () => {
       sendOtp.mutate(
         { phone },
         {
-          onSuccess: toVerification,
+          onSuccess: result => {
+            if (result.lockedUntil !== null) {
+              navigate({ to: '/onboarding/locked' })
+              return
+            }
+            toVerification()
+          },
           onError: error => {
             if (isSendCooldown(error)) toVerification()
           },

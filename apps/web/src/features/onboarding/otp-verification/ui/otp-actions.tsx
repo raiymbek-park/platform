@@ -27,6 +27,10 @@ export const OtpActions = ({
   const { remaining } = useCountdown(status.data?.resendAvailableAt ?? null)
   const clipboardCode = useClipboardCode()
 
+  const isFreshSession =
+    status.data?.hasActiveCode === false && status.data?.sendCount === 0
+  const resendLabel = isFreshSession ? 'Отправить код' : 'Отправить повторно'
+
   return (
     <div className={css.actions}>
       <Button
@@ -53,7 +57,7 @@ export const OtpActions = ({
           variant='secondary'
           onClick={onResend}
         >
-          Отправить повторно
+          {resendLabel}
         </Button>
       )}
     </div>
