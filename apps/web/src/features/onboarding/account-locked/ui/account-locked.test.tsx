@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react'
 import { act } from 'react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-// Mock at network + navigation boundaries — real lib/hook logic stays.
 const mockOtpStatus = {
   data: null as { lockedUntil: number | null } | null,
   isLoading: false,
@@ -34,7 +33,7 @@ const seedPhone = () => {
   )
 }
 
-const FUTURE_LOCKED_UNTIL = Date.now() + 86_399_000 // ~24h remaining
+const FUTURE_LOCKED_UNTIL = Date.now() + (24 * 60 * 60 - 1) * 1000
 
 beforeEach(() => {
   vi.useFakeTimers()
@@ -61,7 +60,7 @@ test('lockout S12 — renders illustration, "Доступ заблокирова
 })
 
 test('lockout S13 — timer output shows HH:MM:SS derived from server lockedUntil', () => {
-  vi.setSystemTime(FUTURE_LOCKED_UNTIL - 3_661_000) // 1h 1m 1s remaining
+  vi.setSystemTime(FUTURE_LOCKED_UNTIL - (3600 + 60 + 1) * 1000)
   render(<AccountLocked />)
 
   const timer = screen.getByRole('status')
@@ -69,7 +68,7 @@ test('lockout S13 — timer output shows HH:MM:SS derived from server lockedUnti
 })
 
 test('lockout S15 — timer reflects remaining time from server, not a fixed 24-hour reset', () => {
-  const partialRemaining = 3_599_000 // 59m 59s (mid-lockout)
+  const partialRemaining = (59 * 60 + 59) * 1000
   vi.setSystemTime(FUTURE_LOCKED_UNTIL - partialRemaining)
   render(<AccountLocked />)
 
@@ -97,7 +96,6 @@ test('lockout S5 nav — countdown reaching 0 navigates to /onboarding/verificat
 })
 
 test('lockout S16 — lockedUntil already elapsed on arrival navigates to /onboarding/verification', () => {
-  // Server lock time is in the past — remaining will be 0 immediately.
   mockOtpStatus.data = { lockedUntil: Date.now() - 1000 }
   render(<AccountLocked />)
 
