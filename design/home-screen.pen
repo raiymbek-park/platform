@@ -19,7 +19,7 @@
           "name": "Header",
           "descendants": {
             "ds:sh-switcher": {
-              "enabled": false
+              "enabled": true
             }
           }
         },
@@ -517,7 +517,7 @@
           "name": "Header",
           "descendants": {
             "ds:sh-switcher": {
-              "enabled": false
+              "enabled": true
             }
           }
         },
@@ -1078,11 +1078,11 @@
       "type": "frame",
       "id": "hbaRX",
       "x": 1821,
-      "y": 0,
+      "y": 2,
       "name": "Account Locked",
       "clip": true,
       "width": 390,
-      "height": 844,
+      "height": 842,
       "fill": "$background",
       "layout": "vertical",
       "children": [
@@ -1093,7 +1093,7 @@
           "name": "Header",
           "descendants": {
             "ds:sh-switcher": {
-              "enabled": false
+              "enabled": true
             }
           }
         },

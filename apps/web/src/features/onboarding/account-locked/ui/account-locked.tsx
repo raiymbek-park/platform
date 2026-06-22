@@ -3,8 +3,9 @@ import { useEffect } from 'react'
 
 import { useOtpStatus } from '@/features/onboarding/otp-verification'
 import { useOnboardingStore } from '@/features/onboarding/registration-form'
+import { useCountdown } from '@/shared/lib'
 
-import { useLockCountdown } from '../lib/use-lock-countdown'
+import { formatHms } from '../lib/format-hms'
 import css from './account-locked.module.scss'
 
 const units = ['hours', 'minutes', 'seconds'] as const
@@ -31,7 +32,8 @@ export const AccountLocked = () => {
   const phone = useOnboardingStore(state => state.draft.phone)
   const status = useOtpStatus(phone || null)
   const lockedUntil = status.data?.lockedUntil ?? null
-  const { remaining, hms } = useLockCountdown(lockedUntil)
+  const remaining = useCountdown(lockedUntil)
+  const hms = formatHms(remaining)
 
   useEffect(() => {
     if (!status.isLoading && remaining === 0) {
