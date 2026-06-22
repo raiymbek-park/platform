@@ -172,8 +172,11 @@ test('validation S14 — switching from block 1 to block 2 invalidates apartment
 
 test('happy S2 — submit sends normalized phone, saves draft, navigates to /onboarding/verification', async () => {
   mockSendMutate.mockImplementation(
-    (_vars: unknown, { onSuccess }: { onSuccess: () => void }) => {
-      onSuccess()
+    (
+      _vars: unknown,
+      { onSuccess }: { onSuccess: (r: { lockedUntil: null }) => void },
+    ) => {
+      onSuccess({ lockedUntil: null })
     },
   )
   const user = renderForm()
