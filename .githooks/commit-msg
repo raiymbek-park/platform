@@ -1,0 +1,8 @@
+#!/bin/sh
+# Reject any commit whose message carries an AI co-author trailer.
+# These slip in via squash-merges and pollute authorship history.
+if grep -qiE '^[[:space:]]*co-authored-by:.*(claude|anthropic|noreply@anthropic)' "$1"; then
+  echo "commit-msg hook: AI co-author trailer is not allowed." >&2
+  echo "  Remove the 'Co-authored-by: Claude/Anthropic ...' line from the message." >&2
+  exit 1
+fi
