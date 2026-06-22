@@ -2,7 +2,7 @@ import { Button, InfoCallout } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 
 import { useOnboardingStore } from '@/features/onboarding/registration-form'
-import { useAuthStore } from '@/shared/auth'
+import { useAuthStore, useLockedPhoneStore } from '@/shared/auth'
 
 import { isWrongCode } from '../lib/is-wrong-code'
 import { useOtpCells } from '../lib/use-otp-cells'
@@ -75,6 +75,9 @@ export const OtpVerification = () => {
       {
         onSuccess: result => {
           if (result.lockedUntil !== null) {
+            // Pin the locked number independently of the onboarding draft so
+            // the lockout survives clearing local storage (S17).
+            useLockedPhoneStore.getState().setLockedPhone(phone)
             navigate({ to: '/onboarding/locked' })
             return
           }

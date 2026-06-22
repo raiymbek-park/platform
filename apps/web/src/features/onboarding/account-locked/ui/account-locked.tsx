@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 
 import { useOtpStatus } from '@/features/onboarding/otp-verification'
 import { useOnboardingStore } from '@/features/onboarding/registration-form'
+import { useLockedPhoneStore } from '@/shared/auth'
 import { useCountdown } from '@/shared/lib'
 
 import { formatHms } from '../lib/format-hms'
@@ -10,7 +11,9 @@ import css from './account-locked.module.scss'
 
 export const AccountLocked = () => {
   const navigate = useNavigate()
-  const phone = useOnboardingStore(state => state.draft.phone)
+  const draftPhone = useOnboardingStore(state => state.draft.phone)
+  const lockedPhone = useLockedPhoneStore(state => state.lockedPhone)
+  const phone = lockedPhone ?? draftPhone
   const status = useOtpStatus(phone || null)
   const lockedUntil = status.data?.lockedUntil ?? null
   const remaining = useCountdown(lockedUntil)
@@ -18,6 +21,7 @@ export const AccountLocked = () => {
 
   useEffect(() => {
     if (!status.isLoading && remaining === 0) {
+      useLockedPhoneStore.getState().clearLockedPhone()
       navigate({ to: '/onboarding/verification' })
     }
   }, [navigate, remaining, status.isLoading])

@@ -14,6 +14,8 @@ import {
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 
+import { useLockedPhoneStore } from '@/shared/auth'
+
 import { isSendCooldown } from '../lib/is-send-cooldown'
 import { formatPhoneMask, normalizePhone } from '../lib/phone'
 import { registrationSchema } from '../lib/validators'
@@ -53,6 +55,9 @@ export const RegistrationForm = () => {
         {
           onSuccess: result => {
             if (result.lockedUntil !== null) {
+              // Pin the locked number outside the onboarding draft so the
+              // lockout survives clearing local storage (S17).
+              useLockedPhoneStore.getState().setLockedPhone(phone)
               navigate({ to: '/onboarding/locked' })
               return
             }

@@ -1,7 +1,12 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
 import { useOnboardingStore } from '@/features/onboarding/registration-form'
-import { hasValidRefreshToken, isLocked, refreshSession } from '@/shared/auth'
+import {
+  hasValidRefreshToken,
+  isLocked,
+  refreshSession,
+  useLockedPhoneStore,
+} from '@/shared/auth'
 
 const isCoolingDown = (resendAvailableAt: number | null) =>
   resendAvailableAt !== null && resendAvailableAt > Date.now()
@@ -12,7 +17,8 @@ export const Route = createFileRoute('/onboarding/')({
       throw redirect({ to: '/home' })
     }
 
-    const phone = useOnboardingStore.getState().draft.phone
+    const { lockedPhone, clearLockedPhone } = useLockedPhoneStore.getState()
+    const phone = lockedPhone ?? useOnboardingStore.getState().draft.phone
     if (phone === '') throw redirect({ to: '/onboarding/welcome' })
 
     const status = await context.queryClient.fetchQuery(
@@ -22,6 +28,8 @@ export const Route = createFileRoute('/onboarding/')({
     if (isLocked(status.lockedUntil)) {
       throw redirect({ to: '/onboarding/locked' })
     }
+    // No active lock — drop the stale pin so it can't strand the user.
+    if (lockedPhone !== null) clearLockedPhone()
     if (status.hasActiveCode || isCoolingDown(status.resendAvailableAt)) {
       throw redirect({ to: '/onboarding/verification' })
     }

@@ -2,7 +2,12 @@ import { ScreenHeader } from '@raiymbek-park/ui'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
 import { useOnboardingStore } from '@/features/onboarding/registration-form'
-import { getLockRemaining, hasValidRefreshToken, isLocked } from '@/shared/auth'
+import {
+  getLockRemaining,
+  hasValidRefreshToken,
+  isLocked,
+  useLockedPhoneStore,
+} from '@/shared/auth'
 
 const OnboardingLayout = () => (
   <>
@@ -18,7 +23,11 @@ export const Route = createFileRoute('/onboarding')({
     // The locked screen is exempt, otherwise the redirect would loop on itself.
     if (location.pathname === '/onboarding/locked') return
 
-    const phone = useOnboardingStore.getState().draft.phone
+    // Resolve from the persisted lock pin first so a wiped onboarding draft
+    // still drives a fresh otp.status check — the lock survives clearing local
+    // storage (S17).
+    const { lockedPhone, clearLockedPhone } = useLockedPhoneStore.getState()
+    const phone = lockedPhone ?? useOnboardingStore.getState().draft.phone
     if (phone === '') return
 
     const lockedUntil = await getLockRemaining(
@@ -29,6 +38,8 @@ export const Route = createFileRoute('/onboarding')({
     if (isLocked(lockedUntil)) {
       throw redirect({ to: '/onboarding/locked' })
     }
+    // The server lock lifted — drop the stale pin so it can't strand the user.
+    if (lockedPhone !== null) clearLockedPhone()
   },
   component: OnboardingLayout,
 })
