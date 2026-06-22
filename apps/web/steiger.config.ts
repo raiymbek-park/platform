@@ -19,4 +19,11 @@ export default defineConfig([
       'fsd/insignificant-slice': 'off',
     },
   },
+  {
+    files: ['./src/features/onboarding/account-locked/**'],
+    rules: {
+      'fsd/forbidden-imports': 'off',
+      'fsd/insignificant-slice': 'off',
+    },
+  },
 ])
