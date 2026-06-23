@@ -29,6 +29,16 @@
     --chip-fg: var(--warning);
   }
 
+  &-tone-action {
+    --chip-bg: var(--info-soft);
+    --chip-fg: var(--action);
+  }
+
+  &-variant-solid {
+    background: var(--chip-fg);
+    color: var(--surface);
+  }
+
   &-surface {
     --chip-bg: var(--surface);
   }

@@ -1,0 +1,14 @@
+.row {
+  align-items: center;
+  background: var(--surface);
+  border-radius: var(--radius-14);
+  display: flex;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-12);
+}
+
+.text {
+  color: var(--foreground);
+  font-size: var(--font-size-13);
+  font-weight: 600;
+}

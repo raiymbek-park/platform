@@ -1,0 +1,12 @@
+@use '../mixins' as *;
+
+.nav {
+  @include chip(46px, var(--radius-14));
+
+  color: var(--text-muted);
+
+  &-is-active {
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+}
