@@ -1,0 +1,24 @@
+{
+  "functions": [
+    {
+      "source": "apps/functions",
+      "codebase": "api",
+      "predeploy": ["npm --prefix apps/functions run build"],
+      "ignore": ["node_modules", ".git", "src", "tsconfig.json", "*.local"]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "emulators": {
+    "functions": { "port": 5001 },
+    "firestore": { "port": 8080 },
+    "storage": { "port": 9199 },
+    "ui": { "enabled": true, "port": 4000 },
+    "singleProjectMode": true
+  }
+}

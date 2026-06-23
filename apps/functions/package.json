@@ -1,0 +1,23 @@
+{
+  "name": "@raiymbek-park/functions",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node22 --format=esm --external:firebase-functions --outfile=lib/index.js",
+    "serve": "npm run build && firebase emulators:start --only functions,firestore,storage",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "firebase-functions": "6.6.0"
+  },
+  "devDependencies": {
+    "@raiymbek-park/api": "*",
+    "@types/node": "25.9.3",
+    "esbuild": "0.28.1"
+  }
+}
