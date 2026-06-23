@@ -2,16 +2,15 @@
 
 ## Problem and Goal
 
-The «Raiymbek Park» app runs on a local, in-memory backend: the tRPC server holds
-residents, OTP state, and home content in process memory, and the web build is not
-published anywhere. There is no persistence, no public URL, and no automated path from a
-merge to a running deployment.
+«Raiymbek Park» must be reachable at a stable public URL, with each resident's profile,
+session, and verification state durable across server restarts and function cold starts.
+Every merge to `main` must reach production without manual deploy steps, and the backend
+must cost near-zero while idle.
 
-The goal is a production-grade, cost-efficient cloud footprint: a persistent Firebase
-backend serving the existing tRPC API from a scale-to-zero Cloud Function, durable storage
-for app assets and resident files, the web app published at a stable public URL, and a
-CI/CD pipeline that ships every merge to `main` automatically. Infrastructure idles at
-near-zero cost when unused.
+The system meets this with a persistent, cost-efficient Firebase footprint: the tRPC API
+runs on a scale-to-zero Cloud Function backed by Firestore, durable Storage holds app assets
+and resident files, the web app is published at a stable public URL, and a CI/CD pipeline
+ships every merge automatically.
 
 ## Users
 
@@ -37,7 +36,8 @@ near-zero cost when unused.
     redeploy.
 - **API on Cloud Functions gen2** — the existing tRPC router served from one HTTPS function
   (`api`), `minInstances: 0` (sleeps when idle), CORS restricted to the GitHub Pages
-  origin. The web app reaches it via `VITE_API_URL`. End-to-end tRPC types are preserved.
+  origin. The web app reaches it via `VITE_API_URL`, with end-to-end tRPC types flowing to
+  the web client (no codegen).
 - **Persistent OTP, session, and registration** — the onboarding rules (resend ladder
   60→120→300→600 s, 24-hour lockout, one-attempt-per-code, 30-day session with single-use
   renewal) operate against Firestore, surviving cold starts and redeploys, exactly as
