@@ -1,0 +1,17 @@
+.body {
+  align-items: center;
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.title {
+  color: var(--foreground);
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  margin: 0;
+}
+
+.note {
+  color: var(--text-muted);
+  margin: 0;
+}

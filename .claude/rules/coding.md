@@ -13,7 +13,7 @@ These rules apply to ALL code in the repository — `apps/`, `packages/`, and an
 - Avoid deep nesting in code or markup (3+ levels)
 - Avoid over-engineering: unnecessary abstractions, premature generalization, feature flags for simple changes
 - Windows compatibility: use forward slashes in glob patterns — `path.join` produces backslashes on Windows which breaks glob libraries. Use `path.join` only for non-glob filesystem paths
-- Pages (FSD `pages/` layer) should be thin composition layers — no direct data fetching hooks. Move data fetching into widgets or child components
+- Follow FSD layering and common sense, not a blanket "everything is a widget" rule. Promote a block to its own `widgets/` (or `entities/`) slice only when it is reused across pages or is significant/self-contained on its own. A section used by a single page lives **inside that page's slice** as a child component (`pages/{page}/ui/*` with its data hooks in `pages/{page}/model/*`). A single-reference slice that trips `fsd/insignificant-slice` is the signal to inline it, not to suppress the rule. Pages may own the data-fetching for their own page-specific sections.
 
 ## JSX Props
 

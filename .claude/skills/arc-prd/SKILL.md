@@ -25,7 +25,7 @@ Create, validate, and update Product Requirements Documents with Acceptance Crit
 
 ```
 /arc:prd create checkout           Interactive PRD creation for "checkout" feature
-/arc:prd validate checkout         Validate PRD quality against the five criteria
+/arc:prd validate checkout         Validate PRD quality against the six criteria
 /arc:prd validate checkout -y      Validate, skip confirmations
 /arc:prd update checkout           Cascade update when requirements change
 /arc:prd update checkout -y        Update, skip confirmations
@@ -60,7 +60,7 @@ Read the corresponding sub-instruction file and follow all steps:
 
 **Project context:** `.arcana/project-context.md` — read first for project structure, conventions, and external skill configuration (tracker, git).
 
-**PRD and AC structure** (actual paths from project-context). See [references/prd-structure.md](references/prd-structure.md) for templates and conventions, and [references/prd-validation-criteria.md](references/prd-validation-criteria.md) for the five quality criteria the PRD must pass before AC is written:
+**PRD and AC structure** (actual paths from project-context). See [references/prd-structure.md](references/prd-structure.md) for templates and conventions, and [references/prd-validation-criteria.md](references/prd-validation-criteria.md) for the six quality criteria the PRD must pass before AC is written:
 ```
 {features-directory}/{feature}/
   prd.md                ← PRD (permanent, in git)
@@ -83,7 +83,7 @@ User says: `/arc:prd create checkout`
 Actions:
 1. Check for existing `checkout/` PRD → none → proceed
 2. Interactive Q&A: problem, users, scope, NFR, dependencies
-3. Draft PRD, validate against 5 quality criteria, loop until PASS
+3. Draft PRD, validate against 6 quality criteria, loop until PASS
 4. Write AC scenarios (happy-path, validation, error-states, edge-cases as needed)
 5. Slice tasks (vertical, happy-path first), create tickets via tracker skill
 Result: `docs/features/checkout/prd.md` + `ac/*.md` written, Epic + tickets created.
@@ -97,7 +97,7 @@ Actions:
 3. Edit affected PRD sections in place (no history table — git tracks the diff)
 4. Update / add / delete AC scenarios; commented-out scenarios are not kept
 5. Add comment to affected tickets via tracker skill
-6. Re-validate PRD against the 5 criteria
+6. Re-validate PRD against the 6 criteria
 Result: PRD + AC reflect new truth; ticket trail of cascade impact.
 
 ### Example 3: Quality check before AC writing
@@ -105,7 +105,7 @@ Result: PRD + AC reflect new truth; ticket trail of cascade impact.
 User says: `/arc:prd validate checkout -y`
 Actions:
 1. Locate PRD
-2. Walk every section against the 5 criteria
+2. Walk every section against the 6 criteria
 3. Write report to `.arcana/checkout/prd-validate-report.md` (`-y` skips confirmation)
 Result: PASS/FAIL verdict with per-criterion findings; if FAIL, points to `/arc:prd update`.
 

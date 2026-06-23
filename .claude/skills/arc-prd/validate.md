@@ -14,13 +14,14 @@ PRD validation runs at the feature level, not the ticket level — a PRD is a si
 
 ### Step 2: Apply Validation Criteria
 
-For the PRD as a whole, apply the five quality criteria from [references/prd-validation-criteria.md](references/prd-validation-criteria.md):
+For the PRD as a whole, apply the six quality criteria from [references/prd-validation-criteria.md](references/prd-validation-criteria.md):
 
 1. **Source-of-truth boundary** — PRD says what/why; AC says how to verify. User Journey and Scope stay high-level; concrete behavioral assertions belong in AC.
 2. **Implementation-free at PRD level** — no "no white flash", "no layout shift", "fades smoothly" — animation outcomes belong in NFR-as-measurable or AC.
 3. **Concrete parameters** — every numeric, format, or threshold value is a concrete value, not a placeholder ("minimum allowed", "after several").
 4. **Open Questions are blockers** — anything in `## Open Questions` cannot be referenced from AC.
 5. **Scope and Unknowns are separate** — `What's NOT included` ≠ `Open Questions`.
+6. **Current-state, not narrative-in-time** — describe the target state in present tense; no "previously X, now Y" / "until now it was…" / before-after framing. Change history lives in `git log`, not the PRD body.
 
 Walk every section (Problem and Goal, Users, Definitions, Scope, Validation Contract, etc., User Journey, Success Metrics, NFR, Dependencies, Open Questions) and mark each criterion result.
 

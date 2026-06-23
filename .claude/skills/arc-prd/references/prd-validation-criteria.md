@@ -1,10 +1,10 @@
 # PRD Validation Criteria
 
-Reference material for `/arc:prd` validation. Five criteria for the PRD as a whole, applied between drafting the PRD and writing AC.
+Reference material for `/arc:prd` validation. Six criteria for the PRD as a whole, applied between drafting the PRD and writing AC.
 
-## Five Quality Criteria
+## Six Quality Criteria
 
-A PRD must pass ALL five criteria before any AC scenario is written. Failures cascade — a vague PRD produces interpretive AC.
+A PRD must pass ALL six criteria before any AC scenario is written. Failures cascade — a vague PRD produces interpretive AC.
 
 ### Criterion 1: Source-of-truth boundary
 
@@ -57,8 +57,23 @@ Mixing them confuses developers and agents — "this feature does X" and "we hav
 - **FAIL:** Listing "home route name is undecided" under What's NOT included
 - **PASS:** Same item under Open Questions, blocking AC that references home routing
 
+### Criterion 6: Current-state, not narrative-in-time
+
+> The PRD is a technical specification of the system as it must be, not a story of how it changed.
+
+A PRD describes the *target state* in the present tense. It must not narrate the transition from a former state — no "previously X, now Y", "until now it was a placeholder", "we used to…", "this feature changes it from… to…". That framing is changelog material, and change history lives in `git log`, not in the document body. The reader of a PRD wants the requirement, not its biography; temporal narrative ages instantly (a year later "now" is wrong) and forces the reader to diff two states to extract the one that matters.
+
+This applies to the whole document body — Problem and Goal, Scope, User Journey, every section. The only acceptable past/future tense is inside a User Journey describing a *user's* runtime flow ("the resident taps X, then sees Y"), never the product's *development* history.
+
+- **FAIL:** "Until now `/home` was a placeholder greeting; this feature turns it into the real hub."
+- **FAIL:** "Previously contacts were static; now they come from the API."
+- **PASS:** "`/home` is the resident's main screen, composed from live (mocked) data." (states the target, present tense)
+- **PASS:** "Contacts are sourced from the API." (current-state requirement)
+
+Keep `Problem and Goal` framed as the problem + the required outcome, not as a before/after diff. If a section reads like release notes, rewrite it as a specification.
+
 ## How to Apply
 
 Run after the PRD draft is approved by the developer (informally) and before writing any AC. Walk every paragraph and bullet and mark each with a criterion result. Any FAIL → rewrite that section, do not write AC yet.
 
-A PRD that passes all five criteria can support falsifiable, traceable AC. A PRD that fails any one of them will produce AC with the same defect.
+A PRD that passes all six criteria can support falsifiable, traceable AC. A PRD that fails any one of them will produce AC with the same defect.

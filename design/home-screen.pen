@@ -40,7 +40,7 @@
             }
           ],
           "layout": "vertical",
-          "padding": 6,
+          "padding": 20,
           "justifyContent": "end",
           "children": [
             {
@@ -48,6 +48,8 @@
               "type": "ref",
               "ref": "ds:LocationBadge",
               "name": "Location Badge",
+              "justifyContent": "start",
+              "alignItems": "center",
               "descendants": {
                 "ds:location-text": {
                   "content": "Блок 1 · Квартира 142"
@@ -63,12 +65,7 @@
           "width": "fill_container",
           "layout": "vertical",
           "gap": 24,
-          "padding": [
-            20,
-            20,
-            24,
-            20
-          ],
+          "padding": 20,
           "children": [
             {
               "id": "pkXLY",
@@ -529,12 +526,7 @@
           "height": "fill_container",
           "layout": "vertical",
           "gap": 24,
-          "padding": [
-            16,
-            20,
-            20,
-            20
-          ],
+          "padding": 20,
           "children": [
             {
               "type": "frame",
@@ -776,12 +768,7 @@
           "width": "fill_container",
           "layout": "vertical",
           "gap": 24,
-          "padding": [
-            8,
-            20,
-            20,
-            20
-          ],
+          "padding": 20,
           "children": [
             {
               "id": "X98Hq",
@@ -1106,7 +1093,7 @@
           "layout": "vertical",
           "gap": 24,
           "padding": [
-            16,
+            20,
             20,
             24,
             20

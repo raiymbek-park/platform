@@ -212,22 +212,20 @@ export const RegistrationForm = () => {
         </InfoCallout>
       )}
 
-      <footer className={css.footer}>
-        <form.Subscribe selector={state => state.canSubmit}>
-          {canSubmit => (
-            <Button
-              className={css.submit}
-              disabled={!canSubmit || sendOtp.isPending}
-              icon='arrow-right'
-              iconPosition='right'
-              isLoading={sendOtp.isPending}
-              type='submit'
-            >
-              Далее
-            </Button>
-          )}
-        </form.Subscribe>
-      </footer>
+      <form.Subscribe selector={state => state.canSubmit}>
+        {canSubmit => (
+          <Button
+            className={css.submit}
+            disabled={!canSubmit || sendOtp.isPending}
+            icon='arrow-right'
+            iconPosition='right'
+            isLoading={sendOtp.isPending}
+            type='submit'
+          >
+            Далее
+          </Button>
+        )}
+      </form.Subscribe>
     </form>
   )
 }
