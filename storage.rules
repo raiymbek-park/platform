@@ -1,0 +1,21 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // App assets: world-readable, written only via deploy/Admin SDK.
+    match /assets/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Resident files: readable and writable only by the matching owner.
+    match /users/{uid}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Everything else is denied.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

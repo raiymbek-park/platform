@@ -17,6 +17,10 @@ logs
 node_modules
 npm-debug.log*
 
+# firebase
+.firebase/
+.runtimeconfig.json
+
 # testing & analysis
 coverage
 playwright-report
