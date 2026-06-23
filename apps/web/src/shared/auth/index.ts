@@ -1,6 +1,6 @@
 export {
+  ensureResidentSession,
   getLockRemaining,
-  hasValidAccessToken,
   hasValidRefreshToken,
   isLocked,
   refreshSession,

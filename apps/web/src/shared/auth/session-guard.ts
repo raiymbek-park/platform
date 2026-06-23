@@ -1,6 +1,8 @@
 import type { QueryClient } from '@tanstack/react-query'
 import type { trpc } from '@/shared/api'
 
+import { redirect } from '@tanstack/react-router'
+
 import { trpcClient } from '@/shared/api'
 
 import { useAuthStore } from './use-auth-store'
@@ -33,6 +35,15 @@ export const refreshSession = async () => {
     clear()
     return false
   }
+}
+
+// Route guard for resident-only screens (home + its sibling tabs): admit a valid
+// access token, silently rotate an expired one against a live refresh token, and
+// fall back to the welcome screen when the session cannot be renewed.
+export const ensureResidentSession = async () => {
+  if (hasValidAccessToken()) return
+  if (hasValidRefreshToken() && (await refreshSession())) return
+  throw redirect({ to: '/onboarding/welcome' })
 }
 
 export const getLockRemaining = async (

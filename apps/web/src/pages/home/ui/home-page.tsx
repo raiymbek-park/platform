@@ -1,8 +1,21 @@
-import css from './home-page.module.scss'
+import { Content, ScreenHeader } from '@raiymbek-park/ui'
+
+import { BottomNav } from '@/widgets/bottom-nav'
+
+import { BuildingHero } from './building-hero'
+import { ContactsSection } from './contacts-section'
+import { ServicesSection } from './services-section'
+import { WelcomeFeed } from './welcome-feed'
 
 export const HomePage = () => (
-  <section className={css.page}>
-    <h1 className={css.title}>Привет, Азиза! 👋</h1>
-    <p className={css.body}>Главный экран — скоро здесь появятся сервисы.</p>
-  </section>
+  <>
+    <ScreenHeader />
+    <BuildingHero />
+    <Content>
+      <WelcomeFeed />
+      <ServicesSection />
+      <ContactsSection />
+    </Content>
+    <BottomNav active='/home' />
+  </>
 )

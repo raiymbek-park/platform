@@ -3,15 +3,14 @@ import type { QueryClient } from '@tanstack/react-query'
 import { act } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
-// Mock the tRPC client at the network boundary so refreshSession can be
-// tested without a real HTTP connection. vi.hoisted ensures the fn reference
-// is created before vi.mock's factory runs (vi.mock is hoisted to the top).
 const { mockRefreshMutate } = vi.hoisted(() => ({
   mockRefreshMutate: vi.fn(),
 }))
 vi.mock('@/shared/api', () => ({
   trpcClient: { auth: { refresh: { mutate: mockRefreshMutate } } },
 }))
+
+import { NOW, tokenPair } from '@/test/auth-fixtures'
 
 import {
   getLockRemaining,
@@ -21,15 +20,6 @@ import {
   refreshSession,
 } from './session-guard'
 import { useAuthStore } from './use-auth-store'
-
-const NOW = 1_700_000_000_000
-
-const tokenPair = (accessExpiry: number, refreshExpiry: number) => ({
-  accessToken: 'access',
-  accessTokenExpiresAt: accessExpiry,
-  refreshToken: 'refresh',
-  refreshTokenExpiresAt: refreshExpiry,
-})
 
 beforeEach(() => {
   vi.useFakeTimers()

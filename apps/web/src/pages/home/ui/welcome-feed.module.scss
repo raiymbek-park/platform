@@ -1,0 +1,16 @@
+.changes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.state {
+  color: var(--foreground);
+  font-size: var(--font-size-13);
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.7;
+}

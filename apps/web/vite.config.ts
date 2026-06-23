@@ -12,6 +12,7 @@ export default defineConfig({
       autoCodeSplitting: true,
       routesDirectory: './src/app/routes',
       generatedRouteTree: './src/app/routeTree.gen.ts',
+      routeFileIgnorePattern: '\\.test\\.',
     }),
     react(),
   ],
@@ -23,6 +24,17 @@ export default defineConfig({
   css: {
     modules: {
       localsConvention: 'camelCaseOnly',
+    },
+  },
+  server: {
+    host: true,
+    allowedHosts: true,
+    proxy: {
+      '/trpc': {
+        target: process.env.VITE_DEV_API_TARGET ?? 'http://localhost:3001',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/trpc/, ''),
+      },
     },
   },
 })
