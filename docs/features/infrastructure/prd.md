@@ -32,8 +32,8 @@ ships every merge automatically.
   - `otpSessions/{phone}` — OTP state per number (send count, resend/lockout timestamps,
     attempt-used flag, verified flag) — the durable home for the onboarding rules.
   - `sessions/{id}` — refresh-token records (hashed token, expiry, single-use flag).
-  - `content/{changes|services|contacts}` — home screen content, editable without a
-    redeploy.
+  - `content` (collection) — documents `changes`, `services`, and `contacts`, each holding
+    the home screen's list for that content type; editable without a redeploy.
 - **API on Cloud Functions gen2** — the existing tRPC router served from one HTTPS function
   (`api`), `minInstances: 0` (sleeps when idle), CORS restricted to the GitHub Pages
   origin. The web app reaches it via `VITE_API_URL`, with end-to-end tRPC types flowing to

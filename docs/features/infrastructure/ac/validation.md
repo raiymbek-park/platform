@@ -16,13 +16,15 @@
          `users/{uid}/**` is readable and writable only by the matching authenticated owner
          any other path is denied
 
-## Scenario 3: CORS restricted to the Pages origin
+## Scenario 3: CORS scoped to the Pages origin
 
   Given: the `api` function has CORS configured
-  When:  a request arrives from the GitHub Pages origin
-  Then:  the request is allowed
-  And when: a request arrives from any other origin
-  Then:  the request is rejected by CORS
+  When:  a browser makes a cross-origin request from the GitHub Pages origin, including the
+         preflight `OPTIONS`
+  Then:  the response carries `Access-Control-Allow-Origin` for that origin and the preflight
+         succeeds
+  And when: a request originates from any other web origin
+  Then:  no permissive CORS headers are returned, so the browser blocks the response
 
 ## Scenario 4: Secrets never reach the web bundle
 
