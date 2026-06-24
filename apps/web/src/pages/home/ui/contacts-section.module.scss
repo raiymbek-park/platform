@@ -7,7 +7,7 @@
 .card {
   background: var(--surface);
   border-radius: var(--radius-24);
-  box-shadow: 0 3px 10px rgba(43, 52, 64, 0.03);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--shadow) 3%, transparent);
   display: flex;
   flex-direction: column;
   padding: var(--spacing-sm) var(--spacing-base);

@@ -1,5 +1,5 @@
 {
-  "version": "2.13",
+  "version": "2.14",
   "children": [
     {
       "type": "frame",
@@ -1047,6 +1047,20 @@
               }
             },
             {
+              "type": "text",
+              "id": "JaEim",
+              "name": "Hint",
+              "opacity": 0.6,
+              "fill": "$foreground",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "«Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google»",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 8,
+              "fontWeight": "500"
+            },
+            {
               "id": "k5eQKq",
               "type": "ref",
               "ref": "ds:ButtonPrimary",
@@ -1361,5 +1375,6 @@
   },
   "imports": {
     "ds": "design-system.lib.pen"
-  }
+  },
+  "fileToken": "5cf2b200-5b2f-4df7-9109-b5002585daa1"
 }

@@ -39,7 +39,7 @@ export const Button = ({
         <Icon
           className={isLoading ? css.spinner : undefined}
           glyph={glyph}
-          size={20}
+          size={18}
         />
       )}
       {children}
