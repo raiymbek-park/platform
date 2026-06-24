@@ -10,13 +10,17 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
+    "test:emulator": "firebase emulators:exec --only firestore \"vitest run\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@trpc/server": "11.18.0",
+    "firebase-admin": "14.0.0",
+    "libphonenumber-js": "1.13.7",
     "zod": "4.4.3"
   },
   "devDependencies": {
+    "@firebase/rules-unit-testing": "5.0.1",
     "@types/node": "25.9.3",
     "tsx": "4.22.4"
   }

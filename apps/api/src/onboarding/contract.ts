@@ -1,3 +1,7 @@
+import {
+  isValidPhoneNumber,
+  parsePhoneNumberFromString,
+} from 'libphonenumber-js'
 import { z } from 'zod'
 
 export const blockIds = [1, 2, 3, 4] as const
@@ -30,22 +34,14 @@ export const roles = ['owner', 'tenant'] as const
 
 export type Role = (typeof roles)[number]
 
-export const OTP_CODE_LENGTH = 4
-
-const otpCodePattern = new RegExp(`^\\d{${OTP_CODE_LENGTH}}$`)
-
 const NAME_MIN = 2
 const NAME_MAX = 60
 
-// Extracts the 10 local digits, dropping a single leading 7/8 country/trunk digit.
-export const phoneDigits = (value: string) => {
-  const digits = value.replace(/\D/g, '')
-  const local =
-    digits.startsWith('7') || digits.startsWith('8') ? digits.slice(1) : digits
-  return local.slice(0, 10)
-}
-
-export const normalizePhone = (value: string) => `+7${phoneDigits(value)}`
+// Parse against the Kazakhstan default so a local 8-trunk prefix or a bare number
+// resolves to +7; an explicit country code (+1, +44, …) is respected as dialed.
+export const normalizePhone = (value: string) =>
+  parsePhoneNumberFromString(value, 'KZ')?.number ??
+  `+${value.replace(/\D/g, '')}`
 
 export const nameSchema = z
   .string()
@@ -60,27 +56,11 @@ export const nameSchema = z
 
 export const phoneSchema = z
   .string()
-  .refine(v => phoneDigits(v).length === 10, 'Введите 10 цифр номера')
+  .refine(v => isValidPhoneNumber(v, 'KZ'), 'Введите корректный номер')
 
 export const APARTMENT_RANGE_MESSAGE = 'Квартира вне диапазона выбранного блока'
 
-// Server inputs additionally normalize the phone to +7XXXXXXXXXX.
 const phone = phoneSchema.transform(normalizePhone)
-
-export const sendInputSchema = z.object({ phone })
-
-export const statusInputSchema = z.object({ phone })
-
-export const verifyInputSchema = z.object({
-  code: z
-    .string()
-    .regex(otpCodePattern, `Код должен состоять из ${OTP_CODE_LENGTH} цифр`),
-  phone,
-})
-
-export const refreshInputSchema = z.object({
-  refreshToken: z.string().min(1, 'Отсутствует refreshToken'),
-})
 
 export const registerInputSchema = z
   .object({

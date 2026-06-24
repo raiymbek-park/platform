@@ -1,10 +1,12 @@
 import { createHTTPServer } from '@trpc/server/adapters/standalone'
 
+import { createContext } from './context'
 import { appRouter } from './router'
 
 const port = Number(process.env.PORT ?? 3001)
 
 const server = createHTTPServer({
+  createContext,
   router: appRouter,
   middleware: (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*')

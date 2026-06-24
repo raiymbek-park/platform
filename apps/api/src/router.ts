@@ -1,11 +1,13 @@
 import { homeRouter } from './home/router'
-import { authRouter, otpRouter, residentRouter } from './onboarding/router'
+import { residentRouter } from './onboarding/router'
 import { publicProcedure, router } from './trpc'
 
+export type { Context } from './context'
+
+export { createContext } from './context'
+
 export const appRouter = router({
-  auth: authRouter,
   home: homeRouter,
-  otp: otpRouter,
   resident: residentRouter,
   welcome: publicProcedure.query(() => ({
     message: 'Добро пожаловать в Raiymbek Park',
