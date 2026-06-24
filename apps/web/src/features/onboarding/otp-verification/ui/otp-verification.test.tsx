@@ -1,602 +1,298 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { act } from 'react'
-import { beforeEach, expect, test, vi } from 'vitest'
+import type { UserEvent } from '@testing-library/user-event'
+
+import { act, fireEvent, screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { useOnboardingStore } from '@/features/onboarding/registration-form'
-import { useAuthStore } from '@/shared/auth'
+import { useConfirmationStore } from '@/shared/auth'
+import { stubClipboard } from '@/shared/test/clipboard'
+import { firebaseAuth } from '@/shared/test/firebase-auth'
+import { renderApp } from '@/shared/test/render-app'
+import {
+  trpcMutation,
+  trpcMutationError,
+  trpcServer,
+} from '@/shared/test/trpc-server'
 
-// Mock at the network boundary (model hooks); real stores and lib stay.
-const mockVerifyMutate = vi.fn()
-const mockVerifyReset = vi.fn()
-const mockVerifyOtp = {
-  error: null as unknown,
-  isError: false,
-  isPending: false,
-  mutate: mockVerifyMutate,
-  reset: mockVerifyReset,
-}
-vi.mock('../model/use-verify-otp', () => ({
-  useVerifyOtp: () => mockVerifyOtp,
-}))
-
-const mockRegisterMutate = vi.fn()
-const mockRegisterReset = vi.fn()
-const mockRegisterResident = {
-  isError: false,
-  isPending: false,
-  mutate: mockRegisterMutate,
-  reset: mockRegisterReset,
-}
-vi.mock('../model/use-register-resident', () => ({
-  useRegisterResident: () => mockRegisterResident,
-}))
-
-const mockResendMutate = vi.fn()
-const mockResendOtp = {
-  isError: false,
-  isPending: false,
-  mutate: mockResendMutate,
-  reset: vi.fn(),
-}
-vi.mock('../model/use-resend-otp', () => ({
-  useResendOtp: () => mockResendOtp,
-}))
-
-const mockOtpStatus = {
-  data: null as {
-    resendAvailableAt: number
-    verifyUsed?: boolean
-    hasActiveCode?: boolean
-    sendCount?: number
-  } | null,
-}
-vi.mock('../model/use-otp-status', () => ({
-  useOtpStatus: () => mockOtpStatus,
-}))
-
-vi.mock('../lib/use-clipboard-code', () => ({
-  useClipboardCode: () => mockClipboardCode,
-}))
-let mockClipboardCode: string | null = null
-
-const mockNavigate = vi.fn()
-vi.mock('@tanstack/react-router', () => ({
-  useNavigate: () => mockNavigate,
-}))
-
-import { OtpVerification } from './otp-verification'
-
-const PENDING_PHONE = '+77071234567'
-
-const tokenPair = {
-  accessToken: 'access-tok',
-  accessTokenExpiresAt: Date.now() + 3600_000,
-  refreshToken: 'refresh-tok',
-  refreshTokenExpiresAt: Date.now() + 86400_000,
-}
+const phone = '+77071234567'
 
 const cells = () => screen.getAllByRole('textbox')
 
-const cellAt = (index: number) => {
-  const cell = cells()[index]
-  if (!cell) throw new Error(`No OTP cell at index ${index}`)
-  return cell
+const cell = (index: number) => {
+  const node = cells()[index]
+  if (!node) throw new Error(`No OTP cell at index ${index}`)
+  return node
 }
 
-const expectCellsDisabled = () => {
-  cells().forEach(cell => {
-    expect(cell).toBeDisabled()
+const expectCellsEmpty = () =>
+  cells().forEach(node => {
+    expect(node).toHaveValue('')
   })
-}
 
-const expectCellsEmpty = () => {
-  cells().forEach(cell => {
-    expect(cell).toHaveValue('')
-  })
-}
-
-const expectCellValues = (code: string) => {
-  code.split('').forEach((digit, i) => {
-    expect(cellAt(i)).toHaveValue(digit)
-  })
-}
-
-const seedStore = () => {
-  act(() => {
-    useOnboardingStore.getState().setDraft({
-      name: 'Алиса',
-      phone: PENDING_PHONE,
-      block: 1,
-      apartment: 42,
-      role: 'owner',
-    })
-  })
-}
-
-const renderVerify = () => {
-  seedStore()
-  const user = userEvent.setup()
-  const { rerender } = render(<OtpVerification />)
-  return { rerender: () => rerender(<OtpVerification />), user }
-}
-
-const typeDigit = (
-  user: ReturnType<typeof userEvent.setup>,
-  index: number,
-  digit: string,
-) => user.type(cellAt(index), digit)
-
-const fillCells = (user: ReturnType<typeof userEvent.setup>, digits: string) =>
-  digits
-    .split('')
-    .reduce(
-      (chain, digit, index) => chain.then(() => typeDigit(user, index, digit)),
-      Promise.resolve(),
-    )
-
-const makeVerifySucceed = (result = { verified: true }) => {
-  mockVerifyMutate.mockImplementation(
-    (_args: unknown, callbacks: { onSuccess?: (r: unknown) => void }) => {
-      Promise.resolve().then(() => callbacks?.onSuccess?.(result))
-    },
+const typeCode = (user: UserEvent, code: string) =>
+  [...code].reduce(
+    (chain, digit, index) => chain.then(() => user.type(cell(index), digit)),
+    Promise.resolve(),
   )
+
+const resendButton = () =>
+  screen.getByRole('button', { name: /Запросить пин повторно/ })
+
+const arriveAtVerification = async () => {
+  const app = renderApp('/onboarding/welcome')
+  const { user } = app
+
+  await user.type(await screen.findByLabelText('Имя'), 'Алиса')
+  const phoneField = screen.getByLabelText('Телефон')
+  await user.clear(phoneField)
+  await user.type(phoneField, phone)
+  await user.click(screen.getByRole('button', { name: /Блок 1/ }))
+  await user.type(screen.getByLabelText('Номер квартиры'), '42')
+  await user.click(screen.getByRole('button', { name: /Собственник/ }))
+
+  const submit = screen.getByRole('button', { name: /Далее/ })
+  await waitFor(() => expect(submit).toBeEnabled())
+  await user.click(submit)
+
+  await screen.findByText('Введите код из SMS')
+  return app
 }
 
-const makeVerifyFail = (error: unknown) => {
-  mockVerifyMutate.mockImplementation(
-    (_args: unknown, callbacks: { onError?: (e: unknown) => void }) => {
-      mockVerifyOtp.isError = true
-      mockVerifyOtp.error = error
-      Promise.resolve().then(() => callbacks?.onError?.(error))
-    },
-  )
+const revealClipboardCode = (code: string) => {
+  stubClipboard(code)
+  fireEvent(window, new Event('focus'))
 }
-
-const makeRegisterSucceed = () => {
-  mockRegisterMutate.mockImplementation(
-    (_args: unknown, callbacks: { onSuccess?: (r: unknown) => void }) => {
-      Promise.resolve().then(() => {
-        useAuthStore.getState().setTokens(tokenPair)
-        callbacks?.onSuccess?.(tokenPair)
-      })
-    },
-  )
-}
-
-const WRONG_CODE_ERR = { data: { code: 'BAD_REQUEST' } }
 
 beforeEach(() => {
-  mockVerifyOtp.isPending = false
-  mockVerifyOtp.isError = false
-  mockVerifyOtp.error = null
-  mockVerifyMutate.mockReset()
-  mockVerifyReset.mockReset()
-  mockRegisterResident.isPending = false
-  mockRegisterResident.isError = false
-  mockRegisterMutate.mockReset()
-  mockRegisterReset.mockReset()
-  mockResendOtp.isPending = false
-  mockResendOtp.isError = false
-  mockResendMutate.mockReset()
-  mockOtpStatus.data = null
-  mockNavigate.mockReset()
-  mockClipboardCode = null
-
-  act(() => {
-    useOnboardingStore.getState().reset()
-    useAuthStore.getState().clear()
-  })
-
-  mockOtpStatus.data = { resendAvailableAt: Date.now() + 60_000 }
+  firebaseAuth.reset()
+  stubClipboard(null)
+  useOnboardingStore.getState().reset()
+  useConfirmationStore.getState().clear()
+  sessionStorage.clear()
 })
 
-test('happy S3 — displays pending phone in format +7 707 123 45 67', () => {
-  renderVerify()
+afterEach(() => {
+  vi.useRealTimers()
+})
+
+test('happy-path 4: the verification screen shows the number and six empty cells', async () => {
+  await arriveAtVerification()
 
   expect(screen.getByText('+7 707 123 45 67')).toBeInTheDocument()
-})
-
-test('happy S3 — shows 4 empty cells and countdown label on load', () => {
-  renderVerify()
-
-  expect(cells()).toHaveLength(4)
+  expect(cells()).toHaveLength(6)
   expectCellsEmpty()
-  expect(screen.getByText(/Повторно через/)).toBeInTheDocument()
-  expect(
-    screen.getByRole('button', { name: /Вставить код из буфера/ }),
-  ).toBeInTheDocument()
 })
 
-test('happy S4 — typing a digit advances focus to the next cell', async () => {
-  const { user } = renderVerify()
+test('happy-path 5: typing a digit advances focus to the next cell', async () => {
+  const { user } = await arriveAtVerification()
 
-  await typeDigit(user, 0, '1')
-  expect(cellAt(1)).toHaveFocus()
+  await user.type(cell(0), '1')
+
+  expect(cell(1)).toHaveFocus()
 })
 
-test('happy S4 — after the fourth digit focus stays on the fourth cell', async () => {
-  // verify hangs so cells stay filled and focus stays on 4th
-  mockVerifyMutate.mockImplementation(() => {})
-  const { user } = renderVerify()
+test('happy-path 6: backspace on an empty cell moves focus to the previous cell', async () => {
+  const { user } = await arriveAtVerification()
 
-  await fillCells(user, '1234')
-
-  expect(cellAt(3)).toHaveFocus()
-})
-
-test('validation S6 — non-digit character is ignored, cell stays empty', () => {
-  renderVerify()
-
-  fireEvent.change(cellAt(0), { target: { value: 'a' } })
-
-  expect(cellAt(0)).toHaveValue('')
-})
-
-test('happy S10 — backspace on empty second cell moves focus to first cell', async () => {
-  const { user } = renderVerify()
-
-  await user.click(cellAt(1))
+  await user.click(cell(1))
   await user.keyboard('{Backspace}')
 
-  expect(cellAt(0)).toHaveFocus()
+  expect(cell(0)).toHaveFocus()
 })
 
-test('happy S10 — backspace on empty first cell keeps focus on first cell', async () => {
-  const { user } = renderVerify()
+test('validation 14: a code cell holds only one digit', async () => {
+  await arriveAtVerification()
 
-  cellAt(0).focus()
-  await user.keyboard('{Backspace}')
+  fireEvent.change(cell(0), { target: { value: '12' } })
 
-  expect(cellAt(0)).toHaveFocus()
+  expect(cell(0)).toHaveValue('2')
 })
 
-test('happy S5 — entering 4 digits triggers verify automatically', async () => {
-  makeVerifySucceed()
-  makeRegisterSucceed()
-  const { user } = renderVerify()
+test('happy-path 7: a correct code registers the resident and lands on home', async () => {
+  const { user, currentPath } = await arriveAtVerification()
 
-  await fillCells(user, '1234')
+  await typeCode(user, '123456')
 
-  await waitFor(() =>
-    expect(mockVerifyMutate).toHaveBeenCalledWith(
-      { code: '1234', phone: PENDING_PHONE },
-      expect.any(Object),
-    ),
+  await waitFor(() => expect(currentPath()).toBe('/home'))
+  expect(await screen.findByText(/Привет/)).toBeInTheDocument()
+})
+
+test('happy-path 7: the registered resident carries the draft details to the backend', async () => {
+  const received: unknown[] = []
+  trpcServer.use(
+    trpcMutation('resident.register', input => {
+      received.push(input)
+      return { resident: input }
+    }),
   )
-})
+  const { user } = await arriveAtVerification()
 
-test('happy S5 — after verify succeeds, resident is registered with draft data', async () => {
-  makeVerifySucceed()
-  makeRegisterSucceed()
-  const { user } = renderVerify()
+  await typeCode(user, '123456')
 
-  await fillCells(user, '5678')
-
-  await waitFor(() =>
-    expect(mockRegisterMutate).toHaveBeenCalledWith(
-      {
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        phone: PENDING_PHONE,
-        role: 'owner',
-      },
-      expect.any(Object),
-    ),
-  )
-})
-
-test('happy S5 — tokens are saved to authStore and app navigates to /home', async () => {
-  makeVerifySucceed()
-  makeRegisterSucceed()
-  const { user } = renderVerify()
-
-  await fillCells(user, '1234')
-
-  await waitFor(() => {
-    expect(useAuthStore.getState().tokens).toEqual(tokenPair)
-    expect(mockNavigate).toHaveBeenCalledWith({ to: '/home' })
+  await waitFor(() => expect(received).toHaveLength(1))
+  expect(received[0]).toMatchObject({
+    apartment: 42,
+    block: 1,
+    name: 'Алиса',
+    phone,
+    role: 'owner',
   })
 })
 
-test('happy S7 — paste button fills cells with clipboard code and triggers verify', async () => {
-  mockClipboardCode = '4321'
-  makeVerifySucceed()
-  makeRegisterSucceed()
-  const { user } = renderVerify()
+test('happy-path 9: pasting a clipboard code fills the cells, confirms, and lands on home', async () => {
+  const { user, currentPath } = await arriveAtVerification()
+  revealClipboardCode('432109')
 
   await user.click(
-    screen.getByRole('button', { name: /Вставить код из буфера/ }),
+    await screen.findByRole('button', { name: /Вставить код из буфера/ }),
   )
 
-  expectCellValues('4321')
-
-  await waitFor(() =>
-    expect(mockVerifyMutate).toHaveBeenCalledWith(
-      { code: '4321', phone: PENDING_PHONE },
-      expect.any(Object),
-    ),
-  )
+  await waitFor(() => expect(currentPath()).toBe('/home'))
+  expect(await screen.findByText(/Привет/)).toBeInTheDocument()
 })
 
-test('validation S7 — paste button is disabled when clipboard has no 4-digit code', () => {
-  mockClipboardCode = null
-  renderVerify()
+test('error-states 2: a wrong code shows the wrong-code error and clears the cells', async () => {
+  firebaseAuth.rejectCodeAsWrong()
+  const { user, currentPath } = await arriveAtVerification()
+
+  await typeCode(user, '999999')
+
+  expect(await screen.findByText(/Неверный код/)).toBeInTheDocument()
+  await waitFor(() => expectCellsEmpty())
+  expect(currentPath()).toBe('/onboarding/verification')
+})
+
+test('error-states 3: a network failure during the check shows the connection error and clears the cells', async () => {
+  firebaseAuth.rejectCodeWithNetworkError()
+  const { user } = await arriveAtVerification()
+
+  await typeCode(user, '555555')
 
   expect(
-    screen.getByRole('button', { name: /Вставить код из буфера/ }),
-  ).toBeDisabled()
-})
-
-test('validation S7 — paste button is enabled when clipboard holds exactly 4 digits', () => {
-  mockClipboardCode = '9876'
-  renderVerify()
-
-  expect(
-    screen.getByRole('button', { name: /Вставить код из буфера/ }),
-  ).not.toBeDisabled()
-})
-
-test('error S2 — paste cannot bypass the lock while the attempt is spent', () => {
-  // A spent attempt (e.g. a wrong code surviving a reload) locks the cells; the paste
-  // action must respect that lock even with a valid code on the clipboard.
-  mockClipboardCode = '9876'
-  mockOtpStatus.data = {
-    resendAvailableAt: Date.now() + 60_000,
-    verifyUsed: true,
-  }
-  renderVerify()
-
-  expectCellsDisabled()
-  expect(
-    screen.getByRole('button', { name: /Вставить код из буфера/ }),
-  ).toBeDisabled()
-})
-
-test('happy S9 — cells are disabled while verify is pending', () => {
-  mockVerifyOtp.isPending = true
-  renderVerify()
-
-  expectCellsDisabled()
-})
-
-test('happy S9 — cells are disabled while register is pending', () => {
-  mockRegisterResident.isPending = true
-  renderVerify()
-
-  expectCellsDisabled()
-})
-
-test('validation S8 — Resend button appears when timer ends, paste button disappears', () => {
-  mockOtpStatus.data = { resendAvailableAt: Date.now() - 1000 }
-  renderVerify()
-
-  expect(
-    screen.getByRole('button', { name: /Отправить повторно/ }),
+    await screen.findByText(/Не удалось проверить код/),
   ).toBeInTheDocument()
-  expect(screen.queryByText(/Повторно через/)).not.toBeInTheDocument()
+  await waitFor(() => expectCellsEmpty())
 })
 
-test('error S1 — wrong code (server rejection) locks cells and keeps the entered digits', async () => {
-  makeVerifyFail(WRONG_CODE_ERR)
-  const { rerender, user } = renderVerify()
+test('error-states 2: after a wrong code, re-entering a correct code confirms again', async () => {
+  firebaseAuth.rejectCodeAsWrong()
+  const { user, currentPath } = await arriveAtVerification()
 
-  await fillCells(user, '9999')
-  await waitFor(() => expect(mockVerifyMutate).toHaveBeenCalledTimes(1))
+  await typeCode(user, '111111')
+  await screen.findByText(/Неверный код/)
+  await waitFor(() => expect(cell(0)).toHaveValue(''))
 
-  // The failed verify invalidates otp.status; the refetch reports the spent
-  // attempt, which is what locks the cells (server-driven, not a local flag).
-  mockOtpStatus.data = {
-    resendAvailableAt: Date.now() + 60_000,
-    verifyUsed: true,
-  }
-  act(() => rerender())
+  firebaseAuth.reset()
+  await typeCode(user, '123456')
 
-  expect(screen.getByText(/Неверный код/)).toBeInTheDocument()
-  expect(mockNavigate).not.toHaveBeenCalled()
-
-  expectCellValues('9999')
-  expectCellsDisabled()
+  await waitFor(() => expect(currentPath()).toBe('/home'))
 })
 
-test('error S2 — spent attempt keeps cells locked until a fresh code is requested', async () => {
-  makeVerifyFail(WRONG_CODE_ERR)
-  const { rerender, user } = renderVerify()
+test('error-states 4: a registration failure keeps the verification screen with a retry that recovers', async () => {
+  trpcServer.use(trpcMutationError('resident.register'))
+  const { user, currentPath } = await arriveAtVerification()
 
-  await fillCells(user, '1111')
-  await waitFor(() => expect(mockVerifyMutate).toHaveBeenCalledTimes(1))
-
-  mockOtpStatus.data = {
-    resendAvailableAt: Date.now() + 60_000,
-    verifyUsed: true,
-  }
-  act(() => rerender())
-
-  expect(screen.getByText(/Неверный код/)).toBeInTheDocument()
-  expectCellsDisabled()
+  await typeCode(user, '123456')
 
   expect(
-    screen.queryByRole('button', { name: /Отправить повторно/ }),
-  ).not.toBeInTheDocument()
-  expect(mockNavigate).not.toHaveBeenCalled()
-})
-
-test('error S3 — tapping Resend calls resendOtp and clears cells', async () => {
-  mockOtpStatus.data = { resendAvailableAt: Date.now() - 1000 }
-  mockResendMutate.mockImplementation(
-    (
-      _args: unknown,
-      callbacks: { onSuccess?: (r: { lockedUntil: null }) => void },
-    ) => {
-      Promise.resolve().then(() =>
-        callbacks?.onSuccess?.({ lockedUntil: null }),
-      )
-    },
-  )
-  const { user } = renderVerify()
-
-  await user.click(screen.getByRole('button', { name: /Отправить повторно/ }))
-
-  await waitFor(() => {
-    expect(mockResendMutate).toHaveBeenCalledWith(
-      { phone: PENDING_PHONE },
-      expect.any(Object),
-    )
-  })
-
-  expectCellsEmpty()
-})
-
-test('error S5 — network verify failure clears cells and shows error', async () => {
-  makeVerifyFail(new Error('Network error'))
-  const { user } = renderVerify()
-
-  await fillCells(user, '5555')
-
-  await waitFor(() => {
-    expect(screen.getByText(/Не удалось проверить код/)).toBeInTheDocument()
-  })
-
-  // Cells clear on network failure (attempt is NOT spent — code can be retried)
-  expectCellsEmpty()
-})
-
-test('error S5 — after network failure, re-completing the cells triggers verify again', async () => {
-  const networkErr = new Error('Network error')
-  let callCount = 0
-  mockVerifyMutate.mockImplementation(
-    (
-      _args: unknown,
-      callbacks: { onSuccess?: () => void; onError?: (e: unknown) => void },
-    ) => {
-      callCount++
-      if (callCount === 1) {
-        mockVerifyOtp.error = networkErr
-        mockVerifyOtp.isError = true
-        Promise.resolve().then(() => callbacks?.onError?.(networkErr))
-      } else {
-        Promise.resolve().then(() => callbacks?.onSuccess?.())
-      }
-    },
-  )
-  makeRegisterSucceed()
-  const { user } = renderVerify()
-
-  await fillCells(user, '5555')
-  await waitFor(() => expect(mockVerifyMutate).toHaveBeenCalledTimes(1))
-  await waitFor(() => expect(cellAt(0)).toHaveValue(''))
-
-  await fillCells(user, '5555')
-  await waitFor(() => expect(mockVerifyMutate).toHaveBeenCalledTimes(2))
-})
-
-test('error S6 — register network error stores no tokens and keeps user on verify', async () => {
-  makeVerifySucceed()
-  // register() does not pass onError to mutate, so the failure is only visible
-  // via registerResident.isError on the next render.
-  mockRegisterMutate.mockImplementation(() => {
-    mockRegisterResident.isError = true
-  })
-  const { rerender, user } = renderVerify()
-
-  await fillCells(user, '1234')
-
-  await waitFor(() => expect(mockRegisterMutate).toHaveBeenCalledTimes(1))
-  act(() => rerender())
-
-  expect(useAuthStore.getState().tokens).toBeNull()
-  expect(mockNavigate).not.toHaveBeenCalled()
-  expect(
-    screen.getByText(/Не удалось завершить регистрацию/),
+    await screen.findByText(/Не удалось завершить регистрацию/),
   ).toBeInTheDocument()
-})
+  expect(currentPath()).toBe('/onboarding/verification')
 
-test('error S6 — after register fails, retry re-runs registration and navigates on success', async () => {
-  makeVerifySucceed()
-  let registerCallCount = 0
-  mockRegisterMutate.mockImplementation(
-    (_args: unknown, callbacks: { onSuccess?: (r: unknown) => void }) => {
-      registerCallCount++
-      if (registerCallCount === 1) {
-        mockRegisterResident.isError = true
-      } else {
-        mockRegisterResident.isError = false
-        Promise.resolve().then(() => {
-          useAuthStore.getState().setTokens(tokenPair)
-          callbacks?.onSuccess?.(tokenPair)
-        })
-      }
-    },
-  )
-  const { rerender, user } = renderVerify()
-
-  await fillCells(user, '1234')
-
-  await waitFor(() => expect(mockRegisterMutate).toHaveBeenCalledTimes(1))
-  act(() => rerender())
-
+  trpcServer.resetHandlers()
   await user.click(screen.getByRole('button', { name: /Повторить попытку/ }))
 
-  await waitFor(() => {
-    expect(mockRegisterMutate).toHaveBeenCalledTimes(2)
-    expect(mockVerifyMutate).toHaveBeenCalledTimes(1)
-    expect(useAuthStore.getState().tokens).toEqual(tokenPair)
-    expect(mockNavigate).toHaveBeenCalledWith({ to: '/home' })
-  })
+  await waitFor(() => expect(currentPath()).toBe('/home'))
 })
 
-test('error S4 — FORBIDDEN (locked) shows network error and clears the cells', async () => {
-  makeVerifyFail({ data: { code: 'FORBIDDEN' } })
-  const { user } = renderVerify()
+test('error-states 5: a resend failure keeps the screen and lets the user retry', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  const { user, currentPath } = await arriveAtVerification()
 
-  await fillCells(user, '1234')
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  firebaseAuth.failSend()
 
-  await waitFor(() =>
-    expect(screen.getByText(/Не удалось проверить код/)).toBeInTheDocument(),
-  )
+  await user.click(resendButton())
 
-  expect(screen.queryByText(/Неверный код/)).not.toBeInTheDocument()
+  expect(
+    await screen.findByText(/Не удалось проверить код/),
+  ).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/verification')
+})
+
+test('edge-cases 2: the resend control is disabled during the cooldown and enables at 0:00', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  await arriveAtVerification()
+
+  expect(resendButton()).toBeDisabled()
+  expect(resendButton()).toHaveTextContent('1:00')
+
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+
+  expect(resendButton()).toBeEnabled()
+})
+
+test('edge-cases 3: the resend cooldown escalates 60 → 120 across resends', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  const { user } = await arriveAtVerification()
+
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  expect(resendButton()).toBeEnabled()
+
+  await user.click(resendButton())
+  await act(() => vi.advanceTimersByTimeAsync(0))
+  expect(resendButton()).toHaveTextContent('2:00')
+
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  expect(resendButton()).toBeDisabled()
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  expect(resendButton()).toBeEnabled()
+})
+
+test('edge-cases 4: a successful resend clears the entered cells', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  const { user } = await arriveAtVerification()
+
+  await user.type(cell(0), '1')
+  await user.type(cell(1), '2')
+
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  await user.click(resendButton())
+  await act(() => vi.advanceTimersByTimeAsync(0))
+
   expectCellsEmpty()
 })
 
-test('edge S1 — countdown label shows time derived from resendAvailableAt', () => {
-  mockOtpStatus.data = { resendAvailableAt: Date.now() + 120_000 }
-  renderVerify()
-
-  // The exact seconds may vary by 1 due to ceil, but minutes part is 2
-  expect(screen.getByText(/Повторно через 2:/)).toBeInTheDocument()
-})
-
-test('lockout S2 — resend returning lockedUntil navigates to /onboarding/locked', async () => {
-  mockOtpStatus.data = { resendAvailableAt: Date.now() - 1000 }
-  const lockedUntil = Date.now() + 86_400_000
-  mockResendMutate.mockImplementation(
-    (_args: unknown, callbacks: { onSuccess?: (r: unknown) => void }) => {
-      Promise.resolve().then(() => callbacks?.onSuccess?.({ lockedUntil }))
-    },
-  )
-  const { user } = renderVerify()
-
-  await user.click(screen.getByRole('button', { name: /Отправить повторно/ }))
-
-  await waitFor(() =>
-    expect(mockNavigate).toHaveBeenCalledWith({ to: '/onboarding/locked' }),
-  )
-})
-
-test('lockout S5 CTA — fresh session (hasActiveCode false, sendCount 0) labels primary action "Отправить код"', () => {
-  mockOtpStatus.data = {
-    resendAvailableAt: Date.now() - 1000,
-    hasActiveCode: false,
-    sendCount: 0,
-  }
-  renderVerify()
+test('edge-cases 5: a detected clipboard code replaces the resend control with the paste action', async () => {
+  await arriveAtVerification()
+  revealClipboardCode('246802')
 
   expect(
-    screen.getByRole('button', { name: /Отправить код/ }),
+    await screen.findByRole('button', { name: /Вставить код из буфера/ }),
   ).toBeInTheDocument()
   expect(
-    screen.queryByRole('button', { name: /Отправить повторно/ }),
+    screen.queryByRole('button', { name: /Запросить пин повторно/ }),
   ).not.toBeInTheDocument()
+})
+
+test('edge-cases 8: visiting verification without a pending code redirects to welcome', async () => {
+  const { currentPath } = renderApp('/onboarding/verification')
+
+  await screen.findByLabelText('Имя')
+  expect(currentPath()).toBe('/onboarding/welcome')
+})
+
+test('edge-cases 10: a signed-in resident visiting onboarding lands on home', async () => {
+  firebaseAuth.signIn()
+  const { currentPath } = renderApp('/onboarding/welcome')
+
+  await waitFor(() => expect(currentPath()).toBe('/home'))
+  expect(await screen.findByText(/Привет/)).toBeInTheDocument()
+})
+
+test('edge-cases 9: unauthenticated direct navigation to home redirects to welcome', async () => {
+  const { currentPath } = renderApp('/home')
+
+  await screen.findByLabelText('Имя')
+  expect(currentPath()).toBe('/onboarding/welcome')
 })

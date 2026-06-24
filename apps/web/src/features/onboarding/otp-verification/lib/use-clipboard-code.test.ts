@@ -22,24 +22,30 @@ afterEach(() => {
 
 test.each([
   {
-    name: 'validation S7 — clipboard with exactly 4 digits returns that code',
-    clipboard: '1234',
-    expected: '1234',
+    name: 'validation S7 — clipboard with exactly 6 digits returns that code',
+    clipboard: '123456',
+    expected: '123456',
   },
   {
-    name: 'validation S7 — clipboard with fewer than 4 digits returns null',
-    clipboard: '123',
-    expected: null,
-  },
-  {
-    name: 'validation S7 — clipboard with more than 4 digits returns null',
+    name: 'validation S7 — clipboard with fewer than 6 digits returns null',
     clipboard: '12345',
     expected: null,
   },
   {
-    name: 'validation S7 — clipboard with non-digit characters returns null',
-    clipboard: '12a4',
+    name: 'validation S7 — clipboard with more than 6 digits returns null',
+    clipboard: '1234567',
     expected: null,
+  },
+  {
+    name: 'validation S7 — clipboard with non-digit characters returns null',
+    clipboard: '12a456',
+    expected: null,
+  },
+  {
+    name: 'validation S7 — extracts the standalone code from a full pasted message',
+    clipboard:
+      'Здравствуйте, Азиза! 👋\n\nВаш код для входа в «Raiymbek Park»:\n\n123456\n\nКод действует 5 минут.',
+    expected: '123456',
   },
   {
     name: 'validation S7 — empty clipboard returns null',

@@ -4,11 +4,8 @@ import {
   isApartmentInBlock,
   nameSchema,
   normalizePhone,
-  phoneDigits,
-  refreshInputSchema,
+  phoneSchema,
   registerInputSchema,
-  sendInputSchema,
-  verifyInputSchema,
 } from './contract'
 
 const validResident = {
@@ -19,162 +16,59 @@ const validResident = {
   role: 'owner',
 }
 
-test('send — +7XXXXXXXXXX passes through normalized', () => {
-  expect(sendInputSchema.parse({ phone: '+77071234567' })).toEqual({
-    phone: '+77071234567',
-  })
-})
-
-test('send — 8XXXXXXXXXX is normalized to +7XXXXXXXXXX', () => {
-  expect(sendInputSchema.parse({ phone: '87071234567' })).toEqual({
-    phone: '+77071234567',
-  })
-})
-
-test('send — spaces and dashes are stripped', () => {
-  expect(sendInputSchema.parse({ phone: '+7 707 123-45-67' })).toEqual({
-    phone: '+77071234567',
-  })
-})
-
-test('send — 10 local digits without country code are valid (unified client rule)', () => {
-  expect(sendInputSchema.parse({ phone: '9161234567' })).toEqual({
-    phone: '+79161234567',
-  })
-})
-
-test('send — too short / missing / non-string phone is invalid', () => {
-  expect(sendInputSchema.safeParse({ phone: '+7123' }).success).toBe(false)
-  expect(sendInputSchema.safeParse({}).success).toBe(false)
-  expect(sendInputSchema.safeParse({ phone: 42 }).success).toBe(false)
-})
-
-test('verify — 4-digit code and normalized phone are accepted', () => {
-  expect(
-    verifyInputSchema.parse({ code: '1234', phone: '+77071234567' }),
-  ).toEqual({ code: '1234', phone: '+77071234567' })
-})
-
-test('verify — non-4-digit or missing code is invalid', () => {
-  expect(
-    verifyInputSchema.safeParse({ code: 'abcd', phone: '+77071234567' })
-      .success,
-  ).toBe(false)
-  expect(
-    verifyInputSchema.safeParse({ code: '123', phone: '+77071234567' }).success,
-  ).toBe(false)
-  expect(
-    verifyInputSchema.safeParse({ code: '12345', phone: '+77071234567' })
-      .success,
-  ).toBe(false)
-  expect(verifyInputSchema.safeParse({ phone: '+77071234567' }).success).toBe(
-    false,
-  )
-})
-
-test('register — valid strict resident is accepted', () => {
-  expect(registerInputSchema.parse(validResident)).toEqual(validResident)
-})
-
-test('register — apartment as numeric string is coerced to number', () => {
-  expect(
-    registerInputSchema.parse({ ...validResident, apartment: '42' }).apartment,
-  ).toBe(42)
-})
-
-test('register — apartment 0 or negative is invalid', () => {
-  expect(
-    registerInputSchema.safeParse({ ...validResident, apartment: 0 }).success,
-  ).toBe(false)
-  expect(
-    registerInputSchema.safeParse({ ...validResident, apartment: -1 }).success,
-  ).toBe(false)
-})
-
-test('register — missing or too-short name is invalid', () => {
-  const { name: _name, ...rest } = validResident
-  expect(registerInputSchema.safeParse(rest).success).toBe(false)
-  expect(
-    registerInputSchema.safeParse({ ...validResident, name: 'A' }).success,
-  ).toBe(false)
-})
-
-test('register — block outside 1..4 is invalid (now strict)', () => {
-  expect(
-    registerInputSchema.safeParse({ ...validResident, block: 'A' }).success,
-  ).toBe(false)
-})
-
-test('register — role outside owner/tenant is invalid (now strict)', () => {
-  expect(
-    registerInputSchema.safeParse({ ...validResident, role: 'resident' })
-      .success,
-  ).toBe(false)
-})
-
-test('register — apartment outside the block range is invalid (now strict)', () => {
-  expect(
-    registerInputSchema.safeParse({
-      ...validResident,
-      block: 1,
-      apartment: 71,
-    }).success,
-  ).toBe(false)
-  expect(
-    registerInputSchema.safeParse({
-      ...validResident,
-      block: 2,
-      apartment: 139,
-    }).success,
-  ).toBe(true)
-})
-
-test('refresh — valid token is accepted', () => {
-  expect(refreshInputSchema.parse({ refreshToken: 'some-uuid-token' })).toEqual(
-    {
-      refreshToken: 'some-uuid-token',
-    },
-  )
-})
-
-test('refresh — missing or empty token is invalid', () => {
-  expect(refreshInputSchema.safeParse({}).success).toBe(false)
-  expect(refreshInputSchema.safeParse({ refreshToken: '' }).success).toBe(false)
-})
-
-describe('phoneDigits — extracts the 10 local digits', () => {
-  test('strips formatting and keeps the 10 local digits', () => {
-    expect(phoneDigits('+7 707 123-45-67')).toBe('7071234567')
+describe('normalizePhone — canonical E.164 form', () => {
+  test('Kazakhstan 8-prefix number is stored in +7 E.164 form', () => {
+    expect(normalizePhone('87052266666')).toBe('+77052266666')
   })
 
-  test('drops a single leading 7 country digit', () => {
-    expect(phoneDigits('77071234567')).toBe('7071234567')
+  test('formatted 8-prefix number becomes +7 E.164 form', () => {
+    expect(normalizePhone('8 (705) 226-66-66')).toBe('+77052266666')
   })
 
-  test('drops a single leading 8 trunk digit', () => {
-    expect(phoneDigits('87071234567')).toBe('7071234567')
+  test('formatted +7 number is stored in canonical E.164 form', () => {
+    expect(normalizePhone('+7 (707) 123-45-67')).toBe('+77071234567')
   })
 
-  test('10 local digits with no country/trunk prefix pass through', () => {
-    expect(phoneDigits('9161234567')).toBe('9161234567')
+  test('explicit international +1 number is stored in its E.164 form', () => {
+    expect(normalizePhone('+1 (415) 555-2671')).toBe('+14155552671')
   })
 
-  test('caps at 10 digits, ignoring extra trailing digits', () => {
-    expect(phoneDigits('770712345678901')).toBe('7071234567')
-  })
-})
-
-describe('normalizePhone — canonical +7XXXXXXXXXX form', () => {
-  test('8-prefixed number becomes +7 form', () => {
-    expect(normalizePhone('87071234567')).toBe('+77071234567')
+  test('explicit international +44 number is stored in its E.164 form', () => {
+    expect(normalizePhone('+44 20 7946 0958')).toBe('+442079460958')
   })
 
-  test('already +7 number stays the same', () => {
+  test('already-normalized +7 number is unchanged', () => {
     expect(normalizePhone('+77071234567')).toBe('+77071234567')
   })
 
-  test('bare 10 local digits gain the +7 prefix', () => {
-    expect(normalizePhone('9161234567')).toBe('+79161234567')
+  test('an explicit +8X international number is not rewritten to +7', () => {
+    expect(normalizePhone('+81234567890')).toBe('+81234567890')
+  })
+})
+
+describe('phoneSchema — validates the dialled number', () => {
+  test('accepts a +7 Kazakhstan mobile number', () => {
+    expect(phoneSchema.safeParse('+77052266666').success).toBe(true)
+  })
+
+  test('accepts a Kazakhstan 8-prefix number', () => {
+    expect(phoneSchema.safeParse('87052266666').success).toBe(true)
+  })
+
+  test('accepts a valid international number with explicit country code', () => {
+    expect(phoneSchema.safeParse('+14155552671').success).toBe(true)
+  })
+
+  test('rejects a too-short number', () => {
+    expect(phoneSchema.safeParse('+7705').success).toBe(false)
+  })
+
+  test('rejects a too-long number', () => {
+    expect(phoneSchema.safeParse('8705226666666').success).toBe(false)
+  })
+
+  test('rejects a bare digits string with no country prefix', () => {
+    expect(phoneSchema.safeParse('12345').success).toBe(false)
   })
 })
 
@@ -208,24 +102,127 @@ describe('isApartmentInBlock — apartment ranges per block', () => {
   })
 })
 
-describe('nameSchema — length 2..60 with trimming (validation S2/S10/S11)', () => {
-  test('a 2-character name (lower boundary) is accepted', () => {
+describe('nameSchema — length 2..60 after trimming', () => {
+  test('a 2-character name (lower boundary) is valid', () => {
     expect(nameSchema.safeParse('Ан').success).toBe(true)
   })
 
-  test('a 1-character name (below the lower boundary) is rejected', () => {
+  test('a 1-character name (below lower boundary) is invalid', () => {
     expect(nameSchema.safeParse('А').success).toBe(false)
   })
 
-  test('a 60-character name (upper boundary) is accepted', () => {
+  test('a 60-character name (upper boundary) is valid', () => {
     expect(nameSchema.safeParse('я'.repeat(60)).success).toBe(true)
   })
 
-  test('a 61-character name (above the upper boundary) is rejected', () => {
+  test('a 61-character name (above upper boundary) is invalid', () => {
     expect(nameSchema.safeParse('я'.repeat(61)).success).toBe(false)
   })
 
-  test('a whitespace-only name is rejected once trimmed (validation S12)', () => {
+  test('a whitespace-only name is invalid after trimming', () => {
     expect(nameSchema.safeParse('   ').success).toBe(false)
+  })
+})
+
+describe('registerInputSchema — input validation', () => {
+  test('a fully valid resident is accepted and the phone is normalized to E.164', () => {
+    expect(registerInputSchema.parse(validResident)).toEqual(validResident)
+  })
+
+  test('apartment supplied as a numeric string is coerced to a number', () => {
+    expect(
+      registerInputSchema.parse({ ...validResident, apartment: '42' })
+        .apartment,
+    ).toBe(42)
+  })
+
+  test('a missing name is invalid', () => {
+    const { name: _name, ...rest } = validResident
+    expect(registerInputSchema.safeParse(rest).success).toBe(false)
+  })
+
+  test('a name shorter than 2 characters is invalid', () => {
+    expect(
+      registerInputSchema.safeParse({ ...validResident, name: 'A' }).success,
+    ).toBe(false)
+  })
+
+  test('a block value outside 1..4 is invalid', () => {
+    expect(
+      registerInputSchema.safeParse({ ...validResident, block: 5 }).success,
+    ).toBe(false)
+  })
+
+  test('a non-numeric block value is invalid', () => {
+    expect(
+      registerInputSchema.safeParse({ ...validResident, block: 'A' }).success,
+    ).toBe(false)
+  })
+
+  test('a role outside owner/tenant is invalid', () => {
+    expect(
+      registerInputSchema.safeParse({ ...validResident, role: 'resident' })
+        .success,
+    ).toBe(false)
+  })
+
+  test('apartment at the upper boundary of block 1 (70) is valid', () => {
+    expect(
+      registerInputSchema.safeParse({
+        ...validResident,
+        block: 1,
+        apartment: 70,
+      }).success,
+    ).toBe(true)
+  })
+
+  test('apartment one above the upper boundary of block 1 (71) is invalid', () => {
+    expect(
+      registerInputSchema.safeParse({
+        ...validResident,
+        block: 1,
+        apartment: 71,
+      }).success,
+    ).toBe(false)
+  })
+
+  test('apartment at the upper boundary of block 2 (139) is valid', () => {
+    expect(
+      registerInputSchema.safeParse({
+        ...validResident,
+        block: 2,
+        apartment: 139,
+      }).success,
+    ).toBe(true)
+  })
+
+  test('apartment at the lower boundary of block 2 (71) is valid', () => {
+    expect(
+      registerInputSchema.safeParse({
+        ...validResident,
+        block: 2,
+        apartment: 71,
+      }).success,
+    ).toBe(true)
+  })
+
+  test('apartment one above the upper boundary of block 2 (140) is invalid', () => {
+    expect(
+      registerInputSchema.safeParse({
+        ...validResident,
+        block: 2,
+        apartment: 140,
+      }).success,
+    ).toBe(false)
+  })
+
+  test('apartment 0 or negative is invalid regardless of block', () => {
+    expect(
+      registerInputSchema.safeParse({ ...validResident, apartment: 0 }).success,
+    ).toBe(false)
+    expect(
+      registerInputSchema.safeParse({ ...validResident, apartment: -1 })
+        .success,
+    ).toBe(false)
   })
 })

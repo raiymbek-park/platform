@@ -1,8 +1,19 @@
+import { vi } from 'vitest'
+
 export const NOW = 1_700_000_000_000
 
-export const tokenPair = (accessExpiry: number, refreshExpiry: number) => ({
-  accessToken: 'access',
-  accessTokenExpiresAt: accessExpiry,
-  refreshToken: 'refresh',
-  refreshTokenExpiresAt: refreshExpiry,
+type FakeUser = { uid: string; getIdToken: () => Promise<string> }
+
+export const makeFakeAuth = (user: FakeUser | null = null) => {
+  const auth = {
+    currentUser: user,
+    authStateReady: vi.fn(() => Promise.resolve()),
+    useDeviceLanguage: vi.fn(),
+  }
+  return auth
+}
+
+export const fakeUser = (uid = 'uid-1'): FakeUser => ({
+  uid,
+  getIdToken: vi.fn(() => Promise.resolve('id-token')),
 })

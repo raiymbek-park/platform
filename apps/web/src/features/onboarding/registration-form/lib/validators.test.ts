@@ -50,14 +50,18 @@ test('validation S2 — trimmed name at 1 char is invalid', () => {
   expect(withName('  A  ')).toBeTruthy()
 })
 
-test('validation S3 — full +7-prefixed number yields 10 local digits → valid', () => {
+test('validation S3 — full KZ number is valid', () => {
   expect(fieldError(baseValues, 'phone')).toBeUndefined()
 })
 
-test('validation S3 — phone with fewer than 10 local digits is invalid', () => {
+test('validation S3 — an international number is valid', () => {
   expect(
-    fieldError({ ...baseValues, phone: '+7707123456' }, 'phone'),
-  ).toBeTruthy()
+    fieldError({ ...baseValues, phone: '+1 (415) 555-2671' }, 'phone'),
+  ).toBeUndefined()
+})
+
+test('validation S3 — a too-short phone is invalid', () => {
+  expect(fieldError({ ...baseValues, phone: '+7 (7' }, 'phone')).toBeTruthy()
 })
 
 test('validation S5 — null block is invalid', () => {

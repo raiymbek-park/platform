@@ -14,9 +14,7 @@ export default defineConfig({
     name: 'web',
     environment: 'jsdom',
     globals: true,
-    setupFiles: [
-      fileURLToPath(new URL('../../vitest.setup.ts', import.meta.url)),
-    ],
+    setupFiles: [fileURLToPath(new URL('./vitest.setup.ts', import.meta.url))],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['src/test/**'],
   },

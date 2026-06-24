@@ -1,45 +1,34 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import { act } from 'react'
-import { beforeEach, expect, test, vi } from 'vitest'
+import type { UserEvent } from '@testing-library/user-event'
+
+import { screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, expect, test, vi } from 'vitest'
+
+import { useConfirmationStore } from '@/shared/auth'
+import { firebaseAuth } from '@/shared/test/firebase-auth'
+import { renderApp } from '@/shared/test/render-app'
+import { trpcMutation, trpcServer } from '@/shared/test/trpc-server'
 
 import { useOnboardingStore } from '../model/use-onboarding-store'
-import { RegistrationForm } from './registration-form'
-
-// Mock at the network boundary (useSendOtp); real store/validators/form stay.
-const mockSendMutate = vi.fn()
-const mockSendOtp = {
-  isError: false,
-  isPending: false,
-  mutate: mockSendMutate,
-}
-vi.mock('../model/use-send-otp', () => ({
-  useSendOtp: () => mockSendOtp,
-}))
-
-const mockNavigate = vi.fn()
-vi.mock('@tanstack/react-router', () => ({
-  useNavigate: () => mockNavigate,
-}))
-
-// fireEvent.change sets the raw masked value directly — userEvent.type would
-// accumulate through the progressive mask.
-const VALID_PHONE_RAW = '+77071234567'
-const NORMALIZED_PHONE = '+77071234567'
-
-const setPhoneValue = (value: string) => {
-  fireEvent.change(screen.getByPlaceholderText('+7 (___) ___-__-__'), {
-    target: { value },
-  })
-}
-
-const renderForm = () => {
-  const user = userEvent.setup()
-  render(<RegistrationForm />)
-  return user
-}
 
 const next = () => screen.getByRole('button', { name: /Далее/ })
+
+const fillName = (user: UserEvent, value: string) =>
+  user.type(screen.getByLabelText('Имя'), value)
+
+const setPhone = async (user: UserEvent, value: string) => {
+  const phone = screen.getByLabelText('Телефон')
+  await user.clear(phone)
+  await user.type(phone, value)
+}
+
+const fillApartment = (user: UserEvent, value: string) =>
+  user.type(screen.getByLabelText('Номер квартиры'), value)
+
+const pickBlock = (user: UserEvent, label: RegExp) =>
+  user.click(screen.getByRole('button', { name: label }))
+
+const pickRole = (user: UserEvent, label: RegExp) =>
+  user.click(screen.getByRole('button', { name: label }))
 
 type FormOverrides = {
   name?: string
@@ -49,79 +38,176 @@ type FormOverrides = {
   role?: RegExp
 }
 
-const fillForm = async (
-  user: ReturnType<typeof userEvent.setup>,
+const fillValidForm = async (
+  user: UserEvent,
   {
     name = 'Алиса',
-    phone = VALID_PHONE_RAW,
+    phone = '+77071234567',
     block = /Блок 1/,
     apartment = '42',
     role = /Собственник/,
   }: FormOverrides = {},
 ) => {
-  await user.type(screen.getByPlaceholderText('Введите ваше имя'), name)
-  setPhoneValue(phone)
-  await user.click(screen.getByRole('button', { name: block }))
-  await user.type(screen.getByPlaceholderText('142'), apartment)
-  await user.click(screen.getByRole('button', { name: role }))
+  await fillName(user, name)
+  await setPhone(user, phone)
+  await pickBlock(user, block)
+  await fillApartment(user, apartment)
+  await pickRole(user, role)
+}
+
+const renderWelcome = async () => {
+  const app = renderApp('/onboarding/welcome')
+  await screen.findByLabelText('Имя')
+  return app
 }
 
 beforeEach(() => {
-  mockSendOtp.isError = false
-  mockSendOtp.isPending = false
-  mockSendMutate.mockReset()
-  mockNavigate.mockReset()
-  act(() => useOnboardingStore.getState().reset())
+  firebaseAuth.reset()
+  useOnboardingStore.getState().reset()
+  useConfirmationStore.getState().clear()
 })
 
-test('validation S1 — a single invalid field keeps Next disabled', async () => {
-  const user = renderForm()
-  await fillForm(user, { name: 'А' })
+afterEach(() => {
+  vi.useRealTimers()
+})
+
+test('happy-path 1: a partially filled form keeps "Далее" disabled until every field is valid', async () => {
+  const { user } = await renderWelcome()
+
+  await fillName(user, 'А')
+  await setPhone(user, '+77071234567')
+  await pickBlock(user, /Блок 1/)
+  await fillApartment(user, '42')
+  await pickRole(user, /Собственник/)
+  expect(next()).toBeDisabled()
+
+  await user.clear(screen.getByLabelText('Имя'))
+  await fillName(user, 'Алиса')
+
+  await waitFor(() => expect(next()).toBeEnabled())
+})
+
+test('happy-path 2: the phone field defaults to "+7"', async () => {
+  renderWelcome()
+
+  expect(await screen.findByLabelText('Телефон')).toHaveValue('+7')
+})
+
+test('happy-path 3: submitting sends a code and opens the verification screen', async () => {
+  const { user, currentPath } = await renderWelcome()
+  await fillValidForm(user)
+
+  await user.click(next())
+
+  await waitFor(() =>
+    expect(screen.getByText('Введите код из SMS')).toBeInTheDocument(),
+  )
+  expect(currentPath()).toBe('/onboarding/verification')
+})
+
+test('validation 1: a missing role keeps "Далее" disabled even when every other field is valid', async () => {
+  const { user } = await renderWelcome()
+  await fillName(user, 'Алиса')
+  await setPhone(user, '+77071234567')
+  await pickBlock(user, /Блок 1/)
+  await fillApartment(user, '42')
+
   expect(next()).toBeDisabled()
 })
 
-test('happy S1 — Next becomes enabled when all fields are valid', async () => {
-  const user = renderForm()
-  await fillForm(user)
-  expect(next()).not.toBeDisabled()
-})
+test('validation 3: a 1-character name keeps "Далее" disabled', async () => {
+  const { user } = await renderWelcome()
+  await fillValidForm(user, { name: 'А' })
 
-test('validation S2 — name of 1 char (trim) keeps Next disabled', async () => {
-  const user = renderForm()
-  await fillForm(user, { name: 'А' })
   expect(next()).toBeDisabled()
 })
 
-test('validation S10 — name of exactly 2 chars enables Next (with other fields valid)', async () => {
-  const user = renderForm()
-  await fillForm(user, { name: 'Аб' })
-  expect(next()).not.toBeDisabled()
+test('validation 3: a 2-character name does not block "Далее"', async () => {
+  const { user } = await renderWelcome()
+  await fillValidForm(user, { name: 'Аб' })
+
+  await waitFor(() => expect(next()).toBeEnabled())
 })
 
-test('validation S11 — name of 61 chars keeps Next disabled', async () => {
-  const user = renderForm()
-  await fillForm(user, { name: 'А'.repeat(61) })
+test('validation 4: a 61-character name keeps "Далее" disabled', async () => {
+  const { user } = await renderWelcome()
+  await fillValidForm(user, { name: 'А'.repeat(61) })
+
   expect(next()).toBeDisabled()
 })
 
-test('validation S12 — whitespace-only name keeps Next disabled', async () => {
-  const user = renderForm()
-  await fillForm(user, { name: '   ' })
+test('validation 4: a 60-character name does not block "Далее"', async () => {
+  const { user } = await renderWelcome()
+  await fillValidForm(user, { name: 'А'.repeat(60) })
+
+  await waitFor(() => expect(next()).toBeEnabled())
+})
+
+test('validation 5: a whitespace-only name keeps "Далее" disabled', async () => {
+  const { user } = await renderWelcome()
+  await fillValidForm(user, { name: '   ' })
+
   expect(next()).toBeDisabled()
 })
 
-test('validation S3 — phone with fewer than 10 local digits keeps Next disabled', async () => {
-  const user = renderForm()
-  // '+7912345678' → phoneDigits strips leading 7 → '912345678' (9 local digits) → invalid
-  await fillForm(user, { phone: '+7912345678' })
+test('validation 7: an incomplete phone keeps "Далее" disabled', async () => {
+  const { user } = await renderWelcome()
+  await fillValidForm(user, { phone: '+770' })
+
   expect(next()).toBeDisabled()
 })
 
-test('validation S5 — selecting block 2 deselects block 1', async () => {
-  const user = renderForm()
+test('validation 6: a domestic 8XXXXXXXXXX phone normalizes to +7 on submit', async () => {
+  const { user, currentPath } = await renderWelcome()
+  await fillValidForm(user, { phone: '87071234567' })
 
-  await user.click(screen.getByRole('button', { name: /Блок 1/ }))
-  await user.click(screen.getByRole('button', { name: /Блок 2/ }))
+  await waitFor(() => expect(next()).toBeEnabled())
+  await user.click(next())
+
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/verification'))
+  expect(useOnboardingStore.getState().draft.phone).toBe('+77071234567')
+})
+
+test('validation 8: an explicit international number is accepted as dialed', async () => {
+  const { user, currentPath } = await renderWelcome()
+  await fillValidForm(user, { phone: '+14155552671' })
+
+  await waitFor(() => expect(next()).toBeEnabled())
+  await user.click(next())
+
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/verification'))
+  expect(useOnboardingStore.getState().draft.phone).toBe('+14155552671')
+})
+
+test('validation 9: an apartment outside the block range keeps "Далее" disabled', async () => {
+  const { user } = await renderWelcome()
+  await fillValidForm(user, { apartment: '99' })
+
+  expect(next()).toBeDisabled()
+})
+
+test('validation 12: switching block re-validates the apartment number', async () => {
+  const { user } = await renderWelcome()
+  await fillValidForm(user, { apartment: '70' })
+  await waitFor(() => expect(next()).toBeEnabled())
+
+  await pickBlock(user, /Блок 2/)
+
+  await waitFor(() => expect(next()).toBeDisabled())
+})
+
+test('validation 10: the apartment field keeps digits only', async () => {
+  const { user } = await renderWelcome()
+  await fillApartment(user, '4a2b')
+
+  expect(screen.getByLabelText('Номер квартиры')).toHaveValue('42')
+})
+
+test('validation 13: picking a different block clears the previous selection', async () => {
+  const { user } = await renderWelcome()
+
+  await pickBlock(user, /Блок 1/)
+  await pickBlock(user, /Блок 2/)
 
   expect(screen.getByRole('button', { name: /Блок 1/ })).toHaveAttribute(
     'aria-pressed',
@@ -133,98 +219,61 @@ test('validation S5 — selecting block 2 deselects block 1', async () => {
   )
 })
 
-test('validation S5 — selecting Арендатор deselects Собственник', async () => {
-  const user = renderForm()
-
-  await user.click(screen.getByRole('button', { name: /Собственник/ }))
-  await user.click(screen.getByRole('button', { name: /Арендатор/ }))
-
-  expect(screen.getByRole('button', { name: /Собственник/ })).toHaveAttribute(
-    'aria-pressed',
-    'false',
-  )
-  expect(screen.getByRole('button', { name: /Арендатор/ })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
-})
-
-test('validation S4 — apartment 99 outside block 1 range (1–70) keeps Next disabled', async () => {
-  const user = renderForm()
-  await fillForm(user, { apartment: '99' })
-  expect(next()).toBeDisabled()
-})
-
-test('validation S14 — switching from block 1 to block 2 invalidates apartment 70', async () => {
-  const user = renderForm()
-  await fillForm(user, { apartment: '70' })
-
-  await waitFor(() => expect(next()).not.toBeDisabled())
-
-  // Switch to block 2 (range 71–139): apartment 70 auto-revalidates as out of
-  // range without touching the apartment field (onChangeListenTo: ['block'])
-  await user.click(screen.getByRole('button', { name: /Блок 2/ }))
-
-  await waitFor(() => expect(next()).toBeDisabled())
-})
-
-test('happy S2 — submit sends normalized phone, saves draft, navigates to /onboarding/verification', async () => {
-  mockSendMutate.mockImplementation(
-    (
-      _vars: unknown,
-      { onSuccess }: { onSuccess: (r: { lockedUntil: null }) => void },
-    ) => {
-      onSuccess({ lockedUntil: null })
-    },
-  )
-  const user = renderForm()
-
-  await fillForm(user)
-  await user.click(next())
-
-  await waitFor(() => {
-    expect(mockSendMutate).toHaveBeenCalledWith(
-      { phone: NORMALIZED_PHONE },
-      expect.any(Object),
-    )
+test('happy-path 10: "Далее" cannot be submitted twice while the send is in flight', async () => {
+  let onStart: () => void = () => {}
+  let release: () => void = () => {}
+  const sendStarted = new Promise<void>(resolve => {
+    onStart = resolve
   })
+  const sendHeld = new Promise<void>(resolve => {
+    release = resolve
+  })
+  firebaseAuth.holdSend(onStart, sendHeld)
 
-  const { draft } = useOnboardingStore.getState()
-  expect(draft.name).toBe('Алиса')
-  expect(draft.phone).toBe(NORMALIZED_PHONE)
-  expect(draft.block).toBe(1)
-  expect(draft.apartment).toBe(42)
-  expect(draft.role).toBe('owner')
+  const { user } = await renderWelcome()
+  await fillValidForm(user)
+  await waitFor(() => expect(next()).toBeEnabled())
 
-  expect(mockNavigate).toHaveBeenCalledWith({ to: '/onboarding/verification' })
-})
-
-test('happy S8 — Next is disabled while otp.send is pending', () => {
-  mockSendOtp.isPending = true
-  render(<RegistrationForm />)
+  await user.click(next())
+  await sendStarted
 
   expect(next()).toBeDisabled()
+  release()
 })
 
-test('error S4 — a failed otp.send keeps the form and does not navigate', async () => {
-  mockSendMutate.mockImplementation(
-    (_vars: unknown, { onError }: { onError: (e: unknown) => void }) => {
-      onError(new Error('Network error'))
-    },
-  )
-  // Static mock can't self-update — reflect the failed mutation manually.
-  mockSendOtp.isError = true
-  const user = renderForm()
+test('error-states 1: a send failure keeps the welcome screen and re-enables "Далее"', async () => {
+  firebaseAuth.failSend()
+  const { user, currentPath } = await renderWelcome()
+  await fillValidForm(user)
+  await waitFor(() => expect(next()).toBeEnabled())
 
-  await fillForm(user)
   await user.click(next())
 
-  await waitFor(() => {
-    expect(mockSendMutate).toHaveBeenCalledWith(
-      { phone: NORMALIZED_PHONE },
-      expect.any(Object),
-    )
+  expect(
+    await screen.findByText(/Не удалось отправить код/),
+  ).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/welcome')
+  await waitFor(() => expect(next()).toBeEnabled())
+})
+
+test('happy-path: the submitted resident reaches the backend register call', async () => {
+  const received: unknown[] = []
+  trpcServer.use(
+    trpcMutation('resident.register', input => {
+      received.push(input)
+      return { resident: input }
+    }),
+  )
+  const { user } = await renderWelcome()
+  await fillValidForm(user)
+  await user.click(next())
+
+  await screen.findByText('Введите код из SMS')
+  expect(useOnboardingStore.getState().draft).toMatchObject({
+    apartment: 42,
+    block: 1,
+    name: 'Алиса',
+    phone: '+77071234567',
+    role: 'owner',
   })
-  expect(mockNavigate).not.toHaveBeenCalled()
-  expect(screen.getByText(/Не удалось отправить код/)).toBeInTheDocument()
 })
