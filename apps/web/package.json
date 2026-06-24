@@ -6,11 +6,13 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
+    "dev:e2e": "vite --mode e2e",
+    "e2e": "codeceptjs run",
     "lint:fsd": "steiger ./src",
     "mutate": "stryker run",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:e2e": "start-server-and-test dev http://localhost:5173 'codeceptjs run'",
+    "test:e2e": "start-server-and-test 'npm --prefix ../api run start' http://localhost:3001 'npm run dev:e2e' http://localhost:5173 'npm run e2e'",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },

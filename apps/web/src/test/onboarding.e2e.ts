@@ -10,7 +10,7 @@ Scenario(
   'a resident registers with a phone code and reaches home @happy',
   ({ I }) => {
     I.amOnPage('/onboarding/welcome')
-    I.see('Добро пожаловать!')
+    I.waitForText('Добро пожаловать!', 10)
 
     I.fillField('Имя', 'Тест Тестов')
     I.fillField('Телефон', '87052266666')
@@ -20,7 +20,7 @@ Scenario(
     I.click('Далее')
 
     I.waitForText('Введите код из SMS', 20)
-    I.click('input')
+    I.click('(//input)[1]')
     I.type('123456')
 
     I.waitForText('Привет', 20)
