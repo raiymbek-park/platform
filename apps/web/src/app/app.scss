@@ -76,3 +76,10 @@ h6 {
   white-space: nowrap;
   width: 1px;
 }
+
+// Google injects an invisible-reCAPTCHA badge into <body>; hidden in favour of the
+// in-form reCAPTCHA notice on the registration screen (allowed by reCAPTCHA terms
+// as long as that notice is shown).
+.grecaptcha-badge {
+  visibility: hidden;
+}

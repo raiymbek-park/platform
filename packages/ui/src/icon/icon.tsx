@@ -35,6 +35,6 @@ export const Icon = ({
     {...restProps}
   >
     {label && <title>{label}</title>}
-    <use href={`/icon-sprites.svg#${glyph}`} />
+    <use href={`${import.meta.env.BASE_URL}icon-sprites.svg#${glyph}`} />
   </svg>
 )

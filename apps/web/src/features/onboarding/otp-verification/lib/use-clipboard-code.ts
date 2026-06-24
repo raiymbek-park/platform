@@ -1,11 +1,13 @@
-import { OTP_CODE_LENGTH } from '@raiymbek-park/api/contract'
 import { useCallback, useEffect, useState } from 'react'
+
+import { CODE_LENGTH } from './code-length'
+
+const codePattern = new RegExp(`(?<!\\d)\\d{${CODE_LENGTH}}(?!\\d)`)
 
 const readClipboardCode = async () => {
   try {
     const text = await navigator.clipboard?.readText()
-    const digits = (text ?? '').replace(/\D/g, '')
-    return digits.length === OTP_CODE_LENGTH ? digits : null
+    return text?.match(codePattern)?.[0] ?? null
   } catch {
     return null
   }

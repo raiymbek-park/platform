@@ -35,6 +35,11 @@
   padding: var(--spacing-md) var(--spacing-base);
 }
 
+.notice {
+  color: inherit;
+  text-decoration: none;
+}
+
 .submit {
   width: 100%;
 }

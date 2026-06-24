@@ -10,6 +10,7 @@ import { queryClient, TRPCProvider, trpc, trpcClient } from '@/shared/api'
 
 const router = createRouter({
   routeTree,
+  basepath: import.meta.env.BASE_URL,
   context: { queryClient, trpc },
   defaultPreload: 'intent',
 })

@@ -1,7 +1,8 @@
-import { OTP_CODE_LENGTH } from '@raiymbek-park/api/contract'
 import { useEffect, useRef, useState } from 'react'
 
-const emptyCells = Array.from({ length: OTP_CODE_LENGTH }, () => '')
+import { CODE_LENGTH } from './code-length'
+
+const emptyCells = Array.from({ length: CODE_LENGTH }, () => '')
 
 type UseOtpCells = {
   disabled: boolean
@@ -21,7 +22,7 @@ export const useOtpCells = ({ disabled, onComplete }: UseOtpCells) => {
   const submittedRef = useRef(false)
 
   useEffect(() => {
-    if (code.length < OTP_CODE_LENGTH) {
+    if (code.length < CODE_LENGTH) {
       submittedRef.current = false
       return
     }
@@ -37,7 +38,7 @@ export const useOtpCells = ({ disabled, onComplete }: UseOtpCells) => {
 
   const setDigit = (index: number, value: string) => {
     setCells(current => current.map((cell, i) => (i === index ? value : cell)))
-    if (value !== '' && index < OTP_CODE_LENGTH - 1) focusCell(index + 1)
+    if (value !== '' && index < CODE_LENGTH - 1) focusCell(index + 1)
   }
 
   const handleKeyDown = (index: number, key: string) => {

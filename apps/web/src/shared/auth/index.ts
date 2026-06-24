@@ -1,9 +1,7 @@
+export { sendVerification } from './send-verification'
 export {
   ensureResidentSession,
-  getLockRemaining,
-  hasValidRefreshToken,
-  isLocked,
-  refreshSession,
+  isSignedIn,
+  signOut,
 } from './session-guard'
-export { useAuthStore } from './use-auth-store'
-export { useLockedPhoneStore } from './use-locked-phone-store'
+export { useConfirmationStore } from './use-confirmation-store'

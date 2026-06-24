@@ -8,9 +8,9 @@ export const OtpHeading = () => {
 
   return (
     <header className={css.heading}>
-      <h1 className={css.title}>Введите код из WhatsApp</h1>
+      <h1 className={css.title}>Введите код из SMS</h1>
       <p className={css.subtitle}>
-        Мы отправили 4-значный код подтверждения на ваш номер в WhatsApp
+        Мы отправили 6-значный код подтверждения на ваш номер
       </p>
       <p className={css.phone}>{formatPhoneDisplay(phone)}</p>
     </header>

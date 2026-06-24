@@ -8,12 +8,19 @@ import {
 
 import { queryClient } from '@/shared/api/query-client'
 import { env } from '@/shared/config'
+import { auth } from '@/shared/firebase'
 
 export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>()
+
+const authHeaders = async () => {
+  const token = await auth.currentUser?.getIdToken()
+  return token ? { authorization: `Bearer ${token}` } : {}
+}
 
 export const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
+      headers: authHeaders,
       url: env.apiUrl,
     }),
   ],

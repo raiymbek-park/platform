@@ -1,22 +1,21 @@
 import { Button, InfoCallout } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
+import { useRef } from 'react'
 
 import { useOnboardingStore } from '@/features/onboarding/registration-form'
-import { useAuthStore, useLockedPhoneStore } from '@/shared/auth'
 
 import { isWrongCode } from '../lib/is-wrong-code'
 import { useOtpCells } from '../lib/use-otp-cells'
-import { useOtpStatus } from '../model/use-otp-status'
+import { useResendCooldown } from '../lib/use-resend-cooldown'
+import { useConfirmCode } from '../model/use-confirm-code'
 import { useRegisterResident } from '../model/use-register-resident'
-import { useResendOtp } from '../model/use-resend-otp'
-import { useVerifyOtp } from '../model/use-verify-otp'
+import { useResendVerification } from '../model/use-resend-verification'
 import { OtpActions } from './otp-actions'
 import { OtpCells } from './otp-cells'
 import { OtpHeading } from './otp-heading'
-import { OtpResend } from './otp-resend'
 import css from './otp-verification.module.scss'
 
-const verifyError = 'Неверный код. Запросите новый код.'
+const verifyError = 'Неверный код. Попробуйте ещё раз.'
 const networkError = 'Не удалось проверить код. Проверьте соединение.'
 const registerError = 'Не удалось завершить регистрацию. Повторите попытку.'
 
@@ -24,75 +23,56 @@ export const OtpVerification = () => {
   const navigate = useNavigate()
   const draft = useOnboardingStore(state => state.draft)
   const phone = draft.phone
+  const recaptchaRef = useRef<HTMLDivElement>(null)
 
-  const verifyOtp = useVerifyOtp()
-  const resendOtp = useResendOtp()
+  const confirmCode = useConfirmCode()
+  const resend = useResendVerification()
   const registerResident = useRegisterResident()
+  const cooldown = useResendCooldown()
 
-  const isChecking = verifyOtp.isPending || registerResident.isPending
+  const isChecking = confirmCode.isPending || registerResident.isPending
 
   const register = () => {
     const { block, role } = draft
     if (block === null || role === null) return
     registerResident.mutate(
       { ...draft, block, role },
-      {
-        onSuccess: pair => {
-          useAuthStore.getState().setTokens(pair)
-          navigate({ to: '/home' })
-        },
-      },
+      { onSuccess: () => navigate({ to: '/home' }) },
     )
   }
 
   const verify = (code: string, { clear }: { clear: () => void }) => {
-    if (phone === '') return
-    verifyOtp.mutate(
-      { code, phone },
-      {
-        onSuccess: register,
-        onError: error => {
-          if (!isWrongCode(error)) clear()
-        },
-      },
-    )
+    confirmCode.mutate(code, {
+      onSuccess: register,
+      onError: clear,
+    })
   }
 
-  const status = useOtpStatus(phone || null)
-  const isWrongCodeError = verifyOtp.isError && isWrongCode(verifyOtp.error)
-  const isAttemptUsed = Boolean(status.data?.verifyUsed) || isWrongCodeError
-  const isDisabled = isChecking || isAttemptUsed
-
-  const otp = useOtpCells({ disabled: isDisabled, onComplete: verify })
+  const otp = useOtpCells({ disabled: isChecking, onComplete: verify })
 
   const handleResend = () => {
-    if (phone === '') return
+    const container = recaptchaRef.current
+    if (phone === '' || container === null || cooldown.secondsLeft > 0) return
     otp.reset()
-    verifyOtp.reset()
+    confirmCode.reset()
     registerResident.reset()
-    resendOtp.mutate(
-      { phone },
+    resend.mutate(
+      { container, phone },
       {
-        onSuccess: result => {
-          if (result.lockedUntil !== null) {
-            // Pin the locked number independently of the onboarding draft so
-            // the lockout survives clearing local storage (S17).
-            useLockedPhoneStore.getState().setLockedPhone(phone)
-            navigate({ to: '/onboarding/locked' })
-            return
-          }
+        onSuccess: () => {
           otp.focusCell(0)
+          cooldown.restart()
         },
       },
     )
   }
 
   const resolveError = () => {
-    if (verifyOtp.isError) {
-      return isWrongCode(verifyOtp.error) ? verifyError : networkError
+    if (confirmCode.isError) {
+      return isWrongCode(confirmCode.error) ? verifyError : networkError
     }
     if (registerResident.isError) return registerError
-    if (resendOtp.isError) return networkError
+    if (resend.isError) return networkError
     return null
   }
   const errorMessage = resolveError()
@@ -101,46 +81,43 @@ export const OtpVerification = () => {
     <>
       <img alt='' className={css.hero} src='/images/whatsapp.png' />
 
+      <div ref={recaptchaRef} />
+
       <OtpHeading />
 
-      {!status.isLoading && (
-        <>
-          <OtpCells
-            cells={otp.cells}
-            hasError={errorMessage !== null}
-            inputRefs={otp.inputRefs}
-            isDisabled={isDisabled}
-            onDigit={otp.setDigit}
-            onKeyDown={otp.handleKeyDown}
-          />
+      <OtpCells
+        cells={otp.cells}
+        hasError={errorMessage !== null}
+        inputRefs={otp.inputRefs}
+        isDisabled={isChecking}
+        onDigit={otp.setDigit}
+        onKeyDown={otp.handleKeyDown}
+      />
 
-          <OtpResend />
-
-          {errorMessage !== null && (
-            <InfoCallout icon='circle-alert' variant='danger'>
-              {errorMessage}
-            </InfoCallout>
-          )}
-
-          {registerResident.isError && (
-            <Button
-              className={css.action}
-              isLoading={registerResident.isPending}
-              variant='secondary'
-              onClick={register}
-            >
-              Повторить попытку
-            </Button>
-          )}
-
-          <OtpActions
-            isDisabled={isDisabled}
-            isResendPending={resendOtp.isPending}
-            onPaste={cells => otp.setCells(cells)}
-            onResend={handleResend}
-          />
-        </>
+      {errorMessage !== null && (
+        <InfoCallout icon='circle-alert' variant='danger'>
+          {errorMessage}
+        </InfoCallout>
       )}
+
+      {registerResident.isError && (
+        <Button
+          className={css.action}
+          isLoading={registerResident.isPending}
+          variant='secondary'
+          onClick={register}
+        >
+          Повторить попытку
+        </Button>
+      )}
+
+      <OtpActions
+        isDisabled={isChecking}
+        isResendPending={resend.isPending}
+        resendCooldown={cooldown.secondsLeft}
+        onPaste={cells => otp.setCells(cells)}
+        onResend={handleResend}
+      />
     </>
   )
 }

@@ -13,14 +13,12 @@ import {
 } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
+import { useRef } from 'react'
 
-import { useLockedPhoneStore } from '@/shared/auth'
-
-import { isSendCooldown } from '../lib/is-send-cooldown'
-import { formatPhoneMask, normalizePhone } from '../lib/phone'
+import { normalizePhone } from '../lib/phone'
 import { registrationSchema } from '../lib/validators'
 import { useOnboardingStore } from '../model/use-onboarding-store'
-import { useSendOtp } from '../model/use-send-otp'
+import { useSendVerification } from '../model/use-send-verification'
 import css from './registration-form.module.scss'
 
 const blockTones: Record<BlockId, 'brand' | 'danger' | 'accent' | 'info'> = {
@@ -30,16 +28,30 @@ const blockTones: Record<BlockId, 'brand' | 'danger' | 'accent' | 'info'> = {
   4: 'info',
 }
 
+type FieldMeta = {
+  errors: readonly unknown[]
+  isDirty: boolean
+  isTouched: boolean
+}
+
+const inputState = ({ errors, isDirty, isTouched }: FieldMeta) => {
+  if (errors.length > 0) return isTouched ? 'error' : undefined
+  return isDirty ? 'success' : undefined
+}
+
 export const RegistrationForm = () => {
   const navigate = useNavigate()
-  const sendOtp = useSendOtp()
+  const sendVerification = useSendVerification()
   const setDraft = useOnboardingStore(state => state.setDraft)
   const draft = useOnboardingStore(state => state.draft)
+  const recaptchaRef = useRef<HTMLSpanElement>(null)
 
   const form = useForm({
-    defaultValues: draft,
+    defaultValues: { ...draft, phone: draft.phone || '+7' },
     validators: { onChange: registrationSchema },
     onSubmit: ({ value }) => {
+      const container = recaptchaRef.current
+      if (container === null) return
       const phone = normalizePhone(value.phone)
       setDraft({
         name: value.name.trim(),
@@ -49,24 +61,9 @@ export const RegistrationForm = () => {
         role: value.role,
       })
 
-      const toVerification = () => navigate({ to: '/onboarding/verification' })
-      sendOtp.mutate(
-        { phone },
-        {
-          onSuccess: result => {
-            if (result.lockedUntil !== null) {
-              // Pin the locked number outside the onboarding draft so the
-              // lockout survives clearing local storage (S17).
-              useLockedPhoneStore.getState().setLockedPhone(phone)
-              navigate({ to: '/onboarding/locked' })
-              return
-            }
-            toVerification()
-          },
-          onError: error => {
-            if (isSendCooldown(error)) toVerification()
-          },
-        },
+      sendVerification.mutate(
+        { container, phone },
+        { onSuccess: () => navigate({ to: '/onboarding/verification' }) },
       )
     },
   })
@@ -91,11 +88,7 @@ export const RegistrationForm = () => {
             inputMode='text'
             label='Имя'
             placeholder='Введите ваше имя'
-            state={
-              field.state.meta.isTouched && field.state.meta.errors.length > 0
-                ? 'error'
-                : undefined
-            }
+            state={inputState(field.state.meta)}
             value={field.state.value}
             onBlur={field.handleBlur}
             onChange={event => field.handleChange(event.target.value)}
@@ -109,13 +102,9 @@ export const RegistrationForm = () => {
             icon='phone'
             inputMode='tel'
             label='Телефон'
-            placeholder='+7 (___) ___-__-__'
-            state={
-              field.state.meta.isTouched && field.state.meta.errors.length > 0
-                ? 'error'
-                : undefined
-            }
-            value={formatPhoneMask(field.state.value)}
+            placeholder='+7 7xxx xxx xxxx'
+            state={inputState(field.state.meta)}
+            value={field.state.value}
             onBlur={field.handleBlur}
             onChange={event => field.handleChange(event.target.value)}
           />
@@ -153,11 +142,7 @@ export const RegistrationForm = () => {
             inputMode='numeric'
             label='Номер квартиры'
             placeholder='142'
-            state={
-              field.state.meta.isTouched && field.state.meta.errors.length > 0
-                ? 'error'
-                : undefined
-            }
+            state={inputState(field.state.meta)}
             value={
               Number.isNaN(field.state.value) ? '' : String(field.state.value)
             }
@@ -205,8 +190,20 @@ export const RegistrationForm = () => {
         администрация — для быстрой связи в экстренных случаях (затопление,
         пожар).
       </InfoCallout>
+      <InfoCallout icon='shield-check'>
+        <span ref={recaptchaRef} />
+        <a
+          className={css.notice}
+          href='https://policies.google.com/privacy'
+          rel='noopener noreferrer'
+          target='_blank'
+        >
+          Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности
+          и Условия Google
+        </a>
+      </InfoCallout>
 
-      {sendOtp.isError && (
+      {sendVerification.isError && (
         <InfoCallout icon='circle-alert' variant='danger'>
           Не удалось отправить код. Проверьте соединение и попробуйте снова.
         </InfoCallout>
@@ -216,10 +213,10 @@ export const RegistrationForm = () => {
         {canSubmit => (
           <Button
             className={css.submit}
-            disabled={!canSubmit || sendOtp.isPending}
+            disabled={!canSubmit || sendVerification.isPending}
             icon='arrow-right'
             iconPosition='right'
-            isLoading={sendOtp.isPending}
+            isLoading={sendVerification.isPending}
             type='submit'
           >
             Далее
