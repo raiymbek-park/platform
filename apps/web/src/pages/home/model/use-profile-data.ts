@@ -4,5 +4,5 @@ import { useTRPC } from '@/shared/api'
 
 export const useProfileData = () => {
   const trpc = useTRPC()
-  return useQuery(trpc.home.profile.queryOptions())
+  return useQuery(trpc.resident.me.queryOptions())
 }

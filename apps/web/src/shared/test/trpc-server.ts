@@ -35,13 +35,13 @@ export const trpcQuery = (procedure: string, data: unknown): HttpHandler =>
   http.get(trpcUrl(procedure), () => batchData(data))
 
 const homeHandlers = [
-  trpcQuery('home.profile', {
+  trpcQuery('resident.me', {
     apartment: 42,
     block: 1,
     name: 'Алиса',
   }),
-  trpcQuery('home.changes', []),
-  trpcQuery('home.contacts', []),
+  trpcQuery('events.list', []),
+  trpcQuery('serviceContacts.list', []),
   trpcMutation('resident.markVisit', () => ({ ok: true })),
 ]
 

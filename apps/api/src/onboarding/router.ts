@@ -2,7 +2,15 @@ import { TRPCError } from '@trpc/server'
 
 import { publicProcedure, router } from '../trpc'
 import { registerInputSchema } from './contract'
-import { createResident, markVisit } from './resident-store'
+import { createResident, getResident, markVisit } from './resident-store'
+
+export type ResidentProfile = {
+  apartment: number
+  block: number
+  name: string
+}
+
+const emptyProfile: ResidentProfile = { apartment: 0, block: 0, name: '' }
 
 export const residentRouter = router({
   register: publicProcedure
@@ -29,5 +37,15 @@ export const residentRouter = router({
 
     await markVisit(ctx.uid)
     return { ok: true }
+  }),
+  me: publicProcedure.query(async ({ ctx }): Promise<ResidentProfile> => {
+    if (!ctx.uid) return emptyProfile
+    const resident = await getResident(ctx.uid)
+    if (!resident) return emptyProfile
+    return {
+      apartment: resident.apartment,
+      block: resident.block,
+      name: resident.name,
+    }
   }),
 })

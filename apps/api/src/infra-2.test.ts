@@ -94,8 +94,8 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
     })
   })
 
-  describe('home content — contacts and changes ordering', () => {
-    it('contacts come from serviceContacts ordered by order ascending', async () => {
+  describe('service-contacts and events ordering', () => {
+    it('serviceContacts come ordered by order ascending with the domain shape', async () => {
       const db = getDb()
 
       await db.collection('serviceContacts').doc('second').set({
@@ -115,14 +115,20 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         order: 1,
       })
 
-      const { getContacts } = await import('./home/content')
-      const contacts = await getContacts()
+      const { getServiceContacts } = await import(
+        './service-contacts/service-contacts-store'
+      )
+      const contacts = await getServiceContacts()
       expect(contacts.map(c => c.id)).toEqual(['first', 'second'])
+      expect(contacts[0]?.order).toBe(1)
+      expect(contacts[1]?.order).toBe(2)
     })
 
-    it('changes come from events ordered by createdAt descending', async () => {
+    it('events come ordered by createdAt descending with createdAt as epoch millis', async () => {
       const db = getDb()
       const { Timestamp } = await import('./firestore')
+
+      const newerDate = new Date('2026-06-20T09:00:00Z')
 
       await db
         .collection('events')
@@ -144,17 +150,19 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
           text: 'Newer event',
           glyph: 'droplet-off',
           tone: 'info',
-          createdAt: Timestamp.fromDate(new Date('2026-06-20T09:00:00Z')),
+          createdAt: Timestamp.fromDate(newerDate),
         })
 
-      const { getChanges } = await import('./home/content')
-      const changes = await getChanges(null)
-      expect(changes.map(c => c.id)).toEqual(['newer', 'older'])
-      expect(changes[0]?.text).toBe('Newer event')
+      const { getEvents } = await import('./events/events-store')
+      const events = await getEvents(null)
+      expect(events.map(e => e.id)).toEqual(['newer', 'older'])
+      expect(events[0]?.text).toBe('Newer event')
+      expect(events[0]?.kind).toBe('utility')
+      expect(events[0]?.createdAt).toBe(newerDate.getTime())
     })
   })
 
-  describe('home content — lastVisit filter', () => {
+  describe('events — lastVisit filter', () => {
     it('only events created after lastVisit are returned; events at or before are excluded', async () => {
       const db = getDb()
       const { Timestamp } = await import('./firestore')
@@ -182,11 +190,11 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
           createdAt: Timestamp.fromDate(new Date('2026-06-20T09:00:00Z')),
         })
 
-      const { getChanges } = await import('./home/content')
+      const { getEvents } = await import('./events/events-store')
       const lastVisit = Timestamp.fromDate(new Date('2026-06-10T09:00:00Z'))
-      const changes = await getChanges(lastVisit)
+      const events = await getEvents(lastVisit)
 
-      expect(changes.map(c => c.id)).toEqual(['fresh'])
+      expect(events.map(e => e.id)).toEqual(['fresh'])
     })
   })
 
@@ -214,7 +222,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
     })
   })
 
-  describe('home content — live edits', () => {
+  describe('events — live edits', () => {
     it('an updated events document is reflected on the next read without a redeploy', async () => {
       const db = getDb()
       const { Timestamp } = await import('./firestore')
@@ -231,8 +239,8 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
           createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
         })
 
-      const { getChanges } = await import('./home/content')
-      const before = await getChanges(null)
+      const { getEvents } = await import('./events/events-store')
+      const before = await getEvents(null)
       expect(before[0]?.text).toBe('Original')
 
       await db
@@ -247,7 +255,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
           createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
         })
 
-      const after = await getChanges(null)
+      const after = await getEvents(null)
       expect(after[0]?.text).toBe('Updated without deploy')
     })
   })
@@ -292,17 +300,20 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
     })
   })
 
-  describe('home content — empty collections', () => {
-    it('returns empty contacts and changes lists without an error', async () => {
-      const { getChanges, getContacts } = await import('./home/content')
-      const contacts = await getContacts()
-      const changes = await getChanges(null)
+  describe('events and service-contacts — empty collections', () => {
+    it('returns empty serviceContacts and events lists without an error', async () => {
+      const { getServiceContacts } = await import(
+        './service-contacts/service-contacts-store'
+      )
+      const { getEvents } = await import('./events/events-store')
+      const contacts = await getServiceContacts()
+      const events = await getEvents(null)
       expect(contacts).toEqual([])
-      expect(changes).toEqual([])
+      expect(events).toEqual([])
     })
   })
 
-  describe('home content — no lastVisit means no filter', () => {
+  describe('events — no lastVisit means no filter', () => {
     it('returns all events ordered by createdAt descending when lastVisit is null', async () => {
       const db = getDb()
       const { Timestamp } = await import('./firestore')
@@ -330,13 +341,13 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
           createdAt: Timestamp.fromDate(new Date('2026-06-20T09:00:00Z')),
         })
 
-      const { getChanges } = await import('./home/content')
-      const changes = await getChanges(null)
-      expect(changes.map(c => c.id)).toEqual(['new', 'old'])
+      const { getEvents } = await import('./events/events-store')
+      const events = await getEvents(null)
+      expect(events.map(e => e.id)).toEqual(['new', 'old'])
     })
   })
 
-  describe('home content — 10-event cap', () => {
+  describe('events — 10-event cap', () => {
     it('returns at most 10 events even when more exist after lastVisit', async () => {
       const db = getDb()
       const { Timestamp } = await import('./firestore')
@@ -357,13 +368,13 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       })
       await batch.commit()
 
-      const { getChanges } = await import('./home/content')
-      const changes = await getChanges(null)
-      expect(changes).toHaveLength(10)
+      const { getEvents } = await import('./events/events-store')
+      const events = await getEvents(null)
+      expect(events).toHaveLength(10)
     })
   })
 
-  describe('home content — unknown glyph/tone fallback', () => {
+  describe('events and service-contacts — unknown glyph/tone fallback', () => {
     it('items with unknown glyph fall back to megaphone and unknown tone falls back to brand', async () => {
       const db = getDb()
       const { Timestamp } = await import('./firestore')
@@ -388,14 +399,17 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
           createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
         })
 
-      const { getChanges, getContacts } = await import('./home/content')
-      const contacts = await getContacts()
-      const changes = await getChanges(null)
+      const { getServiceContacts } = await import(
+        './service-contacts/service-contacts-store'
+      )
+      const { getEvents } = await import('./events/events-store')
+      const contacts = await getServiceContacts()
+      const events = await getEvents(null)
 
       expect(contacts[0]?.glyph).toBe('megaphone')
       expect(contacts[0]?.tone).toBe('brand')
-      expect(changes[0]?.glyph).toBe('megaphone')
-      expect(changes[0]?.tone).toBe('brand')
+      expect(events[0]?.glyph).toBe('megaphone')
+      expect(events[0]?.tone).toBe('brand')
     })
   })
 })

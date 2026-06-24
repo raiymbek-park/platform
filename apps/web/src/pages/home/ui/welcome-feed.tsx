@@ -1,6 +1,6 @@
 import { ChangeRow, WelcomeCard } from '@raiymbek-park/ui'
 
-import { useChangesData } from '../model/use-changes-data'
+import { useEventsData } from '../model/use-events-data'
 import { useProfileData } from '../model/use-profile-data'
 import css from './welcome-feed.module.scss'
 
@@ -16,7 +16,7 @@ const getMessage = () =>
 
 export const WelcomeFeed = () => {
   const { data: profile } = useProfileData()
-  const { data: changes, isError, isLoading, isSuccess } = useChangesData()
+  const { data: changes, isError, isLoading, isSuccess } = useEventsData()
 
   const name = profile?.name
   const hasChanges = !!changes?.length
