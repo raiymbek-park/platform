@@ -1,20 +1,32 @@
 # Home — Error States
 
-## Scenario 1: A content block's query fails
-  Given: the changes, services, or contacts endpoint returns an error
+## Scenario 1: The events feed fails to load
+  Given: the events feed endpoint returns an error
   When:  home loads
-  Then:  that block shows a non-blocking fallback
+  Then:  the welcome card shows a non-blocking "failed to load latest events" message
          the rest of the screen still renders
 
-## Scenario 2: Profile query fails
+## Scenario 2: The contacts query fails
+  Given: the contacts endpoint returns an error
+  When:  home loads
+  Then:  the contacts section shows a non-blocking failure message
+         the rest of the screen still renders
+
+## Scenario 3: Profile query fails
   Given: the profile endpoint returns an error
   When:  home loads
   Then:  the hero and greeting show a graceful fallback (no name or location)
          the screen does not crash
          the rest of the screen renders
 
-## Scenario 3: A block is still loading
-  Given: an endpoint is still pending
+## Scenario 4: The events feed is still loading
+  Given: the events feed endpoint is still pending
   When:  home renders
-  Then:  that block shows a loading state
+  Then:  the welcome card shows a loading message for the latest events
+         the other blocks render independently
+
+## Scenario 5: The contacts list is still loading
+  Given: the contacts endpoint is still pending
+  When:  home renders
+  Then:  the contacts section shows a loading state
          the other blocks render independently
