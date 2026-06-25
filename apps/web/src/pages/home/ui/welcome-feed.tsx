@@ -1,4 +1,5 @@
 import { ChangeRow, WelcomeCard } from '@raiymbek-park/ui'
+import { useState } from 'react'
 
 import { useEventsData } from '../model/use-events-data'
 import { useProfileData } from '../model/use-profile-data'
@@ -15,6 +16,7 @@ const getMessage = () =>
   greetMessages[Math.floor(Math.random() * greetMessages.length)]
 
 export const WelcomeFeed = () => {
+  const [emptyMessage] = useState(getMessage)
   const { data: profile } = useProfileData()
   const { data: changes, isError, isLoading, isSuccess } = useEventsData()
 
@@ -36,7 +38,7 @@ export const WelcomeFeed = () => {
       {isError && (
         <p className={css.state}>Не удалось загрузить последние события.</p>
       )}
-      {isEmpty && <p className={css.state}>{getMessage()}</p>}
+      {isEmpty && <p className={css.state}>{emptyMessage}</p>}
       {hasChanges && (
         <ul className={css.changes}>
           {changes?.map(change => (
