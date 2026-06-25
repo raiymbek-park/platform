@@ -602,7 +602,7 @@
               "id": "CkAnM",
               "name": "OTP Row",
               "width": "fill_container",
-              "gap": 16,
+              "gap": 4,
               "children": [
                 {
                   "id": "a3EeG",
@@ -611,6 +611,7 @@
                   "name": "Digit 1",
                   "height": 58,
                   "justifyContent": "center",
+                  "width": "fill_container",
                   "descendants": {
                     "ds:InputDefault-tx": {
                       "content": "7",
@@ -660,6 +661,40 @@
                   "type": "ref",
                   "ref": "ds:InputDefault",
                   "name": "Digit 4",
+                  "height": 58,
+                  "justifyContent": "center",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "",
+                      "fill": "$ds:foreground",
+                      "fontSize": 26,
+                      "fontWeight": "700",
+                      "textAlign": "center"
+                    }
+                  }
+                },
+                {
+                  "id": "TN78e",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "Digit 5",
+                  "height": 58,
+                  "justifyContent": "center",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "",
+                      "fill": "$ds:foreground",
+                      "fontSize": 26,
+                      "fontWeight": "700",
+                      "textAlign": "center"
+                    }
+                  }
+                },
+                {
+                  "id": "S3wxJG",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "Digit 6",
                   "height": 58,
                   "justifyContent": "center",
                   "descendants": {
