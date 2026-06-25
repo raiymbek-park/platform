@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { stubClipboard } from '@/shared/test/clipboard'
+import { stubClipboard } from '@/shared/test'
 
 import { useClipboardCode } from './use-clipboard-code'
 

@@ -3,14 +3,14 @@ import type { UserEvent } from '@testing-library/user-event'
 import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { stubClipboard } from '@/shared/test/clipboard'
-import { firebaseAuth } from '@/shared/test/firebase-auth'
-import { renderApp } from '@/shared/test/render-app'
 import {
+  firebaseAuth,
+  renderApp,
+  stubClipboard,
   trpcMutation,
   trpcMutationError,
   trpcServer,
-} from '@/shared/test/trpc-server'
+} from '@/shared/test'
 
 import { useConfirmationStore } from '../model/use-confirmation-store'
 import { useOnboardingStore } from '../model/use-onboarding-store'

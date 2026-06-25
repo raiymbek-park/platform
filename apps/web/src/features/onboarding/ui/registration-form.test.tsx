@@ -3,9 +3,12 @@ import type { UserEvent } from '@testing-library/user-event'
 import { screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { firebaseAuth } from '@/shared/test/firebase-auth'
-import { renderApp } from '@/shared/test/render-app'
-import { trpcMutation, trpcServer } from '@/shared/test/trpc-server'
+import {
+  firebaseAuth,
+  renderApp,
+  trpcMutation,
+  trpcServer,
+} from '@/shared/test'
 
 import { useConfirmationStore } from '../model/use-confirmation-store'
 import { useOnboardingStore } from '../model/use-onboarding-store'
