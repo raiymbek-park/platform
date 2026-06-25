@@ -85,7 +85,11 @@ export const OtpVerification = () => {
 
   return (
     <>
-      <img alt='' className={css.hero} src='/images/otp-sms.png' />
+      <img
+        alt=''
+        className={css.hero}
+        src={`${import.meta.env.BASE_URL}images/otp-sms.png`}
+      />
 
       <div ref={recaptchaRef} />
 

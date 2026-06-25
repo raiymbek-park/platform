@@ -155,13 +155,15 @@ jobs:
       - name: Write service-account credentials
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+        run: |
+          test -n "$FIREBASE_SERVICE_ACCOUNT" || { echo "::error::Set the FIREBASE_SERVICE_ACCOUNT secret (Settings → Secrets and variables → Actions)"; exit 1; }
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
 
       - name: Deploy function, Firestore & Storage rules
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json
         run: >-
-          npx -y firebase-tools deploy
+          npx -y firebase-tools@15 deploy
           --only functions,firestore,storage
           --project raiymbek-park-sa99
           --non-interactive
