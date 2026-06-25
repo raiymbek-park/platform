@@ -6,7 +6,7 @@ import {
   normalizePhone,
   phoneSchema,
   registerInputSchema,
-} from './contract'
+} from './resident'
 
 const validResident = {
   apartment: 42,

@@ -1,4 +1,4 @@
-import { toCamel, toKebab } from './case'
+import { toCamel, toKebab } from '../utilities/case'
 
 type CssModule = Record<string, string>
 type StateValue = string | boolean | undefined

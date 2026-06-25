@@ -1,4 +1,4 @@
-import { toKebab } from './case'
+import { toKebab } from '../utilities/case'
 
 type CssVarValue = string | number
 
