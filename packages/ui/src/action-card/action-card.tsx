@@ -6,23 +6,23 @@ import { joinCss } from '@raiymbek-park/shared'
 
 import { Icon } from '../icon'
 import { IconChip } from '../icon-chip/icon-chip'
-import css from './service-item.module.scss'
+import css from './action-card.module.scss'
 
-export type ServiceItemProps = ComponentProps<'div'> & {
+export type ActionCardProps = ComponentProps<'div'> & {
   description: ReactNode
   glyph: IconGlyph
   title: ReactNode
   tone?: IconChipTone
 }
 
-export const ServiceItem = ({
+export const ActionCard = ({
   className,
   description,
   glyph,
   title,
   tone,
   ...restProps
-}: ServiceItemProps) => (
+}: ActionCardProps) => (
   <div className={joinCss(css.item, className)} {...restProps}>
     <IconChip glyph={glyph} iconSize={24} size={48} tone={tone} />
     <span className={css.text}>

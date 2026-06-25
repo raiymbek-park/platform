@@ -128,7 +128,7 @@ NEVER use literal color names (`--yellow`, `--green`, `--gray`). Theme switching
 Sizing tokens describe magnitude, not role — they don't change with theme.
 
 - **Spacing** — `--spacing-{2xs,xs,sm,md,base,lg,xl}` (2, 4, 8, 10, 16, 24, 32 px) — for `padding`, `gap`, `margin`
-- **Font sizes** — `--font-size-{xs,sm,base,md,lg,xl,2xl}` (10, 12, 14, 16, 20, 24, 28 px)
+- **Font sizes** — `--font-size-{13,base,15,md,17,lg,22,xl,26,2xl}` (13, 14, 15, 16, 17, 20, 22, 24, 26, 28 px). **13px is the floor — never render text below it.** There is no token under 13px; don't reintroduce one or hardcode a smaller literal.
 - **Icon sizes** — `--icon-{sm,md,base,lg,xl}` (14, 16, 18, 20, 24 px) — atomic icon dimensions
 - **Avatar sizes** — `--avatar-{sm,md,lg}` (40, 45, 55 px) — atomic avatar dimensions
 - **Border radius** — `--radius-{sm,md,lg,round,circle}` (3, 6, 16, 30, 180 px)

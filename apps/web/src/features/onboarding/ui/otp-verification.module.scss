@@ -1,12 +1,10 @@
-.hero {
-  aspect-ratio: 1;
-  background: var(--surface);
-  border-radius: var(--radius-lg);
-  display: block;
-  object-fit: cover;
+.action {
   width: 100%;
 }
 
-.action {
-  width: 100%;
+.code input {
+  font-size: var(--font-size-26);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-align: center;
 }

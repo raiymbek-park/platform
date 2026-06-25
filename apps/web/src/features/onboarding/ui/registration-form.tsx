@@ -5,11 +5,11 @@ import {
   BlockCard,
   Button,
   Divider,
+  HeroCard,
   InfoCallout,
   Input,
-  OptionRow,
   SectionHeader,
-  WelcomeCard,
+  SelectOption,
 } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
@@ -82,10 +82,14 @@ export const RegistrationForm = () => {
         form.handleSubmit()
       }}
     >
-      <WelcomeCard
-        description='Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее.'
-        title='Добро пожаловать!'
-      />
+      <HeroCard title='Добро пожаловать!'>
+        Добро пожаловать в личное пространство жильцов и собственников квартир
+        ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от
+        управляющей компании, форма для подачи заявок на устранение неполадок,
+        контакты дежурных служб и история ваших обращений. Мы хотим, чтобы
+        каждый вопрос решался быстро и понятно — чтобы жизнь в доме была
+        удобнее, а управление домом — прозрачнее.
+      </HeroCard>
 
       <form.Field name='name'>
         {field => (
@@ -168,7 +172,7 @@ export const RegistrationForm = () => {
             <fieldset className={css.group}>
               <legend className='sr-only'>Роль</legend>
               <div className={css.roleCard}>
-                <OptionRow
+                <SelectOption
                   icon='house'
                   isSelected={field.state.value === 'owner'}
                   label='Собственник квартиры'
@@ -177,7 +181,7 @@ export const RegistrationForm = () => {
                   onClick={() => field.handleChange('owner')}
                 />
                 <Divider />
-                <OptionRow
+                <SelectOption
                   icon='key-round'
                   isSelected={field.state.value === 'tenant'}
                   label='Арендатор'

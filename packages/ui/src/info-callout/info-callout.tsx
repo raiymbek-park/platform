@@ -7,7 +7,7 @@ import { pickCss } from '@raiymbek-park/shared'
 import { IconChip } from '../icon-chip/icon-chip'
 import css from './info-callout.module.scss'
 
-type InfoCalloutVariant = 'info' | 'danger' | 'warning'
+type InfoCalloutVariant = 'info' | 'danger' | 'warning' | 'progress'
 
 export type InfoCalloutProps = ComponentProps<'aside'> & {
   icon: IconGlyph
@@ -19,6 +19,7 @@ const calloutCss = pickCss(css, css.callout)
 const toneByVariant: Record<InfoCalloutVariant, IconChipTone> = {
   danger: 'danger',
   info: 'brand',
+  progress: 'info',
   warning: 'warning',
 }
 

@@ -1,30 +1,3 @@
-@mixin field-surface {
-  background: var(--surface);
-  border: 2px solid transparent;
-  border-radius: var(--radius-18);
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--shadow) 6%, transparent);
-  transition: border-color 0.15s ease;
-
-  &:focus-within {
-    border-color: var(--action);
-  }
-
-  &:disabled,
-  &:has(:disabled) {
-    background: var(--background);
-    box-shadow: none;
-    cursor: not-allowed;
-  }
-
-  &-state-error {
-    border-color: var(--danger);
-  }
-
-  &-state-success {
-    border-color: var(--success);
-  }
-}
-
 @mixin chip($size, $radius) {
   align-items: center;
   border-radius: $radius;
