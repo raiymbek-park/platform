@@ -43,4 +43,20 @@
   Then:  the app stays on the verification screen
          a connection error message is shown
          the user can attempt the resend again
+
+## Scenario 6: Too many attempts routes to the locked screen
+
+  Given: the resident is in onboarding (welcome, verification, or resend step)
+  When:  the request is rejected with a too-many-requests (rate limit) error
+  Then:  the app moves to the "Доступ заблокирован" (Access locked) screen
+         a "Повторить" (Retry) action is shown
+
+  Given: the resident is on the locked screen
+  When:  the user taps "Повторить" and requesting a new code succeeds
+  Then:  the app moves to the verification screen
+
+  Given: the resident is on the locked screen
+  When:  the user taps "Повторить" but requesting a new code fails
+  Then:  the app stays on the locked screen
+         an error message is shown
 </content>

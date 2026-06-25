@@ -2,6 +2,7 @@ import { Button, InfoCallout } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
 
+import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { isWrongCode } from '../lib/is-wrong-code'
 import { useOtpCells } from '../lib/use-otp-cells'
 import { useResendCooldown } from '../lib/use-resend-cooldown'
@@ -43,7 +44,10 @@ export const OtpVerification = () => {
   const verify = (code: string, { clear }: { clear: () => void }) => {
     confirmCode.mutate(code, {
       onSuccess: register,
-      onError: clear,
+      onError: error => {
+        clear()
+        if (isTooManyRequests(error)) navigate({ to: '/onboarding/locked' })
+      },
     })
   }
 
@@ -62,6 +66,9 @@ export const OtpVerification = () => {
           otp.focusCell(0)
           cooldown.restart()
         },
+        onError: error => {
+          if (isTooManyRequests(error)) navigate({ to: '/onboarding/locked' })
+        },
       },
     )
   }
@@ -78,7 +85,11 @@ export const OtpVerification = () => {
 
   return (
     <>
-      <img alt='' className={css.hero} src='/images/whatsapp.png' />
+      <img
+        alt=''
+        className={css.hero}
+        src={`${import.meta.env.BASE_URL}images/otp-sms.png`}
+      />
 
       <div ref={recaptchaRef} />
 

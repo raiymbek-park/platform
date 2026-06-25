@@ -75,6 +75,16 @@ them.
   config (api key, auth domain, project id, storage bucket, sender id, app id) and exposes a
   shared `auth` instance. The API base URL and router base path come from `VITE_API_URL` and
   `VITE_BASE`.
+- **Continuous deployment on push to `main`.** The GitHub Actions pipeline
+  (`.github/workflows/fallow.yml`) gates deployment on the `checks` job (lint, typecheck, FSD
+  lint, unit tests); only when it passes do two independent jobs run. `deploy-web` builds
+  `apps/web` with `VITE_BASE=/platform/` and the `VITE_API_URL` repository variable and
+  publishes it to GitHub Pages through the official `actions/deploy-pages` artifact flow (Pages
+  source is "GitHub Actions"). `deploy-firebase` runs `firebase deploy --only
+  functions,firestore,storage` against `raiymbek-park-sa99`, authenticated by the
+  `FIREBASE_SERVICE_ACCOUNT` secret. Each target deploys atomically, so a failure in one leaves
+  the previously published version live. The web build emits `404.html` (a copy of
+  `index.html`) so SPA deep links resolve on Pages.
 
 ### What's NOT included
 

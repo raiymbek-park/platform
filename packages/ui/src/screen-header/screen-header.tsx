@@ -12,10 +12,13 @@ type Language = (typeof languages)[number]
 
 const chipCss = pickCss(css, css.chip)
 
-export type ScreenHeaderProps = ComponentProps<'header'>
+export type ScreenHeaderProps = ComponentProps<'header'> & {
+  hasSwitcher?: boolean
+}
 
 export const ScreenHeader = ({
   className,
+  hasSwitcher = true,
   ...restProps
 }: ScreenHeaderProps) => {
   const [language, setLanguage] = useState<Language>('RU')
@@ -26,18 +29,20 @@ export const ScreenHeader = ({
         <IconChip glyph='building-2' iconSize={24} size={40} />
         <span className={css.brand}>Raiymbek Park</span>
       </div>
-      <div className={css.switcher}>
-        {languages.map(code => (
-          <button
-            key={code}
-            className={chipCss({ isActive: language === code })}
-            type='button'
-            onClick={() => setLanguage(code)}
-          >
-            {code}
-          </button>
-        ))}
-      </div>
+      {hasSwitcher && (
+        <div className={css.switcher}>
+          {languages.map(code => (
+            <button
+              key={code}
+              className={chipCss({ isActive: language === code })}
+              type='button'
+              onClick={() => setLanguage(code)}
+            >
+              {code}
+            </button>
+          ))}
+        </div>
+      )}
     </header>
   )
 }

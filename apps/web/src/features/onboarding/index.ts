@@ -1,3 +1,5 @@
 export { useConfirmationStore } from './model/use-confirmation-store'
+export { useOnboardingStore } from './model/use-onboarding-store'
+export { AccountLocked } from './ui/account-locked'
 export { OtpVerification } from './ui/otp-verification'
 export { RegistrationForm } from './ui/registration-form'
