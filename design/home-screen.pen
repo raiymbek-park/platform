@@ -538,7 +538,7 @@
               "fill": {
                 "type": "image",
                 "enabled": true,
-                "url": "images/whatsapp.png",
+                "url": "images/otp-sms.png",
                 "mode": "fill"
               },
               "cornerRadius": 28,
