@@ -1356,6 +1356,126 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "eZlMS",
+      "x": 2765,
+      "y": 2,
+      "name": "Not Found",
+      "clip": true,
+      "width": 390,
+      "height": 842,
+      "fill": "$background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "FIS1H",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header",
+          "descendants": {
+            "ds:sh-switcher": {
+              "enabled": false
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "wSjsT",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": [
+            20,
+            20,
+            24,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "JjLBW",
+              "name": "Illustration",
+              "clip": true,
+              "width": "fill_container",
+              "height": 367,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/not-found.png",
+                "mode": "fill"
+              },
+              "cornerRadius": 24,
+              "justifyContent": "center",
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "I0QYw7",
+              "name": "Heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "G4udg",
+                  "name": "Title",
+                  "fill": "$foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Страница не найдена",
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 22,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "NiPSe",
+                  "name": "Subtitle",
+                  "opacity": 0.7,
+                  "fill": "$foreground",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Запрашиваемая страница не существует или была перемещена. Проверьте адрес или вернитесь на главную.",
+                  "lineHeight": 1.5,
+                  "textAlign": "center",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "pL1Dg",
+              "name": "Spacer",
+              "width": "fill_container",
+              "height": "fill_container"
+            },
+            {
+              "id": "fQij6",
+              "type": "ref",
+              "ref": "ds:ButtonAction",
+              "name": "Home Button",
+              "descendants": {
+                "ds:btn-action-icon": {
+                  "library": "lucide",
+                  "icon": "house"
+                },
+                "ds:btn-action-text": {
+                  "content": "На главную"
+                }
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "variables": {
