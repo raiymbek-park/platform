@@ -13,6 +13,7 @@ const router = createRouter({
   basepath: import.meta.env.BASE_URL,
   context: { queryClient, trpc },
   defaultPreload: 'intent',
+  notFoundMode: 'root',
 })
 
 declare module '@tanstack/react-router' {
