@@ -1,4 +1,4 @@
-import { Button, Content, ScreenHeader } from '@raiymbek-park/ui'
+import { Button, Content, HeroImage, ScreenHeader } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 
 import css from './not-found-page.module.scss'
@@ -9,8 +9,8 @@ export const NotFoundPage = () => {
   return (
     <>
       <ScreenHeader hasSwitcher={false} />
-      <Content className={css.body}>
-        <div className={css.illustration} />
+      <Content>
+        <HeroImage src='images/not-found.png' />
         <div className={css.heading}>
           <h1 className={css.title}>Страница не найдена</h1>
           <p className={css.subtitle}>

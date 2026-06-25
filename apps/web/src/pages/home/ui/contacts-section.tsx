@@ -1,4 +1,4 @@
-import { ContactItem, Divider, SectionHeader } from '@raiymbek-park/ui'
+import { ContactCard, Divider, SectionHeader } from '@raiymbek-park/ui'
 import { Fragment } from 'react'
 
 import { useServiceContactsData } from '../model/use-service-contacts-data'
@@ -18,7 +18,7 @@ export const ContactsSection = () => {
             <Fragment key={contact.id}>
               {index > 0 && <Divider />}
               <a className={css.link} href={`tel:${contact.phone}`}>
-                <ContactItem
+                <ContactCard
                   glyph={contact.glyph}
                   name={contact.name}
                   role={contact.role}

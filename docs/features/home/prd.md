@@ -115,7 +115,7 @@ session the resident never reaches home — the guard redirects to welcome.
   router `<Link>` for internal tabs, `<section>` / `<header>` for structure.
 - **Russian only** this iteration.
 - **Reuse the design system** — compose from the `.pen` DS components (ScreenHeader, LocationBadge,
-  WelcomeCard, ChangeRow, ServiceItem, SectionHeader, ContactItem, Divider, NavItem) rather than
+  HeroCard, AnnounceCard, ActionCard, SectionHeader, ContactCard, Divider, NavItem) rather than
   forking layout.
 - **State boundaries** — server data via TanStack Query (tRPC), navigation via router, UI state via
   Zustand; no client-side duplication of server data.

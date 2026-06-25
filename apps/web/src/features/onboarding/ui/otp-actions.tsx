@@ -5,10 +5,10 @@ import { useClipboardCode } from '../lib/use-clipboard-code'
 import css from './otp-actions.module.scss'
 
 type OtpActionsProps = {
-  isDisabled: boolean
+  isChecking: boolean
   isResendPending: boolean
   resendCooldown: number
-  onPaste: (cells: string[]) => void
+  onPaste: (code: string) => void
   onResend: () => void
 }
 
@@ -19,7 +19,7 @@ const formatCooldown = (seconds: number) => {
 }
 
 export const OtpActions = ({
-  isDisabled,
+  isChecking,
   isResendPending,
   resendCooldown,
   onPaste,
@@ -32,6 +32,7 @@ export const OtpActions = ({
     <div className={css.actions}>
       <Button
         aria-label='Назад'
+        disabled={isChecking}
         icon='arrow-left'
         variant='icon'
         onClick={() => navigate({ to: '/onboarding/welcome' })}
@@ -39,23 +40,23 @@ export const OtpActions = ({
       {clipboardCode !== null ? (
         <Button
           className={css.fill}
-          disabled={isDisabled}
+          disabled={isChecking}
           icon='clipboard-paste'
-          onClick={() => onPaste(clipboardCode.split(''))}
+          onClick={() => onPaste(clipboardCode)}
         >
           Вставить код из буфера
         </Button>
       ) : (
         <Button
           className={css.fill}
-          disabled={resendCooldown > 0}
+          disabled={isChecking || resendCooldown > 0}
           isLoading={isResendPending}
           variant='secondary'
           onClick={onResend}
         >
           {resendCooldown > 0
-            ? `Запросить пин повторно через ${formatCooldown(resendCooldown)}`
-            : 'Запросить пин повторно'}
+            ? `Запросить код повторно через ${formatCooldown(resendCooldown)}`
+            : 'Запросить код повторно'}
         </Button>
       )}
     </div>

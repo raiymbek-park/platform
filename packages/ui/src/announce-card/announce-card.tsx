@@ -5,21 +5,21 @@ import type { IconChipTone } from '../icon-chip/icon-chip'
 import { joinCss } from '@raiymbek-park/shared'
 
 import { IconChip } from '../icon-chip/icon-chip'
-import css from './change-row.module.scss'
+import css from './announce-card.module.scss'
 
-export type ChangeRowProps = ComponentProps<'div'> & {
+export type AnnounceCardProps = ComponentProps<'div'> & {
   glyph: IconGlyph
   text: ReactNode
   tone?: IconChipTone
 }
 
-export const ChangeRow = ({
+export const AnnounceCard = ({
   className,
   glyph,
   text,
   tone,
   ...restProps
-}: ChangeRowProps) => (
+}: AnnounceCardProps) => (
   <div className={joinCss(css.row, className)} {...restProps}>
     <IconChip glyph={glyph} iconSize={16} size={30} tone={tone} />
     <span className={css.text}>{text}</span>

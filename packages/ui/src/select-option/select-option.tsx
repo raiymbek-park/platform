@@ -5,22 +5,22 @@ import { pickCss } from '@raiymbek-park/shared'
 
 import { Icon } from '../icon'
 import { IconChip } from '../icon-chip/icon-chip'
-import css from './option-row.module.scss'
+import css from './select-option.module.scss'
 
-export type OptionTone = 'brand' | 'danger'
+export type SelectOptionTone = 'brand' | 'danger'
 
-export type OptionRowProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+export type SelectOptionProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconGlyph
   isSelected?: boolean
   label: ReactNode
   subtitle?: ReactNode
-  tone?: OptionTone
+  tone?: SelectOptionTone
 }
 
 const optionCss = pickCss(css, css.option)
 const markCss = pickCss(css, css.mark)
 
-export const OptionRow = ({
+export const SelectOption = ({
   className,
   icon,
   isSelected,
@@ -29,7 +29,7 @@ export const OptionRow = ({
   tone = 'brand',
   type = 'button',
   ...restProps
-}: OptionRowProps) => (
+}: SelectOptionProps) => (
   <button
     aria-pressed={isSelected}
     className={optionCss({ isSelected }, className)}

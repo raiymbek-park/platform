@@ -1,4 +1,4 @@
-import { Button, InfoCallout } from '@raiymbek-park/ui'
+import { Button, HeroImage, InfoCallout } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
 
@@ -25,7 +25,7 @@ export const AccountLocked = () => {
 
   return (
     <>
-      <div className={css.illustration} />
+      <HeroImage src='images/account-locked.png' />
       <span ref={recaptchaRef} />
 
       <header className={css.heading}>

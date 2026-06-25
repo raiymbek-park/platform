@@ -598,116 +598,24 @@
               ]
             },
             {
-              "type": "frame",
-              "id": "CkAnM",
-              "name": "OTP Row",
+              "id": "a3EeG",
+              "type": "ref",
+              "ref": "ds:InputDefault",
+              "name": "Digit 1",
+              "height": 58,
+              "justifyContent": "center",
               "width": "fill_container",
-              "gap": 4,
-              "children": [
-                {
-                  "id": "a3EeG",
-                  "type": "ref",
-                  "ref": "ds:InputDefault",
-                  "name": "Digit 1",
-                  "height": 58,
-                  "justifyContent": "center",
-                  "width": "fill_container",
-                  "descendants": {
-                    "ds:InputDefault-tx": {
-                      "content": "7",
-                      "fill": "$ds:foreground",
-                      "fontSize": 26,
-                      "fontWeight": "700",
-                      "textAlign": "center"
-                    }
-                  }
-                },
-                {
-                  "id": "hV1j9",
-                  "type": "ref",
-                  "ref": "ds:InputDefault",
-                  "name": "Digit 2",
-                  "height": 58,
-                  "justifyContent": "center",
-                  "descendants": {
-                    "ds:InputDefault-tx": {
-                      "content": "0",
-                      "fill": "$ds:foreground",
-                      "fontSize": 26,
-                      "fontWeight": "700",
-                      "textAlign": "center"
-                    }
-                  }
-                },
-                {
-                  "id": "rH3iF",
-                  "type": "ref",
-                  "ref": "ds:InputFocus",
-                  "name": "Digit 3",
-                  "height": 58,
-                  "justifyContent": "center",
-                  "descendants": {
-                    "ds:InputFocus-tx": {
-                      "content": "",
-                      "fill": "$ds:foreground",
-                      "fontSize": 26,
-                      "fontWeight": "700",
-                      "textAlign": "center"
-                    }
-                  }
-                },
-                {
-                  "id": "V5o2BN",
-                  "type": "ref",
-                  "ref": "ds:InputDefault",
-                  "name": "Digit 4",
-                  "height": 58,
-                  "justifyContent": "center",
-                  "descendants": {
-                    "ds:InputDefault-tx": {
-                      "content": "",
-                      "fill": "$ds:foreground",
-                      "fontSize": 26,
-                      "fontWeight": "700",
-                      "textAlign": "center"
-                    }
-                  }
-                },
-                {
-                  "id": "TN78e",
-                  "type": "ref",
-                  "ref": "ds:InputDefault",
-                  "name": "Digit 5",
-                  "height": 58,
-                  "justifyContent": "center",
-                  "descendants": {
-                    "ds:InputDefault-tx": {
-                      "content": "",
-                      "fill": "$ds:foreground",
-                      "fontSize": 26,
-                      "fontWeight": "700",
-                      "textAlign": "center"
-                    }
-                  }
-                },
-                {
-                  "id": "S3wxJG",
-                  "type": "ref",
-                  "ref": "ds:InputDefault",
-                  "name": "Digit 6",
-                  "height": 58,
-                  "justifyContent": "center",
-                  "descendants": {
-                    "ds:InputDefault-tx": {
-                      "content": "",
-                      "fill": "$ds:foreground",
-                      "fontSize": 26,
-                      "fontWeight": "700",
-                      "textAlign": "center"
-                    }
-                  }
+              "x": 20,
+              "y": 445,
+              "descendants": {
+                "ds:InputDefault-tx": {
+                  "content": "1 2 3 - 4 5 6",
+                  "fill": "$ds:foreground",
+                  "fontSize": 26,
+                  "fontWeight": "700",
+                  "textAlign": "center"
                 }
-              ]
+              }
             },
             {
               "type": "frame",
@@ -862,7 +770,7 @@
                       "icon": "phone"
                     },
                     "ds:InputIcon-tx": {
-                      "content": "+7 (___) ___-__-__"
+                      "content": "+77"
                     }
                   }
                 }
@@ -1138,12 +1046,7 @@
           "height": "fill_container",
           "layout": "vertical",
           "gap": 24,
-          "padding": [
-            20,
-            20,
-            24,
-            20
-          ],
+          "padding": 20,
           "children": [
             {
               "type": "frame",
@@ -1216,7 +1119,7 @@
               "descendants": {
                 "ds:btn-action-icon": {
                   "library": "lucide",
-                  "icon": "arrow-right"
+                  "icon": "refresh-cw"
                 },
                 "ds:btn-action-text": {
                   "content": "Повторить"
@@ -1258,12 +1161,7 @@
           "height": "fill_container",
           "layout": "vertical",
           "gap": 24,
-          "padding": [
-            20,
-            20,
-            24,
-            20
-          ],
+          "padding": 20,
           "children": [
             {
               "type": "frame",

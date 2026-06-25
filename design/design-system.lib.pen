@@ -31,7 +31,7 @@
           "fill": "$text-muted",
           "content": "Inter - headings, text, labels",
           "fontFamily": "Inter",
-          "fontSize": 12,
+          "fontSize": 13,
           "fontWeight": "500"
         },
         {
@@ -82,7 +82,7 @@
               "fill": "$text-muted",
               "content": "Caption and secondary text",
               "fontFamily": "Inter",
-              "fontSize": 12,
+              "fontSize": 13,
               "fontWeight": "500"
             },
             {
@@ -92,7 +92,7 @@
               "fill": "$text-muted",
               "content": "LABEL · 12 / 700",
               "fontFamily": "Inter",
-              "fontSize": 12,
+              "fontSize": 13,
               "fontWeight": "700"
             },
             {
@@ -177,7 +177,7 @@
           "fill": "$text-muted",
           "content": "Primary, Action, Icon · states: default, pressed, disabled",
           "fontFamily": "Inter",
-          "fontSize": 12,
+          "fontSize": 13,
           "fontWeight": "500"
         },
         {
@@ -599,7 +599,7 @@
           "fill": "$text-muted",
           "content": "Grouped by status: Default / Error / Success · states inside each",
           "fontFamily": "Inter",
-          "fontSize": 12,
+          "fontSize": 13,
           "fontWeight": "500"
         },
         {
@@ -643,7 +643,7 @@
                       "fill": "$text-muted",
                       "content": "Default",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -702,7 +702,7 @@
                       "fill": "$text-muted",
                       "content": "Focus",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -763,7 +763,7 @@
                       "fill": "$text-muted",
                       "content": "Active",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -824,7 +824,7 @@
                       "fill": "$text-muted",
                       "content": "Disabled",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -871,7 +871,7 @@
                       "fill": "$text-muted",
                       "content": "With icon",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -973,7 +973,7 @@
                       "fill": "$text-muted",
                       "content": "Default",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1044,7 +1044,7 @@
                       "fill": "$text-muted",
                       "content": "Focus",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1115,7 +1115,7 @@
                       "fill": "$text-muted",
                       "content": "Active",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1186,7 +1186,7 @@
                       "fill": "$text-muted",
                       "content": "Disabled",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1233,7 +1233,7 @@
                       "fill": "$text-muted",
                       "content": "With icon",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1347,7 +1347,7 @@
                       "fill": "$text-muted",
                       "content": "Default",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1418,7 +1418,7 @@
                       "fill": "$text-muted",
                       "content": "Focus",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1489,7 +1489,7 @@
                       "fill": "$text-muted",
                       "content": "Active",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1560,7 +1560,7 @@
                       "fill": "$text-muted",
                       "content": "Disabled",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1607,7 +1607,7 @@
                       "fill": "$text-muted",
                       "content": "With icon",
                       "fontFamily": "Inter",
-                      "fontSize": 11,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     },
                     {
@@ -1722,7 +1722,7 @@
           "fill": "$text-muted",
           "content": "Language toggle, role choice, block choice (+ disabled)",
           "fontFamily": "Inter",
-          "fontSize": 12,
+          "fontSize": 13,
           "fontWeight": "500"
         },
         {
@@ -1759,7 +1759,7 @@
                       "fill": "#FFFFFF",
                       "content": "RU",
                       "fontFamily": "Inter",
-                      "fontSize": 12,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     }
                   ]
@@ -1783,7 +1783,7 @@
                       "fill": "$text-muted",
                       "content": "KZ",
                       "fontFamily": "Inter",
-                      "fontSize": 12,
+                      "fontSize": 13,
                       "fontWeight": "700"
                     }
                   ]
@@ -1793,7 +1793,7 @@
             {
               "type": "frame",
               "id": "OptionRow",
-              "name": "OptionRow",
+              "name": "SelectOption",
               "width": "fill_container",
               "layout": "vertical",
               "gap": 6,
@@ -1801,7 +1801,7 @@
                 {
                   "type": "frame",
                   "id": "OptionRowSelected",
-                  "name": "OptionRowSelected",
+                  "name": "SelectOptionSelected",
                   "reusable": true,
                   "width": "fill_container",
                   "gap": 12,
@@ -1867,7 +1867,7 @@
                               "fill": "$foreground",
                               "content": "I own the property",
                               "fontFamily": "Inter",
-                              "fontSize": 12,
+                              "fontSize": 13,
                               "fontWeight": "500"
                             }
                           ]
@@ -1902,7 +1902,7 @@
                 {
                   "type": "frame",
                   "id": "OptionRowDefault",
-                  "name": "OptionRowDefault",
+                  "name": "SelectOptionDefault",
                   "reusable": true,
                   "width": "fill_container",
                   "gap": 12,
@@ -1968,7 +1968,7 @@
                               "fill": "$foreground",
                               "content": "I rent the property",
                               "fontFamily": "Inter",
-                              "fontSize": 12,
+                              "fontSize": 13,
                               "fontWeight": "500"
                             }
                           ]
@@ -2091,7 +2091,7 @@
                           "fill": "$foreground",
                           "content": "10 residential floors",
                           "fontFamily": "Inter",
-                          "fontSize": 12,
+                          "fontSize": 13,
                           "fontWeight": "500"
                         }
                       ]
@@ -2169,7 +2169,7 @@
                           "fill": "$foreground",
                           "content": "10 residential floors",
                           "fontFamily": "Inter",
-                          "fontSize": 12,
+                          "fontSize": 13,
                           "fontWeight": "500"
                         }
                       ]
@@ -2247,7 +2247,7 @@
                           "fill": "$foreground",
                           "content": "10 residential floors",
                           "fontFamily": "Inter",
-                          "fontSize": 12,
+                          "fontSize": 13,
                           "fontWeight": "500"
                         }
                       ]
@@ -2290,7 +2290,7 @@
           "fill": "$text-muted",
           "content": "Welcome and info blocks (info / danger / warning)",
           "fontFamily": "Inter",
-          "fontSize": 12,
+          "fontSize": 13,
           "fontWeight": "500"
         },
         {
@@ -2304,7 +2304,7 @@
             {
               "type": "frame",
               "id": "WelcomeCard",
-              "name": "WelcomeCard",
+              "name": "HeroCard",
               "reusable": true,
               "clip": true,
               "width": "fill_container",
@@ -2422,7 +2422,7 @@
                   "content": "Your personal data is hidden from other residents.",
                   "lineHeight": 1.5,
                   "fontFamily": "Inter",
-                  "fontSize": 12,
+                  "fontSize": 13,
                   "fontWeight": "500"
                 }
               ]
@@ -2437,6 +2437,7 @@
               "cornerRadius": 18,
               "gap": 12,
               "padding": 16,
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
@@ -2472,7 +2473,7 @@
                   "content": "Attention: request rejected. Check the details and try again.",
                   "lineHeight": 1.5,
                   "fontFamily": "Inter",
-                  "fontSize": 12,
+                  "fontSize": 13,
                   "fontWeight": "500"
                 }
               ]
@@ -2487,6 +2488,7 @@
               "cornerRadius": 18,
               "gap": 12,
               "padding": 16,
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
@@ -2522,7 +2524,7 @@
                   "content": "Scheduled water shutdown on June 20, 10:00-16:00.",
                   "lineHeight": 1.5,
                   "fontFamily": "Inter",
-                  "fontSize": 12,
+                  "fontSize": 13,
                   "fontWeight": "500"
                 }
               ]
@@ -2561,7 +2563,7 @@
           "fill": "$text-muted",
           "content": "Notifications, services, contacts (+ pressed)",
           "fontFamily": "Inter",
-          "fontSize": 12,
+          "fontSize": 13,
           "fontWeight": "500"
         },
         {
@@ -2575,7 +2577,7 @@
             {
               "type": "frame",
               "id": "ChangeRow",
-              "name": "ChangeRow",
+              "name": "AnnounceCard",
               "reusable": true,
               "width": "fill_container",
               "fill": "$surface",
@@ -2627,7 +2629,7 @@
             {
               "type": "frame",
               "id": "ServiceItem",
-              "name": "ServiceItem",
+              "name": "ActionCard",
               "reusable": true,
               "width": "fill_container",
               "fill": "$surface",
@@ -2703,7 +2705,7 @@
                       "content": "News and notifications from management",
                       "lineHeight": 1.35,
                       "fontFamily": "Inter",
-                      "fontSize": 12.5,
+                      "fontSize": 13,
                       "fontWeight": "500"
                     }
                   ]
@@ -2723,7 +2725,7 @@
             {
               "type": "frame",
               "id": "ContactItem",
-              "name": "ContactItem",
+              "name": "ContactCard",
               "reusable": true,
               "width": "fill_container",
               "gap": 12,
@@ -2789,7 +2791,7 @@
                           "fill": "$foreground",
                           "content": "Management",
                           "fontFamily": "Inter",
-                          "fontSize": 12,
+                          "fontSize": 13,
                           "fontWeight": "500"
                         }
                       ]
@@ -2853,7 +2855,7 @@
             {
               "type": "frame",
               "id": "ServiceItemPressed",
-              "name": "ServiceItemPressed",
+              "name": "ActionCardPressed",
               "reusable": true,
               "width": "fill_container",
               "fill": "$background",
@@ -2919,7 +2921,7 @@
                       "content": "News and notifications from management",
                       "lineHeight": 1.35,
                       "fontFamily": "Inter",
-                      "fontSize": 12.5,
+                      "fontSize": 13,
                       "fontWeight": "500"
                     }
                   ]
@@ -2939,7 +2941,7 @@
             {
               "type": "frame",
               "id": "ContactItemPressed",
-              "name": "ContactItemPressed",
+              "name": "ContactCardPressed",
               "reusable": true,
               "width": "fill_container",
               "fill": "$background",
@@ -3007,7 +3009,7 @@
                           "fill": "$foreground",
                           "content": "Management",
                           "fontFamily": "Inter",
-                          "fontSize": 12,
+                          "fontSize": 13,
                           "fontWeight": "500"
                         }
                       ]
@@ -3085,7 +3087,7 @@
           "width": "fill_container",
           "content": "Screen header: logo, title, language switcher (switcher hides via sh-switcher enabled:false)",
           "fontFamily": "Inter",
-          "fontSize": 12,
+          "fontSize": 13,
           "fontWeight": "500"
         },
         {
@@ -3285,7 +3287,7 @@
           "fill": "$text-muted",
           "content": "Location badge",
           "fontFamily": "Inter",
-          "fontSize": 12,
+          "fontSize": 13,
           "fontWeight": "500"
         },
         {

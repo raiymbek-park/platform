@@ -16,11 +16,25 @@
   &-variant-warning {
     background: var(--warning-soft);
   }
+
+  &-variant-progress {
+    background: var(--info-soft);
+
+    [data-glyph] {
+      animation: spin 0.7s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .message {
   color: var(--foreground);
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-13);
   font-weight: 500;
   line-height: 1.5;
   margin: 0;

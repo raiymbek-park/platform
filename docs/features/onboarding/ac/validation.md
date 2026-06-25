@@ -116,9 +116,9 @@
   When:  the user picks a different option in that group
   Then:  the previous selection is cleared and the new one is selected — exactly one stays selected
 
-## Scenario 14: A code cell takes only one digit
+## Scenario 14: The code field accepts digits only
 
   Given: the user is on the verification screen
-  When:  a digit is typed into a cell
-  Then:  the cell holds exactly one digit
+  When:  characters are typed into the code field
+  Then:  only digits are kept (non-digits are ignored), capped at six
 </content>

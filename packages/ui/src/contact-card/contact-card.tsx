@@ -6,23 +6,23 @@ import { joinCss } from '@raiymbek-park/shared'
 
 import { Icon } from '../icon'
 import { IconChip } from '../icon-chip/icon-chip'
-import css from './contact-item.module.scss'
+import css from './contact-card.module.scss'
 
-export type ContactItemProps = ComponentProps<'div'> & {
+export type ContactCardProps = ComponentProps<'div'> & {
   glyph: IconGlyph
   name: ReactNode
   role: ReactNode
   tone?: IconChipTone
 }
 
-export const ContactItem = ({
+export const ContactCard = ({
   className,
   glyph,
   name,
   role,
   tone,
   ...restProps
-}: ContactItemProps) => (
+}: ContactCardProps) => (
   <div className={joinCss(css.contact, className)} {...restProps}>
     <span className={css.left}>
       <IconChip glyph={glyph} iconSize={20} size={42} tone={tone} />

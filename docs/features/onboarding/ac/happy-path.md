@@ -20,7 +20,7 @@
   Then:  an SMS code is sent to the entered number
          the app moves to the verification screen
 
-## Scenario 4: The verification screen shows the number and empty cells
+## Scenario 4: The verification screen shows the number and an empty code field
 
   Given: the user reached the verification screen after a code was sent
   When:  the screen loads
@@ -28,28 +28,18 @@
 
   Given: the user reached the verification screen after a code was sent
   When:  the screen loads
-  Then:  6 empty code cells are shown, with focus on the first cell
+  Then:  an empty code field with the `xxx - xxx` mask is shown and focused
 
   Given: the user reached the verification screen after a code was sent
   When:  the screen loads
-  Then:  the resend control shows "Запросить пин повторно через 1:00" and is disabled
+  Then:  the resend control shows "Запросить код повторно через 1:00" and is disabled
 
-## Scenario 5: Focus auto-advances between cells while typing
+## Scenario 5: The code field masks the digits as "xxx - xxx"
 
-  Given: focus is on the first cell and the cells are empty
-  When:  the user types digits one by one
-  Then:  after each digit, focus moves automatically to the next cell
-         after the sixth digit, focus stays on the sixth cell
-
-## Scenario 6: Backspace moves focus to the previous cell
-
-  Given: focus is on any cell after the first on the verification screen and that cell is empty
-  When:  the user presses backspace
-  Then:  focus moves to the previous cell
-
-  Given: focus is on the first cell
-  When:  the user presses backspace
-  Then:  focus stays on the first cell
+  Given: the user is on the verification screen
+  When:  the user types digits
+  Then:  the field groups them as "xxx - xxx" (e.g. "12345" shows as "123 - 45")
+         non-digit characters are ignored
 
 ## Scenario 7: The correct code registers and signs the resident in
 
@@ -76,10 +66,10 @@
 
   Given: the user is on the verification screen and the clipboard holds a 6-digit code
   When:  the user taps the "Вставить код из буфера" action
-  Then:  the 6 cells fill with the digits from the clipboard
+  Then:  the field fills with the digits from the clipboard
 
-  Given: the 6 cells were filled by pasting a valid 6-digit clipboard value forming the correct code
-  When:  the cells are full
+  Given: the field was filled by pasting a valid 6-digit clipboard value forming the correct code
+  When:  all six digits are present
   Then:  the code is checked automatically and the app moves to home
 
 ## Scenario 10: "Next" cannot be submitted twice while the request is in flight
@@ -89,9 +79,10 @@
   Then:  "Далее" is disabled and shows a loading state for the duration of the request
          the form cannot be submitted a second time
 
-## Scenario 11: Cells are non-interactive while the check is in flight
+## Scenario 11: The field and actions are disabled while the check is in flight
 
   Given: 6 digits have been entered on the verification screen and the check is in flight
   When:  the response has not yet arrived
-  Then:  the cells do not accept new input for the duration of the request
+  Then:  a progress notice ("Ваш код отправляется на проверку…") is shown
+         the code field, the back control, and the resend/paste control are disabled
 </content>

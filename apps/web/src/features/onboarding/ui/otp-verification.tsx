@@ -1,17 +1,17 @@
-import { Button, InfoCallout } from '@raiymbek-park/ui'
+import { Button, HeroImage, InfoCallout, Input } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
 
+import { formatOtp, otpMask } from '../lib/format-otp'
 import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { isWrongCode } from '../lib/is-wrong-code'
-import { useOtpCells } from '../lib/use-otp-cells'
+import { useOtpCode } from '../lib/use-otp-code'
 import { useResendCooldown } from '../lib/use-resend-cooldown'
 import { useConfirmCode } from '../model/use-confirm-code'
 import { useOnboardingStore } from '../model/use-onboarding-store'
 import { useRegisterResident } from '../model/use-register-resident'
 import { useResendVerification } from '../model/use-resend-verification'
 import { OtpActions } from './otp-actions'
-import { OtpCells } from './otp-cells'
 import { OtpHeading } from './otp-heading'
 import css from './otp-verification.module.scss'
 
@@ -51,7 +51,7 @@ export const OtpVerification = () => {
     })
   }
 
-  const otp = useOtpCells({ disabled: isChecking, onComplete: verify })
+  const otp = useOtpCode({ disabled: isChecking, onComplete: verify })
 
   const handleResend = () => {
     const container = recaptchaRef.current
@@ -63,7 +63,7 @@ export const OtpVerification = () => {
       { container, phone },
       {
         onSuccess: () => {
-          otp.focusCell(0)
+          otp.focus()
           cooldown.restart()
         },
         onError: error => {
@@ -85,28 +85,34 @@ export const OtpVerification = () => {
 
   return (
     <>
-      <img
-        alt=''
-        className={css.hero}
-        src={`${import.meta.env.BASE_URL}images/otp-sms.png`}
-      />
+      <HeroImage src='images/otp-sms.png' />
 
       <div ref={recaptchaRef} />
 
       <OtpHeading />
 
-      <OtpCells
-        cells={otp.cells}
-        hasError={errorMessage !== null}
-        inputRefs={otp.inputRefs}
-        isDisabled={isChecking}
-        onDigit={otp.setDigit}
-        onKeyDown={otp.handleKeyDown}
+      <Input
+        ref={otp.inputRef}
+        aria-label='Код подтверждения'
+        autoFocus
+        className={css.code}
+        disabled={isChecking}
+        inputMode='numeric'
+        placeholder={otpMask}
+        state={errorMessage !== null ? 'error' : undefined}
+        value={formatOtp(otp.code)}
+        onChange={event => otp.setValue(event.target.value)}
       />
 
       {errorMessage !== null && (
         <InfoCallout icon='circle-alert' variant='danger'>
           {errorMessage}
+        </InfoCallout>
+      )}
+
+      {isChecking && (
+        <InfoCallout icon='loader-circle' variant='progress'>
+          Ваш код отправляется на проверку…
         </InfoCallout>
       )}
 
@@ -122,10 +128,10 @@ export const OtpVerification = () => {
       )}
 
       <OtpActions
-        isDisabled={isChecking}
+        isChecking={isChecking}
         isResendPending={resend.isPending}
         resendCooldown={cooldown.secondsLeft}
-        onPaste={cells => otp.setCells(cells)}
+        onPaste={code => otp.setValue(code)}
         onResend={handleResend}
       />
     </>

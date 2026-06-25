@@ -17,6 +17,7 @@ export const renderApp = (initialPath: string) => {
     routeTree,
     context: { queryClient, trpc },
     history,
+    notFoundMode: 'root',
   })
 
   render(

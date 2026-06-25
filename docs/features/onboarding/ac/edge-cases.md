@@ -10,7 +10,7 @@
 
   Given: the user is on the verification screen and the resend cooldown is counting down
   When:  the countdown reaches 0:00
-  Then:  the resend control "Запросить пин повторно" becomes enabled
+  Then:  the resend control "Запросить код повторно" becomes enabled
 
 ## Scenario 3: Escalating resend cooldown
 
@@ -35,8 +35,8 @@
   Given: the user has typed some digits on the verification screen and the resend cooldown has
          elapsed
   When:  they tap the resend control and a new code is sent
-  Then:  the cells clear
-         focus returns to the first cell
+  Then:  the field clears
+         focus returns to the code field
 
 ## Scenario 5: Paste action appears only with exactly 6 standalone digits in the clipboard
 

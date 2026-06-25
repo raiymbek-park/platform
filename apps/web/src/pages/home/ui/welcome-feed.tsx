@@ -1,4 +1,4 @@
-import { ChangeRow, WelcomeCard } from '@raiymbek-park/ui'
+import { AnnounceCard, HeroCard } from '@raiymbek-park/ui'
 import { useState } from 'react'
 
 import { useEventsData } from '../model/use-events-data'
@@ -26,24 +26,16 @@ export const WelcomeFeed = () => {
   const greeting = name ? `Привет, ${name}! 👋` : 'Привет! 👋'
 
   return (
-    <WelcomeCard
-      description={
-        hasChanges
-          ? 'За время вашего отсутствия появились изменения:'
-          : undefined
-      }
-      title={greeting}
-    >
-      {isLoading && <p className={css.state}>Загрузка последних событий…</p>}
-      {isError && (
-        <p className={css.state}>Не удалось загрузить последние события.</p>
-      )}
-      {isEmpty && <p className={css.state}>{emptyMessage}</p>}
+    <HeroCard title={greeting}>
+      {hasChanges && 'За время вашего отсутствия появились изменения:'}
+      {isLoading && 'Загрузка последних событий…'}
+      {isError && 'Не удалось загрузить последние события'}
+      {isEmpty && emptyMessage}
       {hasChanges && (
         <ul className={css.changes}>
           {changes?.map(change => (
             <li key={change.id}>
-              <ChangeRow
+              <AnnounceCard
                 glyph={change.glyph}
                 text={change.text}
                 tone={change.tone}
@@ -52,6 +44,6 @@ export const WelcomeFeed = () => {
           ))}
         </ul>
       )}
-    </WelcomeCard>
+    </HeroCard>
   )
 }

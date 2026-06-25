@@ -27,12 +27,13 @@ onboarding and goes straight to home.
   success check when its value is valid, and an error state once it is invalid after the user has
   interacted with it. A reCAPTCHA legal notice (a link to Google's Privacy Policy and Terms) is shown
   in the form.
-- **Verification screen** (`/onboarding/verification`) — entry of the 6-digit SMS code across 6
-  cells. The entered phone number is shown in the format `+7 707 123 45 67`. Focus advances between
-  cells automatically as digits are typed and steps back on backspace from an empty cell. The code is
-  checked automatically the moment all six digits are present — no button tap is required. The code
-  can also be filled by pasting it from the clipboard. A resend control lets the resident request a
-  new code, gated by an escalating cooldown.
+- **Verification screen** (`/onboarding/verification`) — entry of the 6-digit SMS code in a single
+  masked field (`xxx - xxx`) that accepts digits only. The entered phone number is shown in the format
+  `+7 707 123 45 67`. The code is checked automatically the moment all six digits are present — no
+  button tap is required. While the check is in flight, a progress notice ("Ваш код отправляется на
+  проверку…") is shown and the field and bottom actions are disabled. The code can also be filled by
+  pasting it from the clipboard. A resend control lets the resident request a new code, gated by an
+  escalating cooldown.
 - **Home screen** (`/home`) — reachable only by a signed-in resident. Its content is out of scope for
   this feature.
 - **Session** — an authenticated Firebase session established once the SMS code is confirmed. A
@@ -52,10 +53,10 @@ The resident opens the app. If already signed in, they go straight to home. Othe
 registration form appears. They fill in their name and phone, pick a block and a role, and enter an
 apartment number; "Далее" enables once every field is valid. Tapping it runs an invisible reCAPTCHA
 check and sends an SMS code to their number, then opens the verification screen. There they see their
-number and six cells and type the code — the cells advance on their own, and once all six digits are
-in, the code is checked automatically. With the correct code the resident's profile is saved and they
-are signed in, and the app moves to home. A wrong code shows an error and clears the cells so the
-resident can retype. If the resident does not receive the code, an escalating cooldown gates a resend;
+number and a single masked code field and type the code; once all six digits are in, the code is
+checked automatically. With the correct code the resident's profile is saved and they are signed in,
+and the app moves to home. A wrong code shows an error and clears the field so the resident can
+retype. If the resident does not receive the code, an escalating cooldown gates a resend;
 once it elapses they can request a new code. A returning resident who is already signed in is taken to
 home and never sees the onboarding screens.
 
@@ -75,21 +76,23 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
 
 - **Code delivery.** Submitting the registration form sends a 6-digit SMS code to the entered number
   via Firebase Phone Authentication (an invisible reCAPTCHA runs as part of sending).
-- **Automatic check.** The code is verified the moment all six cells are filled — by typing or by
-  pasting — without a separate confirm action.
+- **Automatic check.** The code is verified the moment all six digits are entered — by typing or by
+  pasting — without a separate confirm action. While the verification request is in flight, a progress
+  notice ("Ваш код отправляется на проверку…") is shown and the field, the back control, and the
+  resend/paste control are disabled.
 - **Paste from clipboard.** A "Вставить код из буфера" (Paste code from clipboard) action appears
   when the clipboard contains exactly 6 standalone digits; the surrounding text is ignored, so a code
   embedded in a message (e.g. "Your code is 123456") is detected. The clipboard is re-read whenever
   the app regains focus, so copying the code elsewhere and returning surfaces the paste action without
   any manual step. If the clipboard cannot be read or access is denied, the paste action simply does
   not appear — no error is shown.
-- **Resend cooldown.** A resend control labelled "Запросить пин повторно" (Request a new code) lets
+- **Resend cooldown.** A resend control labelled "Запросить код повторно" (Request a new code) lets
   the resident request a fresh code. It is gated by an escalating cooldown that grows with each
   attempt: **60 s → 120 s → 300 s → 600 s**, capping at 600 s for any further resend. The cooldown
   starts active (60 s) the moment the verification screen opens. While the cooldown runs, the resend
-  button is disabled and shows the remaining time as an `M:SS` countdown ("Запросить пин повторно
+  button is disabled and shows the remaining time as an `M:SS` countdown ("Запросить код повторно
   через M:SS"). When the cooldown reaches zero, the button becomes enabled. After each successful
-  resend the cooldown restarts at the next step in the schedule, the cells clear, and a new code is on
+  resend the cooldown restarts at the next step in the schedule, the field clears, and a new code is on
   its way.
 - **Resend vs. paste.** When a 6-digit clipboard code is detected, the paste action is shown in place
   of the resend button; otherwise the resend button (enabled or counting down) is shown.
@@ -119,9 +122,9 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
 - **Send failure** (welcome): if sending the code fails, an error message is shown, the app stays on
   the registration screen, and "Далее" is available again to retry.
 - **Wrong code** (verification): an invalid or expired code shows a wrong-code error and clears the
-  cells so the resident can retype.
+  field so the resident can retype.
 - **Network failure during the check** (verification): a failure that is not a wrong-code response
-  shows a connection error and clears the cells for another attempt.
+  shows a connection error and clears the field for another attempt.
 - **Registration failure** (verification): if saving the profile fails after the code is confirmed,
   an error message is shown together with a "Повторить попытку" (Retry) action that re-attempts the
   save; the app stays on the verification screen.
@@ -146,7 +149,7 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
   - block 3 → 1–63
   - block 4 → 64–126
 - **Role:** owner or tenant (exactly one).
-- **Code:** 6 cells, one digit (`0–9`) each.
+- **Code:** 6 digits (`0–9`), entered in a single masked field (`xxx - xxx`); non-digits are ignored.
 
 ## Experience Requirements
 
