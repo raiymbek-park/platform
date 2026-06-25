@@ -62,6 +62,7 @@ export const ensureLocalDevCredentials = (): void => {
       client_secret: cliClientSecret,
       refresh_token: token,
     }),
+    { mode: 0o600 },
   )
   process.env.GOOGLE_APPLICATION_CREDENTIALS = adcPath
 
