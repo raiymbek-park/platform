@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding.index'
 import { Route as OnboardingWelcomeRouteImport } from './routes/onboarding.welcome'
 import { Route as OnboardingVerificationRouteImport } from './routes/onboarding.verification'
+import { Route as OnboardingLockedRouteImport } from './routes/onboarding.locked'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -58,6 +59,11 @@ const OnboardingVerificationRoute = OnboardingVerificationRouteImport.update({
   path: '/verification',
   getParentRoute: () => OnboardingRoute,
 } as any)
+const OnboardingLockedRoute = OnboardingLockedRouteImport.update({
+  id: '/locked',
+  path: '/locked',
+  getParentRoute: () => OnboardingRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/settings': typeof SettingsRoute
+  '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
   '/onboarding/': typeof OnboardingIndexRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/announcements': typeof AnnouncementsRoute
   '/home': typeof HomeRoute
   '/settings': typeof SettingsRoute
+  '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
   '/onboarding': typeof OnboardingIndexRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/settings': typeof SettingsRoute
+  '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
   '/onboarding/': typeof OnboardingIndexRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/onboarding'
     | '/settings'
+    | '/onboarding/locked'
     | '/onboarding/verification'
     | '/onboarding/welcome'
     | '/onboarding/'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/announcements'
     | '/home'
     | '/settings'
+    | '/onboarding/locked'
     | '/onboarding/verification'
     | '/onboarding/welcome'
     | '/onboarding'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/onboarding'
     | '/settings'
+    | '/onboarding/locked'
     | '/onboarding/verification'
     | '/onboarding/welcome'
     | '/onboarding/'
@@ -187,16 +199,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingVerificationRouteImport
       parentRoute: typeof OnboardingRoute
     }
+    '/onboarding/locked': {
+      id: '/onboarding/locked'
+      path: '/locked'
+      fullPath: '/onboarding/locked'
+      preLoaderRoute: typeof OnboardingLockedRouteImport
+      parentRoute: typeof OnboardingRoute
+    }
   }
 }
 
 interface OnboardingRouteChildren {
+  OnboardingLockedRoute: typeof OnboardingLockedRoute
   OnboardingVerificationRoute: typeof OnboardingVerificationRoute
   OnboardingWelcomeRoute: typeof OnboardingWelcomeRoute
   OnboardingIndexRoute: typeof OnboardingIndexRoute
 }
 
 const OnboardingRouteChildren: OnboardingRouteChildren = {
+  OnboardingLockedRoute: OnboardingLockedRoute,
   OnboardingVerificationRoute: OnboardingVerificationRoute,
   OnboardingWelcomeRoute: OnboardingWelcomeRoute,
   OnboardingIndexRoute: OnboardingIndexRoute,

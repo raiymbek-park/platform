@@ -561,7 +561,7 @@
                   "fill": "$foreground",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Введите код из WhatsApp",
+                  "content": "Введите код из SMS",
                   "textAlign": "center",
                   "fontFamily": "Inter",
                   "fontSize": 22,
@@ -575,7 +575,7 @@
                   "fill": "$foreground",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Мы отправили 4-значный код подтверждения на ваш номер в WhatsApp",
+                  "content": "Мы отправили 6-значный код подтверждения на ваш номер",
                   "lineHeight": 1.5,
                   "textAlign": "center",
                   "fontFamily": "Inter",
@@ -1082,18 +1082,15 @@
               }
             },
             {
-              "type": "text",
-              "id": "JaEim",
-              "name": "Hint",
-              "opacity": 0.6,
-              "fill": "$foreground",
-              "textGrowth": "fixed-width",
-              "width": "fill_container",
-              "content": "«Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google»",
-              "textAlign": "center",
-              "fontFamily": "Inter",
-              "fontSize": 8,
-              "fontWeight": "500"
+              "id": "y09NF",
+              "type": "ref",
+              "ref": "ds:InfoCallout",
+              "name": "Privacy Notice",
+              "descendants": {
+                "ds:callout-text": {
+                  "content": "Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google"
+                }
+              }
             },
             {
               "id": "k5eQKq",
@@ -1195,7 +1192,7 @@
                   "fill": "$foreground",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Вы использовали все попытки ввода кода. Повторить можно через 24 часа.",
+                  "content": "Слишком много попыток. Подождите немного и попробуйте снова.",
                   "lineHeight": 1.5,
                   "textAlign": "center",
                   "fontFamily": "Inter",
@@ -1206,152 +1203,25 @@
             },
             {
               "type": "frame",
-              "id": "f2YCYL",
-              "name": "Resend",
-              "width": "fill_container",
-              "layout": "vertical",
-              "gap": 8,
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "text",
-                  "id": "AK59G",
-                  "name": "Hint",
-                  "fill": "$text-muted",
-                  "textGrowth": "fixed-width-height",
-                  "width": "fill_container",
-                  "height": 18,
-                  "content": "До разблокировки осталось",
-                  "textAlign": "center",
-                  "fontFamily": "Inter",
-                  "fontSize": 13,
-                  "fontWeight": "700"
-                }
-              ]
-            },
-            {
-              "type": "frame",
-              "id": "IePqH",
-              "name": "Timer",
-              "width": "fill_container",
-              "height": 50,
-              "gap": 2,
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "type": "frame",
-                  "id": "s1pfpY",
-                  "name": "Num",
-                  "width": 52,
-                  "height": 50,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "zN0lq",
-                      "name": "T",
-                      "fill": "$foreground",
-                      "content": "23",
-                      "fontFamily": "Inter",
-                      "fontSize": 38,
-                      "fontWeight": "800"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "Y8Mcat",
-                  "name": "Colon",
-                  "width": 16,
-                  "height": 50,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "d26Cuy",
-                      "name": "T",
-                      "fill": "$ds:text-muted",
-                      "content": ":",
-                      "fontFamily": "Inter",
-                      "fontSize": 38,
-                      "fontWeight": "800"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "upbmi",
-                  "name": "Num",
-                  "width": 52,
-                  "height": 50,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "wFmjJ",
-                      "name": "T",
-                      "fill": "$foreground",
-                      "content": "59",
-                      "fontFamily": "Inter",
-                      "fontSize": 38,
-                      "fontWeight": "800"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "Mc4kG",
-                  "name": "Colon",
-                  "width": 16,
-                  "height": 50,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "NNeBn",
-                      "name": "T",
-                      "fill": "$ds:text-muted",
-                      "content": ":",
-                      "fontFamily": "Inter",
-                      "fontSize": 38,
-                      "fontWeight": "800"
-                    }
-                  ]
-                },
-                {
-                  "type": "frame",
-                  "id": "aPlz3",
-                  "name": "Num",
-                  "width": 52,
-                  "height": 50,
-                  "justifyContent": "center",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "qnC3c",
-                      "name": "T",
-                      "fill": "$foreground",
-                      "content": "47",
-                      "fontFamily": "Inter",
-                      "fontSize": 38,
-                      "fontWeight": "800"
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "type": "frame",
               "id": "IkxJ9",
               "name": "Spacer",
               "width": "fill_container",
               "height": "fill_container"
+            },
+            {
+              "id": "x3Qkky",
+              "type": "ref",
+              "ref": "ds:ButtonAction",
+              "name": "Retry Button",
+              "descendants": {
+                "ds:btn-action-icon": {
+                  "library": "lucide",
+                  "icon": "arrow-right"
+                },
+                "ds:btn-action-text": {
+                  "content": "Повторить"
+                }
+              }
             }
           ]
         }

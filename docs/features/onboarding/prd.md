@@ -109,6 +109,8 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
 - The verification screen requires a pending code request — a verification that was started from the
   registration form. Reaching it without a pending request (e.g. a direct visit or a relaunch)
   redirects to the welcome/registration screen.
+- The locked screen requires a phone number in the in-progress registration draft. Reaching it
+  without one (e.g. a direct visit) redirects to the welcome/registration screen.
 - The home screen requires a signed-in resident. An unauthenticated visit to home redirects to the
   welcome/registration screen.
 
@@ -125,6 +127,12 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
   save; the app stays on the verification screen.
 - **Resend failure** (verification): if requesting a new code fails, a connection error is shown and
   the resident can try the resend again.
+- **Too many attempts** (welcome, verification, or resend): when Firebase Phone Authentication rejects
+  a request with a rate-limit (too-many-requests) error, the resident is taken to a dedicated "Доступ
+  заблокирован" (Access locked) screen. It shows an illustration, an explanatory message, and a
+  "Повторить" (Retry) action that requests a fresh code — moving to the verification screen on success
+  and staying on the locked screen (with an error message) otherwise. The lock is enforced by Firebase;
+  the app keeps no countdown of its own.
 
 ## Field Validation (welcome)
 

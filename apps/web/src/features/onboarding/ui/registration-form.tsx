@@ -15,6 +15,7 @@ import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
 
+import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { normalizePhone } from '../lib/phone'
 import { registrationSchema } from '../lib/validators'
 import { useOnboardingStore } from '../model/use-onboarding-store'
@@ -63,7 +64,12 @@ export const RegistrationForm = () => {
 
       sendVerification.mutate(
         { container, phone },
-        { onSuccess: () => navigate({ to: '/onboarding/verification' }) },
+        {
+          onSuccess: () => navigate({ to: '/onboarding/verification' }),
+          onError: error => {
+            if (isTooManyRequests(error)) navigate({ to: '/onboarding/locked' })
+          },
+        },
       )
     },
   })
