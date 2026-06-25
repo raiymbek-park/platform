@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { useTRPC } from '@/shared/api'
 
-export type ChangeView = {
+type ChangeView = {
   glyph: Event['glyph']
   id: string
   text: string

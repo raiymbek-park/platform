@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { useTRPC } from '@/shared/api'
 
-export type ContactView = {
+type ContactView = {
   glyph: ServiceContact['glyph']
   id: string
   name: string

@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
+import { useConfirmationStore } from '@/features/onboarding'
 import { OtpVerificationPage } from '@/pages/onboarding'
-import { useConfirmationStore } from '@/shared/auth'
 
 export const Route = createFileRoute('/onboarding/verification')({
   beforeLoad: () => {

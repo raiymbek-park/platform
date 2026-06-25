@@ -1,6 +1,6 @@
-import type { BlockId } from '@raiymbek-park/api/contract'
+import type { BlockId } from '@raiymbek-park/shared/validation-schemas'
 
-import { blockFloors, blockIds } from '@raiymbek-park/api/contract'
+import { blockFloors, blockIds } from '@raiymbek-park/shared/validation-schemas'
 import {
   BlockCard,
   Button,

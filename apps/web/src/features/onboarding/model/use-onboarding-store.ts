@@ -1,4 +1,4 @@
-import type { BlockId } from '@raiymbek-park/api/contract'
+import type { BlockId } from '@raiymbek-park/shared/validation-schemas'
 import type { Role } from '../lib/validators'
 
 import { create } from 'zustand'

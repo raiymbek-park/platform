@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-import { isSignedIn } from '@/shared/auth'
+import { isSignedIn } from '@/shared/session'
 
 export const Route = createFileRoute('/onboarding/')({
   beforeLoad: async () => {

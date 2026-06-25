@@ -3,8 +3,6 @@ import type { UserEvent } from '@testing-library/user-event'
 import { act, fireEvent, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { useOnboardingStore } from '@/features/onboarding/registration-form'
-import { useConfirmationStore } from '@/shared/auth'
 import { stubClipboard } from '@/shared/test/clipboard'
 import { firebaseAuth } from '@/shared/test/firebase-auth'
 import { renderApp } from '@/shared/test/render-app'
@@ -13,6 +11,9 @@ import {
   trpcMutationError,
   trpcServer,
 } from '@/shared/test/trpc-server'
+
+import { useConfirmationStore } from '../model/use-confirmation-store'
+import { useOnboardingStore } from '../model/use-onboarding-store'
 
 const phone = '+77071234567'
 

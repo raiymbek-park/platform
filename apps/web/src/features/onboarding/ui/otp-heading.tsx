@@ -1,6 +1,5 @@
-import { useOnboardingStore } from '@/features/onboarding/registration-form'
-
 import { formatPhoneDisplay } from '../lib/format-phone-display'
+import { useOnboardingStore } from '../model/use-onboarding-store'
 import css from './otp-heading.module.scss'
 
 export const OtpHeading = () => {

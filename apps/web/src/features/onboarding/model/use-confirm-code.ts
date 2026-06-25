@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { useConfirmationStore } from '@/shared/auth'
+import { useConfirmationStore } from './use-confirmation-store'
 
 const confirmCode = (code: string) => {
   const { confirmation } = useConfirmationStore.getState()

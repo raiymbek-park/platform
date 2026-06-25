@@ -1,4 +1,4 @@
-import type { BlockId } from '@raiymbek-park/api/contract'
+import type { BlockId } from '@raiymbek-park/shared/validation-schemas'
 
 import {
   APARTMENT_RANGE_MESSAGE,
@@ -6,10 +6,10 @@ import {
   nameSchema,
   phoneSchema,
   roles,
-} from '@raiymbek-park/api/contract'
+} from '@raiymbek-park/shared/validation-schemas'
 import { z } from 'zod'
 
-export type { Role } from '@raiymbek-park/api/contract'
+export type { Role } from '@raiymbek-park/shared/validation-schemas'
 
 const apartmentMessage = (block: BlockId | null, apartment: number) => {
   if (block === null) return 'Сначала выберите блок'

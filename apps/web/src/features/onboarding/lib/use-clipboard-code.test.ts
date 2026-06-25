@@ -1,20 +1,9 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { useClipboardCode } from './use-clipboard-code'
+import { stubClipboard } from '@/shared/test/clipboard'
 
-const stubClipboard = (text: string | null) => {
-  const readText =
-    text === null
-      ? vi.fn().mockRejectedValue(new Error('denied'))
-      : vi.fn().mockResolvedValue(text)
-  Object.defineProperty(navigator, 'clipboard', {
-    value: { readText },
-    writable: true,
-    configurable: true,
-  })
-  return readText
-}
+import { useClipboardCode } from './use-clipboard-code'
 
 afterEach(() => {
   vi.restoreAllMocks()

@@ -2,12 +2,11 @@ import { Button, InfoCallout } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
 
-import { useOnboardingStore } from '@/features/onboarding/registration-form'
-
 import { isWrongCode } from '../lib/is-wrong-code'
 import { useOtpCells } from '../lib/use-otp-cells'
 import { useResendCooldown } from '../lib/use-resend-cooldown'
 import { useConfirmCode } from '../model/use-confirm-code'
+import { useOnboardingStore } from '../model/use-onboarding-store'
 import { useRegisterResident } from '../model/use-register-resident'
 import { useResendVerification } from '../model/use-resend-verification'
 import { OtpActions } from './otp-actions'

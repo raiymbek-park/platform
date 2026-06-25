@@ -31,7 +31,7 @@ export const trpcMutationError = (
 ): HttpHandler =>
   http.post(trpcUrl(procedure), () => batchError(code, httpStatus))
 
-export const trpcQuery = (procedure: string, data: unknown): HttpHandler =>
+const trpcQuery = (procedure: string, data: unknown): HttpHandler =>
   http.get(trpcUrl(procedure), () => batchData(data))
 
 const homeHandlers = [

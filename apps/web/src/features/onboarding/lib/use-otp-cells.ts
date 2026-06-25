@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { CODE_LENGTH } from './code-length'
+import { CODE_LENGTH } from './constants'
 
 const emptyCells = Array.from({ length: CODE_LENGTH }, () => '')
 

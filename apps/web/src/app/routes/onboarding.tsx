@@ -1,7 +1,7 @@
 import { ScreenHeader } from '@raiymbek-park/ui'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
-import { isSignedIn } from '@/shared/auth'
+import { isSignedIn } from '@/shared/session'
 
 const OnboardingLayout = () => (
   <>

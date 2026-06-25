@@ -3,11 +3,11 @@ import type { UserEvent } from '@testing-library/user-event'
 import { screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
-import { useConfirmationStore } from '@/shared/auth'
 import { firebaseAuth } from '@/shared/test/firebase-auth'
 import { renderApp } from '@/shared/test/render-app'
 import { trpcMutation, trpcServer } from '@/shared/test/trpc-server'
 
+import { useConfirmationStore } from '../model/use-confirmation-store'
 import { useOnboardingStore } from '../model/use-onboarding-store'
 
 const next = () => screen.getByRole('button', { name: /Далее/ })
@@ -59,6 +59,20 @@ const renderWelcome = async () => {
   const app = renderApp('/onboarding/welcome')
   await screen.findByLabelText('Имя')
   return app
+}
+
+const expectPhoneNormalizedOnSubmit = async (
+  input: string,
+  normalized: string,
+) => {
+  const { user, currentPath } = await renderWelcome()
+  await fillValidForm(user, { phone: input })
+
+  await waitFor(() => expect(next()).toBeEnabled())
+  await user.click(next())
+
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/verification'))
+  expect(useOnboardingStore.getState().draft.phone).toBe(normalized)
 }
 
 beforeEach(() => {
@@ -157,27 +171,11 @@ test('validation 7: an incomplete phone keeps "Далее" disabled', async () =
   expect(next()).toBeDisabled()
 })
 
-test('validation 6: a domestic 8XXXXXXXXXX phone normalizes to +7 on submit', async () => {
-  const { user, currentPath } = await renderWelcome()
-  await fillValidForm(user, { phone: '87071234567' })
+test('validation 6: a domestic 8XXXXXXXXXX phone normalizes to +7 on submit', () =>
+  expectPhoneNormalizedOnSubmit('87071234567', '+77071234567'))
 
-  await waitFor(() => expect(next()).toBeEnabled())
-  await user.click(next())
-
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/verification'))
-  expect(useOnboardingStore.getState().draft.phone).toBe('+77071234567')
-})
-
-test('validation 8: an explicit international number is accepted as dialed', async () => {
-  const { user, currentPath } = await renderWelcome()
-  await fillValidForm(user, { phone: '+14155552671' })
-
-  await waitFor(() => expect(next()).toBeEnabled())
-  await user.click(next())
-
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/verification'))
-  expect(useOnboardingStore.getState().draft.phone).toBe('+14155552671')
-})
+test('validation 8: an explicit international number is accepted as dialed', () =>
+  expectPhoneNormalizedOnSubmit('+14155552671', '+14155552671'))
 
 test('validation 9: an apartment outside the block range keeps "Далее" disabled', async () => {
   const { user } = await renderWelcome()

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { CODE_LENGTH } from './code-length'
+import { CODE_LENGTH } from './constants'
 
 const codePattern = new RegExp(`(?<!\\d)\\d{${CODE_LENGTH}}(?!\\d)`)
 
