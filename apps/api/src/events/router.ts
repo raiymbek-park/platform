@@ -1,4 +1,4 @@
-import { getLastVisit } from '../onboarding/resident-store'
+import { getLastVisit } from '../resident/resident-store'
 import { publicProcedure, router } from '../trpc'
 import { getEvents } from './events-store'
 

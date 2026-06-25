@@ -1,5 +1,5 @@
+import type { registerInputSchema } from '@raiymbek-park/shared/validation-schemas'
 import type { z } from 'zod'
-import type { registerInputSchema } from './contract'
 
 import { describe, expect, it, vi } from 'vitest'
 

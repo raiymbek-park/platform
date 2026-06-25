@@ -1,7 +1,7 @@
+import { registerInputSchema } from '@raiymbek-park/shared/validation-schemas'
 import { TRPCError } from '@trpc/server'
 
 import { publicProcedure, router } from '../trpc'
-import { registerInputSchema } from './contract'
 import { createResident, getResident, markVisit } from './resident-store'
 
 export type ResidentProfile = {

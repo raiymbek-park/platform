@@ -51,7 +51,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
   describe('resident-store — register writes residents/{uid}', () => {
     it('stored profile is readable back under the same uid', async () => {
       const { createResident, getResident } = await import(
-        './onboarding/resident-store'
+        './resident/resident-store'
       )
 
       const input = {
@@ -72,7 +72,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
   describe('resident-store — profile read', () => {
     it('returned profile equals the stored name, block, apartment, role, and phone', async () => {
       const { createResident, getResident } = await import(
-        './onboarding/resident-store'
+        './resident/resident-store'
       )
 
       const input = {
@@ -201,7 +201,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
   describe('resident-store — markVisit', () => {
     it('writes residents/{uid}.lastVisit as a server timestamp', async () => {
       const { createResident, markVisit } = await import(
-        './onboarding/resident-store'
+        './resident/resident-store'
       )
       const { Timestamp } = await import('./firestore')
 
@@ -294,7 +294,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
 
   describe('resident-store — unknown uid', () => {
     it('returns null for an unknown uid without raising an error', async () => {
-      const { getResident } = await import('./onboarding/resident-store')
+      const { getResident } = await import('./resident/resident-store')
       const resident = await getResident('uid-that-does-not-exist')
       expect(resident).toBeNull()
     })
