@@ -24,6 +24,7 @@ export const Input = ({
   className,
   icon,
   label,
+  ref,
   state,
   ...restProps
 }: InputProps) => (
@@ -31,7 +32,7 @@ export const Input = ({
     {label && <span className={css.label}>{label}</span>}
     <span className={boxCss({ state })}>
       {icon && <IconChip glyph={icon} iconSize={18} size={34} />}
-      <input className={css.field} {...restProps} />
+      <input className={css.field} ref={ref} {...restProps} />
       {state && (
         <Icon className={css.status} glyph={statusGlyph[state]} size={18} />
       )}

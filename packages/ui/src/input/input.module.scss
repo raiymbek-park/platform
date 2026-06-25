@@ -27,7 +27,6 @@
     border-color: var(--action);
   }
 
-  &:disabled,
   &:has(:disabled) {
     background: var(--background);
     box-shadow: none;
