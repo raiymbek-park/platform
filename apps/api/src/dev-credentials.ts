@@ -2,12 +2,6 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { homedir, tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 
-// Public, well-known OAuth client baked into firebase-tools — the same one the
-// Firebase CLI uses for `firebase login`. Pairing it with the user's stored
-// refresh token produces an `authorized_user` ADC file, letting the Admin SDK
-// (and Firestore) authenticate locally with no service-account key and no gcloud.
-// Firestore only accepts a cert or file-based ADC, so this writes a temp ADC file
-// and points GOOGLE_APPLICATION_CREDENTIALS at it rather than building a credential.
 const cliClientId =
   '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com'
 const cliClientSecret = 'j9iVZfS8kkCEFUPaAeJV0sAi'
