@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/router.ts",
-    "./contract": "./src/onboarding/contract.ts"
+    ".": "./src/router.ts"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -14,9 +13,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@raiymbek-park/shared": "*",
     "@trpc/server": "11.18.0",
     "firebase-admin": "14.0.0",
-    "libphonenumber-js": "1.13.7",
     "zod": "4.4.3"
   },
   "devDependencies": {
