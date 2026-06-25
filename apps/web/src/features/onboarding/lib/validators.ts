@@ -1,0 +1,41 @@
+import type { BlockId } from '@raiymbek-park/shared/validation-schemas'
+
+import {
+  APARTMENT_RANGE_MESSAGE,
+  isApartmentInBlock,
+  nameSchema,
+  phoneSchema,
+  roles,
+} from '@raiymbek-park/shared/validation-schemas'
+import { z } from 'zod'
+
+export type { Role } from '@raiymbek-park/shared/validation-schemas'
+
+const apartmentMessage = (block: BlockId | null, apartment: number) => {
+  if (block === null) return 'Сначала выберите блок'
+  if (Number.isNaN(apartment)) return 'Введите номер квартиры'
+  if (!isApartmentInBlock(block, apartment)) return APARTMENT_RANGE_MESSAGE
+  return undefined
+}
+
+export const registrationSchema = z
+  .object({
+    name: nameSchema,
+    phone: phoneSchema,
+    block: z
+      .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+      .nullable()
+      .refine(v => v !== null, 'Выберите блок'),
+    apartment: z.number().or(z.nan()),
+    role: z
+      .enum(roles)
+      .nullable()
+      .refine(v => v !== null, 'Выберите роль'),
+  })
+  .superRefine((value, ctx) => {
+    const message = apartmentMessage(value.block, value.apartment)
+    if (!message) return
+    ctx.addIssue({ code: 'custom', message, path: ['apartment'] })
+  })
+
+export type RegistrationValues = z.input<typeof registrationSchema>

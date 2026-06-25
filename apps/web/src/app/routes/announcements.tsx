@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { PlaceholderPage } from '@/pages/placeholder'
-import { ensureResidentSession } from '@/shared/auth'
+import { ensureResidentSession } from '@/shared/session'
 
 export const Route = createFileRoute('/announcements')({
   beforeLoad: ensureResidentSession,

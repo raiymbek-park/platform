@@ -34,10 +34,22 @@
 ## Scenario 6: Service items open their destination
   Given: the services section is shown
   When:  the resident taps a service item
-  Then:  Объявления opens the in-app `/announcements` screen (same tab)
-         the other items open their external URL in a new tab (Быстрая заявка, Заявка с медиа, Статус заявки, Чат дома в WhatsApp)
+  Then:  Объявления opens the in-app `/announcements` screen in the same tab
+         Быстрая заявка, Заявка с медиа, Статус заявки, and Чат дома в WhatsApp each open their external URL in a new browser tab
 
-## Scenario 7: Language switcher is inert
+## Scenario 7: Заявки nav tab opens the external board
+  Given: home is shown
+  When:  the resident taps the Заявки nav tab
+  Then:  the external Trello board opens in a new browser tab
+         the Заявки tab is never marked active
+
+## Scenario 8: Feed reflects the visit before it is recorded
+  Given: events exist that were created after the resident's last recorded visit
+  When:  the resident opens home and the feed loads
+  Then:  those events are listed in the feed for this session
+         re-navigating back to home within the same app session keeps the same feed (the visit is not re-recorded mid-session)
+
+## Scenario 9: Language switcher is inert
   Given: the header is shown
   When:  the resident taps a KZ, RU, or EN chip
   Then:  the app language does not change

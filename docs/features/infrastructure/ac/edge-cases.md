@@ -7,30 +7,44 @@
   Then:  it responds within 5 s
          subsequent warm requests respond within 500 ms
 
-## Scenario 2: SPA deep-link refresh on GitHub Pages
+## Scenario 2: Profile read for an unknown uid
 
-  Given: the web app is served from GitHub Pages with a `404.html` fallback
-  When:  a resident reloads or directly opens a deep route (e.g. `/platform/onboarding/verify`)
-  Then:  the app shell loads and the router resolves the route
-         GitHub Pages does not serve a raw 404
+  Given: no `residents` document exists for the request's `uid`
+  When:  the home screen requests the resident profile
+  Then:  an empty profile (zeroed block and apartment, empty name) is returned
+         no error is raised
 
-## Scenario 3: Lockout persists across cold start
+## Scenario 3: Home content with empty collections
 
-  Given: a number is locked for 24 hours (server truth in `otpSessions/{phone}`)
-  When:  the function cold-starts after idling to zero
-  Then:  the lockout and its remaining time are restored from Firestore
-         the lock is not reset by the restart
+  Given: `serviceContacts` and `events` contain no documents
+  When:  the home screen loads
+  Then:  the contacts list is empty
+         the changes list is empty
+         no error is raised
 
-## Scenario 4: Refresh-token single-use honored across redeploy
+## Scenario 4: First visit has no last-visit filter
 
-  Given: a session refresh-token record exists in `sessions/{id}`
-  When:  the function is redeployed and the same refresh token is presented twice
-  Then:  the first renewal succeeds and marks the record used
-         the second presentation of the spent token is rejected
+  Given: the request's `uid` has no resident document, so there is no `lastVisit`
+  When:  the home screen requests changes
+  Then:  recent events are returned without a last-visit filter
+         the result is ordered by `createdAt` descending and limited to 10
 
-## Scenario 5: Concurrent OTP requests for the same number
+## Scenario 5: Changes are capped at ten events
 
-  Given: two requests for the same phone arrive close together
-  When:  both update `otpSessions/{phone}`
-  Then:  the send count and resend/lockout timestamps update atomically
-         the resend ladder is not corrupted by the race
+  Given: more than ten `events` documents exist after the resident's last visit
+  When:  the home screen requests changes
+  Then:  exactly the ten most recent events (by `createdAt` descending) are returned
+
+## Scenario 6: Stored profile survives a redeploy
+
+  Given: a `residents/{uid}` document was written and the function is redeployed
+  When:  the same `uid` is read after the redeploy
+  Then:  the profile is read back from Firestore unchanged
+         the redeploy does not reset or drop the stored data
+
+## Scenario 7: Documents with unknown glyph or tone fall back to defaults
+
+  Given: a `serviceContacts` or `events` document carries a glyph or tone outside the known set
+  When:  the home screen reads that document
+  Then:  the glyph falls back to `megaphone` and the tone falls back to `brand`
+         the item is still returned rather than dropped

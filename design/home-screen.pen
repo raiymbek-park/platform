@@ -1,5 +1,5 @@
 {
-  "version": "2.13",
+  "version": "2.14",
   "children": [
     {
       "type": "frame",
@@ -602,7 +602,7 @@
               "id": "CkAnM",
               "name": "OTP Row",
               "width": "fill_container",
-              "gap": 16,
+              "gap": 4,
               "children": [
                 {
                   "id": "a3EeG",
@@ -611,6 +611,7 @@
                   "name": "Digit 1",
                   "height": 58,
                   "justifyContent": "center",
+                  "width": "fill_container",
                   "descendants": {
                     "ds:InputDefault-tx": {
                       "content": "7",
@@ -660,6 +661,40 @@
                   "type": "ref",
                   "ref": "ds:InputDefault",
                   "name": "Digit 4",
+                  "height": 58,
+                  "justifyContent": "center",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "",
+                      "fill": "$ds:foreground",
+                      "fontSize": 26,
+                      "fontWeight": "700",
+                      "textAlign": "center"
+                    }
+                  }
+                },
+                {
+                  "id": "TN78e",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "Digit 5",
+                  "height": 58,
+                  "justifyContent": "center",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "",
+                      "fill": "$ds:foreground",
+                      "fontSize": 26,
+                      "fontWeight": "700",
+                      "textAlign": "center"
+                    }
+                  }
+                },
+                {
+                  "id": "S3wxJG",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "Digit 6",
                   "height": 58,
                   "justifyContent": "center",
                   "descendants": {
@@ -1047,6 +1082,20 @@
               }
             },
             {
+              "type": "text",
+              "id": "JaEim",
+              "name": "Hint",
+              "opacity": 0.6,
+              "fill": "$foreground",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "«Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google»",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 8,
+              "fontWeight": "500"
+            },
+            {
               "id": "k5eQKq",
               "type": "ref",
               "ref": "ds:ButtonPrimary",
@@ -1361,5 +1410,6 @@
   },
   "imports": {
     "ds": "design-system.lib.pen"
-  }
+  },
+  "fileToken": "5cf2b200-5b2f-4df7-9109-b5002585daa1"
 }

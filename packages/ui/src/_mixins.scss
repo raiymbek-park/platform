@@ -1,13 +1,8 @@
-// Field-like control surface (Input box, OtpInput cell) so they look identical:
-// same border, radius, shadow, focus/disabled/error states. Works whether the
-// control IS the input (cell) or WRAPS it (box): `:focus-within` matches a
-// focused element itself, and `:disabled, :has(:disabled)` covers both the
-// self-disabled input and a wrapper holding a disabled input.
 @mixin field-surface {
   background: var(--surface);
   border: 2px solid transparent;
   border-radius: var(--radius-18);
-  box-shadow: 0 4px 12px rgba(43, 52, 64, 0.06);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--shadow) 6%, transparent);
   transition: border-color 0.15s ease;
 
   &:focus-within {
@@ -30,8 +25,6 @@
   }
 }
 
-// The caller sets background/color (they carry the semantic meaning); pass
-// `var(--radius-circle)` as the radius for a round badge.
 @mixin chip($size, $radius) {
   align-items: center;
   border-radius: $radius;

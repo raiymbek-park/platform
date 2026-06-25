@@ -1,171 +1,136 @@
-# Onboarding — Resident Registration, WhatsApp Code, and Session
+# Onboarding — Resident Registration and Phone Verification
 
 ## Problem and Goal
 
 A resident's first entry into the "Raiymbek Park" app. Before using the app, a person introduces
-themselves once (name, block, apartment, role) and proves they own their phone number with a 4-digit
-code sent over WhatsApp. On success they get a session that lasts a month and is renewed each time the
-app launches, so a returning resident lands straight on the home screen.
+themselves once (name, phone, block, apartment, role) and proves they own their phone number by
+entering a code delivered over SMS. On success they are registered, signed in, and land on the home
+screen; a returning resident who is already signed in skips onboarding entirely.
 
-The goal is to carry a new resident from the form to a confirmed number and an active session in a
-single pass, with protection against code guessing (a growing resend wait and a 24-hour lockout).
+The goal is to carry a new resident from the registration form to a verified phone number, a saved
+profile, and an authenticated session in a single pass, using Firebase Phone Authentication as the
+identity provider.
 
 ## Users
 
 New residents — owners and tenants of apartments in the complex — opening the app on a phone for the
-first time. One person equals one phone number. A returning resident with a valid session skips
-onboarding entirely.
+first time. One person equals one phone number. A returning resident who is already signed in skips
+onboarding and goes straight to home.
 
 ## Scope
 
 ### In scope
 
-- **Welcome screen** (`/onboarding/welcome`) — the registration form. Every field is required, and
-  "Next" is enabled only once the whole form is valid. The header stays pinned at the top while the
-  form — "Next" included, at its end — scrolls beneath it. Coming back to this screen (e.g. to fix a phone typo after
-  reaching the code screen) restores everything already entered — name, phone, block, apartment, and
-  role are pre-filled, not lost.
-- **Code screen** (`/onboarding/verify`) — entry of the 4-digit code: focus moves between cells on
-  its own, the code is checked the moment all four digits are in, the resend timer is shown, and the
-  code can be pasted from the clipboard. After a wrong code the cells are locked — the spent attempt
-  can't be retyped — and stay locked until the resident requests a fresh code, which only becomes
-  possible once the resend timer runs out.
-- **Lockout screen** (`/onboarding/locked`) — the 24-hour lockout shown once a resident exhausts
-  their code requests: an illustration, an "Access blocked" heading, a short "you've used up your
-  attempts, try again in 24 hours" message, and a large `HH:MM:SS` countdown. It has no controls and
-  can't be left; when the countdown reaches zero the app returns to the code screen with a "Send
-  code" action.
-- **Entry point** (`/onboarding`) — on launch, sends the resident to the right screen based on their
-  state (active session, onboarding in progress, or lockout).
-- **Home screen** (`/home`) — the existing placeholder, reachable only with a valid session. Its
-  content is out of scope.
-- **Session** — sign-in lasts 30 days and is renewed on each launch; the working access window
-  refreshes silently while the app is in use. An expired or invalid session returns the resident to
-  the welcome screen.
+- **Welcome screen** (`/onboarding/welcome`) — the registration form. It collects name, phone, block
+  (one of 1–4), apartment number, and role (owner or tenant). Every field is required, and the
+  "Далее" (Next) button is enabled only once the whole form is valid. Each field shows an inline
+  success check when its value is valid, and an error state once it is invalid after the user has
+  interacted with it. A reCAPTCHA legal notice (a link to Google's Privacy Policy and Terms) is shown
+  in the form.
+- **Verification screen** (`/onboarding/verification`) — entry of the 6-digit SMS code across 6
+  cells. The entered phone number is shown in the format `+7 707 123 45 67`. Focus advances between
+  cells automatically as digits are typed and steps back on backspace from an empty cell. The code is
+  checked automatically the moment all six digits are present — no button tap is required. The code
+  can also be filled by pasting it from the clipboard. A resend control lets the resident request a
+  new code, gated by an escalating cooldown.
+- **Home screen** (`/home`) — reachable only by a signed-in resident. Its content is out of scope for
+  this feature.
+- **Session** — an authenticated Firebase session established once the SMS code is confirmed. A
+  signed-in resident is taken to home and is kept out of the onboarding screens.
 
-Everything is mocked end to end: no real WhatsApp message is sent, the resident isn't really
-persisted, and the only code that works is **1234**.
+### What's NOT included
 
-### Out of scope
-
-- Real code delivery over WhatsApp (mocked; the only valid code is 1234).
-- Real persistence of the resident.
-- Home screen content (placeholder only).
-- Country codes other than `+7` (mask `+7 (___) ___-__-__`, exactly 10 digits).
-- Signing out and changing the phone number after sign-in.
-- Editing registration data after confirmation.
-- Localization (Russian only; the language switcher is hidden).
+- Home screen content (guarded entry only; its content is owned elsewhere).
+- Signing out, changing the phone number, or editing registration data after sign-in.
+- Localization — Russian only; the UI language switcher is not part of this feature.
 - Keyboard accessibility (mobile-only).
+- The floating reCAPTCHA badge — it is suppressed in favour of the in-form reCAPTCHA notice.
 
 ## User Journey
 
-The resident opens the app. With a valid session they go straight to home. Otherwise the
-registration form appears. They fill in name and phone, pick a block and role, and enter an apartment
-number; "Next" enables once everything is valid. Tapping it requests a code for their number and
-opens the code screen. There they see their number and four cells and type the code — the cells
-advance on their own, and once four digits are in the code is checked automatically. With the correct
-code the resident is registered, a session starts, and the app moves to home. A wrong code spends the
-one attempt that code allows; getting another attempt requires a fresh code. The resend wait runs on
-the server per number and keeps counting even if the app is closed. Once a resident exhausts their
-code requests the number is locked for a day; when the lockout ends they return to the code screen and
-can request a fresh code.
+The resident opens the app. If already signed in, they go straight to home. Otherwise the
+registration form appears. They fill in their name and phone, pick a block and a role, and enter an
+apartment number; "Далее" enables once every field is valid. Tapping it runs an invisible reCAPTCHA
+check and sends an SMS code to their number, then opens the verification screen. There they see their
+number and six cells and type the code — the cells advance on their own, and once all six digits are
+in, the code is checked automatically. With the correct code the resident's profile is saved and they
+are signed in, and the app moves to home. A wrong code shows an error and clears the cells so the
+resident can retype. If the resident does not receive the code, an escalating cooldown gates a resend;
+once it elapses they can request a new code. A returning resident who is already signed in is taken to
+home and never sees the onboarding screens.
 
-## Verification, Resend, and Lockout Rules
+## Phone Number Handling
 
-The exact numbers below are fixed business rules.
+The phone field is a free-form input (no fixed mask) and defaults to the value `+7`. It is validated
+with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
 
-- **Sending a code.** The first code is requested by tapping "Next" (or "Send code" after a lockout);
-  any further code for the same number is a *resend*.
-- **One attempt per code.** Each code allows exactly one verification attempt. Once it's used — right
-  or wrong — that code is spent, and no further check against it is allowed until a new code is sent.
-  This is enforced on the server, so it holds even against a direct request outside the app, not just
-  the UI; the app reflects it by locking the cells after an attempt until a fresh code is sent.
-- **The phone number is the identity** for the whole flow.
+- A Kazakhstan domestic number written as `8XXXXXXXXXX` (no `+`) normalizes to the canonical `+7…`
+  E.164 form.
+- A number written with an explicit country code (`+1`, `+44`, …) is accepted as that international
+  number.
+- The phone is valid once it is a valid phone number for its resolved region, and is stored in
+  canonical E.164 form for verification and registration.
 
-**Resend wait (per number).** After each send, a wait counts down before the next resend is allowed:
+## Verification and Resend Rules
 
-| Code request | Wait until next resend |
-|---|---|
-| Initial ("Next" / "Send code") | 60 s |
-| 1st resend | 120 s |
-| 2nd resend | 300 s |
-| 3rd resend | 600 s |
-| Any request beyond that | **number locked for 24 h** |
+- **Code delivery.** Submitting the registration form sends a 6-digit SMS code to the entered number
+  via Firebase Phone Authentication (an invisible reCAPTCHA runs as part of sending).
+- **Automatic check.** The code is verified the moment all six cells are filled — by typing or by
+  pasting — without a separate confirm action.
+- **Paste from clipboard.** A "Вставить код из буфера" (Paste code from clipboard) action appears
+  when the clipboard contains exactly 6 standalone digits; the surrounding text is ignored, so a code
+  embedded in a message (e.g. "Your code is 123456") is detected. The clipboard is re-read whenever
+  the app regains focus, so copying the code elsewhere and returning surfaces the paste action without
+  any manual step. If the clipboard cannot be read or access is denied, the paste action simply does
+  not appear — no error is shown.
+- **Resend cooldown.** A resend control labelled "Запросить пин повторно" (Request a new code) lets
+  the resident request a fresh code. It is gated by an escalating cooldown that grows with each
+  attempt: **60 s → 120 s → 300 s → 600 s**, capping at 600 s for any further resend. The cooldown
+  starts active (60 s) the moment the verification screen opens. While the cooldown runs, the resend
+  button is disabled and shows the remaining time as an `M:SS` countdown ("Запросить пин повторно
+  через M:SS"). When the cooldown reaches zero, the button becomes enabled. After each successful
+  resend the cooldown restarts at the next step in the schedule, the cells clear, and a new code is on
+  its way.
+- **Resend vs. paste.** When a 6-digit clipboard code is detected, the paste action is shown in place
+  of the resend button; otherwise the resend button (enabled or counting down) is shown.
 
-- While the wait runs: a "Didn't get the code? Resend in M:SS" line is shown, together with a
-  **"Paste code from clipboard"** action.
-- When the wait reaches zero: the paste action is replaced by a **"Resend"** button.
-- **Paste from clipboard** reads the clipboard and pulls the digits out of it; it is enabled only when
-  exactly 4 digits are found (so "Your code is 1234" works) and stays disabled for any other digit
-  count — none, fewer, or more. When enabled, tapping it fills the cells and triggers the automatic
-  check. The clipboard is re-read whenever the app regains focus, so copying the code elsewhere and
-  coming back enables the action without any manual step.
-- A number gets **4 code requests total** — the initial one plus 3 resends. A 5th request locks the
-  number for 24 hours: verification and resend are disabled, and the lockout screen takes over with a
-  countdown to unlock.
-- When the lockout ends, the app returns to the code screen with empty cells, the request count
-  reset, and a "Send code" action that starts a fresh send (60 s wait).
+## Registration and Session
 
-**Timer source.** The resend wait and the lockout countdown are server truth, per number. The app
-only displays the time left — it never keeps its own copy. After a relaunch the app restores the
-right screen (code or lockout) and shows the live remaining time; the timer keeps running, it doesn't
-reset.
+- After the SMS code is confirmed, the resident's profile (name, phone, block, apartment, role) is
+  saved under their Firebase user id via an authenticated request that carries the Firebase ID token.
+  The server requires a verified identity (a valid ID token) and rejects the request otherwise.
+- On a successful save the resident is signed in and the app navigates to home.
+- The phone stored with the profile is the verified number tied to the signed-in identity.
 
-## Session and Renewal
+## Route Guards
 
-- After a correct code the resident is registered and a session begins. The session is valid for
-  **30 days** and renews on each launch; within a session, access refreshes silently about every hour
-  so the resident never notices.
-- On launch the app renews the session: still valid → the resident goes to home; expired or invalid →
-  the session is cleared and the resident goes to the welcome screen.
-- Home is reachable only with a valid session. If access lapses mid-session the app renews silently;
-  if renewal fails, it returns to the welcome screen.
-- Renewal is single-use: once a session has been renewed, the previous renewal can no longer be used.
+- The onboarding screens are for unauthenticated residents. A signed-in resident who lands on any
+  onboarding entry is redirected to home.
+- The verification screen requires a pending code request — a verification that was started from the
+  registration form. Reaching it without a pending request (e.g. a direct visit or a relaunch)
+  redirects to the welcome/registration screen.
+- The home screen requires a signed-in resident. An unauthenticated visit to home redirects to the
+  welcome/registration screen.
 
-## Startup Restore Priority
+## Error States
 
-On launch the app decides where to land, in this order:
-
-1. A valid session → renew it → **home**.
-2. Otherwise, an onboarding in progress for a number → check that number's state:
-   - locked → **lockout screen**;
-   - an active code or a running wait → **code screen**;
-   - otherwise → **welcome screen**.
-3. Otherwise → **welcome screen**.
-
-### The lockout can't be escaped
-
-While a number is locked, the lockout takes priority over everything else. Any attempt to go
-elsewhere — typing a URL directly, reloading, or using the system/browser back gesture — returns the
-resident to the lockout screen. The lock is server truth and can't be bypassed by clearing the app's
-local data for the same number. It lifts only when the countdown ends, at which point the app moves
-to the code screen. The one exception: a valid session takes priority — the lockout only affects
-residents who haven't signed in.
-
-## Success Metrics
-
-- The funnel is measurable end to end: form submitted → code issued → code confirmed → resident
-  registered → session active, with both throughput and drop-off visible.
-- On the mock: 100% of forms completed with the correct code (1234) reach home; a returning resident
-  with a valid session reaches home without onboarding.
-- Target onboarding completion ≥ 80% after the real WhatsApp integration.
-
-## Experience Requirements
-
-- **Mobile-first, single column**, full-viewport height. The header stays pinned at the top; the
-  primary action sits at the end of the content and scrolls with the page — "Next" on welcome, the
-  action buttons on the code screen (anchored to the bottom of the viewport when the content is short).
-- **Clipboard detection ignores surrounding text:** it keeps only the digits and accepts the result
-  only when it's exactly 4 digits, so a code embedded in a message is still detected while clipboard
-  content without a 4-digit code leaves the paste action disabled. If the clipboard can't be read or
-  access is denied, the paste action simply stays disabled — no error is shown.
-- **Russian only** this iteration.
+- **Send failure** (welcome): if sending the code fails, an error message is shown, the app stays on
+  the registration screen, and "Далее" is available again to retry.
+- **Wrong code** (verification): an invalid or expired code shows a wrong-code error and clears the
+  cells so the resident can retype.
+- **Network failure during the check** (verification): a failure that is not a wrong-code response
+  shows a connection error and clears the cells for another attempt.
+- **Registration failure** (verification): if saving the profile fails after the code is confirmed,
+  an error message is shown together with a "Повторить попытку" (Retry) action that re-attempts the
+  save; the app stays on the verification screen.
+- **Resend failure** (verification): if requesting a new code fails, a connection error is shown and
+  the resident can try the resend again.
 
 ## Field Validation (welcome)
 
 - **Name:** non-empty after trimming, 2–60 characters.
-- **Phone:** `+7` plus exactly 10 digits (mask `+7 (___) ___-__-__`); valid once all 10 digits are
-  present.
+- **Phone:** a valid phone number per libphonenumber-js (default region `KZ`); stored in canonical
+  E.164 form. Default field value `+7`.
 - **Block:** exactly one of 1–4.
 - **Apartment:** digits only, within the selected block's range:
   - block 1 → 1–70
@@ -173,9 +138,30 @@ residents who haven't signed in.
   - block 3 → 1–63
   - block 4 → 64–126
 - **Role:** owner or tenant (exactly one).
-- **Code:** 4 cells, one digit (`0–9`) each; the only correct code is 1234.
+- **Code:** 6 cells, one digit (`0–9`) each.
+
+## Experience Requirements
+
+- **Mobile-first, single column.** A screen header stays at the top while the content scrolls
+  beneath it. The primary action ("Далее" on welcome) sits at the end of the form.
+- **Russian only** this iteration.
+
+## Success Metrics
+
+- The funnel is measurable end to end: form submitted → code sent → code confirmed → profile saved →
+  resident signed in, with both throughput and drop-off visible.
+- A resident who completes the form and enters the correct SMS code reaches home; a returning,
+  signed-in resident reaches home without onboarding.
+
+## Dependencies
+
+- **Firebase Phone Authentication** — SMS code delivery, invisible reCAPTCHA, and the authenticated
+  session (Firebase ID token).
+- **libphonenumber-js** — phone parsing, normalization, and validation (default region `KZ`).
+- The profile-save API endpoint that persists the resident under their Firebase user id.
 
 ## Open Questions
 
-None — every threshold, format, and timing is fixed above. Exact wording (the lockout copy and the
-wrong-code message) comes from the design during layout — an implementation detail, not a blocker.
+None — every threshold, format, and timing is fixed above.
+</content>
+</invoke>

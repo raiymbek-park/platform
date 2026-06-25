@@ -1,15 +1,29 @@
 import { ChangeRow, WelcomeCard } from '@raiymbek-park/ui'
+import { useState } from 'react'
 
-import { useChangesData } from '../model/use-changes-data'
+import { useEventsData } from '../model/use-events-data'
 import { useProfileData } from '../model/use-profile-data'
 import css from './welcome-feed.module.scss'
 
-export const WelcomeFeed = () => {
-  const { data: profile } = useProfileData()
-  const { data: changes, isError, isLoading } = useChangesData()
+const greetMessages = [
+  'Пока вас не было, ничего не произошло.',
+  'За время вашего отсутствия всё было спокойно — новостей нет.',
+  'Новых событий пока нет.',
+  'Хорошие новости: пока вас не было, ничего важного не произошло.',
+]
 
-  const greeting = profile ? `Привет, ${profile.name}! 👋` : 'Привет! 👋'
+const getMessage = () =>
+  greetMessages[Math.floor(Math.random() * greetMessages.length)]
+
+export const WelcomeFeed = () => {
+  const [emptyMessage] = useState(getMessage)
+  const { data: profile } = useProfileData()
+  const { data: changes, isError, isLoading, isSuccess } = useEventsData()
+
+  const name = profile?.name
   const hasChanges = !!changes?.length
+  const isEmpty = isSuccess && !hasChanges
+  const greeting = name ? `Привет, ${name}! 👋` : 'Привет! 👋'
 
   return (
     <WelcomeCard
@@ -20,8 +34,11 @@ export const WelcomeFeed = () => {
       }
       title={greeting}
     >
-      {isLoading && <p className={css.state}>Загрузка изменений…</p>}
-      {isError && <p className={css.state}>Не удалось загрузить изменения</p>}
+      {isLoading && <p className={css.state}>Загрузка последних событий…</p>}
+      {isError && (
+        <p className={css.state}>Не удалось загрузить последние события.</p>
+      )}
+      {isEmpty && <p className={css.state}>{emptyMessage}</p>}
       {hasChanges && (
         <ul className={css.changes}>
           {changes?.map(change => (

@@ -1,11 +1,11 @@
 import { ContactItem, Divider, SectionHeader } from '@raiymbek-park/ui'
 import { Fragment } from 'react'
 
-import { useContactsData } from '../model/use-contacts-data'
+import { useServiceContactsData } from '../model/use-service-contacts-data'
 import css from './contacts-section.module.scss'
 
 export const ContactsSection = () => {
-  const { data, isError, isLoading } = useContactsData()
+  const { data, isError, isLoading } = useServiceContactsData()
 
   return (
     <section className={css.section}>

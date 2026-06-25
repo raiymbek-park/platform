@@ -37,7 +37,7 @@
   @include chip(40px, var(--radius-circle));
 
   background: var(--action);
-  box-shadow: 0 4px 10px rgba(79, 160, 220, 0.5);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--action) 50%, transparent);
   color: var(--surface);
   flex-shrink: 0;
 }
