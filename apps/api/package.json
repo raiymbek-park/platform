@@ -15,7 +15,7 @@
   "dependencies": {
     "@raiymbek-park/shared": "*",
     "@trpc/server": "11.18.0",
-    "firebase-admin": "14.0.0",
+    "firebase-admin": "13.10.0",
     "zod": "4.4.3"
   },
   "devDependencies": {
