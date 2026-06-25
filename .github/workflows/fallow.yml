@@ -92,3 +92,76 @@ jobs:
           publish_branch: badges
           publish_dir: ./badge-out
           keep_files: false
+
+  deploy-web:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      pages: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Require VITE_API_URL variable
+        run: >-
+          test -n "${{ vars.VITE_API_URL }}" ||
+          { echo "::error::Set the VITE_API_URL repository variable
+          (Settings → Secrets and variables → Actions → Variables)"; exit 1; }
+
+      - name: Build web
+        env:
+          VITE_BASE: /platform/
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+        run: npm --prefix apps/web run build
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/web/dist
+
+      - id: deploy
+        uses: actions/deploy-pages@v5
+
+  deploy-firebase:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Write service-account credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+
+      - name: Deploy function, Firestore & Storage rules
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json
+        run: >-
+          npx -y firebase-tools deploy
+          --only functions,firestore,storage
+          --project raiymbek-park-sa99
+          --non-interactive
