@@ -3,12 +3,12 @@
 }
 
 .illustration {
+  aspect-ratio: 1 / 1;
   background-image: url('/images/not-found.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: var(--radius-24);
-  height: 367px;
   width: 100%;
 }
 
