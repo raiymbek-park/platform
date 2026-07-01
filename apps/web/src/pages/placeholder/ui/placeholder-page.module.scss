@@ -1,12 +1,12 @@
 .body {
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: 8px;
   justify-content: center;
 }
 
 .title {
   color: var(--foreground);
-  font-size: var(--font-size-xl);
+  font-size: 24px;
   font-weight: 800;
   margin: 0;
 }
