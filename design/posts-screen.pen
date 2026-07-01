@@ -1,0 +1,3058 @@
+{
+  "version": "2.14",
+  "children": [
+    {
+      "type": "frame",
+      "id": "yKVj1",
+      "x": 1815,
+      "y": 699,
+      "name": "Alignment",
+      "enabled": false,
+      "width": 10,
+      "height": 10,
+      "gap": 64
+    },
+    {
+      "type": "frame",
+      "id": "L1VeS",
+      "x": 5447,
+      "y": 699,
+      "name": "Edit Message",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "cApzL",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header",
+          "x": 0,
+          "y": 0,
+          "descendants": {
+            "ds:sh-mark": {
+              "enabled": true
+            },
+            "ds:vg55p": {
+              "enabled": false
+            },
+            "ds:sh-title": {
+              "content": "Репетитор по математике"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "xvIRI",
+          "name": "messages",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            16,
+            20
+          ],
+          "children": [
+            {
+              "id": "K1BOm",
+              "type": "ref",
+              "ref": "ds:MessageInRow",
+              "name": "msg-in",
+              "width": "fill_container",
+              "x": 20,
+              "y": 16,
+              "descendants": {
+                "ds:fm-avatar": {
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/johnny-depp.jpg",
+                    "mode": "fill"
+                  }
+                },
+                "ds:fm-avatar/ds:avatar-ini": {
+                  "enabled": false
+                },
+                "ds:fm-bubble": {
+                  "id": "aFFKS",
+                  "type": "ref",
+                  "ref": "ds:MessageIn",
+                  "descendants": {
+                    "ds:chat-in-name": {
+                      "content": "Джонни Депп"
+                    },
+                    "ds:chat-in-time": {
+                      "content": "10:24"
+                    },
+                    "ds:chat-in-text": {
+                      "content": "Спасибо, всё прошло отлично! 🙌"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "MA4Jv",
+              "type": "ref",
+              "ref": "ds:MessageInRow",
+              "name": "msg-in",
+              "width": "fill_container",
+              "x": 20,
+              "y": 99,
+              "descendants": {
+                "ds:fm-avatar": {
+                  "id": "SJuCZ",
+                  "type": "ref",
+                  "ref": "ds:Avatar",
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/ursula.jpg",
+                    "mode": "fill"
+                  },
+                  "descendants": {
+                    "ds:avatar-ini": {
+                      "content": "ДК",
+                      "fill": "$ds:action",
+                      "enabled": false
+                    }
+                  }
+                },
+                "ds:fm-bubble": {
+                  "id": "u4PSEF",
+                  "type": "ref",
+                  "ref": "ds:MessageIn",
+                  "descendants": {
+                    "ds:chat-in-name": {
+                      "fill": "$ds:foreground",
+                      "content": "Ляйен Урсула фон дер"
+                    },
+                    "ds:chat-in-time": {
+                      "content": "10:25"
+                    },
+                    "ds:chat-in-text": {
+                      "content": "Занимаемся с сыном уже два месяца — прогресс заметный. Объясняет спокойно и понятно, разбирает каждую тему до конца, всегда на связи и подстраивается под расписание. Подтянули алгебру перед контрольной — сын стал увереннее. Однозначно рекомендую!",
+                      "textGrowth": "fixed-width",
+                      "width": 240
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "NbaOJ",
+              "name": "msg-out",
+              "width": "fill_container",
+              "gap": 10,
+              "justifyContent": "end",
+              "children": [
+                {
+                  "id": "htfnv",
+                  "type": "ref",
+                  "ref": "ds:MessageOut",
+                  "descendants": {
+                    "ds:chat-out-time": {
+                      "content": "10:26"
+                    },
+                    "ds:chat-out-text": {
+                      "content": "Рад был помочь"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "PPld7",
+              "type": "ref",
+              "ref": "ds:MessageInRow",
+              "name": "msg-in",
+              "width": "fill_container",
+              "x": 20,
+              "y": 399,
+              "descendants": {
+                "ds:fm-avatar": {
+                  "id": "Jbwld",
+                  "type": "ref",
+                  "ref": "ds:Avatar",
+                  "fill": "$ds:accent-soft",
+                  "stroke": "$ds:accent",
+                  "strokeLinecap": "butt",
+                  "strokeLinejoin": "miter",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "descendants": {
+                    "ds:avatar-ini": {
+                      "content": "ДЛ",
+                      "fill": "$ds:accent"
+                    }
+                  }
+                },
+                "ds:fm-bubble": {
+                  "id": "ng6tj",
+                  "type": "ref",
+                  "ref": "ds:MessageIn",
+                  "descendants": {
+                    "ds:chat-in-name": {
+                      "content": "Джордж Лукас",
+                      "fill": "$ds:foreground"
+                    },
+                    "ds:chat-in-time": {
+                      "content": "11:02"
+                    },
+                    "ds:chat-in-text": {
+                      "content": "Быстро откликнулись по заявке."
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "JYzfm",
+          "name": "input-bar",
+          "width": "fill_container",
+          "gap": 10,
+          "padding": [
+            0,
+            20,
+            20,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "ngfT2",
+              "type": "ref",
+              "ref": "ds:InputIcon",
+              "name": "Input Box",
+              "x": 20,
+              "y": 0,
+              "descendants": {
+                "ds:InputIcon-ic": {
+                  "library": "lucide",
+                  "icon": "pen-line"
+                },
+                "ds:InputIcon-tx": {
+                  "content": "Рад был помочь",
+                  "fill": "$ds:foreground"
+                }
+              }
+            },
+            {
+              "id": "I3ISig",
+              "type": "ref",
+              "ref": "ds:ButtonPrimary",
+              "name": "Home Button",
+              "x": 312,
+              "y": 0,
+              "width": 58,
+              "descendants": {
+                "ds:btn-action-icon": {
+                  "library": "lucide",
+                  "icon": "save"
+                },
+                "ds:btn-action-text": {
+                  "content": "На главную",
+                  "enabled": false
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "MessageActionsScreen",
+      "x": 4993,
+      "y": 699,
+      "name": "Message Actions",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "justifyContent": "end",
+      "children": [
+        {
+          "type": "frame",
+          "id": "ma-context",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "content",
+          "clip": true,
+          "width": 390,
+          "height": 844,
+          "fill": "$ds:background",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "ma-cApzL",
+              "type": "ref",
+              "ref": "ds:ScreenHeader",
+              "name": "Header",
+              "x": 0,
+              "y": 0,
+              "descendants": {
+                "ds:sh-mark": {
+                  "enabled": true
+                },
+                "ds:vg55p": {
+                  "enabled": false
+                },
+                "ds:sh-title": {
+                  "content": "Репетитор по математике"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "ma-xvIRI",
+              "name": "messages",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": [
+                16,
+                20
+              ],
+              "children": [
+                {
+                  "id": "ma-K1BOm",
+                  "type": "ref",
+                  "ref": "ds:MessageInRow",
+                  "name": "msg-in",
+                  "width": "fill_container",
+                  "x": 20,
+                  "y": 16,
+                  "descendants": {
+                    "ds:fm-avatar": {
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "images/johnny-depp.jpg",
+                        "mode": "fill"
+                      }
+                    },
+                    "ds:fm-avatar/ds:avatar-ini": {
+                      "enabled": false
+                    },
+                    "ds:fm-bubble": {
+                      "id": "ma-aFFKS",
+                      "type": "ref",
+                      "ref": "ds:MessageIn",
+                      "descendants": {
+                        "ds:chat-in-name": {
+                          "content": "Джонни Депп"
+                        },
+                        "ds:chat-in-time": {
+                          "content": "10:24"
+                        },
+                        "ds:chat-in-text": {
+                          "content": "Спасибо, всё прошло отлично! 🙌"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "id": "ma-MA4Jv",
+                  "type": "ref",
+                  "ref": "ds:MessageInRow",
+                  "name": "msg-in",
+                  "width": "fill_container",
+                  "x": 20,
+                  "y": 99,
+                  "descendants": {
+                    "ds:fm-avatar": {
+                      "id": "ma-SJuCZ",
+                      "type": "ref",
+                      "ref": "ds:Avatar",
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "images/ursula.jpg",
+                        "mode": "fill"
+                      },
+                      "descendants": {
+                        "ds:avatar-ini": {
+                          "content": "ДК",
+                          "fill": "$ds:action",
+                          "enabled": false
+                        }
+                      }
+                    },
+                    "ds:fm-bubble": {
+                      "id": "ma-u4PSEF",
+                      "type": "ref",
+                      "ref": "ds:MessageIn",
+                      "descendants": {
+                        "ds:chat-in-name": {
+                          "fill": "$ds:foreground",
+                          "content": "Ляйен Урсула фон дер"
+                        },
+                        "ds:chat-in-time": {
+                          "content": "10:25"
+                        },
+                        "ds:chat-in-text": {
+                          "content": "Занимаемся с сыном уже два месяца — прогресс заметный. Объясняет спокойно и понятно, разбирает каждую тему до конца, всегда на связи и подстраивается под расписание. Подтянули алгебру перед контрольной — сын стал увереннее. Однозначно рекомендую!",
+                          "textGrowth": "fixed-width",
+                          "width": 240
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "ma-NbaOJ",
+                  "name": "msg-out",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "justifyContent": "end",
+                  "children": [
+                    {
+                      "id": "ma-htfnv",
+                      "type": "ref",
+                      "ref": "ds:MessageOut",
+                      "descendants": {
+                        "ds:chat-out-time": {
+                          "content": "10:26"
+                        },
+                        "ds:chat-out-text": {
+                          "content": "Рад был помочь"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "ma-PPld7",
+                  "type": "ref",
+                  "ref": "ds:MessageInRow",
+                  "name": "msg-in",
+                  "width": "fill_container",
+                  "x": 20,
+                  "y": 399,
+                  "descendants": {
+                    "ds:fm-avatar": {
+                      "id": "ma-Jbwld",
+                      "type": "ref",
+                      "ref": "ds:Avatar",
+                      "fill": "$ds:accent-soft",
+                      "stroke": "$ds:accent",
+                      "strokeLinecap": "butt",
+                      "strokeLinejoin": "miter",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "descendants": {
+                        "ds:avatar-ini": {
+                          "content": "ДЛ",
+                          "fill": "$ds:accent"
+                        }
+                      }
+                    },
+                    "ds:fm-bubble": {
+                      "id": "ma-ng6tj",
+                      "type": "ref",
+                      "ref": "ds:MessageIn",
+                      "descendants": {
+                        "ds:chat-in-name": {
+                          "content": "Джордж Лукас",
+                          "fill": "$ds:foreground"
+                        },
+                        "ds:chat-in-time": {
+                          "content": "11:02"
+                        },
+                        "ds:chat-in-text": {
+                          "content": "Быстро откликнулись по заявке."
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ma-JYzfm",
+              "name": "input-bar",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                0,
+                20,
+                20,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "ma-ngfT2",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "x": 20,
+                  "y": 0,
+                  "descendants": {
+                    "ds:InputIcon-ic": {
+                      "library": "lucide",
+                      "icon": "pen-line"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "Рад был помочь",
+                      "fill": "$ds:foreground"
+                    }
+                  }
+                },
+                {
+                  "id": "ma-I3ISig",
+                  "type": "ref",
+                  "ref": "ds:ButtonPrimary",
+                  "name": "Home Button",
+                  "x": 312,
+                  "y": 0,
+                  "width": 58,
+                  "descendants": {
+                    "ds:btn-action-icon": {
+                      "library": "lucide",
+                      "icon": "save"
+                    },
+                    "ds:btn-action-text": {
+                      "content": "На главную",
+                      "enabled": false
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "ma-scrim",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "scrim",
+          "fill": "$ds:scrim",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "id": "ma-drawer",
+          "type": "ref",
+          "ref": "ds:PopupMenu",
+          "name": "drawer",
+          "width": "fill_container",
+          "height": "fit_content",
+          "fill": "$ds:background",
+          "descendants": {
+            "ds:N60p6": {
+              "type": "frame",
+              "id": "ma-drawer-content",
+              "name": "content",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$ds:spacing-base",
+              "padding": [
+                0,
+                20,
+                20,
+                20
+              ],
+              "children": [
+                {
+                  "id": "ma-btn-delete",
+                  "type": "ref",
+                  "ref": "ds:ButtonDanger",
+                  "name": "delete",
+                  "width": "fill_container",
+                  "x": 20,
+                  "y": 0,
+                  "descendants": {
+                    "ds:btn-danger-text": {
+                      "content": "Удалить сообщение"
+                    }
+                  }
+                },
+                {
+                  "id": "ma-btn-edit",
+                  "type": "ref",
+                  "ref": "ds:ButtonSecondary",
+                  "name": "edit",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ds:btn-sec-icon": {
+                      "icon": "square-pen"
+                    },
+                    "ds:btn-sec-text": {
+                      "content": "Редактировать"
+                    }
+                  }
+                },
+                {
+                  "id": "KE3nm",
+                  "type": "ref",
+                  "ref": "ds:ButtonSecondary",
+                  "name": "cancel",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ds:btn-sec-icon": {
+                      "icon": "x",
+                      "library": "lucide"
+                    },
+                    "ds:btn-sec-text": {
+                      "content": "Отменить"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ReviewsChatScreen",
+      "x": 4539,
+      "y": 699,
+      "name": "Reviews",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "t5hl5",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header",
+          "x": 0,
+          "y": 0,
+          "descendants": {
+            "ds:sh-logo": {
+              "gap": 10
+            },
+            "ds:sh-mark": {
+              "enabled": true
+            },
+            "ds:vg55p": {
+              "enabled": false
+            },
+            "ds:sh-title": {
+              "content": "Репетитор по математике"
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "rc-messages",
+          "name": "messages",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            16,
+            20
+          ],
+          "children": [
+            {
+              "id": "rc-m1",
+              "type": "ref",
+              "ref": "ds:MessageInRow",
+              "name": "msg-in",
+              "width": "fill_container",
+              "descendants": {
+                "ds:fm-avatar": {
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/johnny-depp.jpg",
+                    "mode": "fill"
+                  }
+                },
+                "ds:fm-avatar/ds:avatar-ini": {
+                  "enabled": false
+                },
+                "ds:fm-bubble": {
+                  "id": "rc-m1-bub",
+                  "type": "ref",
+                  "ref": "ds:MessageIn",
+                  "descendants": {
+                    "ds:chat-in-name": {
+                      "content": "Джонни Депп"
+                    },
+                    "ds:chat-in-time": {
+                      "content": "10:24"
+                    },
+                    "ds:chat-in-text": {
+                      "content": "Спасибо, всё прошло отлично! 🙌"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "rc-m2",
+              "type": "ref",
+              "ref": "ds:MessageInRow",
+              "name": "msg-in",
+              "width": "fill_container",
+              "descendants": {
+                "ds:fm-avatar": {
+                  "id": "rc-m2-av",
+                  "type": "ref",
+                  "ref": "ds:Avatar",
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/ursula.jpg",
+                    "mode": "fill"
+                  },
+                  "descendants": {
+                    "ds:avatar-ini": {
+                      "content": "ДК",
+                      "fill": "$ds:action",
+                      "enabled": false
+                    }
+                  }
+                },
+                "ds:fm-bubble": {
+                  "id": "rc-m2-bub",
+                  "type": "ref",
+                  "ref": "ds:MessageIn",
+                  "descendants": {
+                    "ds:chat-in-name": {
+                      "content": "Ляйен Урсула фон дер",
+                      "fill": "$ds:foreground"
+                    },
+                    "ds:chat-in-time": {
+                      "content": "10:25"
+                    },
+                    "ds:chat-in-text": {
+                      "content": "Занимаемся с сыном уже два месяца — прогресс заметный. Объясняет спокойно и понятно, разбирает каждую тему до конца, всегда на связи и подстраивается под расписание. Подтянули алгебру перед контрольной — сын стал увереннее. Однозначно рекомендую!",
+                      "textGrowth": "fixed-width",
+                      "width": 240
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "rc-m3",
+              "name": "msg-out",
+              "width": "fill_container",
+              "gap": 10,
+              "justifyContent": "end",
+              "children": [
+                {
+                  "id": "rc-m3-bub",
+                  "type": "ref",
+                  "ref": "ds:MessageOut",
+                  "descendants": {
+                    "ds:chat-out-time": {
+                      "content": "10:26"
+                    },
+                    "ds:chat-out-text": {
+                      "content": "Рад был помочь 👍"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "rc-m4",
+              "type": "ref",
+              "ref": "ds:MessageInRow",
+              "name": "msg-in",
+              "width": "fill_container",
+              "descendants": {
+                "ds:fm-avatar": {
+                  "id": "rc-m4-av",
+                  "type": "ref",
+                  "ref": "ds:Avatar",
+                  "fill": "$ds:accent-soft",
+                  "stroke": "$ds:accent",
+                  "strokeLinecap": "butt",
+                  "strokeLinejoin": "miter",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "descendants": {
+                    "ds:avatar-ini": {
+                      "content": "ДЛ",
+                      "fill": "$ds:accent"
+                    }
+                  }
+                },
+                "ds:fm-bubble": {
+                  "id": "rc-m4-bub",
+                  "type": "ref",
+                  "ref": "ds:MessageIn",
+                  "descendants": {
+                    "ds:chat-in-name": {
+                      "content": "Джордж Лукас",
+                      "fill": "$ds:foreground"
+                    },
+                    "ds:chat-in-time": {
+                      "content": "11:02"
+                    },
+                    "ds:chat-in-text": {
+                      "content": "Быстро откликнулись по заявке."
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "pmBCK",
+              "type": "ref",
+              "ref": "ds:MessageImage",
+              "x": 20,
+              "y": 482,
+              "descendants": {
+                "ds:O6uFz": {
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/user-avatar.png",
+                    "mode": "fill"
+                  }
+                },
+                "ds:O6uFz/ds:avatar-ini": {
+                  "enabled": false
+                },
+                "ds:NM89V": {
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/living-room.jpg",
+                    "mode": "fill"
+                  },
+                  "width": "fill_container",
+                  "height": 182,
+                  "flipX": false,
+                  "flipY": false,
+                  "x": 0,
+                  "y": 42,
+                  "justifyContent": "end",
+                  "alignItems": "center"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "rc-inputbar",
+          "name": "input-bar",
+          "width": "fill_container",
+          "gap": 10,
+          "padding": [
+            0,
+            20,
+            20,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "g1bBs",
+              "type": "ref",
+              "ref": "ds:InputIcon",
+              "name": "Input Box",
+              "x": 20,
+              "y": 0,
+              "descendants": {
+                "ds:InputIcon-ic": {
+                  "library": "lucide",
+                  "icon": "image-plus"
+                },
+                "ds:InputIcon-tx": {
+                  "content": "Наберите текст",
+                  "fill": "$ds:text-muted"
+                }
+              }
+            },
+            {
+              "id": "IerGS",
+              "type": "ref",
+              "ref": "ds:ButtonPrimary",
+              "name": "Home Button",
+              "x": 312,
+              "y": 0,
+              "width": 58,
+              "descendants": {
+                "ds:btn-action-icon": {
+                  "library": "lucide",
+                  "icon": "send-horizontal"
+                },
+                "ds:btn-action-text": {
+                  "content": "На главную",
+                  "enabled": false
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "yNZq6",
+      "x": 4085,
+      "y": 699,
+      "name": "Ads Edit",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "Hz5pg",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "type": "frame",
+          "id": "zk7uU",
+          "name": "content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "N8EqI",
+              "name": "tags",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "sWJ5M",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Категория"
+                },
+                {
+                  "type": "frame",
+                  "id": "rJ6Bq",
+                  "name": "category-card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "H6Jjf3",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "category продам",
+                      "descendants": {
+                        "ds:opt-sel-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:opt-sel-icon": {
+                          "icon": "banknote",
+                          "fill": "$ds:info"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "Продам"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Продажа вещей"
+                        }
+                      }
+                    },
+                    {
+                      "id": "tacJU",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "ETB7j",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category сдам",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "key-round",
+                          "fill": "$ds:accent"
+                        },
+                        "ds:opt-name": {
+                          "content": "Сдам"
+                        },
+                        "ds:opt-role": {
+                          "content": "Сдам в аренду"
+                        }
+                      }
+                    },
+                    {
+                      "id": "u9lXA",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "v2KBH",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category услуги",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:brand-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "handshake",
+                          "fill": "$ds:brand"
+                        },
+                        "ds:opt-name": {
+                          "content": "Услуги"
+                        },
+                        "ds:opt-role": {
+                          "content": "Предлагаю услуги"
+                        }
+                      }
+                    },
+                    {
+                      "id": "Zcg4S",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "XJY6H",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category даром",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "gift",
+                          "fill": "$ds:warning"
+                        },
+                        "ds:opt-name": {
+                          "content": "Даром"
+                        },
+                        "ds:opt-role": {
+                          "content": "Отдам бесплатно"
+                        }
+                      }
+                    },
+                    {
+                      "id": "qZrHK",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "g7cQNh",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category требуется",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "search",
+                          "fill": "$ds:accent"
+                        },
+                        "ds:opt-name": {
+                          "content": "Требуется"
+                        },
+                        "ds:opt-role": {
+                          "content": "Ищу или куплю"
+                        }
+                      }
+                    },
+                    {
+                      "id": "xHYpU",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "zA2qp",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category прочее",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "coffee",
+                          "fill": "$ds:warning",
+                          "library": "lucide"
+                        },
+                        "ds:opt-name": {
+                          "content": "Прочее"
+                        },
+                        "ds:opt-role": {
+                          "content": "Другая категория"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "zLmgA",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "title",
+              "gap": 10,
+              "x": 20,
+              "y": 488,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Заголовок"
+                },
+                "ds:section-content": {
+                  "id": "ryYF0",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-iw": {
+                      "fill": "$ds:info-soft"
+                    },
+                    "ds:InputIcon-ic": {
+                      "library": "lucide",
+                      "icon": "banknote",
+                      "fill": "$ds:info"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "Отдам детскую коляску",
+                      "fill": "$ds:foreground"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "CfG8I",
+              "name": "description",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "w2eD1",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Описание"
+                },
+                {
+                  "id": "hP0iE",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "input",
+                  "width": "fill_container",
+                  "height": "fit_content",
+                  "flipX": false,
+                  "flipY": false,
+                  "x": 0,
+                  "y": 29,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "justifyContent": "start",
+                  "alignItems": "start",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "Отдам в хорошие руки детскую коляску-трансформер в отличном состоянии. Колёса целые, ремни и тормоз работают. Самовывоз из блока 2, по будням после 18:00 или в выходные.",
+                      "fill": "$ds:foreground",
+                      "fontSize": 14,
+                      "lineHeight": 1.5
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "J2kxXP",
+              "name": "photos",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "HKmSP",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Фото"
+                },
+                {
+                  "id": "QSy6W",
+                  "type": "ref",
+                  "ref": "ds:ImageForm",
+                  "x": 0,
+                  "y": 29
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bRD6B",
+              "name": "Actions",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "EHfqe",
+                  "type": "ref",
+                  "ref": "ds:ButtonIcon",
+                  "name": "Back Button"
+                },
+                {
+                  "id": "WBed4",
+                  "type": "ref",
+                  "ref": "ds:ButtonPrimary",
+                  "name": "Send Button",
+                  "x": 70,
+                  "y": 0,
+                  "descendants": {
+                    "ds:btn-action-icon": {
+                      "library": "lucide",
+                      "icon": "save"
+                    },
+                    "ds:btn-action-text": {
+                      "content": "Сохранить"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "StU2q",
+      "x": 3631,
+      "y": 699,
+      "name": "Ads Create",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "btpDd",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "type": "frame",
+          "id": "kQ0tS",
+          "name": "Illustration",
+          "clip": true,
+          "width": "fill_container",
+          "height": 260,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "images/create-ad.png",
+            "mode": "fill"
+          },
+          "justifyContent": "center",
+          "alignItems": "center"
+        },
+        {
+          "type": "frame",
+          "id": "EhMuQ",
+          "name": "content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "k6rrN3",
+              "name": "section-title",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "id": "IyCHd",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "title",
+                  "content": "Новое предложение",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "JBPGY",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "subtitle",
+                  "content": "Поделитесь своим предложением или расскажите, что вы ищете — ваше объявление увидят соседи.",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "L4E0BP",
+              "name": "tags",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "AHRdP",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Категория"
+                },
+                {
+                  "type": "frame",
+                  "id": "uA2RP",
+                  "name": "category-card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "ads-cat-1",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "category продам",
+                      "descendants": {
+                        "ds:opt-sel-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:opt-sel-icon": {
+                          "icon": "banknote",
+                          "fill": "$ds:info"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "Продам"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Продажа вещей"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ads-div-1",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "ads-cat-2",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category сдам",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "key-round",
+                          "fill": "$ds:accent"
+                        },
+                        "ds:opt-name": {
+                          "content": "Сдам"
+                        },
+                        "ds:opt-role": {
+                          "content": "Сдам в аренду"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ads-div-2",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "ads-cat-3",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category услуги",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:brand-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "handshake",
+                          "fill": "$ds:brand"
+                        },
+                        "ds:opt-name": {
+                          "content": "Услуги"
+                        },
+                        "ds:opt-role": {
+                          "content": "Предлагаю услуги"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ads-div-3",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "ads-cat-5",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category даром",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "gift",
+                          "fill": "$ds:warning"
+                        },
+                        "ds:opt-name": {
+                          "content": "Даром"
+                        },
+                        "ds:opt-role": {
+                          "content": "Отдам бесплатно"
+                        },
+                        "ds:opt-check": {
+                          "cornerRadius": 180
+                        }
+                      }
+                    },
+                    {
+                      "id": "ads-div-4",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "ads-cat-6",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category требуется",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "search",
+                          "fill": "$ds:accent"
+                        },
+                        "ds:opt-name": {
+                          "content": "Требуется"
+                        },
+                        "ds:opt-role": {
+                          "content": "Ищу или куплю"
+                        }
+                      }
+                    },
+                    {
+                      "id": "ads-div-5",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "ads-cat-4",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category прочее",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "coffee",
+                          "fill": "$ds:warning",
+                          "library": "lucide"
+                        },
+                        "ds:opt-name": {
+                          "content": "Прочее"
+                        },
+                        "ds:opt-role": {
+                          "content": "Другая категория"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "ygobh",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "title",
+              "gap": 10,
+              "x": 20,
+              "y": 596,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Заголовок"
+                },
+                "ds:section-content": {
+                  "id": "URhVt",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-iw": {
+                      "fill": "$ds:info-soft"
+                    },
+                    "ds:InputIcon-ic": {
+                      "library": "lucide",
+                      "icon": "banknote",
+                      "fill": "$ds:info"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "Продам котят"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "x9Th1W",
+              "name": "description",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "degE4",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Описание"
+                },
+                {
+                  "id": "x0BDk4",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "input",
+                  "width": "fill_container",
+                  "height": 88,
+                  "flipX": false,
+                  "flipY": false,
+                  "x": 0,
+                  "y": 29,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "justifyContent": "start",
+                  "alignItems": "start",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "Опишите состояние, детали, условия и цену…"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "yuUlG",
+              "name": "photos",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "hKMUQ",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Фото"
+                },
+                {
+                  "id": "lRqam",
+                  "type": "ref",
+                  "ref": "ds:ImageFormEmpty",
+                  "x": 0,
+                  "y": 29
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "si6qL",
+              "name": "Actions",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "QrgNE",
+                  "type": "ref",
+                  "ref": "ds:ButtonIcon",
+                  "name": "Back Button"
+                },
+                {
+                  "id": "UM4Lt",
+                  "type": "ref",
+                  "ref": "ds:ButtonPrimary",
+                  "name": "Send Button",
+                  "x": 70,
+                  "y": 0,
+                  "descendants": {
+                    "ds:btn-action-icon": {
+                      "library": "lucide",
+                      "icon": "save"
+                    },
+                    "ds:btn-action-text": {
+                      "content": "Сохранить"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "DeleteConfirmScreen",
+      "x": 3177,
+      "y": 699,
+      "name": "Delete Confirm",
+      "clip": true,
+      "width": 390,
+      "height": 1269,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "justifyContent": "end",
+      "children": [
+        {
+          "type": "frame",
+          "id": "dc-context",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "content",
+          "width": 390,
+          "fill": "$ds:background",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "dc-ctx-header",
+              "type": "ref",
+              "ref": "ds:ScreenHeader",
+              "name": "Header"
+            },
+            {
+              "type": "frame",
+              "id": "dc-ctx-content",
+              "name": "cards",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "cwvpN",
+                  "name": "page-title",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "children": [
+                    {
+                      "id": "TMhhQ",
+                      "type": "ref",
+                      "ref": "ds:TextTitle",
+                      "name": "title",
+                      "content": "Объявления",
+                      "width": "fill_container",
+                      "textGrowth": "fixed-width"
+                    },
+                    {
+                      "id": "sGasZ",
+                      "type": "ref",
+                      "ref": "ds:TextBody",
+                      "name": "subtitle",
+                      "content": "Новостная лента и частные объявления от жильцов.",
+                      "width": "fill_container",
+                      "textGrowth": "fixed-width"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "YjVbu",
+                  "name": "filters",
+                  "width": "fill_container",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "wypoY",
+                      "type": "ref",
+                      "ref": "ds:FilterTabDefault",
+                      "name": "tab-all",
+                      "descendants": {
+                        "ds:filter-tab-label": {
+                          "content": "Все"
+                        }
+                      }
+                    },
+                    {
+                      "id": "v83zgZ",
+                      "type": "ref",
+                      "ref": "ds:FilterTabDefault",
+                      "name": "tab-announcements",
+                      "x": 60,
+                      "y": 0,
+                      "descendants": {
+                        "ds:filter-tab-label": {
+                          "content": "Уведомления"
+                        }
+                      }
+                    },
+                    {
+                      "id": "G6MTh",
+                      "type": "ref",
+                      "ref": "ds:FilterTabActive",
+                      "name": "tab-offer",
+                      "descendants": {
+                        "ds:filter-tab-label-active": {
+                          "content": "Частные объявления"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "TMuhm",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "search",
+                  "width": "fill_container",
+                  "x": 20,
+                  "y": 151,
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "Поиск по объявлениям"
+                    }
+                  }
+                },
+                {
+                  "id": "gUtho",
+                  "type": "ref",
+                  "ref": "ds:PostCardMediaExpanded",
+                  "name": "offer-stroller",
+                  "width": "fill_container",
+                  "x": 20,
+                  "y": 209,
+                  "descendants": {
+                    "ds:OUIQW": {
+                      "width": "fill_container",
+                      "height": 285,
+                      "flipX": false,
+                      "flipY": false,
+                      "x": 0,
+                      "y": 0
+                    },
+                    "ds:R6Ula": {
+                      "content": "Сегодня · Киану Ривз"
+                    },
+                    "ds:roce-name": {
+                      "content": "Джордж Лукас"
+                    },
+                    "ds:JRBZ0": {
+                      "enabled": false
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "id": "dc-scrim",
+          "layoutPosition": "absolute",
+          "x": 0,
+          "y": 0,
+          "name": "scrim",
+          "fill": "$ds:scrim",
+          "width": 390,
+          "height": 1361
+        },
+        {
+          "id": "dc-drawer",
+          "type": "ref",
+          "ref": "ds:PopupMenu",
+          "name": "drawer",
+          "width": "fill_container",
+          "height": "fit_content",
+          "flipX": false,
+          "flipY": false,
+          "x": 0,
+          "y": 858.9206349206349,
+          "fill": "$ds:background",
+          "descendants": {
+            "ds:N60p6": {
+              "type": "frame",
+              "id": "dc-content",
+              "name": "content",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "padding": [
+                0,
+                20,
+                20,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JjLBW",
+                  "name": "Illustration",
+                  "clip": true,
+                  "width": 100,
+                  "height": 100,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/recycle-bin.png",
+                    "mode": "fill"
+                  },
+                  "cornerRadius": 16,
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "group",
+                  "id": "i8qZr4",
+                  "name": "body",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "id": "dc-title",
+                      "type": "ref",
+                      "ref": "ds:TextHeading",
+                      "name": "title",
+                      "content": "Удалить объявление?",
+                      "fontSize": 17
+                    },
+                    {
+                      "id": "dc-msg",
+                      "type": "ref",
+                      "ref": "ds:TextBody",
+                      "name": "message",
+                      "content": "Это действие нельзя отменить.\nЗапись будет удалена безвозвратно.",
+                      "width": "fill_container",
+                      "textGrowth": "fixed-width",
+                      "textAlign": "center"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "dc-buttons",
+                  "name": "buttons",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 16,
+                  "children": [
+                    {
+                      "id": "dc-btn-delete",
+                      "type": "ref",
+                      "ref": "ds:ButtonDanger",
+                      "name": "delete",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:btn-danger-icon": {
+                          "enabled": false
+                        },
+                        "ds:btn-danger-text": {
+                          "content": "Удалить"
+                        }
+                      }
+                    },
+                    {
+                      "id": "dc-btn-cancel",
+                      "type": "ref",
+                      "ref": "ds:ButtonSecondary",
+                      "name": "cancel",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:btn-sec-icon": {
+                          "enabled": false
+                        },
+                        "ds:btn-sec-text": {
+                          "content": "Отмена"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ResidentOffersScreen",
+      "x": 2723,
+      "y": 699,
+      "name": "Ads",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "BfDai",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "ro-content",
+          "name": "content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "GMSFv",
+              "name": "page-title",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "id": "meGTc",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "title",
+                  "content": "Объявления",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "ZdKO9",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "subtitle",
+                  "content": "Новостная лента и частные объявления от жильцов.",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "T2iZK",
+              "name": "filters",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "UYc1Z",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-all",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Все"
+                    }
+                  }
+                },
+                {
+                  "id": "N4sEe",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-announcements",
+                  "x": 60,
+                  "y": 0,
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Уведомления"
+                    }
+                  }
+                },
+                {
+                  "id": "qIXCY",
+                  "type": "ref",
+                  "ref": "ds:FilterTabActive",
+                  "name": "tab-offer",
+                  "descendants": {
+                    "ds:filter-tab-label-active": {
+                      "content": "Частные объявления"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "njtEx",
+              "type": "ref",
+              "ref": "ds:InputDefault",
+              "name": "search",
+              "width": "fill_container",
+              "descendants": {
+                "ds:InputDefault-tx": {
+                  "content": "Поиск по объявлениям"
+                }
+              }
+            },
+            {
+              "id": "Aph0T",
+              "type": "ref",
+              "ref": "ds:PostCardMediaExpanded",
+              "name": "offer-stroller",
+              "width": "fill_container",
+              "descendants": {
+                "ds:OUIQW": {
+                  "width": "fill_container",
+                  "height": 285,
+                  "flipX": false,
+                  "flipY": false,
+                  "x": 0,
+                  "y": 0
+                },
+                "ds:R6Ula": {
+                  "content": "Сегодня · Киану Ривз"
+                },
+                "ds:roce-name": {
+                  "content": "Джордж Лукас"
+                },
+                "ds:JRBZ0": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "id": "Mr9KJ",
+              "type": "ref",
+              "ref": "ds:PostCard",
+              "name": "offer-tutor",
+              "width": "fill_container",
+              "descendants": {
+                "ds:xM6I3": {
+                  "fill": "$ds:brand-soft"
+                },
+                "ds:s4aRBt": {
+                  "icon": "handshake",
+                  "fill": "$ds:brand",
+                  "library": "lucide"
+                },
+                "ds:VQtaY": {
+                  "content": "Репетитор по математике"
+                },
+                "ds:pgUMb": {
+                  "content": "Вчера · Шрайвер, Мария"
+                },
+                "ds:D6VmW": {
+                  "content": "Помогу подтянуть математику для 5–9 классов. Опыт преподавания 8 лет, занятия у себя или с выездом…"
+                },
+                "ds:XHLh1": {
+                  "type": "frame",
+                  "id": "mr9kj-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "mr9kj-tag-offer",
+                      "type": "ref",
+                      "ref": "ds:TagOffer",
+                      "name": "tag-offer"
+                    }
+                  ]
+                },
+                "ds:o85EL3/ds:rb-like": {
+                  "enabled": true
+                },
+                "ds:o85EL3/ds:rb-dislike": {
+                  "enabled": true
+                }
+              }
+            },
+            {
+              "id": "Z45K7c",
+              "type": "ref",
+              "ref": "ds:PostCard",
+              "name": "offer-bike",
+              "width": "fill_container",
+              "descendants": {
+                "ds:xM6I3": {
+                  "fill": "$ds:info-soft"
+                },
+                "ds:s4aRBt": {
+                  "icon": "banknote",
+                  "fill": "$ds:action",
+                  "library": "lucide"
+                },
+                "ds:VQtaY": {
+                  "content": "Продам горный велосипед"
+                },
+                "ds:pgUMb": {
+                  "content": "2 дня назад · Питер Динклэйдж"
+                },
+                "ds:D6VmW": {
+                  "content": "Продам горный велосипед, рама L, 21 скорость, после небольшого ТО. Колёса и тормоза в идеале. Торг уместен при осмотре, забрать можно из блока 3."
+                },
+                "ds:XHLh1": {
+                  "type": "frame",
+                  "id": "z45-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "z45-tag-sell",
+                      "type": "ref",
+                      "ref": "ds:TagSell",
+                      "name": "tag-sell"
+                    }
+                  ]
+                },
+                "ds:o85EL3": {
+                  "id": "z45-review",
+                  "type": "ref",
+                  "ref": "ds:ReviewDefault",
+                  "descendants": {
+                    "ds:reaction-review-count": {
+                      "content": "8"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "PkLot1",
+              "type": "ref",
+              "ref": "ds:PostCard",
+              "name": "offer-parking",
+              "descendants": {
+                "ds:xM6I3": {
+                  "fill": "$ds:accent-soft"
+                },
+                "ds:s4aRBt": {
+                  "icon": "search",
+                  "fill": "$ds:accent",
+                  "library": "lucide"
+                },
+                "ds:VQtaY": {
+                  "content": "Арендую парковку"
+                },
+                "ds:pgUMb": {
+                  "content": "Сегодня · Серсея Ланнистер"
+                },
+                "ds:D6VmW": {
+                  "content": "Ищу в аренду парковочное место на длительный срок, желательно в блоке 1 или рядом. Рассмотрю крытый паркинг…"
+                },
+                "ds:XHLh1": {
+                  "type": "frame",
+                  "id": "pk-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "pk-tag-wanted",
+                      "type": "ref",
+                      "ref": "ds:TagWanted",
+                      "name": "tag-wanted"
+                    }
+                  ]
+                },
+                "ds:o85EL3": {
+                  "id": "pk-review",
+                  "type": "ref",
+                  "ref": "ds:ReviewDefault",
+                  "descendants": {
+                    "ds:reaction-review-count": {
+                      "content": "2"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "RentApt1",
+              "type": "ref",
+              "ref": "ds:PostCardMedia",
+              "name": "offer-apartment",
+              "descendants": {
+                "ds:roc-image": {
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/living-room.jpg",
+                    "mode": "fill"
+                  }
+                },
+                "ds:oagKx": {
+                  "content": "Сдам 3-комнатную квартиру"
+                },
+                "ds:CjLMW": {
+                  "content": "Сегодня · Султан Арзиев"
+                },
+                "ds:roc-text": {
+                  "content": "Сдаю светлую 3-комнатную квартиру в блоке 3, с мебелью и техникой. Раздельный санузел, балкон, рядом школа и магазины. Оплата помесячно."
+                },
+                "ds:roc-tags": {
+                  "type": "frame",
+                  "id": "apt-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "apt-tag-rent",
+                      "type": "ref",
+                      "ref": "ds:TagRent",
+                      "name": "tag-rent"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ro-dock",
+          "name": "bottom-dock",
+          "width": "fill_container",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "ro-nav",
+              "type": "ref",
+              "ref": "ds:BottomNav",
+              "name": "nav",
+              "width": "fill_container",
+              "descendants": {
+                "ds:bn-house": {
+                  "id": "ro-nh",
+                  "type": "ref",
+                  "ref": "ds:NavItemDefault",
+                  "descendants": {
+                    "ds:nav-icon": {
+                      "icon": "house"
+                    }
+                  }
+                },
+                "ds:bn-megaphone": {
+                  "id": "ro-nf",
+                  "type": "ref",
+                  "ref": "ds:NavItemActive",
+                  "descendants": {
+                    "ds:nav-active-icon": {
+                      "icon": "megaphone"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "ro-fab",
+              "type": "ref",
+              "ref": "ds:CreateFab",
+              "name": "create",
+              "layoutPosition": "absolute",
+              "x": 307,
+              "y": -84
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "uxFn1",
+      "x": 2269,
+      "y": 699,
+      "name": "Post Create",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "e123y",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "type": "frame",
+          "id": "VtZau",
+          "name": "Illustration",
+          "clip": true,
+          "width": "fill_container",
+          "height": 260,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "images/residential-complex.png",
+            "mode": "fill"
+          },
+          "justifyContent": "center",
+          "alignItems": "center"
+        },
+        {
+          "type": "frame",
+          "id": "ohKtm",
+          "name": "content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "Crl6V",
+              "name": "title",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "id": "gmYxh",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "title",
+                  "content": "Новое объявление",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "WzJ0e",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "subtitle",
+                  "content": "Поделитесь важной новостью или объявлением, касающимся жизни нашего ЖК.",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "pc-field-cat",
+              "name": "field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "pc-l-cat",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Категория"
+                },
+                {
+                  "type": "frame",
+                  "id": "pc-cats",
+                  "name": "category-card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "pc-cat-1",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "category жк",
+                      "descendants": {
+                        "ds:opt-sel-icon-wrap": {
+                          "fill": "$ds:brand-soft"
+                        },
+                        "ds:opt-sel-icon": {
+                          "icon": "building-2",
+                          "fill": "$ds:brand"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "ЖК Raiymbek Park"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Вопросы по комплексу"
+                        }
+                      }
+                    },
+                    {
+                      "id": "pc-div-1",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "pc-cat-2",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category ук",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "briefcase",
+                          "fill": "$ds:info"
+                        },
+                        "ds:opt-name": {
+                          "content": "Управляющая компания"
+                        },
+                        "ds:opt-role": {
+                          "content": "Сервис и эксплуатация"
+                        }
+                      }
+                    },
+                    {
+                      "id": "pc-div-2",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "pc-cat-3",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category город",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "landmark",
+                          "fill": "$ds:accent"
+                        },
+                        "ds:opt-name": {
+                          "content": "Городское управление"
+                        },
+                        "ds:opt-role": {
+                          "content": "Городские службы"
+                        }
+                      }
+                    },
+                    {
+                      "id": "pc-div-3",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "pc-cat-4",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category прочее",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "megaphone",
+                          "fill": "$ds:warning",
+                          "library": "lucide"
+                        },
+                        "ds:opt-name": {
+                          "content": "Прочее"
+                        },
+                        "ds:opt-role": {
+                          "content": "Другая категория"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "oZGWw",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Name Section",
+              "gap": 10,
+              "x": 20,
+              "y": 443,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Заголовок"
+                },
+                "ds:section-content": {
+                  "id": "oSlLh",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-iw": {
+                      "fill": "$ds:brand-soft"
+                    },
+                    "ds:InputIcon-ic": {
+                      "library": "lucide",
+                      "icon": "building-2",
+                      "fill": "$ds:brand"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "Ежемесячное собрание жильцов"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "e4KYc",
+              "x": 20,
+              "y": 226,
+              "name": "field",
+              "enabled": false,
+              "width": "fill_container(350)",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "OChpz",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Тема заявки"
+                },
+                {
+                  "id": "cHIHS",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "input",
+                  "width": "fill_container",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "Кратко опишите проблему"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QOQIS",
+              "name": "field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "t1t7Jn",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Описание"
+                },
+                {
+                  "id": "XyoQc",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "input",
+                  "width": "fill_container",
+                  "height": 88,
+                  "flipX": false,
+                  "flipY": false,
+                  "x": 0,
+                  "y": 29,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "justifyContent": "start",
+                  "alignItems": "start",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "Опишите цели, причины..."
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "syRfd",
+              "name": "field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "vZG3u",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Фото"
+                },
+                {
+                  "id": "McBrS",
+                  "type": "ref",
+                  "ref": "ds:ImageFormEmpty",
+                  "x": 0,
+                  "y": 29
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "dDlkl",
+              "name": "Actions",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "iN1OO",
+                  "type": "ref",
+                  "ref": "ds:ButtonIcon",
+                  "name": "Back Button"
+                },
+                {
+                  "id": "jZFDO",
+                  "type": "ref",
+                  "ref": "ds:ButtonPrimary",
+                  "name": "Send Button",
+                  "x": 70,
+                  "y": 0,
+                  "descendants": {
+                    "ds:btn-action-icon": {
+                      "library": "lucide",
+                      "icon": "save"
+                    },
+                    "ds:btn-action-text": {
+                      "content": "Сохранить"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "AnnouncementsScreen",
+      "x": 1815,
+      "y": 699,
+      "name": "Posts",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "ztjPM",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "ann-content",
+          "name": "content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "ann-title-block",
+              "name": "page-title",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "id": "ann-title",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "title",
+                  "content": "Объявления",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "ann-subtitle",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "subtitle",
+                  "content": "Новостная лента и частные объявления от жильцов.",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ann-filters",
+              "name": "filters",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "ann-tab-ann",
+                  "type": "ref",
+                  "ref": "ds:FilterTabActive",
+                  "name": "tab-all",
+                  "descendants": {
+                    "ds:filter-tab-label-active": {
+                      "content": "Все"
+                    }
+                  }
+                },
+                {
+                  "id": "ann-tab-offers",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-announcements",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Уведомления"
+                    }
+                  }
+                },
+                {
+                  "id": "dzhTP",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-offers",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Частные объявления"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "KQEPL",
+              "type": "ref",
+              "ref": "ds:InputDefault",
+              "name": "search",
+              "width": "fill_container",
+              "x": 20,
+              "y": 151,
+              "descendants": {
+                "ds:InputDefault-tx": {
+                  "content": "Поиск по объявлениям"
+                }
+              }
+            },
+            {
+              "id": "BdiEV",
+              "type": "ref",
+              "ref": "ds:PostCardMediaExpanded",
+              "name": "card-hero",
+              "width": "fill_container",
+              "descendants": {
+                "ds:OUIQW": {
+                  "width": "fill_container",
+                  "height": 240,
+                  "flipX": false,
+                  "flipY": false,
+                  "x": 0,
+                  "y": 0,
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/residential-complex.png",
+                    "mode": "fill"
+                  }
+                },
+                "ds:zXBvV": {
+                  "content": "Запуск цифрового сервиса"
+                },
+                "ds:R6Ula": {
+                  "content": "12 июня · Арзиев Султан"
+                },
+                "ds:roce-text": {
+                  "content": "Дорогие соседи! 👋\nУ нашего ЖК «Raiymbek Park» появилось собственное онлайн-пространство.\n\nЯ создал его потому, что важная информация о доме часто теряется в общем чате: объявления управляющей компании быстро уходят вверх, обращения сложно отследить, а узнать, что происходит в доме, бывает непросто.\n\nТеперь всё собрано в одном месте. Здесь вы всегда сможете узнать последние новости, отправить обращение в управляющую компанию и следить за ходом его рассмотрения. Общие вопросы по дому можно обсуждать и решать через голосования, чтобы мнение каждого жителя было услышано. Кроме того, появилась возможность размещать частные объявления — предлагать свои услуги соседям, сдавать в аренду квартиру, паркинг или кладовую.\n\nНадеюсь, что эта платформа сделает жизнь в нашем доме удобнее, а взаимодействие жителей и управляющей компании — более простым, открытым и прозрачным.\n\nС уважением, Султан ☺️"
+                },
+                "ds:roce-tags": {
+                  "enabled": false
+                },
+                "ds:roce-contacts": {
+                  "enabled": false
+                },
+                "ds:JRBZ0": {
+                  "enabled": false
+                },
+                "ds:hIA1e/ds:rb-like": {
+                  "enabled": true
+                },
+                "ds:hIA1e/ds:rb-dislike": {
+                  "enabled": true
+                }
+              }
+            },
+            {
+              "id": "V9OfA",
+              "type": "ref",
+              "ref": "ds:AnnouncementCard",
+              "name": "card-water",
+              "width": "fill_container",
+              "descendants": {
+                "ds:ac-icon-wrap": {
+                  "fill": "$ds:accent-soft"
+                },
+                "ds:ac-icon": {
+                  "library": "lucide",
+                  "icon": "landmark",
+                  "fill": "$ds:accent"
+                },
+                "ds:ac-title": {
+                  "content": "Плановое отключение воды"
+                },
+                "ds:ac-date": {
+                  "content": "12 июня · Городское управление"
+                },
+                "ds:ac-body": {
+                  "content": "Уважаемые жильцы! 14 июня с 10:00 до 16:00 будет проводиться плановое отключение холодной воды в связи с ремонтными работами на магистрали…"
+                }
+              }
+            },
+            {
+              "id": "TUCqx",
+              "type": "ref",
+              "ref": "ds:AnnouncementCard",
+              "name": "card-subbotnik",
+              "width": "fill_container",
+              "descendants": {
+                "ds:ac-icon-wrap": {
+                  "fill": "$ds:brand-soft"
+                },
+                "ds:ac-icon": {
+                  "library": "lucide",
+                  "icon": "building-2",
+                  "fill": "$ds:brand"
+                },
+                "ds:ac-title": {
+                  "content": "Субботник во дворе"
+                },
+                "ds:ac-date": {
+                  "content": "10 июня · ЖК Raiymbek Park"
+                },
+                "ds:ac-body": {
+                  "content": "Приглашаем всех жильцов на субботник по благоустройству двора в эту субботу. Инвентарь и хорошее настроение…"
+                }
+              }
+            },
+            {
+              "id": "PDbgH",
+              "type": "ref",
+              "ref": "ds:AnnouncementCard",
+              "name": "card-parking",
+              "width": "fill_container",
+              "descendants": {
+                "ds:ac-icon-wrap": {
+                  "fill": "$ds:info-soft"
+                },
+                "ds:ac-icon": {
+                  "library": "lucide",
+                  "icon": "briefcase",
+                  "fill": "$ds:info"
+                },
+                "ds:ac-title": {
+                  "content": "Новые правила парковки"
+                },
+                "ds:ac-date": {
+                  "content": "9 июня · Управляющая компания"
+                },
+                "ds:ac-body": {
+                  "content": "Со следующей недели вводятся новые правила парковки во дворе. Гостевые места обозначены синей разметкой…"
+                }
+              }
+            },
+            {
+              "id": "C6rHo",
+              "type": "ref",
+              "ref": "ds:AnnouncementCard",
+              "name": "card-trash",
+              "width": "fill_container",
+              "descendants": {
+                "ds:ac-icon-wrap": {
+                  "fill": "$ds:accent-soft"
+                },
+                "ds:ac-icon": {
+                  "library": "lucide",
+                  "icon": "landmark",
+                  "fill": "$ds:accent"
+                },
+                "ds:ac-title": {
+                  "content": "Новый график вывоза мусора"
+                },
+                "ds:ac-date": {
+                  "content": "8 июня · Городское управление"
+                },
+                "ds:ac-body": {
+                  "content": "С 15 июня вводится новый график вывоза мусора. Контейнеры будут опустошаться ежедневно с 7:00 до 9:00 утра, а крупногабаритные отходы — по средам и субботам. Просим выставлять мусор заранее и не оставлять пакеты возле подъездов в неположенное время. Спасибо за поддержание чистоты во дворе."
+                },
+                "ds:ac-link-text": {
+                  "content": "Свернуть"
+                },
+                "ds:ac-chevron": {
+                  "icon": "chevron-up"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ann-dock",
+          "name": "bottom-dock",
+          "width": "fill_container",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "ann-nav",
+              "type": "ref",
+              "ref": "ds:BottomNav",
+              "name": "nav",
+              "width": "fill_container",
+              "descendants": {
+                "ds:bn-house": {
+                  "id": "ann-nh",
+                  "type": "ref",
+                  "ref": "ds:NavItemDefault",
+                  "descendants": {
+                    "ds:nav-icon": {
+                      "icon": "house"
+                    }
+                  }
+                },
+                "ds:bn-megaphone": {
+                  "id": "ann-nf",
+                  "type": "ref",
+                  "ref": "ds:NavItemActive",
+                  "descendants": {
+                    "ds:nav-active-icon": {
+                      "icon": "megaphone"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "ann-fab",
+              "type": "ref",
+              "ref": "ds:CreateFab",
+              "name": "create",
+              "layoutPosition": "absolute",
+              "x": 307,
+              "y": -84
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ds": "design-system.lib.pen"
+  },
+  "fileToken": "23989e8a-05e7-4b5e-8876-bed64d959017"
+}

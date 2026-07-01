@@ -1,0 +1,827 @@
+{
+  "version": "2.14",
+  "children": [
+    {
+      "type": "frame",
+      "id": "hbaRX",
+      "x": 1362,
+      "y": 0,
+      "name": "Account Locked",
+      "clip": true,
+      "width": 390,
+      "height": 842,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "MRCP4",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "reWLs",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "gbNmh",
+              "name": "Illustration",
+              "clip": true,
+              "width": "fill_container",
+              "height": 367,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/account-locked.png",
+                "mode": "fill"
+              },
+              "cornerRadius": 24,
+              "justifyContent": "center",
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "SeX9s",
+              "name": "Heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "WaOXX",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "Title",
+                  "content": "Доступ заблокирован"
+                },
+                {
+                  "id": "aoYnV",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "Subtitle",
+                  "content": "Слишком много попыток. Подождите немного и попробуйте снова.",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width",
+                  "height": 17,
+                  "textAlign": "center"
+                }
+              ]
+            },
+            {
+              "id": "IkxJ9",
+              "type": "ref",
+              "ref": "ds:Spacer",
+              "name": "Spacer"
+            },
+            {
+              "id": "x3Qkky",
+              "type": "ref",
+              "ref": "ds:ButtonPrimary",
+              "name": "Retry Button",
+              "descendants": {
+                "ds:btn-action-icon": {
+                  "library": "lucide",
+                  "icon": "refresh-cw"
+                },
+                "ds:btn-action-text": {
+                  "content": "Повторить"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "k7NUnt",
+      "x": 908,
+      "y": 0,
+      "name": "OTP Verification",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "S4zF7",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "h7hZHs",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "KOUFy",
+              "name": "Hero",
+              "clip": true,
+              "width": "fill_container",
+              "height": 276,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/otp-sms.png",
+                "mode": "fill"
+              },
+              "cornerRadius": 28,
+              "justifyContent": "center",
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "S6Nh3",
+              "name": "Heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Elg2q",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "Title",
+                  "content": "Введите код из SMS"
+                },
+                {
+                  "id": "PeGxi",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "Subtitle",
+                  "content": "Мы отправили 6-значный код подтверждения на ваш номер",
+                  "width": "fill_container",
+                  "height": "fit_content(17)",
+                  "textGrowth": "fixed-width",
+                  "textAlign": "center"
+                },
+                {
+                  "id": "DYXEE",
+                  "type": "ref",
+                  "ref": "ds:TextEmphasis",
+                  "name": "Phone",
+                  "content": "+7 707 123 45 67"
+                }
+              ]
+            },
+            {
+              "id": "a3EeG",
+              "type": "ref",
+              "ref": "ds:InputDefault",
+              "name": "Input",
+              "height": 58,
+              "justifyContent": "center",
+              "width": "fill_container",
+              "x": 20,
+              "y": 435,
+              "descendants": {
+                "ds:InputDefault-tx": {
+                  "content": "1 2 3 - 4 5 6",
+                  "fill": "$ds:foreground",
+                  "fontSize": 26,
+                  "fontWeight": "700",
+                  "textAlign": "center"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "dt91W",
+              "name": "Resend",
+              "width": "fill_container",
+              "gap": 6,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "x5LWE",
+                  "type": "ref",
+                  "ref": "ds:TextCaption",
+                  "name": "Hint",
+                  "content": "Не получили код?"
+                },
+                {
+                  "id": "pd9QT",
+                  "type": "ref",
+                  "ref": "ds:TextLabel",
+                  "name": "Timer",
+                  "content": "Повторно через 0:59"
+                }
+              ]
+            },
+            {
+              "id": "Liqiw",
+              "type": "ref",
+              "ref": "ds:Spacer",
+              "name": "Spacer"
+            },
+            {
+              "type": "frame",
+              "id": "l5f42",
+              "name": "Actions",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "d1GlZ",
+                  "type": "ref",
+                  "ref": "ds:ButtonIcon",
+                  "name": "Back Button"
+                },
+                {
+                  "id": "c1uDX9",
+                  "type": "ref",
+                  "ref": "ds:ButtonPrimary",
+                  "name": "Paste Button",
+                  "descendants": {
+                    "ds:btn-action-text": {
+                      "content": "Вставить код из буфера"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "J7c6i",
+      "x": 454,
+      "y": 0,
+      "name": "Onboarding",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "mbllZ",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "b4cmEr",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "id": "X98Hq",
+              "type": "ref",
+              "ref": "ds:HeroCard",
+              "name": "hero-card",
+              "descendants": {
+                "ds:welcome-title": {
+                  "content": "Добро пожаловать!"
+                },
+                "ds:welcome-body": {
+                  "content": "Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее."
+                }
+              }
+            },
+            {
+              "id": "TWon0",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Name Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Имя"
+                },
+                "ds:section-content": {
+                  "id": "PsVN2",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-ic": {
+                      "library": "lucide",
+                      "icon": "user-round"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "Введите ваше имя"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "nGg9d",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Phone Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Телефон"
+                },
+                "ds:section-content": {
+                  "id": "b3unb4",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-ic": {
+                      "icon": "phone"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "+77"
+                    },
+                    "ds:aMQwR": {
+                      "enabled": true,
+                      "library": "lucide",
+                      "icon": "eye-closed",
+                      "fill": "$ds:border"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "Cr1ym",
+              "type": "ref",
+              "ref": "ds:InfoCallout",
+              "name": "Privacy Notice",
+              "descendants": {
+                "ds:callout-text": {
+                  "content": "Ваш контактный номер скрыт от других жильцов. Доступ к ним имеет только администрация — для быстрой связи в экстренных случаях (затопление, пожар)."
+                }
+              }
+            },
+            {
+              "id": "PNMxk",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Blocks Section",
+              "gap": 14,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Выберите блок"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "lapHk",
+                  "name": "Blocks Grid",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ug3Zx",
+                      "name": "block-row",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "id": "XCdG0",
+                          "type": "ref",
+                          "ref": "ds:BlockCardSelected",
+                          "name": "Block A",
+                          "descendants": {
+                            "ds:block-sel-letter": {
+                              "content": "Блок 1"
+                            },
+                            "ds:block-sel-sub": {
+                              "content": "10 жилых этажей"
+                            }
+                          }
+                        },
+                        {
+                          "id": "im9ce",
+                          "type": "ref",
+                          "ref": "ds:BlockCardDefault",
+                          "name": "Block B",
+                          "descendants": {
+                            "ds:block-letter": {
+                              "content": "Блок 2"
+                            },
+                            "ds:block-sub": {
+                              "content": "10 жилых этажей"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "yYS6L",
+                      "name": "block-row",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "id": "NCLJF",
+                          "type": "ref",
+                          "ref": "ds:BlockCardDefault",
+                          "name": "Block C",
+                          "fill": "$ds:accent-soft",
+                          "descendants": {
+                            "ds:block-icon": {
+                              "fill": "$ds:accent"
+                            },
+                            "ds:block-letter": {
+                              "content": "Блок 3"
+                            },
+                            "ds:block-sub": {
+                              "content": "9 жилых этажей"
+                            }
+                          }
+                        },
+                        {
+                          "id": "f4tKTe",
+                          "type": "ref",
+                          "ref": "ds:BlockCardDefault",
+                          "name": "Block D",
+                          "fill": "$ds:info-soft",
+                          "descendants": {
+                            "ds:block-icon": {
+                              "fill": "$ds:info"
+                            },
+                            "ds:block-letter": {
+                              "content": "Блок 4"
+                            },
+                            "ds:block-sub": {
+                              "content": "9 жилых этажей"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "t1cTHW",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Input Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Номер квартиры"
+                },
+                "ds:section-content": {
+                  "id": "qpvHf",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-ic": {
+                      "icon": "door-closed"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "142"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "A8geX",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Resident Type Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Кто вы?"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "QajCn",
+                  "name": "Resident Type Card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "VUiTh",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "Option Собственник квартиры",
+                      "descendants": {
+                        "ds:opt-sel-name": {
+                          "content": "Собственник квартиры"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Владею жильём"
+                        }
+                      }
+                    },
+                    {
+                      "id": "bM9dN",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "hTOnT",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "Option Арендатор",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "fill": "$ds:warning"
+                        },
+                        "ds:opt-name": {
+                          "content": "Арендатор"
+                        },
+                        "ds:opt-role": {
+                          "content": "Снимаю жильё"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "y09NF",
+              "type": "ref",
+              "ref": "ds:InfoCallout",
+              "name": "Privacy Notice",
+              "descendants": {
+                "ds:callout-text": {
+                  "content": "Эта форма защищена reCAPTCHA, применяются политика конфиденциальности и условия Google"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "S3qSoc",
+              "name": "Actions",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "aGTJR",
+                  "type": "ref",
+                  "ref": "ds:ButtonIcon",
+                  "name": "Back Button"
+                },
+                {
+                  "id": "J9u12",
+                  "type": "ref",
+                  "ref": "ds:ButtonIconRight",
+                  "name": "Next Button",
+                  "x": 70,
+                  "y": 0,
+                  "descendants": {
+                    "ds:btn-primary-text": {
+                      "content": "Далее"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "eT7fh",
+      "x": 0,
+      "y": 0,
+      "name": "Select Language",
+      "clip": true,
+      "width": 390,
+      "height": 842,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "w35ZBM",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "Aj6iJ",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "IlfsI",
+              "name": "Hero",
+              "clip": true,
+              "width": "fill_container",
+              "height": 271,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/hello.png",
+                "mode": "fill"
+              },
+              "cornerRadius": 28,
+              "justifyContent": "center",
+              "alignItems": "center"
+            },
+            {
+              "id": "IA2Eu",
+              "type": "ref",
+              "ref": "ds:Spacer",
+              "name": "Spacer"
+            },
+            {
+              "id": "HOF4i",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Resident Type Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Выберите язык"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "L5Nxb",
+                  "name": "Resident Type Card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "tixxP",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "Option Арендатор",
+                      "x": 16,
+                      "y": 10,
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:opt-icon": {
+                          "fill": "$ds:action",
+                          "library": "lucide",
+                          "icon": "languages"
+                        },
+                        "ds:opt-name": {
+                          "content": "Қазақша"
+                        },
+                        "ds:opt-role": {
+                          "content": "Қолданба интерфейсінің тілі"
+                        },
+                        "ds:opt-check": {
+                          "enabled": true
+                        }
+                      }
+                    },
+                    {
+                      "id": "bAt53",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "o5ge6",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "Option Собственник квартиры",
+                      "x": 16,
+                      "y": 78,
+                      "descendants": {
+                        "ds:opt-sel-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:opt-sel-icon": {
+                          "library": "lucide",
+                          "icon": "languages",
+                          "fill": "$ds:accent"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "Русский"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Язык интерфейса приложения",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    {
+                      "id": "w4QG73",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider",
+                      "x": 16,
+                      "y": 139
+                    },
+                    {
+                      "id": "Q5Vkf",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "Option Арендатор",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "fill": "$ds:warning",
+                          "library": "lucide",
+                          "icon": "languages"
+                        },
+                        "ds:opt-name": {
+                          "content": "English"
+                        },
+                        "ds:opt-role": {
+                          "content": "App Language"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "PXiNi",
+              "type": "ref",
+              "ref": "ds:ButtonIconRight",
+              "name": "Next Button",
+              "x": 20,
+              "y": 700,
+              "descendants": {
+                "ds:btn-primary-text": {
+                  "content": "Далее"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ds": "design-system.lib.pen"
+  },
+  "fileToken": "c3970d4a-e336-45ef-8a95-137a66466d38"
+}

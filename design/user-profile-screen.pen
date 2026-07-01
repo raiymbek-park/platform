@@ -1,0 +1,640 @@
+{
+  "version": "2.14",
+  "children": [
+    {
+      "type": "frame",
+      "id": "Q7SUq",
+      "x": 0,
+      "y": 0,
+      "name": "User Profile",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "G84CT",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "cxkDO",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "set-avatar",
+              "type": "ref",
+              "ref": "ds:AvatarUploadFilled",
+              "name": "avatar",
+              "x": 120,
+              "y": 20
+            },
+            {
+              "id": "poG5w",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Name Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Имя"
+                },
+                "ds:section-content": {
+                  "id": "C65n4",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-ic": {
+                      "library": "lucide",
+                      "icon": "user-round"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "Киану Ривз",
+                      "fill": "$ds:foreground"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "kb9Br",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Phone Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Телефон"
+                },
+                "ds:section-content": {
+                  "id": "InP9x",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-ic": {
+                      "icon": "phone"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "+7 707 123 45 67",
+                      "fill": "$ds:foreground"
+                    },
+                    "ds:aMQwR": {
+                      "enabled": true,
+                      "library": "lucide",
+                      "icon": "eye-closed",
+                      "fill": "$ds:muted-surface"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "J9NCfV",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Resident Type Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Видимость номера"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "PGM9Z",
+                  "name": "Resident Type Card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "W6pUoC",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "Option Арендатор",
+                      "x": 16,
+                      "y": 10,
+                      "descendants": {
+                        "ds:opt-left": {
+                          "width": "fill_container"
+                        },
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:brand-soft"
+                        },
+                        "ds:opt-icon": {
+                          "fill": "$ds:brand",
+                          "library": "lucide",
+                          "icon": "eye"
+                        },
+                        "ds:opt-text": {
+                          "width": "fill_container"
+                        },
+                        "ds:opt-name": {
+                          "content": "Открыть"
+                        },
+                        "ds:opt-role": {
+                          "content": "Ваш контактный номер виден для других жильцов.",
+                          "width": "fill_container",
+                          "textGrowth": "fixed-width",
+                          "height": 16
+                        }
+                      }
+                    },
+                    {
+                      "id": "KBlQM",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider",
+                      "x": 16,
+                      "y": 87
+                    },
+                    {
+                      "id": "yyZ5g",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "Option Собственник квартиры",
+                      "descendants": {
+                        "ds:opt-sel-left": {
+                          "width": "fill_container"
+                        },
+                        "ds:opt-sel-icon-wrap": {
+                          "fill": "$ds:danger-soft"
+                        },
+                        "ds:opt-sel-icon": {
+                          "library": "lucide",
+                          "icon": "eye-off",
+                          "fill": "$ds:danger"
+                        },
+                        "ds:opt-sel-text": {
+                          "width": "fill_container"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "Скрыть",
+                          "enabled": true
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Ваш контактный номер скрыт от других жильцов.",
+                          "width": "fill_container",
+                          "textGrowth": "fixed-width",
+                          "height": "fit_content(16)"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "HxpiX",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Blocks Section",
+              "gap": 14,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Выберите блок"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "lCroZ",
+                  "name": "Blocks Grid",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "L3F150",
+                      "name": "block-row",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "id": "pnMSF",
+                          "type": "ref",
+                          "ref": "ds:BlockCardSelected",
+                          "name": "Block A",
+                          "descendants": {
+                            "ds:block-sel-letter": {
+                              "content": "Блок 1"
+                            },
+                            "ds:block-sel-sub": {
+                              "content": "10 жилых этажей"
+                            }
+                          }
+                        },
+                        {
+                          "id": "FK8V5",
+                          "type": "ref",
+                          "ref": "ds:BlockCardDefault",
+                          "name": "Block B",
+                          "descendants": {
+                            "ds:block-letter": {
+                              "content": "Блок 2"
+                            },
+                            "ds:block-sub": {
+                              "content": "10 жилых этажей"
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KgJPo",
+                      "name": "block-row",
+                      "width": "fill_container",
+                      "gap": 12,
+                      "children": [
+                        {
+                          "id": "gDpJ9",
+                          "type": "ref",
+                          "ref": "ds:BlockCardDefault",
+                          "name": "Block C",
+                          "fill": "$ds:accent-soft",
+                          "descendants": {
+                            "ds:block-icon": {
+                              "fill": "$ds:accent"
+                            },
+                            "ds:block-letter": {
+                              "content": "Блок 3"
+                            },
+                            "ds:block-sub": {
+                              "content": "9 жилых этажей"
+                            }
+                          }
+                        },
+                        {
+                          "id": "L14HE",
+                          "type": "ref",
+                          "ref": "ds:BlockCardDefault",
+                          "name": "Block D",
+                          "fill": "$ds:info-soft",
+                          "descendants": {
+                            "ds:block-icon": {
+                              "fill": "$ds:action"
+                            },
+                            "ds:block-letter": {
+                              "content": "Блок 4"
+                            },
+                            "ds:block-sub": {
+                              "content": "9 жилых этажей"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "Q6LvwV",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Input Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Номер квартиры"
+                },
+                "ds:section-content": {
+                  "id": "qltj4",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-ic": {
+                      "icon": "door-closed"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "64",
+                      "fill": "$ds:foreground"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "OSO2D",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Resident Type Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Кто вы?"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "B4tYT",
+                  "name": "Resident Type Card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "aVYXd",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "Option Собственник квартиры",
+                      "descendants": {
+                        "ds:opt-sel-name": {
+                          "content": "Собственник квартиры"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Владею жильём"
+                        }
+                      }
+                    },
+                    {
+                      "id": "YQFvS",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "XP50j",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "Option Арендатор",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "fill": "$ds:warning"
+                        },
+                        "ds:opt-name": {
+                          "content": "Арендатор"
+                        },
+                        "ds:opt-role": {
+                          "content": "Снимаю жильё"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "cars-section",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Cars Section",
+              "gap": 6,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Номера машин"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "cars-content",
+                  "name": "cars",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "id": "cars-hint",
+                      "type": "ref",
+                      "ref": "ds:TextCaption",
+                      "name": "hint",
+                      "content": "Добавьте номер автомобиля, чтобы соседи могли связаться с вами в случае перекрытия проезда. Для этого включите отображение номера телефона.",
+                      "width": "fill_container",
+                      "textGrowth": "fixed-width"
+                    },
+                    {
+                      "id": "cars-input-1",
+                      "type": "ref",
+                      "ref": "ds:InputIcon",
+                      "name": "plate",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:InputIcon-ic": {
+                          "icon": "car"
+                        },
+                        "ds:InputIcon-tx": {
+                          "content": "A 123 BC 01",
+                          "fill": "$ds:foreground"
+                        },
+                        "ds:aMQwR": {
+                          "enabled": true,
+                          "library": "lucide",
+                          "icon": "trash-2",
+                          "fill": "$ds:danger"
+                        }
+                      }
+                    },
+                    {
+                      "id": "xhwtz",
+                      "type": "ref",
+                      "ref": "ds:InlineButtonInfo",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:action-link-ic": {
+                          "library": "lucide",
+                          "icon": "plus"
+                        },
+                        "ds:action-link-tx": {
+                          "content": "Добавить ещё один номер машины"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "ZgvQz",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Resident Type Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Выберите язык"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "mmFUK",
+                  "name": "Resident Type Card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "zxK0j",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "Option Арендатор",
+                      "x": 16,
+                      "y": 10,
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:brand-soft"
+                        },
+                        "ds:opt-icon": {
+                          "fill": "$ds:brand",
+                          "library": "lucide",
+                          "icon": "languages"
+                        },
+                        "ds:opt-name": {
+                          "content": "Қазақша"
+                        },
+                        "ds:opt-role": {
+                          "content": "Қолданба интерфейсінің тілі"
+                        },
+                        "ds:opt-check": {
+                          "enabled": true
+                        }
+                      }
+                    },
+                    {
+                      "id": "xzkh7",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "KrRoi",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "Option Собственник квартиры",
+                      "x": 16,
+                      "y": 78,
+                      "descendants": {
+                        "ds:opt-sel-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:opt-sel-icon": {
+                          "library": "lucide",
+                          "icon": "languages",
+                          "fill": "$ds:action"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "Русский"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Язык интерфейса приложения",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    {
+                      "id": "cT5m5",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider",
+                      "x": 16,
+                      "y": 139
+                    },
+                    {
+                      "id": "f8RQ05",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "Option Арендатор",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "fill": "$ds:warning",
+                          "library": "lucide",
+                          "icon": "languages"
+                        },
+                        "ds:opt-name": {
+                          "content": "English"
+                        },
+                        "ds:opt-role": {
+                          "content": "App Language"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "id": "KOj8b",
+              "type": "ref",
+              "ref": "ds:ButtonPrimary",
+              "name": "Send Button",
+              "x": 20,
+              "y": 1777,
+              "descendants": {
+                "ds:btn-action-icon": {
+                  "library": "lucide",
+                  "icon": "save"
+                },
+                "ds:btn-action-text": {
+                  "content": "Сохранить"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ds": "design-system.lib.pen"
+  },
+  "fileToken": "c7709da9-8ca1-4694-ad72-0f19d2f55766"
+}

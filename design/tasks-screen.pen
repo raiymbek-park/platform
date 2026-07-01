@@ -1,0 +1,1846 @@
+{
+  "version": "2.14",
+  "children": [
+    {
+      "type": "frame",
+      "id": "RequestsEmptyScreen",
+      "x": 908,
+      "y": 0,
+      "name": "No Data Found",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "re-header",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "re-content",
+          "name": "content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "re-title-block",
+              "name": "page-title",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "id": "re-title",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "title",
+                  "content": "Заявки",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "re-subtitle",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "subtitle",
+                  "content": "Обращения жильцов в управляющую компанию и их статусы.",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "re-filters",
+              "name": "filters",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "re-tab-in",
+                  "type": "ref",
+                  "ref": "ds:FilterTabActive",
+                  "name": "tab",
+                  "descendants": {
+                    "ds:filter-tab-label-active": {
+                      "content": "Входящие"
+                    }
+                  }
+                },
+                {
+                  "id": "re-tab-work",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "В работе"
+                    }
+                  }
+                },
+                {
+                  "id": "re-tab-block",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Заблокировано"
+                    }
+                  }
+                },
+                {
+                  "id": "re-tab-done",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Выполнено"
+                    }
+                  }
+                },
+                {
+                  "id": "re-tab-rej",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Отклонено"
+                    }
+                  }
+                },
+                {
+                  "id": "re-tab-rev",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "На рассмотрение жильцам"
+                    }
+                  }
+                },
+                {
+                  "id": "re-tab-plan",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Запланировано"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "nf1md",
+              "type": "ref",
+              "ref": "ds:Spacer",
+              "name": "Spacer"
+            },
+            {
+              "type": "frame",
+              "id": "u8KE5",
+              "name": "Illustration",
+              "clip": true,
+              "width": "fill_container",
+              "height": 143,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/no-data.png",
+                "mode": "fill"
+              },
+              "cornerRadius": 24,
+              "justifyContent": "center",
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "JGGsa",
+              "name": "Heading",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "Z7fZD",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "Title",
+                  "content": "Нет данных",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width",
+                  "textAlign": "center"
+                },
+                {
+                  "id": "ZSQ5f",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "Subtitle",
+                  "content": "Не найдено ни одной заявки.",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width",
+                  "textAlign": "center"
+                }
+              ]
+            },
+            {
+              "id": "bwJz7",
+              "type": "ref",
+              "ref": "ds:Spacer",
+              "name": "Spacer"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "re-dock",
+          "name": "bottom-dock",
+          "width": "fill_container",
+          "height": 61,
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "re-nav",
+              "type": "ref",
+              "ref": "ds:BottomNav",
+              "name": "nav",
+              "width": "fill_container",
+              "descendants": {
+                "ds:bn-house": {
+                  "id": "re-nh",
+                  "type": "ref",
+                  "ref": "ds:NavItemDefault",
+                  "descendants": {
+                    "ds:nav-icon": {
+                      "icon": "house"
+                    }
+                  }
+                },
+                "ds:bn-clipboard": {
+                  "id": "re-nc",
+                  "type": "ref",
+                  "ref": "ds:NavItemActive",
+                  "descendants": {
+                    "ds:nav-active-icon": {
+                      "icon": "clipboard-list"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "id": "re-fab",
+              "type": "ref",
+              "ref": "ds:CreateFab",
+              "name": "create",
+              "layoutPosition": "absolute",
+              "x": 306,
+              "y": -84
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "CreateRequestScreen",
+      "x": 454,
+      "y": 0,
+      "name": "Create Todo",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "req-header",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "type": "frame",
+          "id": "pNDhC",
+          "name": "Illustration",
+          "clip": true,
+          "width": "fill_container",
+          "height": 170,
+          "fill": {
+            "type": "image",
+            "enabled": true,
+            "url": "images/create-issue.png",
+            "mode": "fill"
+          },
+          "justifyContent": "center",
+          "alignItems": "center"
+        },
+        {
+          "type": "frame",
+          "id": "cr-content",
+          "name": "content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "req-title-block",
+              "name": "title",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "id": "req-title",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "title",
+                  "content": "Новая заявка",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "req-subtitle",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "subtitle",
+                  "content": "Опишите проблему или вопрос, который вы хотите направить управляющей компании или жителям нашего ЖК.",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cr-f-cat",
+              "name": "tags",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "cr-l-cat",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Категория"
+                },
+                {
+                  "type": "frame",
+                  "id": "cr-cats",
+                  "name": "category-card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "cr-cat-1",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "category ремонт",
+                      "descendants": {
+                        "ds:opt-sel-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:opt-sel-icon": {
+                          "icon": "hammer",
+                          "fill": "$ds:info",
+                          "library": "lucide"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "Ремонт"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Требуется ремонт"
+                        }
+                      }
+                    },
+                    {
+                      "id": "cr-div-1",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "cr-cat-3",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category замена",
+                      "x": 16,
+                      "y": 78,
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "refresh-cw",
+                          "fill": "$ds:accent"
+                        },
+                        "ds:opt-name": {
+                          "content": "Замена"
+                        },
+                        "ds:opt-role": {
+                          "content": "Замена оборудования"
+                        }
+                      }
+                    },
+                    {
+                      "id": "cr-div-2",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider",
+                      "x": 16,
+                      "y": 139
+                    },
+                    {
+                      "id": "cr-cat-2",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category жалоба",
+                      "x": 16,
+                      "y": 146,
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "message-circle",
+                          "fill": "$ds:warning"
+                        },
+                        "ds:opt-name": {
+                          "content": "Жалоба"
+                        },
+                        "ds:opt-role": {
+                          "content": "Хочу пожаловаться"
+                        }
+                      }
+                    },
+                    {
+                      "id": "cr-div-3",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "cr-cat-4",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category нарушение",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:danger-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "triangle-alert",
+                          "fill": "$ds:danger"
+                        },
+                        "ds:opt-name": {
+                          "content": "Нарушение"
+                        },
+                        "ds:opt-role": {
+                          "content": "Нарушение правил"
+                        }
+                      }
+                    },
+                    {
+                      "id": "cr-div-4",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "cr-cat-6",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category прочее",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "ellipsis",
+                          "fill": "$ds:warning"
+                        },
+                        "ds:opt-name": {
+                          "content": "Прочее"
+                        },
+                        "ds:opt-role": {
+                          "content": "Другая категория"
+                        }
+                      }
+                    },
+                    {
+                      "id": "cr-div-5",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider",
+                      "x": 16,
+                      "y": 343
+                    },
+                    {
+                      "id": "cr-cat-5",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category срочно",
+                      "x": 16,
+                      "y": 350,
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:danger-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "zap",
+                          "fill": "$ds:danger"
+                        },
+                        "ds:opt-name": {
+                          "content": "Срочно"
+                        },
+                        "ds:opt-role": {
+                          "content": "Требует срочного решения"
+                        },
+                        "ds:opt-check": {
+                          "cornerRadius": 6
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "jyVUv",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Name Section",
+              "gap": 10,
+              "x": 20,
+              "y": 596,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Тема заявки"
+                },
+                "ds:section-content": {
+                  "id": "LEyyZ",
+                  "type": "ref",
+                  "ref": "ds:InputIcon",
+                  "name": "Input Box",
+                  "descendants": {
+                    "ds:InputIcon-iw": {
+                      "fill": "$ds:info-soft"
+                    },
+                    "ds:InputIcon-ic": {
+                      "library": "lucide",
+                      "icon": "hammer",
+                      "fill": "$ds:info"
+                    },
+                    "ds:InputIcon-tx": {
+                      "content": "Кратко опишите проблему"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "cr-f-desc",
+              "name": "field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "cr-l-desc",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Описание"
+                },
+                {
+                  "id": "cr-in-desc",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "input",
+                  "width": "fill_container",
+                  "height": 88,
+                  "flipX": false,
+                  "flipY": false,
+                  "x": 0,
+                  "y": 29,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "justifyContent": "start",
+                  "alignItems": "start",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "Подробно опишите, что случилось и где…"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hmqw8",
+              "name": "field",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "W7cfi",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Фото"
+                },
+                {
+                  "id": "cFOi5",
+                  "type": "ref",
+                  "ref": "ds:ImageFormEmpty",
+                  "x": 0,
+                  "y": 29
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "juia2",
+              "name": "Actions",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "OH8tT",
+                  "type": "ref",
+                  "ref": "ds:ButtonIcon",
+                  "name": "Back Button",
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "id": "cHmmQ",
+                  "type": "ref",
+                  "ref": "ds:ButtonPrimary",
+                  "name": "Send Button",
+                  "x": 70,
+                  "y": 0,
+                  "descendants": {
+                    "ds:btn-action-icon": {
+                      "library": "lucide",
+                      "icon": "send-horizontal"
+                    },
+                    "ds:btn-action-text": {
+                      "content": "Отправить"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "RequestsScreen",
+      "x": 0,
+      "y": 0,
+      "name": "Todos",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "MoIBx",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "req-content",
+          "name": "content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "lBlma",
+              "name": "page-title",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "id": "yM8uo",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "title",
+                  "content": "Заявки",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "iUVJk",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "subtitle",
+                  "content": "Обращения жильцов в управляющую компанию и их статусы.",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "req-filters",
+              "name": "filters",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "req-tab-in",
+                  "type": "ref",
+                  "ref": "ds:FilterTabActive",
+                  "name": "tab-incoming",
+                  "descendants": {
+                    "ds:filter-tab-label-active": {
+                      "content": "Входящие"
+                    }
+                  }
+                },
+                {
+                  "id": "req-tab-work",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-work",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "В работе"
+                    }
+                  }
+                },
+                {
+                  "id": "req-tab-block",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-blocked",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Заблокировано"
+                    }
+                  }
+                },
+                {
+                  "id": "req-tab-done",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-done",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Выполнено"
+                    }
+                  }
+                },
+                {
+                  "id": "req-tab-reject",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-rejected",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Отклонено"
+                    }
+                  }
+                },
+                {
+                  "id": "req-tab-review",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-review",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "На рассмотрение жильцам"
+                    }
+                  }
+                },
+                {
+                  "id": "req-tab-plan",
+                  "type": "ref",
+                  "ref": "ds:FilterTabDefault",
+                  "name": "tab-planned",
+                  "descendants": {
+                    "ds:filter-tab-label": {
+                      "content": "Запланировано"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "id": "req-leak",
+              "type": "ref",
+              "ref": "ds:PostCard",
+              "name": "req-leak",
+              "x": 20,
+              "y": 151,
+              "descendants": {
+                "ds:xM6I3": {
+                  "fill": "$ds:warning-soft"
+                },
+                "ds:s4aRBt": {
+                  "icon": "inbox",
+                  "fill": "$ds:warning",
+                  "library": "lucide"
+                },
+                "ds:VQtaY": {
+                  "content": "Протечка воды в подвале"
+                },
+                "ds:pgUMb": {
+                  "content": "Заявка №118 · Новая заявка"
+                },
+                "ds:D6VmW": {
+                  "content": "В техническом подвале блока 2 капает вода с трубы, на полу лужа. Возможно, прорыв на стояке."
+                },
+                "ds:XHLh1": {
+                  "type": "frame",
+                  "id": "req-leak-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "req-leak-tags-1",
+                      "type": "ref",
+                      "ref": "ds:StatusViolation",
+                      "name": "tag"
+                    }
+                  ]
+                },
+                "ds:o85EL3": {
+                  "enabled": true
+                },
+                "ds:o85EL3/ds:rb-like": {
+                  "enabled": true
+                },
+                "ds:o85EL3/ds:rb-dislike": {
+                  "enabled": true
+                }
+              }
+            },
+            {
+              "id": "req-lift",
+              "type": "ref",
+              "ref": "ds:PostCardExpanded",
+              "name": "req-lift",
+              "descendants": {
+                "ds:wFLlJ": {
+                  "fill": "$ds:info-soft"
+                },
+                "ds:dP9X9": {
+                  "icon": "wrench",
+                  "fill": "$ds:action",
+                  "library": "lucide"
+                },
+                "ds:bPUSr": {
+                  "content": "Не работает лифт"
+                },
+                "ds:auOdF": {
+                  "content": "Заявка №124 · В работе"
+                },
+                "ds:Ahd0x": {
+                  "content": "Лифт в подъезде 1 стоит со вчерашнего вечера, не реагирует на вызов. Жильцы верхних этажей не могут подняться."
+                },
+                "ds:MBX5P": {
+                  "type": "frame",
+                  "id": "req-lift-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "req-lift-tags-1",
+                      "type": "ref",
+                      "ref": "ds:StatusUrgent",
+                      "name": "tag"
+                    },
+                    {
+                      "id": "req-lift-tags-2",
+                      "type": "ref",
+                      "ref": "ds:StatusRepair",
+                      "name": "tag"
+                    }
+                  ]
+                },
+                "ds:q0hIQQ": {
+                  "content": "Ляйен, Урсула фон дер"
+                },
+                "ds:Uwzcl": {
+                  "enabled": false
+                },
+                "ds:HCwpt": {
+                  "content": "+7 707 882 14 09"
+                },
+                "ds:MTTTO": {
+                  "content": "Блок 1 · Квартира 14"
+                },
+                "ds:RAKjk": {
+                  "enabled": true,
+                  "name": "actions"
+                },
+                "ds:rxDHG": {
+                  "enabled": false
+                },
+                "ds:BDfHH": {
+                  "enabled": true
+                },
+                "ds:y3k2hJ": {
+                  "enabled": false
+                },
+                "ds:QhH2X": {
+                  "enabled": true
+                },
+                "ds:QhH2X/ds:rb-like": {
+                  "enabled": true
+                },
+                "ds:QhH2X/ds:rb-dislike": {
+                  "enabled": true
+                },
+                "ds:lnaW5": {
+                  "content": "Свернуть"
+                },
+                "ds:ZAxNX": {
+                  "library": "lucide",
+                  "icon": "chevron-up"
+                }
+              }
+            },
+            {
+              "id": "req-intercom",
+              "type": "ref",
+              "ref": "ds:PostCardMedia",
+              "name": "req-intercom",
+              "descendants": {
+                "ds:roc-image": {
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/intercom.jpg",
+                    "mode": "fill"
+                  }
+                },
+                "ds:CiXkO": {
+                  "enabled": true,
+                  "fill": "$ds:info-soft"
+                },
+                "ds:zMnCb": {
+                  "fill": "$ds:action",
+                  "library": "lucide",
+                  "icon": "calendar-clock"
+                },
+                "ds:oagKx": {
+                  "content": "Замена домофона на входе"
+                },
+                "ds:CjLMW": {
+                  "content": "Заявка №109 · Запланировано"
+                },
+                "ds:roc-text": {
+                  "content": "Домофон у входа в подъезд 2 не открывает дверь по ключу, требуется замена считывателя."
+                },
+                "ds:roc-tags": {
+                  "type": "frame",
+                  "id": "req-intercom-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "req-intercom-tags-1",
+                      "type": "ref",
+                      "ref": "ds:StatusReplacement",
+                      "name": "tag"
+                    },
+                    {
+                      "id": "req-intercom-tags-2",
+                      "type": "ref",
+                      "ref": "ds:StatusClarify",
+                      "name": "tag"
+                    }
+                  ]
+                },
+                "ds:roc-react": {
+                  "enabled": true
+                },
+                "ds:roc-react/ds:rb-like": {
+                  "enabled": true
+                },
+                "ds:roc-react/ds:rb-dislike": {
+                  "enabled": true
+                },
+                "ds:roc-react/ds:rb-dislike/ds:reaction-dislike-count": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "id": "req-noise",
+              "type": "ref",
+              "ref": "ds:PostCard",
+              "name": "req-noise",
+              "descendants": {
+                "ds:xM6I3": {
+                  "fill": "$ds:accent-soft"
+                },
+                "ds:s4aRBt": {
+                  "icon": "users-round",
+                  "fill": "$ds:accent",
+                  "library": "lucide"
+                },
+                "ds:VQtaY": {
+                  "content": "Шум от ремонта ночью"
+                },
+                "ds:pgUMb": {
+                  "content": "Заявка №101 · Жильцам на рассмотре..."
+                },
+                "ds:D6VmW": {
+                  "content": "Соседи сверху делают ремонт после 23:00, сильный шум перфоратора мешает спать. Просьба разобраться."
+                },
+                "ds:XHLh1": {
+                  "type": "frame",
+                  "id": "req-noise-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "req-noise-tags-1",
+                      "type": "ref",
+                      "ref": "ds:StatusComplaint",
+                      "name": "tag"
+                    }
+                  ]
+                },
+                "ds:o85EL3": {
+                  "enabled": true
+                },
+                "ds:o85EL3/ds:rb-like": {
+                  "enabled": true
+                },
+                "ds:o85EL3/ds:rb-dislike": {
+                  "enabled": true
+                },
+                "ds:o85EL3/ds:rb-dislike/ds:reaction-dislike-count": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "id": "req-facade",
+              "type": "ref",
+              "ref": "ds:PostCardMediaExpanded",
+              "name": "req-facade",
+              "descendants": {
+                "ds:OUIQW": {
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/raiymbek-park.jpg",
+                    "mode": "fill"
+                  }
+                },
+                "ds:NAAfG": {
+                  "enabled": true,
+                  "fill": "$ds:brand-soft"
+                },
+                "ds:AIhK8": {
+                  "fill": "$ds:brand",
+                  "library": "lucide",
+                  "icon": "circle-check-big"
+                },
+                "ds:zXBvV": {
+                  "content": "Трещина на фасаде"
+                },
+                "ds:R6Ula": {
+                  "content": "Заявка №95 · Неделю назад"
+                },
+                "ds:roce-text": {
+                  "content": "На внешней стене блока 3 появилась трещина. Дом на гарантии у застройщика, нужна заявка подрядчику."
+                },
+                "ds:roce-tags": {
+                  "type": "frame",
+                  "id": "req-facade-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "req-facade-tags-1",
+                      "type": "ref",
+                      "ref": "ds:StatusWarranty",
+                      "name": "tag"
+                    },
+                    {
+                      "id": "req-facade-tags-2",
+                      "type": "ref",
+                      "ref": "ds:StatusDuplicate",
+                      "name": "tag"
+                    }
+                  ]
+                },
+                "ds:roce-name": {
+                  "content": "Мэтт Грейнинг"
+                },
+                "ds:roce-phone-row": {
+                  "enabled": false
+                },
+                "ds:roce-phone": {
+                  "content": "+7 705 640 22 17"
+                },
+                "ds:roce-location": {
+                  "content": "29 Июня 2026"
+                },
+                "ds:tlriJ": {
+                  "enabled": false
+                },
+                "ds:JRBZ0": {
+                  "enabled": true
+                },
+                "ds:c3kE2J": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "id": "req-fab",
+              "type": "ref",
+              "ref": "ds:CreateFab",
+              "name": "create",
+              "layoutPosition": "absolute",
+              "x": 306,
+              "y": 2133
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "req-dock",
+          "name": "bottom-dock",
+          "width": "fill_container",
+          "layout": "vertical",
+          "children": [
+            {
+              "id": "req-nav",
+              "type": "ref",
+              "ref": "ds:BottomNav",
+              "name": "nav",
+              "width": "fill_container",
+              "descendants": {
+                "ds:bn-house": {
+                  "id": "req-nh",
+                  "type": "ref",
+                  "ref": "ds:NavItemDefault",
+                  "descendants": {
+                    "ds:nav-icon": {
+                      "icon": "house"
+                    }
+                  }
+                },
+                "ds:bn-clipboard": {
+                  "id": "req-nc",
+                  "type": "ref",
+                  "ref": "ds:NavItemActive",
+                  "descendants": {
+                    "ds:nav-active-icon": {
+                      "icon": "clipboard-list"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "RequestDetailScreen",
+      "x": 1363,
+      "y": 0,
+      "name": "Change Status",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "rd-header",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "rd-content",
+          "name": "content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "padding": 20,
+          "children": [
+            {
+              "type": "frame",
+              "id": "rd-title-block",
+              "name": "page-title",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "id": "rd-title",
+                  "type": "ref",
+                  "ref": "ds:TextTitle",
+                  "name": "title",
+                  "content": "Заявка №109",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                },
+                {
+                  "id": "rd-subtitle",
+                  "type": "ref",
+                  "ref": "ds:TextBody",
+                  "name": "subtitle",
+                  "content": "Смена статуса",
+                  "width": "fill_container",
+                  "textGrowth": "fixed-width"
+                }
+              ]
+            },
+            {
+              "id": "rd-card-intercom",
+              "type": "ref",
+              "ref": "ds:PostCardMediaExpanded",
+              "name": "req-intercom",
+              "width": "fill_container",
+              "descendants": {
+                "ds:OUIQW": {
+                  "fill": {
+                    "type": "image",
+                    "enabled": true,
+                    "url": "images/raiymbek-park.jpg",
+                    "mode": "fill"
+                  }
+                },
+                "ds:NAAfG": {
+                  "enabled": true,
+                  "fill": "$ds:info-soft"
+                },
+                "ds:AIhK8": {
+                  "fill": "$ds:action",
+                  "library": "lucide",
+                  "icon": "calendar-clock"
+                },
+                "ds:zXBvV": {
+                  "content": "Замена домофона на входе"
+                },
+                "ds:R6Ula": {
+                  "content": "Заявка №109 · Запланировано"
+                },
+                "ds:roce-text": {
+                  "content": "Домофон у входа в подъезд 2 не открывает дверь по ключу, требуется замена считывателя."
+                },
+                "ds:roce-tags": {
+                  "type": "frame",
+                  "id": "rd-card-intercom-tags",
+                  "name": "tags",
+                  "gap": 6,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "rd-card-intercom-tag-1",
+                      "type": "ref",
+                      "ref": "ds:StatusReplacement",
+                      "name": "tag"
+                    },
+                    {
+                      "id": "rd-card-intercom-tag-2",
+                      "type": "ref",
+                      "ref": "ds:StatusClarify",
+                      "name": "tag"
+                    }
+                  ]
+                },
+                "ds:roce-name": {
+                  "content": "Джобс, Стив"
+                },
+                "ds:roce-phone-row": {
+                  "enabled": true
+                },
+                "ds:roce-phone": {
+                  "content": "+7 707 123 45 67"
+                },
+                "ds:roce-location": {
+                  "content": "29 июня 2026"
+                },
+                "ds:roce-actions": {
+                  "enabled": false
+                },
+                "ds:tlriJ": {
+                  "enabled": false
+                },
+                "ds:JRBZ0": {
+                  "enabled": true
+                },
+                "ds:c3kE2J": {
+                  "enabled": false
+                },
+                "ds:hIA1e/ds:rb-like": {
+                  "enabled": true
+                },
+                "ds:hIA1e/ds:rb-dislike": {
+                  "enabled": true
+                },
+                "ds:YveDW": {
+                  "enabled": false
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "RYFVG",
+              "name": "tags",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "R7jhV",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Дополнительная информация"
+                },
+                {
+                  "type": "frame",
+                  "id": "L80Gn",
+                  "name": "category-card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "sDY3l",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "category замена",
+                      "descendants": {
+                        "ds:opt-sel-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:opt-sel-icon": {
+                          "icon": "refresh-cw",
+                          "fill": "$ds:accent"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "Замена"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Замена оборудования"
+                        }
+                      }
+                    },
+                    {
+                      "id": "E0V59P",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "OjXHK",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category по гарантии",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:brand-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "shield-check",
+                          "fill": "$ds:brand"
+                        },
+                        "ds:opt-name": {
+                          "content": "По гарантии"
+                        },
+                        "ds:opt-role": {
+                          "content": "Гарантийный случай"
+                        }
+                      }
+                    },
+                    {
+                      "id": "p7JPBO",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "kwosA",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category требуется уточнения",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:disabled-surface"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "message-circle-question-mark",
+                          "fill": "$ds:text-secondary",
+                          "library": "lucide"
+                        },
+                        "ds:opt-name": {
+                          "content": "Требуется уточнение"
+                        },
+                        "ds:opt-role": {
+                          "content": "Нужны детали"
+                        }
+                      }
+                    },
+                    {
+                      "id": "XA8bl",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "zrySr",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "category дубликат",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:disabled-surface"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "copy",
+                          "fill": "$ds:text-secondary"
+                        },
+                        "ds:opt-name": {
+                          "content": "Дубликат"
+                        },
+                        "ds:opt-role": {
+                          "content": "Повторная заявка"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rd-status",
+              "name": "status",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "rd-status-label",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Новый статус"
+                },
+                {
+                  "type": "frame",
+                  "id": "rd-options",
+                  "name": "options",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "rd-opt-in",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "status-incoming",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "inbox",
+                          "fill": "$ds:warning"
+                        },
+                        "ds:opt-name": {
+                          "content": "Входящие"
+                        },
+                        "ds:opt-role": {
+                          "content": "Новая, ещё не в работе"
+                        }
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "rd-div-1",
+                      "name": "Divider",
+                      "fill": "$ds:shadow",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "id": "rd-opt-reject",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "status-rejected",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:danger-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "circle-x",
+                          "fill": "$ds:danger"
+                        },
+                        "ds:opt-name": {
+                          "content": "Отклонено"
+                        },
+                        "ds:opt-role": {
+                          "content": "Заявка отклонена"
+                        }
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "rd-div-2",
+                      "name": "Divider",
+                      "fill": "$ds:shadow",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "id": "rd-opt-block",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "status-blocked",
+                      "width": "fill_container",
+                      "x": 16,
+                      "y": 146,
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:danger-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "ban",
+                          "fill": "$ds:danger"
+                        },
+                        "ds:opt-name": {
+                          "content": "Заблокировано"
+                        },
+                        "ds:opt-role": {
+                          "content": "Ожидает решения или ресурсов"
+                        }
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "rd-div-3",
+                      "name": "Divider",
+                      "fill": "$ds:shadow",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "id": "rd-opt-review",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "status-review",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "users-round",
+                          "fill": "$ds:accent",
+                          "library": "lucide"
+                        },
+                        "ds:opt-name": {
+                          "content": "На рассмотрение жильцам"
+                        },
+                        "ds:opt-role": {
+                          "content": "Решение принимают жильцы"
+                        }
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "rd-div-5",
+                      "name": "Divider",
+                      "fill": "$ds:shadow",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "id": "rd-opt-plan",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "status-planned",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:opt-sel-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:opt-sel-icon": {
+                          "icon": "calendar-clock",
+                          "fill": "$ds:action"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "Запланировано"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Работы запланированы"
+                        }
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "rd-div-4",
+                      "name": "Divider",
+                      "fill": "$ds:shadow",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "id": "rd-opt-work",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "status-work",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "wrench",
+                          "fill": "$ds:action"
+                        },
+                        "ds:opt-name": {
+                          "content": "В работе"
+                        },
+                        "ds:opt-role": {
+                          "content": "Заявка взята в работу"
+                        }
+                      }
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "rd-div-6",
+                      "name": "Divider",
+                      "fill": "$ds:shadow",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "id": "rd-opt-done",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "status-done",
+                      "width": "fill_container",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:brand-soft"
+                        },
+                        "ds:opt-icon": {
+                          "icon": "circle-check-big",
+                          "fill": "$ds:brand",
+                          "library": "lucide"
+                        },
+                        "ds:opt-name": {
+                          "content": "Выполнено"
+                        },
+                        "ds:opt-role": {
+                          "content": "Работы завершены"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LGLtT",
+              "name": "photo",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "gLmJp",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Фото фиксация"
+                },
+                {
+                  "id": "uY4Vw",
+                  "type": "ref",
+                  "ref": "ds:ImageFormEmpty",
+                  "x": 0,
+                  "y": 29
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "WVwbT",
+              "name": "comment",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "id": "b6buH",
+                  "type": "ref",
+                  "ref": "ds:TextHeading",
+                  "name": "label",
+                  "content": "Комментарий"
+                },
+                {
+                  "id": "V5BnXb",
+                  "type": "ref",
+                  "ref": "ds:InputDefault",
+                  "name": "input",
+                  "width": "fill_container",
+                  "height": 88,
+                  "padding": [
+                    12,
+                    16
+                  ],
+                  "justifyContent": "start",
+                  "alignItems": "start",
+                  "descendants": {
+                    "ds:InputDefault-tx": {
+                      "content": "Добавьте комментарий к смене статуса…"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "pb8Bk",
+              "name": "buttons",
+              "width": "fill_container",
+              "gap": 16,
+              "children": [
+                {
+                  "id": "fpoxI",
+                  "type": "ref",
+                  "ref": "ds:ButtonIcon",
+                  "name": "cancel",
+                  "descendants": {
+                    "ds:btn-icon-glyph": {
+                      "library": "lucide",
+                      "icon": "x"
+                    }
+                  }
+                },
+                {
+                  "id": "Y5IB9D",
+                  "type": "ref",
+                  "ref": "ds:ButtonPrimary",
+                  "name": "save",
+                  "descendants": {
+                    "ds:btn-action-icon": {
+                      "library": "lucide",
+                      "icon": "save"
+                    },
+                    "ds:btn-action-text": {
+                      "content": "Сохранить"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "imports": {
+    "ds": "design-system.lib.pen"
+  },
+  "fileToken": "2d73d7ab-6c04-46d2-8915-5af5ee60bda2"
+}
