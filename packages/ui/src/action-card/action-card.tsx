@@ -24,7 +24,7 @@ export const ActionCard = ({
   ...restProps
 }: ActionCardProps) => (
   <div className={joinCss(css.item, className)} {...restProps}>
-    <IconChip glyph={glyph} iconSize={24} size={48} tone={tone} />
+    <IconChip glyph={glyph} iconSize={20} size={40} tone={tone} />
     <span className={css.text}>
       <span className={css.title}>{title}</span>
       <span className={css.description}>{description}</span>

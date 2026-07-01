@@ -7,15 +7,15 @@
   align-items: flex-start;
   background: var(--tone-bg);
   border: 2px solid transparent;
-  border-radius: var(--radius-22);
+  border-radius: 22px;
   color: var(--foreground);
   cursor: pointer;
   display: flex;
   flex-direction: column;
   font-family: inherit;
-  gap: var(--spacing-14);
+  gap: 14px;
   min-height: 55px;
-  padding: var(--spacing-base);
+  padding: 16px;
   text-align: left;
   transition: border-color 0.15s ease;
   width: 100%;
@@ -60,23 +60,23 @@
 .info {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xs);
+  gap: 2px;
 }
 
 .title {
-  font-size: var(--font-size-md);
+  font-size: 16px;
   font-weight: 700;
 }
 
 .description {
   color: var(--foreground);
-  font-size: var(--font-size-13);
+  font-size: 13px;
   font-weight: 500;
   opacity: 0.6;
 }
 
 .check {
-  @include chip(24px, var(--radius-circle));
+  @include chip(24px, 180px);
 
   background: var(--tone-fg);
   color: var(--surface);

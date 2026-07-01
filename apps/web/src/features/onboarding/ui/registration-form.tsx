@@ -121,6 +121,12 @@ export const RegistrationForm = () => {
         )}
       </form.Field>
 
+      <InfoCallout icon='shield-check'>
+        Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только
+        администрация — для быстрой связи в экстренных случаях (затопление,
+        пожар).
+      </InfoCallout>
+
       <div className={css.section}>
         <SectionHeader title='Выберите блок' />
         <form.Field name='block'>
@@ -195,11 +201,6 @@ export const RegistrationForm = () => {
         </form.Field>
       </div>
 
-      <InfoCallout icon='shield-check'>
-        Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только
-        администрация — для быстрой связи в экстренных случаях (затопление,
-        пожар).
-      </InfoCallout>
       <InfoCallout icon='shield-check'>
         <span ref={recaptchaRef} />
         <a

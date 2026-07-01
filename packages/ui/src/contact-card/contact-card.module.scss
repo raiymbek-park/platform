@@ -3,41 +3,41 @@
 .contact {
   align-items: center;
   display: flex;
-  gap: var(--spacing-12);
+  gap: 12px;
   justify-content: space-between;
-  padding: var(--spacing-md) 0;
+  padding: 10px 0;
 }
 
 .left {
   align-items: center;
   display: flex;
-  gap: var(--spacing-12);
+  gap: 12px;
 }
 
 .text {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2xs);
+  gap: 2px;
 }
 
 .name {
   color: var(--foreground);
-  font-size: var(--font-size-base);
+  font-size: 14px;
   font-weight: 700;
 }
 
 .role {
   color: var(--foreground);
-  font-size: var(--font-size-13);
+  font-size: 13px;
   font-weight: 500;
   opacity: 0.6;
 }
 
 .call {
-  @include chip(40px, var(--radius-circle));
+  @include chip(40px, 180px);
 
   background: var(--action);
-  box-shadow: 0 4px 10px color-mix(in srgb, var(--action) 50%, transparent);
+  box-shadow: 0 4px 20px var(--shadow);
   color: var(--surface);
   flex-shrink: 0;
 }

@@ -8,7 +8,7 @@ export const NotFoundPage = () => {
 
   return (
     <>
-      <ScreenHeader hasSwitcher={false} />
+      <ScreenHeader />
       <Content>
         <HeroImage src='images/not-found.png' />
         <div className={css.heading}>

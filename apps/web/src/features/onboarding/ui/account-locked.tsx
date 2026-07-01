@@ -44,8 +44,7 @@ export const AccountLocked = () => {
       )}
 
       <Button
-        icon='arrow-right'
-        iconPosition='right'
+        icon='refresh-cw'
         isLoading={sendVerification.isPending}
         onClick={retry}
       >

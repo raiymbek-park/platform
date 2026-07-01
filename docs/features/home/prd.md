@@ -45,9 +45,9 @@ derived from their session.
     chosen at random from a set of friendly variants. Events come from the API.
   - **Services Section** — titled section ("Сервисы") of **five** fixed service items defined in the
     web app (a static catalog, not from the API), each with icon, title, and description:
-    **Объявления** (opens the in-app `/announcements` screen, same tab), **Быстрая заявка**, **Заявка
-    с медиа**, **Статус заявки**, and **Чат дома в WhatsApp** (each opens its external URL — Google
-    Form, Trello board, or WhatsApp group — in a new browser tab).
+    **Объявления** and **Создать объявление** (both open the in-app `/announcements` screen, same
+    tab), and **Создать заявку**, **Статус заявки**, and **Чат дома в WhatsApp** (each opens its
+    external URL — Google Form, Trello board, or WhatsApp group — in a new browser tab).
   - **Contacts Section** — "Аварийные контакты" card listing emergency / service contacts (name, role,
     icon, phone number), divider-separated, from the API. **Tapping a contact opens the phone dialer**
     with that number (native `tel:` call on mobile).

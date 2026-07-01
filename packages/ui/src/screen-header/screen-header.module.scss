@@ -4,7 +4,7 @@
   display: flex;
   justify-content: space-between;
   min-height: 64px;
-  padding: 0 var(--spacing-20);
+  padding: 0 20px;
   position: sticky;
   top: 0;
   z-index: 1;
@@ -13,38 +13,11 @@
 .logo {
   align-items: center;
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 8px;
 }
 
 .brand {
   color: var(--foreground);
-  font-size: var(--font-size-17);
+  font-size: 17px;
   font-weight: 800;
-}
-
-.switcher {
-  background: var(--surface);
-  border-radius: var(--radius-round);
-  box-shadow: 0 2px 6px color-mix(in srgb, var(--foreground) 8%, transparent);
-  display: flex;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-5) var(--spacing-6);
-}
-
-.chip {
-  background: transparent;
-  border: 0;
-  border-radius: var(--radius-round);
-  color: var(--text-muted);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: var(--font-size-13);
-  font-weight: 700;
-  min-height: 30px;
-  padding: var(--spacing-2xs) var(--spacing-md);
-
-  &-is-active {
-    background: var(--action);
-    color: var(--action-foreground);
-  }
 }
