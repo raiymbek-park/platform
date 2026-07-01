@@ -2,29 +2,29 @@
   align-items: center;
   background: var(--action);
   border: 0;
-  border-radius: var(--radius-18);
-  box-shadow: 0 10px 20px color-mix(in srgb, var(--action) 50%, transparent);
-  color: var(--action-foreground);
+  border-radius: 18px;
+  box-shadow: 0 4px 20px var(--shadow);
+  color: var(--surface);
   cursor: pointer;
   display: inline-flex;
   font-family: inherit;
-  font-size: var(--font-size-base);
+  font-size: 16px;
   font-weight: 700;
-  gap: var(--spacing-sm);
+  gap: 8px;
   justify-content: center;
   min-height: 58px;
-  padding: 0 var(--spacing-lg);
+  padding: 0 24px;
   transition: background 0.15s ease;
 
   &:active {
     background: var(--action-strong);
-    box-shadow: 0 4px 10px color-mix(in srgb, var(--action) 50%, transparent);
+    box-shadow: 0 4px 20px var(--shadow);
   }
 
   &:disabled {
     background: var(--disabled-surface);
     box-shadow: none;
-    color: var(--disabled-foreground);
+    color: var(--text-secondary);
     cursor: not-allowed;
   }
 
@@ -38,7 +38,7 @@
 
   &-variant-secondary {
     background: var(--surface);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--shadow) 6%, transparent);
+    box-shadow: 0 4px 20px var(--shadow);
     color: var(--foreground);
 
     &:active {
@@ -49,7 +49,7 @@
 
   &-variant-icon {
     background: var(--surface);
-    box-shadow: 0 4px 12px color-mix(in srgb, var(--shadow) 6%, transparent);
+    box-shadow: 0 4px 20px var(--shadow);
     color: var(--foreground);
     min-height: 58px;
     padding: 0;
