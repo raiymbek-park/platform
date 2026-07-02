@@ -56,24 +56,23 @@ const toTags = (value: unknown): ClassificationTag[] =>
     ? classificationTags.filter(tag => value.includes(tag))
     : []
 
+const isReactionKind = (kind: string): kind is ReactionKind =>
+  reactionKinds.some(x => x === kind)
+
 const toReactions = (value: unknown): Record<string, ReactionKind> => {
   if (typeof value !== 'object' || value === null) return {}
   return Object.fromEntries(
     Object.entries(value).flatMap(([uid, kind]) =>
-      reactionKinds.some(k => k === kind) ? [[uid, kind as ReactionKind]] : [],
+      isReactionKind(kind) ? [[uid, kind]] : [],
     ),
   )
 }
 
-const toAuthor = (value: unknown): IssueAuthor => {
-  const author = typeof value === 'object' && value !== null ? value : {}
-  const data = author as DocumentData
-  return {
-    apartment: toNumber(data.apartment),
-    block: toNumber(data.block),
-    name: toText(data.name),
-  }
-}
+const toAuthor = (data: DocumentData): IssueAuthor => ({
+  apartment: toNumber(data.apartment),
+  block: toNumber(data.block),
+  name: toText(data.name),
+})
 
 const parseIssue = (
   id: string,
@@ -84,8 +83,10 @@ const parseIssue = (
   const kinds = Object.values(reactions)
   const createdAt =
     data.createdAt instanceof Timestamp ? data.createdAt.toMillis() : 0
+  const author =
+    typeof data.author === 'object' && data.author !== null ? data.author : {}
   return {
-    author: toAuthor(data.author),
+    author: toAuthor(author),
     category: toCategory(data.category),
     createdAt,
     description: toText(data.description),

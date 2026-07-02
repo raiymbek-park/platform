@@ -12,6 +12,7 @@ export const IssueSearch = ({ onChange, value }: IssueSearchProps) => {
   const { t } = useLingui()
   return (
     <Input
+      aria-label={t`Поиск по заявкам`}
       data-testid='issue-search'
       icon='search'
       placeholder={t`Поиск по заявкам`}

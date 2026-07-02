@@ -36,6 +36,8 @@
 }
 
 .body {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   color: var(--text-secondary);
   display: -webkit-box;
   font-size: 14px;
@@ -43,8 +45,6 @@
   line-height: 1.5;
   margin: 0;
   overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
 }
 
 .tags {

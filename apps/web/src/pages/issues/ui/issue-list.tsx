@@ -10,8 +10,8 @@ import {
 
 import { matchIssue } from '../model/match-issue'
 import { useIssuesData } from '../model/use-issues-data'
-import { useReaction } from '../model/use-reaction'
 import { useReactionAccess } from '../model/use-reaction-access'
+import { useUpdateIssueReaction } from '../model/use-update-issue-reaction'
 import { IssueCardItem } from './issue-card-item'
 import css from './issue-list.module.scss'
 
@@ -28,7 +28,7 @@ export const IssueList = ({ query, status }: IssueListProps) => {
   const { t } = useLingui()
   const { data, isError, isPending, refetch } = useIssuesData(status)
   const { canReact } = useReactionAccess()
-  const { isReacting, react } = useReaction(status)
+  const { isReacting, react } = useUpdateIssueReaction(status)
 
   if (isPending) {
     return (

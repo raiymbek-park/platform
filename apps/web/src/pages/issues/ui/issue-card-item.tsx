@@ -31,8 +31,6 @@ export const IssueCardItem = ({
       data-testid='issue-card'
       description={issue.description}
       number={`#${issue.number}`}
-      tags={cardTags(issue)}
-      title={issue.title}
       reactions={
         <>
           <Reaction
@@ -51,6 +49,8 @@ export const IssueCardItem = ({
           />
         </>
       }
+      tags={cardTags(issue)}
+      title={issue.title}
     />
   )
 }

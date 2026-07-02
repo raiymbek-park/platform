@@ -25,7 +25,7 @@ const applyReaction = (issue: Issue, kind: ReactionKind): Issue => {
   }
 }
 
-export const useReaction = (status: IssueStatus) => {
+export const useUpdateIssueReaction = (status: IssueStatus) => {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const [pendingIds, setPendingIds] = useState<Set<string>>(new Set())
