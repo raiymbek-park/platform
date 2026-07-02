@@ -655,7 +655,7 @@
                   "name": "swatch",
                   "width": 32,
                   "height": 32,
-                  "fill": "$warning-acent",
+                  "fill": "$warning-accent",
                   "cornerRadius": 8,
                   "stroke": "$border",
                   "strokeWidth": 1
@@ -5955,7 +5955,7 @@
                       "height": 18,
                       "icon": "triangle-alert",
                       "library": "lucide",
-                      "fill": "$warning-acent"
+                      "fill": "$warning-accent"
                     }
                   ]
                 },
@@ -8033,7 +8033,7 @@
       "type": "color",
       "value": "#65a348"
     },
-    "warning-acent": {
+    "warning-accent": {
       "type": "color",
       "value": "#EBB23F"
     },
