@@ -2,10 +2,10 @@
   align-items: center;
   background: var(--surface);
   bottom: -1px;
-  box-shadow: 0 -4px 16px color-mix(in srgb, var(--shadow) 7%, transparent);
+  box-shadow: 0 -4px 16px var(--shadow);
   display: flex;
   justify-content: space-between;
-  padding: var(--spacing-sm) var(--spacing-20);
+  padding: 8px 20px;
   position: sticky;
 }
 

@@ -33,8 +33,8 @@ export const InfoCallout = ({
   <aside className={calloutCss({ variant }, className)} {...restProps}>
     <IconChip
       glyph={icon}
-      iconSize={20}
-      size={36}
+      iconSize={18}
+      size={34}
       surface
       tone={toneByVariant[variant]}
     />

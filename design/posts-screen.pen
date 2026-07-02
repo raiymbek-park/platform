@@ -555,6 +555,10 @@
           "width": "fill_container",
           "height": "fit_content",
           "fill": "$ds:background",
+          "flipX": false,
+          "flipY": false,
+          "x": 0,
+          "y": 570,
           "descendants": {
             "ds:N60p6": {
               "type": "frame",
@@ -562,7 +566,7 @@
               "name": "content",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": "$ds:spacing-base",
+              "gap": 16,
               "padding": [
                 0,
                 20,

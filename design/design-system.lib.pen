@@ -655,7 +655,7 @@
                   "name": "swatch",
                   "width": 32,
                   "height": 32,
-                  "fill": "$warning-acent",
+                  "fill": "$warning-accent",
                   "cornerRadius": 8,
                   "stroke": "$border",
                   "strokeWidth": 1
@@ -4082,7 +4082,7 @@
                   "height": 20,
                   "icon": "chevron-right",
                   "library": "lucide",
-                  "fill": "$text-muted"
+                  "fill": "$inactive"
                 }
               ]
             },
@@ -4197,7 +4197,7 @@
               "id": "Divider",
               "name": "Divider",
               "reusable": true,
-              "fill": "$shadow",
+              "fill": "$background",
               "width": "fill_container",
               "height": 1
             },
@@ -5955,7 +5955,7 @@
                       "height": 18,
                       "icon": "triangle-alert",
                       "library": "lucide",
-                      "fill": "$warning-acent"
+                      "fill": "$warning-accent"
                     }
                   ]
                 },
@@ -7382,8 +7382,8 @@
               "width": "fill_container",
               "padding": [
                 10,
-                "$spacing-base",
-                "$spacing-base",
+                16,
+                16,
                 16
               ],
               "descendants": {
@@ -7678,7 +7678,7 @@
                   "height": 22,
                   "icon": "megaphone",
                   "library": "lucide",
-                  "fill": "$text-muted"
+                  "fill": "$inactive"
                 }
               ]
             }
@@ -7765,7 +7765,7 @@
             0
           ],
           "layout": "vertical",
-          "gap": "$spacing-base",
+          "gap": 16,
           "padding": [
             8,
             0,
@@ -7800,7 +7800,7 @@
               "width": "fill_container",
               "height": "fit_content(0)",
               "layout": "vertical",
-              "gap": "$spacing-base"
+              "gap": 16
             }
           ]
         },
@@ -8029,17 +8029,17 @@
       "type": "color",
       "value": "#181C2180"
     },
-    "spacing-base": {
-      "type": "number",
-      "value": 16
-    },
     "brand-text": {
       "type": "color",
       "value": "#65a348"
     },
-    "warning-acent": {
+    "warning-accent": {
       "type": "color",
       "value": "#EBB23F"
+    },
+    "inactive": {
+      "type": "color",
+      "value": "#a0a4ad"
     }
   },
   "fileToken": "3bc17594-0cd6-4a9d-bbca-68f7f4ea2aee"

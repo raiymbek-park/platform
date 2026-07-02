@@ -1,13 +1,12 @@
 .hero {
   align-items: flex-end;
-  background-color: var(--background);
+  background-color: var(--disabled-surface);
   background-image: url('/images/building.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;
-  height: 45vh;
-  min-height: 400px;
+  height: 392px;
   overflow: hidden;
-  padding: var(--spacing-20);
+  padding: 20px;
 }

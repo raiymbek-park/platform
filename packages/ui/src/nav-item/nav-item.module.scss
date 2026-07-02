@@ -1,9 +1,9 @@
 @use '../mixins' as *;
 
 .nav {
-  @include chip(46px, var(--radius-14));
+  @include chip(46px, 14px);
 
-  color: var(--text-muted);
+  color: var(--inactive);
 
   &-is-active {
     background: var(--brand-soft);

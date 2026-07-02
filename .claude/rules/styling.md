@@ -110,45 +110,63 @@ NEVER use literal color names (`--yellow`, `--green`, `--gray`). Theme switching
 |-------|------|
 | `--background` | App background (deepest layer) |
 | `--surface` | Raised surface (inputs, cards) |
+| `--disabled-surface` | Disabled control surface |
+| `--muted-surface` | Muted / inactive surface |
+| `--border` | Dividers, subtle borders |
 | `--foreground` | High-contrast text/icon |
 | `--text-secondary` | Body text (default reading copy) |
 | `--text-muted` | Tertiary text/icons (de-emphasized) |
-| `--border` | Dividers, subtle borders |
-| `--outline` | Strong stroke / icon outline |
-| `--scrim` | Heavy translucent overlay |
-| `--scrim-soft` | Light translucent overlay |
+| `--shadow` | Elevation shadow color (translucent — use directly, don't `color-mix`) |
+| `--scrim` | Translucent overlay |
 | `--action` | Primary action / CTA |
-| `--brand` | Brand accent (splash, hero) |
-| `--success` | Success state |
+| `--action-strong` | Pressed / active action |
+| `--brand` | Brand accent (splash, hero, success) |
+| `--brand-soft` | Soft brand surface |
+| `--brand-subtle` | Subtle brand surface |
+| `--brand-text` | Brand-colored text |
+| `--info` | Informational accent |
+| `--info-soft` | Soft info surface |
+| `--accent` | Secondary accent |
+| `--accent-soft` | Soft accent surface |
 | `--danger` | Error / destructive state |
-| `--link` | Hyperlink |
+| `--danger-soft` | Soft danger surface |
+| `--warning` | Warning state |
+| `--warning-soft` | Soft warning surface |
+| `--warning-accent` | Warning accent |
 
-### Sizing tokens — literal scales
+### Sizing — literal values, not tokens
 
-Sizing tokens describe magnitude, not role — they don't change with theme.
+Sizing does not use tokens at all. The design authors font sizes, radii, icon/avatar
+sizes, and all spacing as raw per-component measurements, so the code does the same: write
+the literal `px` value in the component SCSS module that needs it.
 
-- **Spacing** — `--spacing-{2xs,xs,sm,md,base,lg,xl}` (2, 4, 8, 10, 16, 24, 32 px) — for `padding`, `gap`, `margin`
-- **Font sizes** — `--font-size-{13,base,15,md,17,lg,22,xl,26,2xl}` (13, 14, 15, 16, 17, 20, 22, 24, 26, 28 px). **13px is the floor — never render text below it.** There is no token under 13px; don't reintroduce one or hardcode a smaller literal.
-- **Icon sizes** — `--icon-{sm,md,base,lg,xl}` (14, 16, 18, 20, 24 px) — atomic icon dimensions
-- **Avatar sizes** — `--avatar-{sm,md,lg}` (40, 45, 55 px) — atomic avatar dimensions
-- **Border radius** — `--radius-{sm,md,lg,round,circle}` (3, 6, 16, 30, 180 px)
+**There are no numeric tokens.** Every spacing, font size, radius, and icon/avatar size —
+including the base 16px rhythm — is a literal.
+
+- **Font sizes** — literal `px` (e.g. `font-size: 15px`). **13px is the floor — never render text below it.**
+- **Border radius** — literal `px` (e.g. `border-radius: 18px`).
+- **Icon / avatar sizes** — literal `px` on the icon/avatar box.
+- **Spacing** — literal `px` (e.g. `padding: 16px`, `gap: 8px`).
+
+There are no `--spacing-*`, `--font-size-*`, `--radius-*`, `--icon-*`, or `--avatar-*`
+tokens. Do not reintroduce them.
 
 ### Token consumption rules
 
 **Always use tokens for:**
 - Colors (background, color, border, fill, stroke) — never literal hex
-- Spacing values (padding, gap, margin) — never literal px
-- Font sizes
-- Border radii
-- Icon and avatar atomic sizes (width/height of icons and avatars themselves)
+- Elevation shadows — `var(--shadow)` used directly (the token is already translucent; never `color-mix` it down to a percentage)
+
+Tokens are **colors only** (plus the `--shadow` color).
 
 **Use literal values for:**
-- Component layout dimensions (`min-height`, `height`, `width` on buttons, inputs, rows, etc.). These describe one component's box, not a shared scale, so a token would be a false abstraction.
+- All sizing — spacing, font sizes, border radii, icon/avatar sizes — write the literal `px`.
+- Component layout dimensions (`min-height`, `height`, `width` on buttons, inputs, rows, etc.). These describe one component's box, not a shared scale.
 - One-off geometry (an offset, a stroke width, a clip rectangle) — write the literal.
 
-If a layout dimension repeats across many components and needs to stay in lockstep, _then_ promote it to a token. Don't pre-tokenize a height "just in case" — the cost of changing a literal in one file is low; the cost of a misnamed catch-all token (`--component-height`) is high.
-
-If a needed colour/spacing value isn't a token, propose a new token or derive from existing tokens (e.g., `calc(var(--spacing-base) * 1.5)`). Custom one-off color or spacing values are a code smell — surface in review.
+If a needed colour isn't a token, propose a new semantic token or derive from existing
+tokens. Custom one-off **color** values are a code smell — surface in review. Literal
+**sizing** values are expected and fine.
 
 ## Global SCSS Scope
 
@@ -189,7 +207,8 @@ Default rule: use `100svh` for splash screens, modals, and full-viewport overlay
 ## Forbidden
 
 - Hardcoded hex colors in component styles → use semantic color tokens
-- Hardcoded spacing values (padding, gap, margin) in component styles → use `--spacing-*` tokens
+- Reintroducing any sizing token (`--spacing-*`, `--font-size-*`, `--radius-*`, `--icon-*`, `--avatar-*`) → write the literal `px`; tokens are colors only
+- `color-mix(... var(--shadow) N% ...)` → the shadow token is already translucent; use `var(--shadow)` directly
 - Literal color names in tokens (`--yellow`, `--green`) → use semantic names
 - Catch-all dimension tokens that span unrelated components (`--component-height`, `--input-and-button-height`) → declare the literal `min-height` per component
 - Element-level styling in `app.scss` → use component modules

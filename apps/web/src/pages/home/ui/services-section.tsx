@@ -38,23 +38,15 @@ export const ServicesSection = () => (
           description='Новости и уведомления от УК'
           glyph='megaphone'
           title='Объявления'
-          tone='danger'
+          tone='accent'
         />
       </ServiceLink>
       <ServiceLink url='https://forms.gle/TEQ88tykp8K2MjfQ9'>
         <ActionCard
-          description='Подать обращение без регистрации'
-          glyph='zap'
-          title='Быстрая заявка'
+          description='Подайте обращение в УК'
+          glyph='clipboard-list'
+          title='Создать заявку'
           tone='brand'
-        />
-      </ServiceLink>
-      <ServiceLink url='https://forms.gle/dPdJYfFpQic2r6YS8'>
-        <ActionCard
-          description='Опишите проблему с фото или видео'
-          glyph='camera'
-          title='Заявка с медиа'
-          tone='info'
         />
       </ServiceLink>
       <ServiceLink url='https://trello.com/b/O9Sh7i6z'>
@@ -62,7 +54,15 @@ export const ServicesSection = () => (
           description='Отслеживайте ход ваших обращений'
           glyph='list-checks'
           title='Статус заявки'
-          tone='accent'
+          tone='warning'
+        />
+      </ServiceLink>
+      <ServiceLink url='/announcements'>
+        <ActionCard
+          description='У вас есть предложение или поиск, пишите сюда'
+          glyph='shopping-bag'
+          title='Создать объявление'
+          tone='info'
         />
       </ServiceLink>
       <ServiceLink url='https://chat.whatsapp.com/C9lxfazl3TH73LW7QtE2HI'>

@@ -1,16 +1,16 @@
 .card {
   background: var(--brand-subtle);
-  border-radius: var(--radius-28);
-  color: var(--brand-text);
+  border-radius: 28px;
+  color: var(--text-secondary);
   display: flex;
   flex-direction: column;
-  font-size: var(--font-size-13);
+  font-size: 13px;
   font-weight: 500;
-  gap: var(--spacing-md);
+  gap: 10px;
   isolation: isolate;
   line-height: 1.5;
   overflow: hidden;
-  padding: var(--spacing-22);
+  padding: 22px;
   position: relative;
 
   &::before,
@@ -42,7 +42,7 @@
 
 .title {
   color: var(--foreground);
-  font-size: var(--font-size-22);
+  font-size: 22px;
   font-weight: 800;
   margin: 0;
   position: relative;

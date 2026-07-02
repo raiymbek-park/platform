@@ -8,9 +8,9 @@
   cursor: pointer;
   display: flex;
   font-family: inherit;
-  gap: var(--spacing-12);
+  gap: 12px;
   justify-content: space-between;
-  padding: var(--spacing-md) 0;
+  padding: 10px 0;
   text-align: left;
   width: 100%;
 
@@ -24,23 +24,23 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: var(--spacing-2xs);
+  gap: 2px;
 }
 
 .label {
-  font-size: var(--font-size-base);
+  font-size: 14px;
   font-weight: 700;
 }
 
 .subtitle {
   color: var(--foreground);
-  font-size: var(--font-size-13);
+  font-size: 13px;
   font-weight: 500;
   opacity: 0.6;
 }
 
 .mark {
-  @include chip(24px, var(--radius-circle));
+  @include chip(24px, 180px);
 
   background: var(--border);
   color: var(--surface);

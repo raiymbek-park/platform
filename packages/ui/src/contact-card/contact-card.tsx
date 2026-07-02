@@ -25,7 +25,7 @@ export const ContactCard = ({
 }: ContactCardProps) => (
   <div className={joinCss(css.contact, className)} {...restProps}>
     <span className={css.left}>
-      <IconChip glyph={glyph} iconSize={20} size={42} tone={tone} />
+      <IconChip glyph={glyph} iconSize={20} size={40} tone={tone} />
       <span className={css.text}>
         <span className={css.name}>{name}</span>
         <span className={css.role}>{role}</span>

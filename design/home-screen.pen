@@ -7,542 +7,546 @@
       "x": 6723,
       "y": 0,
       "name": "Screens",
+      "enabled": false,
+      "width": "fit_content(844)",
       "height": 2475,
-      "gap": 64,
+      "gap": 64
+    },
+    {
+      "type": "frame",
+      "id": "eZlMS",
+      "x": 7177,
+      "y": 0,
+      "name": "Not Found",
+      "clip": true,
+      "width": 390,
+      "height": 842,
+      "fill": "$ds:background",
+      "layout": "vertical",
       "children": [
         {
+          "id": "FIS1H",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
           "type": "frame",
-          "id": "cPTgr",
-          "name": "Home",
-          "clip": true,
-          "width": 390,
-          "fill": "$ds:background",
+          "id": "wSjsT",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
           "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
           "children": [
             {
-              "id": "Y4Ixih",
-              "type": "ref",
-              "ref": "ds:ScreenHeader",
-              "name": "Header"
-            },
-            {
               "type": "frame",
-              "id": "tzOBB",
-              "name": "Building Hero",
+              "id": "x4JLq",
+              "name": "Illustration",
               "clip": true,
               "width": "fill_container",
-              "height": 392,
-              "fill": [
-                "#E3E5E8",
-                {
-                  "type": "image",
-                  "enabled": true,
-                  "url": "images/building.png",
-                  "mode": "fill"
-                }
-              ],
-              "layout": "vertical",
-              "padding": 20,
-              "justifyContent": "end",
-              "children": [
-                {
-                  "id": "OZzqx",
-                  "type": "ref",
-                  "ref": "ds:LocationBadge",
-                  "name": "Location Badge",
-                  "justifyContent": "start",
-                  "alignItems": "center",
-                  "descendants": {
-                    "ds:location-text": {
-                      "content": "Блок 1 · Квартира 64"
-                    }
-                  }
-                }
-              ]
+              "height": 298,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/not-found.png",
+                "mode": "fill"
+              },
+              "cornerRadius": 24,
+              "justifyContent": "center",
+              "alignItems": "center"
             },
             {
               "type": "frame",
-              "id": "EweCS",
-              "name": "Content",
+              "id": "I0QYw7",
+              "name": "Heading",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": 24,
-              "padding": 20,
+              "gap": 6,
+              "alignItems": "center",
               "children": [
                 {
-                  "id": "pkXLY",
+                  "id": "G4udg",
                   "type": "ref",
-                  "ref": "ds:HeroCard",
-                  "name": "hero-card",
-                  "descendants": {
-                    "ds:welcome-title": {
-                      "content": "Привет, Киану! 👋"
-                    },
-                    "ds:welcome-body": {
-                      "type": "frame",
-                      "id": "welcome-body-content",
-                      "name": "content",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 14,
-                      "children": [
-                        {
-                          "id": "HlpYm",
-                          "type": "ref",
-                          "ref": "ds:TextCaption",
-                          "name": "Sub",
-                          "content": "За время вашего отсутствия появились изменения:",
-                          "fill": "$ds:foreground",
-                          "width": "fill_container",
-                          "textGrowth": "fixed-width"
-                        },
-                        {
-                          "type": "frame",
-                          "id": "lIi4N",
-                          "name": "announcements",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 8,
-                          "children": [
-                            {
-                              "id": "VsNmO",
-                              "type": "ref",
-                              "ref": "ds:AnnouncementSummary",
-                              "name": "announcement",
-                              "descendants": {
-                                "ds:change-text": {
-                                  "content": "3 новых объявления от УК"
-                                }
-                              }
-                            },
-                            {
-                              "id": "d3UxXE",
-                              "type": "ref",
-                              "ref": "ds:AnnouncementSummary",
-                              "name": "announcement",
-                              "descendants": {
-                                "ds:change-icon-wrap": {
-                                  "fill": "$ds:brand-soft"
-                                },
-                                "ds:change-icon": {
-                                  "icon": "clipboard-check",
-                                  "fill": "$ds:brand"
-                                },
-                                "ds:change-text": {
-                                  "content": "Заявка №142 выполнена"
-                                }
-                              }
-                            },
-                            {
-                              "id": "nvXA6",
-                              "type": "ref",
-                              "ref": "ds:AnnouncementSummary",
-                              "name": "announcement",
-                              "descendants": {
-                                "ds:change-icon-wrap": {
-                                  "fill": "$ds:info-soft"
-                                },
-                                "ds:change-icon": {
-                                  "icon": "droplet-off",
-                                  "fill": "$ds:info"
-                                },
-                                "ds:change-text": {
-                                  "content": "Плановое отключение воды 20 июня"
-                                }
-                              }
-                            }
-                          ]
-                        }
-                      ]
-                    }
-                  }
-                },
-                {
-                  "type": "frame",
-                  "id": "Pw0L4",
-                  "name": "Services Section",
+                  "ref": "ds:TextTitle",
+                  "name": "Title",
+                  "content": "Страница не найдена",
                   "width": "fill_container",
-                  "layout": "vertical",
-                  "gap": 14,
-                  "children": [
-                    {
-                      "id": "Ia1Ba",
-                      "type": "ref",
-                      "ref": "ds:Section",
-                      "name": "Section Header",
-                      "gap": 6,
-                      "descendants": {
-                        "ds:section-title": {
-                          "id": "svc-hdr-title",
-                          "type": "ref",
-                          "ref": "ds:TextHeading",
-                          "name": "title",
-                          "content": "Сервисы"
-                        },
-                        "ds:section-content": {
-                          "content": "Заявки, объявления и связь с управляющей компанией",
-                          "fontSize": 14,
-                          "fill": "$ds:text-secondary",
-                          "width": "fill_container",
-                          "textGrowth": "fixed-width",
-                          "height": "fit_content(17)"
-                        }
-                      }
-                    },
-                    {
-                      "type": "frame",
-                      "id": "M1T7gD",
-                      "name": "Services List",
-                      "width": "fill_container",
-                      "layout": "vertical",
-                      "gap": 12,
-                      "children": [
-                        {
-                          "id": "KjoZl",
-                          "type": "ref",
-                          "ref": "ds:ServiceCard",
-                          "name": "service-announcements",
-                          "descendants": {
-                            "ds:svc-title": {
-                              "content": "Объявления"
-                            },
-                            "ds:svc-desc": {
-                              "content": "Новости и уведомления от УК"
-                            }
-                          }
-                        },
-                        {
-                          "id": "dz8Zy",
-                          "type": "ref",
-                          "ref": "ds:ServiceCard",
-                          "name": "service-quick-request",
-                          "descendants": {
-                            "ds:svc-icon-wrap": {
-                              "fill": "$ds:brand-soft"
-                            },
-                            "ds:svc-icon": {
-                              "icon": "clipboard-list",
-                              "fill": "$ds:brand",
-                              "library": "lucide"
-                            },
-                            "ds:svc-title": {
-                              "content": "Создать заявку"
-                            },
-                            "ds:svc-desc": {
-                              "content": "Подайте обращение в УК"
-                            }
-                          }
-                        },
-                        {
-                          "id": "YPKl4",
-                          "type": "ref",
-                          "ref": "ds:ServiceCard",
-                          "name": "service-request-status",
-                          "descendants": {
-                            "ds:svc-icon-wrap": {
-                              "fill": "$ds:warning-soft"
-                            },
-                            "ds:svc-icon": {
-                              "icon": "list-checks",
-                              "fill": "$ds:warning"
-                            },
-                            "ds:svc-title": {
-                              "content": "Статус заявки"
-                            },
-                            "ds:svc-desc": {
-                              "content": "Отслеживайте ход ваших обращений"
-                            }
-                          }
-                        },
-                        {
-                          "id": "toGCI",
-                          "type": "ref",
-                          "ref": "ds:ServiceCard",
-                          "name": "service-media-request",
-                          "descendants": {
-                            "ds:svc-icon-wrap": {
-                              "fill": "$ds:info-soft"
-                            },
-                            "ds:svc-icon": {
-                              "icon": "shopping-bag",
-                              "fill": "$ds:action",
-                              "library": "lucide"
-                            },
-                            "ds:svc-title": {
-                              "content": "Создать объявление"
-                            },
-                            "ds:svc-desc": {
-                              "content": "У вас есть предложение или поиск, пишите сюда"
-                            }
-                          }
-                        },
-                        {
-                          "id": "peUH8",
-                          "type": "ref",
-                          "ref": "ds:ServiceCard",
-                          "name": "service-whatsapp-chat",
-                          "descendants": {
-                            "ds:svc-icon-wrap": {
-                              "fill": "$ds:brand-soft"
-                            },
-                            "ds:svc-icon": {
-                              "icon": "message-circle",
-                              "fill": "$ds:brand"
-                            },
-                            "ds:svc-title": {
-                              "content": "Чат дома в WhatsApp"
-                            },
-                            "ds:svc-desc": {
-                              "content": "Вступить в общий чат жильцов"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  ]
+                  "textAlign": "center",
+                  "textGrowth": "fixed-width"
                 },
                 {
-                  "id": "LSytc",
+                  "id": "NiPSe",
                   "type": "ref",
-                  "ref": "ds:Section",
-                  "name": "Contacts Section",
-                  "gap": 14,
-                  "descendants": {
-                    "ds:section-title": {
-                      "content": "Аварийные контакты"
-                    },
-                    "ds:section-content": {
-                      "type": "frame",
-                      "id": "P7kn4",
-                      "name": "Contacts Card",
-                      "width": "fill_container",
-                      "fill": "$ds:surface",
-                      "cornerRadius": 24,
-                      "effect": {
-                        "type": "shadow",
-                        "shadowType": "outer",
-                        "color": "$ds:shadow",
-                        "offset": {
-                          "x": 0,
-                          "y": 4
-                        },
-                        "blur": 20
-                      },
-                      "layout": "vertical",
-                      "gap": 6,
-                      "padding": [
-                        10,
-                        16
-                      ],
-                      "children": [
-                        {
-                          "id": "e0vxlS",
-                          "type": "ref",
-                          "ref": "ds:ContactCard",
-                          "name": "Contact Управление",
-                          "descendants": {
-                            "ds:contact-name": {
-                              "content": "Джонни Депп"
-                            },
-                            "ds:contact-role": {
-                              "content": "Управление"
-                            }
-                          }
-                        },
-                        {
-                          "id": "MTxcJ",
-                          "type": "ref",
-                          "ref": "ds:Divider",
-                          "name": "Divider"
-                        },
-                        {
-                          "id": "U1Ibx",
-                          "type": "ref",
-                          "ref": "ds:ContactCard",
-                          "name": "Contact Охрана",
-                          "descendants": {
-                            "ds:contact-icon-wrap": {
-                              "fill": "$ds:danger-soft"
-                            },
-                            "ds:contact-icon": {
-                              "icon": "shield",
-                              "fill": "$ds:danger"
-                            },
-                            "ds:contact-name": {
-                              "content": "Джеки Чан"
-                            },
-                            "ds:contact-role": {
-                              "content": "Охрана"
-                            }
-                          }
-                        },
-                        {
-                          "id": "CNIat",
-                          "type": "ref",
-                          "ref": "ds:Divider",
-                          "name": "Divider"
-                        },
-                        {
-                          "id": "d71uNO",
-                          "type": "ref",
-                          "ref": "ds:ContactCard",
-                          "name": "Contact Электрик",
-                          "descendants": {
-                            "ds:contact-icon-wrap": {
-                              "fill": "$ds:warning-soft"
-                            },
-                            "ds:contact-icon": {
-                              "icon": "zap",
-                              "fill": "$ds:warning"
-                            },
-                            "ds:contact-name": {
-                              "content": "Сергей Сыроежкин"
-                            },
-                            "ds:contact-role": {
-                              "content": "Электрик"
-                            }
-                          }
-                        },
-                        {
-                          "id": "BQslk",
-                          "type": "ref",
-                          "ref": "ds:Divider",
-                          "name": "Divider"
-                        },
-                        {
-                          "id": "pQcu7",
-                          "type": "ref",
-                          "ref": "ds:ContactCard",
-                          "name": "Contact Сантехник",
-                          "descendants": {
-                            "ds:contact-icon-wrap": {
-                              "fill": "$ds:info-soft"
-                            },
-                            "ds:contact-icon": {
-                              "icon": "droplets",
-                              "fill": "$ds:info"
-                            },
-                            "ds:contact-name": {
-                              "content": "Борат Сагдиев"
-                            },
-                            "ds:contact-role": {
-                              "content": "Сантехник"
-                            }
-                          }
-                        }
-                      ]
-                    }
-                  }
+                  "ref": "ds:TextBody",
+                  "name": "Subtitle",
+                  "content": "Запрашиваемая страница не существует или была перемещена. Проверьте адрес или вернитесь на главную.",
+                  "width": "fill_container",
+                  "textAlign": "center",
+                  "textGrowth": "fixed-width"
                 }
               ]
             },
             {
-              "id": "home-nav",
+              "id": "pL1Dg",
               "type": "ref",
-              "ref": "ds:BottomNav",
-              "name": "Bottom Nav",
-              "width": "fill_container"
+              "ref": "ds:Spacer",
+              "name": "Spacer"
+            },
+            {
+              "id": "fQij6",
+              "type": "ref",
+              "ref": "ds:ButtonPrimary",
+              "name": "Home Button",
+              "descendants": {
+                "ds:btn-action-icon": {
+                  "library": "lucide",
+                  "icon": "house"
+                },
+                "ds:btn-action-text": {
+                  "content": "На главную"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "cPTgr",
+      "x": 6723,
+      "y": 0,
+      "name": "Home",
+      "clip": true,
+      "width": 390,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "Y4Ixih",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "tzOBB",
+          "name": "Building Hero",
+          "clip": true,
+          "width": "fill_container",
+          "height": 392,
+          "fill": [
+            "#E3E5E8",
+            {
+              "type": "image",
+              "enabled": true,
+              "url": "images/building.png",
+              "mode": "fill"
+            }
+          ],
+          "layout": "vertical",
+          "padding": 20,
+          "justifyContent": "end",
+          "children": [
+            {
+              "id": "OZzqx",
+              "type": "ref",
+              "ref": "ds:LocationBadge",
+              "name": "Location Badge",
+              "justifyContent": "start",
+              "alignItems": "center",
+              "descendants": {
+                "ds:location-text": {
+                  "content": "Блок 1 · Квартира 64"
+                }
+              }
             }
           ]
         },
         {
           "type": "frame",
-          "id": "eZlMS",
-          "name": "Not Found",
-          "clip": true,
-          "width": 390,
-          "height": 842,
-          "fill": "$ds:background",
+          "id": "EweCS",
+          "name": "Content",
+          "width": "fill_container",
           "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
           "children": [
             {
-              "id": "FIS1H",
+              "id": "pkXLY",
               "type": "ref",
-              "ref": "ds:ScreenHeader",
-              "name": "Header"
+              "ref": "ds:HeroCard",
+              "name": "hero-card",
+              "descendants": {
+                "ds:welcome-title": {
+                  "content": "Привет, Киану! 👋"
+                },
+                "ds:welcome-body": {
+                  "type": "frame",
+                  "id": "welcome-body-content",
+                  "name": "content",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 14,
+                  "children": [
+                    {
+                      "id": "HlpYm",
+                      "type": "ref",
+                      "ref": "ds:TextCaption",
+                      "name": "Sub",
+                      "content": "За время вашего отсутствия появились изменения:",
+                      "fill": "$ds:foreground",
+                      "width": "fill_container",
+                      "textGrowth": "fixed-width"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lIi4N",
+                      "name": "announcements",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "id": "VsNmO",
+                          "type": "ref",
+                          "ref": "ds:AnnouncementSummary",
+                          "name": "announcement",
+                          "descendants": {
+                            "ds:change-text": {
+                              "content": "3 новых объявления от УК"
+                            }
+                          }
+                        },
+                        {
+                          "id": "d3UxXE",
+                          "type": "ref",
+                          "ref": "ds:AnnouncementSummary",
+                          "name": "announcement",
+                          "descendants": {
+                            "ds:change-icon-wrap": {
+                              "fill": "$ds:brand-soft"
+                            },
+                            "ds:change-icon": {
+                              "icon": "clipboard-check",
+                              "fill": "$ds:brand"
+                            },
+                            "ds:change-text": {
+                              "content": "Заявка №142 выполнена"
+                            }
+                          }
+                        },
+                        {
+                          "id": "nvXA6",
+                          "type": "ref",
+                          "ref": "ds:AnnouncementSummary",
+                          "name": "announcement",
+                          "descendants": {
+                            "ds:change-icon-wrap": {
+                              "fill": "$ds:info-soft"
+                            },
+                            "ds:change-icon": {
+                              "icon": "droplet-off",
+                              "fill": "$ds:info"
+                            },
+                            "ds:change-text": {
+                              "content": "Плановое отключение воды 20 июня"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
             },
             {
               "type": "frame",
-              "id": "wSjsT",
-              "name": "Content",
+              "id": "Pw0L4",
+              "name": "Services Section",
               "width": "fill_container",
-              "height": "fill_container",
               "layout": "vertical",
-              "gap": 24,
-              "padding": 20,
+              "gap": 14,
               "children": [
                 {
-                  "type": "frame",
-                  "id": "x4JLq",
-                  "name": "Illustration",
-                  "clip": true,
-                  "width": "fill_container",
-                  "height": 298,
-                  "fill": {
-                    "type": "image",
-                    "enabled": true,
-                    "url": "images/not-found.png",
-                    "mode": "fill"
-                  },
-                  "cornerRadius": 24,
-                  "justifyContent": "center",
-                  "alignItems": "center"
-                },
-                {
-                  "type": "frame",
-                  "id": "I0QYw7",
-                  "name": "Heading",
-                  "width": "fill_container",
-                  "layout": "vertical",
+                  "id": "Ia1Ba",
+                  "type": "ref",
+                  "ref": "ds:Section",
+                  "name": "Section Header",
                   "gap": 6,
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "id": "G4udg",
-                      "type": "ref",
-                      "ref": "ds:TextTitle",
-                      "name": "Title",
-                      "content": "Страница не найдена",
-                      "width": "fill_container",
-                      "textAlign": "center",
-                      "textGrowth": "fixed-width"
-                    },
-                    {
-                      "id": "NiPSe",
-                      "type": "ref",
-                      "ref": "ds:TextBody",
-                      "name": "Subtitle",
-                      "content": "Запрашиваемая страница не существует или была перемещена. Проверьте адрес или вернитесь на главную.",
-                      "width": "fill_container",
-                      "textAlign": "center",
-                      "textGrowth": "fixed-width"
-                    }
-                  ]
-                },
-                {
-                  "id": "pL1Dg",
-                  "type": "ref",
-                  "ref": "ds:Spacer",
-                  "name": "Spacer"
-                },
-                {
-                  "id": "fQij6",
-                  "type": "ref",
-                  "ref": "ds:ButtonPrimary",
-                  "name": "Home Button",
                   "descendants": {
-                    "ds:btn-action-icon": {
-                      "library": "lucide",
-                      "icon": "house"
+                    "ds:section-title": {
+                      "id": "svc-hdr-title",
+                      "type": "ref",
+                      "ref": "ds:TextHeading",
+                      "name": "title",
+                      "content": "Сервисы"
                     },
-                    "ds:btn-action-text": {
-                      "content": "На главную"
+                    "ds:section-content": {
+                      "content": "Заявки, объявления и связь с управляющей компанией",
+                      "fontSize": 14,
+                      "fill": "$ds:text-secondary",
+                      "width": "fill_container",
+                      "textGrowth": "fixed-width",
+                      "height": "fit_content(17)"
                     }
                   }
+                },
+                {
+                  "type": "frame",
+                  "id": "M1T7gD",
+                  "name": "Services List",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "id": "KjoZl",
+                      "type": "ref",
+                      "ref": "ds:ServiceCard",
+                      "name": "service-announcements",
+                      "descendants": {
+                        "ds:svc-title": {
+                          "content": "Объявления"
+                        },
+                        "ds:svc-desc": {
+                          "content": "Новости и уведомления от УК"
+                        }
+                      }
+                    },
+                    {
+                      "id": "dz8Zy",
+                      "type": "ref",
+                      "ref": "ds:ServiceCard",
+                      "name": "service-quick-request",
+                      "descendants": {
+                        "ds:svc-icon-wrap": {
+                          "fill": "$ds:brand-soft"
+                        },
+                        "ds:svc-icon": {
+                          "icon": "clipboard-list",
+                          "fill": "$ds:brand",
+                          "library": "lucide"
+                        },
+                        "ds:svc-title": {
+                          "content": "Создать заявку"
+                        },
+                        "ds:svc-desc": {
+                          "content": "Подайте обращение в УК"
+                        }
+                      }
+                    },
+                    {
+                      "id": "YPKl4",
+                      "type": "ref",
+                      "ref": "ds:ServiceCard",
+                      "name": "service-request-status",
+                      "descendants": {
+                        "ds:svc-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:svc-icon": {
+                          "icon": "list-checks",
+                          "fill": "$ds:warning"
+                        },
+                        "ds:svc-title": {
+                          "content": "Статус заявки"
+                        },
+                        "ds:svc-desc": {
+                          "content": "Отслеживайте ход ваших обращений"
+                        }
+                      }
+                    },
+                    {
+                      "id": "toGCI",
+                      "type": "ref",
+                      "ref": "ds:ServiceCard",
+                      "name": "service-media-request",
+                      "descendants": {
+                        "ds:svc-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:svc-icon": {
+                          "icon": "shopping-bag",
+                          "fill": "$ds:action",
+                          "library": "lucide"
+                        },
+                        "ds:svc-title": {
+                          "content": "Создать объявление"
+                        },
+                        "ds:svc-desc": {
+                          "content": "У вас есть предложение или поиск, пишите сюда"
+                        }
+                      }
+                    },
+                    {
+                      "id": "peUH8",
+                      "type": "ref",
+                      "ref": "ds:ServiceCard",
+                      "name": "service-whatsapp-chat",
+                      "descendants": {
+                        "ds:svc-icon-wrap": {
+                          "fill": "$ds:brand-soft"
+                        },
+                        "ds:svc-icon": {
+                          "icon": "message-circle",
+                          "fill": "$ds:brand"
+                        },
+                        "ds:svc-title": {
+                          "content": "Чат дома в WhatsApp"
+                        },
+                        "ds:svc-desc": {
+                          "content": "Вступить в общий чат жильцов"
+                        }
+                      }
+                    }
+                  ]
                 }
               ]
+            },
+            {
+              "id": "LSytc",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Contacts Section",
+              "gap": 14,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Аварийные контакты"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "P7kn4",
+                  "name": "Contacts Card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    6,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "e0vxlS",
+                      "type": "ref",
+                      "ref": "ds:ContactCard",
+                      "name": "Contact Управление",
+                      "descendants": {
+                        "ds:contact-name": {
+                          "content": "Джонни Депп"
+                        },
+                        "ds:contact-role": {
+                          "content": "Управление"
+                        }
+                      }
+                    },
+                    {
+                      "id": "MTxcJ",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "U1Ibx",
+                      "type": "ref",
+                      "ref": "ds:ContactCard",
+                      "name": "Contact Охрана",
+                      "descendants": {
+                        "ds:contact-icon-wrap": {
+                          "fill": "$ds:danger-soft"
+                        },
+                        "ds:contact-icon": {
+                          "icon": "shield",
+                          "fill": "$ds:danger"
+                        },
+                        "ds:contact-name": {
+                          "content": "Джеки Чан"
+                        },
+                        "ds:contact-role": {
+                          "content": "Охрана"
+                        }
+                      }
+                    },
+                    {
+                      "id": "CNIat",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "d71uNO",
+                      "type": "ref",
+                      "ref": "ds:ContactCard",
+                      "name": "Contact Электрик",
+                      "descendants": {
+                        "ds:contact-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:contact-icon": {
+                          "icon": "zap",
+                          "fill": "$ds:warning"
+                        },
+                        "ds:contact-name": {
+                          "content": "Сергей Сыроежкин"
+                        },
+                        "ds:contact-role": {
+                          "content": "Электрик"
+                        }
+                      }
+                    },
+                    {
+                      "id": "BQslk",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "pQcu7",
+                      "type": "ref",
+                      "ref": "ds:ContactCard",
+                      "name": "Contact Сантехник",
+                      "descendants": {
+                        "ds:contact-icon-wrap": {
+                          "fill": "$ds:info-soft"
+                        },
+                        "ds:contact-icon": {
+                          "icon": "droplets",
+                          "fill": "$ds:info"
+                        },
+                        "ds:contact-name": {
+                          "content": "Борат Сагдиев"
+                        },
+                        "ds:contact-role": {
+                          "content": "Сантехник"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
             }
           ]
+        },
+        {
+          "id": "home-nav",
+          "type": "ref",
+          "ref": "ds:BottomNav",
+          "name": "Bottom Nav",
+          "width": "fill_container"
         }
       ]
     }
