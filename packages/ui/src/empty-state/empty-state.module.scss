@@ -1,0 +1,41 @@
+.empty {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.illustration {
+  background-image: var(--image);
+  background-position: center;
+  background-size: cover;
+  border-radius: 24px;
+  height: 143px;
+  width: 100%;
+}
+
+.heading {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  color: var(--foreground);
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+  text-align: center;
+}
+
+.message {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  text-align: center;
+}

@@ -1,0 +1,22 @@
+.tab {
+  align-items: center;
+  background: var(--surface);
+  border: 0;
+  border-radius: 180px;
+  box-shadow: 0 4px 20px var(--shadow);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  justify-content: center;
+  min-height: 36px;
+  padding: 8px 14px;
+  white-space: nowrap;
+
+  &-is-active {
+    background: var(--action);
+    color: var(--surface);
+  }
+}
