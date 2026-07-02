@@ -56,7 +56,7 @@ msgstr "Введите ваше имя"
 msgid "Введите код из SMS"
 msgstr "Введите код из SMS"
 
-#: src/features/onboarding/lib/validators.ts:17
+#: src/features/onboarding/lib/validators.ts:16
 msgid "Введите номер квартиры"
 msgstr "Введите номер квартиры"
 
@@ -72,12 +72,12 @@ msgstr "Вставить код из буфера"
 msgid "Вступить в общий чат жильцов"
 msgstr "Вступить в общий чат жильцов"
 
-#: src/features/onboarding/lib/validators.ts:29
+#: src/features/onboarding/lib/validators.ts:30
 #: src/features/onboarding/ui/registration-form.tsx:137
 msgid "Выберите блок"
 msgstr "Выберите блок"
 
-#: src/features/onboarding/lib/validators.ts:34
+#: src/features/onboarding/lib/validators.ts:35
 msgid "Выберите роль"
 msgstr "Выберите роль"
 
@@ -141,6 +141,10 @@ msgstr "Заявки, объявления и связь с управляюще
 #: src/features/onboarding/ui/registration-form.tsx:103
 msgid "Имя"
 msgstr "Имя"
+
+#: src/features/onboarding/lib/validators.ts:18
+msgid "Квартира вне диапазона выбранного блока"
+msgstr "Квартира вне диапазона выбранного блока"
 
 #: src/features/onboarding/ui/otp-verification.tsx:98
 msgid "Код подтверждения"
@@ -257,7 +261,7 @@ msgstr "Сервисы"
 msgid "Слишком много попыток. Подождите немного и попробуйте снова."
 msgstr "Слишком много попыток. Подождите немного и попробуйте снова."
 
-#: src/features/onboarding/lib/validators.ts:16
+#: src/features/onboarding/lib/validators.ts:15
 msgid "Сначала выберите блок"
 msgstr "Сначала выберите блок"
 

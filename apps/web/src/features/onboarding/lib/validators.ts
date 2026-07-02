@@ -2,7 +2,6 @@ import type { BlockId } from '@raiymbek-park/shared/validation-schemas'
 
 import { t } from '@lingui/core/macro'
 import {
-  APARTMENT_RANGE_MESSAGE,
   isApartmentInBlock,
   nameSchema,
   phoneSchema,
@@ -15,7 +14,9 @@ export type { Role } from '@raiymbek-park/shared/validation-schemas'
 const apartmentMessage = (block: BlockId | null, apartment: number) => {
   if (block === null) return t`Сначала выберите блок`
   if (Number.isNaN(apartment)) return t`Введите номер квартиры`
-  if (!isApartmentInBlock(block, apartment)) return APARTMENT_RANGE_MESSAGE
+  if (!isApartmentInBlock(block, apartment)) {
+    return t`Квартира вне диапазона выбранного блока`
+  }
   return undefined
 }
 
