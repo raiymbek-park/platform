@@ -436,7 +436,7 @@
                   "layout": "vertical",
                   "gap": 6,
                   "padding": [
-                    10,
+                    6,
                     16
                   ],
                   "children": [
