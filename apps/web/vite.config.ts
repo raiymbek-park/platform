@@ -3,6 +3,8 @@ import type { Plugin } from 'vite'
 import { copyFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
+import { lingui, linguiTransformerBabelPreset } from '@lingui/vite-plugin'
+import babel from '@rolldown/plugin-babel'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -30,6 +32,10 @@ export default defineConfig({
       routeFileIgnorePattern: '\\.test\\.',
     }),
     react(),
+    lingui(),
+    babel({
+      presets: [linguiTransformerBabelPreset()],
+    }),
     emitNotFoundHtml(),
   ],
   resolve: {

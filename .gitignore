@@ -29,3 +29,6 @@ test-results
 .playwright-mcp/
 .stryker-tmp
 **/reports/
+
+# lingui compiled catalogs (Vite compiles .po at runtime; CLI compile output is CI-only)
+apps/web/src/shared/i18n/locales/*/messages.js

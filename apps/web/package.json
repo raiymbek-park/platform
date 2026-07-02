@@ -8,6 +8,8 @@
     "dev": "vite",
     "dev:e2e": "vite --mode e2e",
     "e2e": "codeceptjs run",
+    "i18n:compile": "lingui compile --strict",
+    "i18n:extract": "lingui extract",
     "lint:fsd": "steiger ./src",
     "mutate": "stryker run",
     "preview": "vite preview",
@@ -17,6 +19,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@lingui/core": "6.4.0",
+    "@lingui/react": "6.4.0",
     "@raiymbek-park/api": "*",
     "@raiymbek-park/shared": "*",
     "@raiymbek-park/ui": "*",
@@ -33,6 +37,10 @@
   },
   "devDependencies": {
     "@feature-sliced/steiger-plugin": "0.6.0",
+    "@lingui/babel-plugin-lingui-macro": "6.4.0",
+    "@lingui/cli": "6.4.0",
+    "@lingui/vite-plugin": "6.4.0",
+    "@rolldown/plugin-babel": "0.2.3",
     "@stryker-mutator/core": "9.6.1",
     "@stryker-mutator/vitest-runner": "9.6.1",
     "@tanstack/router-plugin": "1.168.18",
