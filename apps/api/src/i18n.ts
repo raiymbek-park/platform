@@ -18,6 +18,11 @@ const messages = {
     kk: 'Телефон расталмаған',
     en: 'Phone is not verified',
   },
+  reactionForbidden: {
+    ru: 'Недостаточно прав для реакции',
+    kk: 'Реакция қою құқығы жеткіліксіз',
+    en: 'Not allowed to react',
+  },
 } satisfies Record<string, Record<Locale, string>>
 
 const isMessageKey = (key: string): key is keyof typeof messages =>
