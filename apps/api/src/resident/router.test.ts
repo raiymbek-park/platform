@@ -24,14 +24,22 @@ const validInput: z.input<typeof registerInputSchema> = {
 
 describe('residentRouter — Firebase identity gate', () => {
   it('register rejects with UNAUTHORIZED when ctx.uid is null', async () => {
-    const caller = residentRouter.createCaller({ phone: null, uid: null })
+    const caller = residentRouter.createCaller({
+      locale: 'ru',
+      phone: null,
+      uid: null,
+    })
     await expect(caller.register(validInput)).rejects.toMatchObject({
       code: 'UNAUTHORIZED',
     })
   })
 
   it('markVisit rejects with UNAUTHORIZED when ctx.uid is null', async () => {
-    const caller = residentRouter.createCaller({ phone: null, uid: null })
+    const caller = residentRouter.createCaller({
+      locale: 'ru',
+      phone: null,
+      uid: null,
+    })
     await expect(caller.markVisit()).rejects.toMatchObject({
       code: 'UNAUTHORIZED',
     })
@@ -40,7 +48,11 @@ describe('residentRouter — Firebase identity gate', () => {
 
 describe('residentRouter.me — privacy-safe profile projection', () => {
   it('returns an empty profile when ctx.uid is null', async () => {
-    const caller = residentRouter.createCaller({ phone: null, uid: null })
+    const caller = residentRouter.createCaller({
+      locale: 'ru',
+      phone: null,
+      uid: null,
+    })
     await expect(caller.me()).resolves.toEqual({
       apartment: 0,
       block: 0,
@@ -57,6 +69,7 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
       role: 'owner',
     })
     const caller = residentRouter.createCaller({
+      locale: 'ru',
       phone: '+77071234567',
       uid: 'uid-1',
     })

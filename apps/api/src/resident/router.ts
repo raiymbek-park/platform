@@ -19,7 +19,7 @@ export const residentRouter = router({
       if (!ctx.uid) {
         throw new TRPCError({
           code: 'UNAUTHORIZED',
-          message: 'Phone is not verified',
+          message: 'phoneNotVerified',
         })
       }
 
@@ -31,7 +31,7 @@ export const residentRouter = router({
     if (!ctx.uid) {
       throw new TRPCError({
         code: 'UNAUTHORIZED',
-        message: 'Phone is not verified',
+        message: 'phoneNotVerified',
       })
     }
 
