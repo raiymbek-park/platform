@@ -6,15 +6,14 @@
   Then:  the returned error message is in Kazakh
 
 ## Scenario 2: Missing x-locale header defaults to Russian
-  Given: a tRPC request has no `x-locale` header
-  When:  the server resolves `ctx.locale`
-  Then:  `ctx.locale` is `ru`
-         a rejected request returns the Russian message
+  Given: a request reaches the backend with no `x-locale` header
+  When:  the backend rejects that request
+  Then:  the returned error message is in Russian (the fallback)
 
 ## Scenario 3: Unsupported x-locale value defaults to Russian
-  Given: a tRPC request carries `x-locale: de`
-  When:  the server resolves `ctx.locale`
-  Then:  `ctx.locale` is `ru`
+  Given: a request reaches the backend with `x-locale: de` (unsupported)
+  When:  the backend rejects that request
+  Then:  the returned error message is in Russian (the fallback)
 
 ## Scenario 4: Missing key in the server message map falls back
   Given: an error is thrown with a key absent from the active locale's map

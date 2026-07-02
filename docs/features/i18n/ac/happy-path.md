@@ -24,11 +24,11 @@
 
 ## Scenario 4: Active locale reaches the API
   Given: the active locale is `"kk"`
-  When:  any tRPC request is made
+  When:  the app sends any request to the backend
   Then:  the request carries the header `x-locale: kk`
 
-## Scenario 5: Only the active catalog loads
+## Scenario 5: Only the active language's translations load
   Given: the active locale is `"en"`
   When:  the app boots
-  Then:  only the `en` compiled catalog is fetched
-         the `ru` and `kk` catalogs are not in the initial chunk
+  Then:  only the English translations are fetched
+         the Russian and Kazakh translations are not downloaded at startup

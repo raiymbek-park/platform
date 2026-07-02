@@ -6,7 +6,7 @@
   Then:  the resolved locale is `ru`
 
 ## Scenario 2: Interpolation renders per locale
-  Given: a message with an interpolated value (e.g. `` t`Привет, ${name}` ``)
+  Given: a message containing a name placeholder
   When:  the string renders under each active locale
   Then:  the correct localized template is used
          the value is injected in the right position for that locale

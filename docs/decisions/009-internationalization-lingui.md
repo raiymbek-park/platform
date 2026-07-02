@@ -31,7 +31,7 @@ Two questions need deciding: **which translation layer**, and **how the locale i
 ### Option 3: Lingui (chosen)
 
 - **Pros:** Concise macro API (`<Trans>текст</Trans>`, `` t`Hello ${name}` `` via `useLingui`); catalogs **compiled to JS functions** (smaller bundle, no runtime ICU parser); CLI does extract + merge + compile + `--strict` validation (CI gate); official `@lingui/vite-plugin`.
-- **Cons:** Requires a macro plugin at build time (`@lingui/babel-plugin-lingui-macro`). Mitigated because `@vitejs/plugin-react` already runs Babel — the macro is one plugin added to an existing pipeline, not a new toolchain.
+- **Cons:** Requires a macro transform at build time. Under Vite's Rolldown pipeline the React plugin no longer exposes a Babel hook, so the macro is wired through a dedicated `@rolldown/plugin-babel` instance with `linguiTransformerBabelPreset` — a small extra build dependency rather than a reuse of the React plugin's own transform.
 
 ## Decision
 
@@ -42,7 +42,7 @@ The surrounding locale architecture:
 - **Source of truth is the client.** On first launch, `navigator.language` is mapped to a supported code (fallback `ru`) and persisted in `localStorage`; thereafter `localStorage` wins. The locale is **not** stored on the resident profile — it needs no server round-trip and works before authentication (onboarding).
 - **No switcher UI** this iteration — the locale is auto-detected.
 - **Catalogs are lazy** — only the active locale's compiled catalog loads; non-active locales are code-split out of the initial chunk.
-- **Transport via a custom `x-locale` header** on every tRPC request (merged into the existing `httpBatchLink` `headers`). Chosen over `Accept-Language` because `Accept-Language` is a [forbidden header name](https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name) — webview/browser `fetch` cannot set it, so it could never carry an app-selected locale that differs from the system one (critical once a switcher returns, and for Tauri/Android webviews). `x-locale` also carries an exact `ru`/`kk`/`en` value with no `q`-weight parsing. It is added to the API's CORS `Access-Control-Allow-Headers` alongside the existing `authorization`.
+- **Transport via a custom `x-locale` header** on every tRPC request (merged into the `httpBatchLink` `headers` function alongside the auth token). Chosen over `Accept-Language` because `Accept-Language` is a [forbidden header name](https://developer.mozilla.org/en-US/docs/Glossary/Forbidden_header_name) — webview/browser `fetch` cannot set it, so it could never carry an app-selected locale that differs from the system one (critical once a switcher returns, and for Tauri/Android webviews). `x-locale` also carries an exact `ru`/`kk`/`en` value with no `q`-weight parsing. The API's CORS `Access-Control-Allow-Headers` is extended to permit it.
 - **Server locale-awareness:** `createContext` reads `x-locale` into `ctx.locale` (fallback `ru`); user-facing error messages are resolved through a **server-side message map keyed by locale** (mirrors the client catalog approach; keeps the i18n runtime off the API).
 
 ## Consequences
@@ -50,7 +50,7 @@ The surrounding locale architecture:
 ### Positive
 
 - Concise, readable call sites; compiled catalogs keep the runtime and bundle small.
-- `lingui compile --strict` gives a CI gate against missing/empty translations.
+- `lingui compile --strict` provides a completeness check against missing/empty translations, intended to run as a CI gate.
 - Client-owned locale needs no API persistence and works pre-auth.
 - `x-locale` is portable across web, Tauri desktop, and Tauri/Android webviews, and survives a future switcher; the server is already locale-aware for content localization later.
 
@@ -64,4 +64,4 @@ The surrounding locale architecture:
 
 - `kk` is the internal / `Intl` code; "KZ" is display-only (unused this iteration, no switcher).
 - Server content (events, announcements) stays in its stored language until a future increment consumes `ctx.locale`.
-- Superset relationship with ADR 001 (state boundaries): locale is client UI state in `localStorage`, consistent with the Zustand / UI-state boundary rather than server or navigation state.
+- Relationship with ADR 001 (state boundaries): locale is client-owned UI state, held in `localStorage` and Lingui's own `i18n` runtime (which acts as the reactive store for this one value) rather than in a Zustand store — it sits on the client-truth side of the boundary, not server or navigation state.

@@ -30,7 +30,7 @@ The goal is a multilingual application supporting **Russian**, **Kazakh**, and *
 
 ## User Journey
 
-On first launch the app detects the browser language, resolves it to one of the three supported languages (falling back to Russian), remembers it for the device, and shows the whole interface in that language from the first screen — with no flash of the fallback language. On later launches the remembered language is used. Every request to the backend carries the active language; when the backend rejects a request, the error message is shown in the resident's language.
+On first launch the app detects the browser language, resolves it to one of the three supported languages (falling back to Russian), remembers it for the device, and shows the whole interface in that language from the first screen. On later launches the remembered language is used. Every request to the backend carries the active language; when the backend rejects a request, the error message is shown in the resident's language.
 
 ## Success Metrics
 
