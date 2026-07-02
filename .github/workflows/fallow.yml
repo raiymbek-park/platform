@@ -30,6 +30,9 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: i18n catalogs complete
+        run: npm --prefix apps/web run i18n:compile
+
   fallow:
     runs-on: ubuntu-latest
     steps:

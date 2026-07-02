@@ -50,7 +50,7 @@ The surrounding locale architecture:
 ### Positive
 
 - Concise, readable call sites; compiled catalogs keep the runtime and bundle small.
-- `lingui compile --strict` provides a completeness check against missing/empty translations, intended to run as a CI gate.
+- `lingui compile --strict` runs in CI as a gate against missing/empty translations.
 - Client-owned locale needs no API persistence and works pre-auth.
 - `x-locale` is portable across web, Tauri desktop, and Tauri/Android webviews, and survives a future switcher; the server is already locale-aware for content localization later.
 
