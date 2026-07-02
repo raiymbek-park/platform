@@ -68,7 +68,10 @@ Boundary conditions around fields, reactions, and status filtering. Values refer
 
   Given: an issue whose author name is long and that carries several classification tags
   When:  its card renders in the list
-  Then:  the card lays out without breaking (text truncates or wraps; tags remain readable)
+  Then:  the author name does not overflow the card — it is truncated (with an ellipsis) or wraps
+         within the name's own line
+         every applied tag remains fully visible on the card, none clipped or hidden behind another
+         element
 
 ## Scenario 12: Search with no matches
 
@@ -89,3 +92,10 @@ Boundary conditions around fields, reactions, and status filtering. Values refer
   Then:  the attachment is accepted (the bounds are inclusive)
   When:  they add an 11th item, or the total exceeds 200 MB
   Then:  the addition is rejected
+
+## Scenario 15: Switching filters while a list request is in flight
+
+  Given: a signed-in user on `/issues` who switches from one status tab to another before the first
+         tab's list request has resolved
+  When:  the first tab's request resolves after the switch
+  Then:  the list shown corresponds to the newly selected tab, not the abandoned request's results

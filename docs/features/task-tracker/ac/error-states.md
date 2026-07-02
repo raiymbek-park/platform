@@ -59,3 +59,11 @@ rules live in `validation.md`.
   Given: a user viewing an issue that has since been deleted
   When:  they react, edit, delete, or change its status
   Then:  the server reports the issue is gone and the interface returns to the list
+
+## Scenario 9: Issue list succeeds after a delay
+
+  Given: a signed-in user on `/issues`
+  When:  the list request takes longer than usual but eventually succeeds
+  Then:  skeleton cards remain shown for the full wait, with no error state shown before the response
+         arrives
+         once the response arrives, the skeleton cards are replaced by the issue cards as usual

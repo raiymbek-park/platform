@@ -127,10 +127,27 @@ the interface is not sufficient.
          surrounding whitespace
   Then:  that issue is shown; issues matching none of the three fields are hidden
 
-## Scenario 18: Search combines with the active status filter
+## Scenario 18: An empty or whitespace-only query applies no filter narrowing
 
-  Given: a signed-in user with the In progress filter active and a non-empty query
+  Given: a signed-in user with the In progress filter active and a query that is empty or
+         whitespace-only
   When:  the list is computed
-  Then:  only issues that are both In progress and match the query are shown
-  When:  the query is empty or whitespace-only
   Then:  no search narrowing is applied and the full In progress list is shown
+
+## Reaction rules
+
+## Scenario 19: Rapid double-tap on a reaction is not sent twice
+
+  Given: a Resident who taps like on an issue with no reaction from them
+  When:  they tap like again before the first tap has finished processing
+  Then:  the second tap has no additional effect — the issue ends with exactly one recorded like and
+         the count increased by one, not two
+
+## Search and filter interaction
+
+## Scenario 20: Search query persists when the status filter changes
+
+  Given: a signed-in user on `/issues` with a non-empty search query and a status filter active
+  When:  they switch to a different status tab
+  Then:  the query remains in the search field and continues to narrow the issues shown under the
+         newly selected filter
