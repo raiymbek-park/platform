@@ -1,0 +1,136 @@
+# Task Tracker — Validation and Permission Rules
+
+Field bounds refer to the **Field Rules** section of `prd.md`. Permission rules refer to the
+**Roles and Permissions** matrix. Every permission rule is enforced on the server; hiding a control in
+the interface is not sufficient.
+
+## Field validation — open / edit an issue
+
+## Scenario 1: Category is required
+
+  Given: a Resident on the create-issue screen with no category selected
+  When:  they try to submit
+  Then:  submission is blocked and the category is flagged as required
+
+## Scenario 2: Title length bounds
+
+  Given: a Resident filling the create-issue form
+  When:  the trimmed title is shorter than 3 characters or longer than 80 characters
+  Then:  submission is blocked and the title is flagged as invalid
+
+## Scenario 3: Description length bounds
+
+  Given: a Resident filling the create-issue form
+  When:  the trimmed description is shorter than 10 characters or longer than 1000 characters
+  Then:  submission is blocked and the description is flagged as invalid
+
+## Scenario 4: A valid form submits
+
+  Given: a Resident with a category selected, a 3–80 character title, and a 10–1000 character
+         description
+  When:  they submit
+  Then:  the issue is created (media and Urgent are optional and do not block submission)
+
+## Scenario 5: Media is optional and bounded
+
+  Given: a Resident on the create-issue form
+  When:  they attach between 0 and 10 photos or videos whose combined size is at most 200 MB
+  Then:  submission is allowed and the media is stored
+  When:  they attach an 11th item, or the combined size exceeds 200 MB
+  Then:  the extra media is rejected and submission is blocked until it is within the limits
+
+## Field validation — change status
+
+## Scenario 6: A status is required to save a change
+
+  Given: a Manager on the detail screen with no new status selected
+  When:  they try to save
+  Then:  saving is blocked until exactly one status is chosen
+
+## Scenario 7: Tags and comment are optional
+
+  Given: a Manager who has selected a status
+  When:  they save without any classification tag and with an empty comment
+  Then:  the status change is saved; no tag is applied and no comment is recorded
+
+## Scenario 8: Comment length bound
+
+  Given: a Manager on the detail screen
+  When:  the trimmed comment is longer than 1000 characters
+  Then:  saving is blocked and the comment is flagged as invalid
+
+## Permission rules
+
+## Scenario 9: Viewer is read-only
+
+  Given: a Viewer
+  When:  they attempt to open an issue, react, change a status, edit, or delete
+  Then:  the server rejects every one of these actions
+         they can still view the issue list and detail
+
+## Scenario 10: Resident and Owner may open, react, and manage their own Incoming issues
+
+  Given: a Resident (or Owner)
+  When:  they open an issue, react to any issue, or edit/delete an Incoming issue they opened
+  Then:  each action succeeds
+
+## Scenario 11: Resident cannot change status
+
+  Given: a Resident
+  When:  they attempt to change any issue's status
+  Then:  the server rejects the action
+
+## Scenario 12: Resident cannot touch another resident's issue
+
+  Given: a Resident viewing an issue opened by a different user
+  When:  they attempt to edit or delete it
+  Then:  the server rejects the action
+
+## Scenario 13: Manager changes status but cannot open, edit, or delete
+
+  Given: a Manager
+  When:  they change an issue's status, or react to an issue
+  Then:  the status change and the reaction succeed
+  When:  they attempt to open a new issue, or edit or delete any issue
+  Then:  the server rejects those actions
+
+## Scenario 14: Administration may do everything, within the editing window
+
+  Given: an Administration user
+  When:  they open an issue, react, or change any issue's status
+  Then:  each action succeeds
+  When:  they edit or delete an Incoming issue (including one opened by someone else)
+  Then:  the action succeeds
+
+## Scenario 15: Editing and deletion are locked once an issue leaves Incoming
+
+  Given: an issue whose status has changed away from Incoming
+  When:  the author, or an Administration user, attempts to edit or delete it
+  Then:  the server rejects the action for everyone
+         changing the issue's status is still allowed for a Manager or Administration
+
+## Default role
+
+## Scenario 16: A signed-in account with no assigned role acts as a Resident
+
+  Given: a signed-in account whose profile has no role, or an unrecognized role value
+  When:  its permissions are resolved
+  Then:  it is treated as a Resident (may open, react, and manage its own issues; may not change
+         status or moderate)
+
+## Search rules
+
+## Scenario 17: Search matches title, description, or number, case-insensitively
+
+  Given: a signed-in user on the issue list
+  When:  the query matches an issue's title, description, or number in any letter case, ignoring
+         surrounding whitespace
+  Then:  that issue is shown; issues matching none of the three fields are hidden
+
+## Scenario 18: Search combines with the active status filter
+
+  Given: a signed-in user with the In progress filter active and a non-empty query
+  When:  the list is computed
+  Then:  only issues that are both In progress and match the query are shown
+  When:  the query is empty or whitespace-only
+  Then:  no search narrowing is applied and the full In progress list is shown

@@ -1,0 +1,61 @@
+# Task Tracker — Error States
+
+External failures — network and server errors while loading or mutating issues. Field and permission
+rules live in `validation.md`.
+
+## Scenario 1: Issue list fails to load
+
+  Given: a signed-in user on `/issues`
+  When:  the list request fails (network or server error)
+  Then:  an error state with a retry action is shown instead of the list
+         retrying re-requests the list and, on success, renders it
+
+## Scenario 2: Opening an issue fails
+
+  Given: a Resident who submitted a valid create-issue form
+  When:  the create request fails
+  Then:  an error message is shown, the form keeps the entered values, and submit is available to
+         retry
+         no issue is created
+
+## Scenario 3: Status change fails
+
+  Given: a Manager who saved a status change
+  When:  the save request fails
+  Then:  an error message is shown, the selected status/tags/comment are preserved, and save is
+         available to retry
+         the issue keeps its previous status
+
+## Scenario 4: Reaction fails
+
+  Given: a Resident whose like was applied optimistically
+  When:  the reaction request fails
+  Then:  the optimistic like is rolled back to the previous count and reaction
+         an error indication is shown
+
+## Scenario 5: Edit fails
+
+  Given: an author who saved an edit to their own issue
+  When:  the update request fails
+  Then:  an error message is shown, the edited values are preserved, and save is available to retry
+         the stored issue is unchanged
+
+## Scenario 6: Delete fails
+
+  Given: an author who deleted their own issue
+  When:  the delete request fails
+  Then:  an error message is shown and the issue remains in the list
+
+## Scenario 7: Media upload fails during open or status change
+
+  Given: a user submitting an issue or status change with media attached
+  When:  a photo or video upload fails
+  Then:  an error message is shown, the rest of the entered values are preserved, and the action can
+         be retried
+         the issue is not created or updated with partial media
+
+## Scenario 8: Acting on an issue that no longer exists
+
+  Given: a user viewing an issue that has since been deleted
+  When:  they react, edit, delete, or change its status
+  Then:  the server reports the issue is gone and the interface returns to the list
