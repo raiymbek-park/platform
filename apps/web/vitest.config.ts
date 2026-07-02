@@ -5,6 +5,10 @@ import babel from '@rolldown/plugin-babel'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
 
+process.env.LINGUI_CONFIG = fileURLToPath(
+  new URL('./lingui.config.ts', import.meta.url),
+)
+
 export default defineConfig({
   plugins: [
     react(),

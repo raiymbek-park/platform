@@ -9,6 +9,10 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+process.env.LINGUI_CONFIG = fileURLToPath(
+  new URL('./lingui.config.ts', import.meta.url),
+)
+
 const emitNotFoundHtml = (): Plugin => ({
   name: 'emit-404-html',
   apply: 'build',
