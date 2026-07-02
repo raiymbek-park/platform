@@ -1,5 +1,6 @@
 import type { NavTab } from '@/widgets/bottom-nav'
 
+import { Trans } from '@lingui/react/macro'
 import { Content } from '@raiymbek-park/ui'
 
 import { BottomNav } from '@/widgets/bottom-nav'
@@ -15,7 +16,9 @@ export const PlaceholderPage = ({ active, title }: PlaceholderPageProps) => (
   <>
     <Content className={css.body}>
       <h1 className={css.title}>{title}</h1>
-      <p className={css.note}>Раздел в разработке</p>
+      <p className={css.note}>
+        <Trans>Раздел в разработке</Trans>
+      </p>
     </Content>
     <BottomNav active={active} />
   </>

@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/react/macro'
 import { Button, HeroImage, InfoCallout } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
@@ -5,8 +6,6 @@ import { useRef } from 'react'
 import { useOnboardingStore } from '../model/use-onboarding-store'
 import { useSendVerification } from '../model/use-send-verification'
 import css from './account-locked.module.scss'
-
-const retryError = 'Пока не получается отправить код. Попробуйте чуть позже.'
 
 export const AccountLocked = () => {
   const navigate = useNavigate()
@@ -29,9 +28,13 @@ export const AccountLocked = () => {
       <span ref={recaptchaRef} />
 
       <header className={css.heading}>
-        <h1 className={css.title}>Доступ заблокирован</h1>
+        <h1 className={css.title}>
+          <Trans>Доступ заблокирован</Trans>
+        </h1>
         <p className={css.subtitle}>
-          Слишком много попыток. Подождите немного и попробуйте снова.
+          <Trans>
+            Слишком много попыток. Подождите немного и попробуйте снова.
+          </Trans>
         </p>
       </header>
 
@@ -39,7 +42,9 @@ export const AccountLocked = () => {
 
       {sendVerification.isError && (
         <InfoCallout icon='circle-alert' variant='danger'>
-          {retryError}
+          <Trans>
+            Пока не получается отправить код. Попробуйте чуть позже.
+          </Trans>
         </InfoCallout>
       )}
 
@@ -48,7 +53,7 @@ export const AccountLocked = () => {
         isLoading={sendVerification.isPending}
         onClick={retry}
       >
-        Повторить
+        <Trans>Повторить</Trans>
       </Button>
     </>
   )

@@ -1,3 +1,4 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import { ContactCard, Divider, SectionHeader } from '@raiymbek-park/ui'
 import { Fragment } from 'react'
 
@@ -5,13 +6,22 @@ import { useServiceContactsData } from '../model/use-service-contacts-data'
 import css from './contacts-section.module.scss'
 
 export const ContactsSection = () => {
+  const { t } = useLingui()
   const { data, isError, isLoading } = useServiceContactsData()
 
   return (
     <section className={css.section}>
-      <SectionHeader title='Аварийные контакты' />
-      {isLoading && <p className={css.state}>Загрузка…</p>}
-      {isError && <p className={css.state}>Не удалось загрузить контакты</p>}
+      <SectionHeader title={t`Аварийные контакты`} />
+      {isLoading && (
+        <p className={css.state}>
+          <Trans>Загрузка…</Trans>
+        </p>
+      )}
+      {isError && (
+        <p className={css.state}>
+          <Trans>Не удалось загрузить контакты</Trans>
+        </p>
+      )}
       {data && data.length > 0 && (
         <div className={css.card}>
           {data.map((contact, index) => (

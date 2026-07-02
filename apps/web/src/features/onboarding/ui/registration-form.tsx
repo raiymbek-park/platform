@@ -1,5 +1,6 @@
 import type { BlockId } from '@raiymbek-park/shared/validation-schemas'
 
+import { Trans, useLingui } from '@lingui/react/macro'
 import { blockFloors, blockIds } from '@raiymbek-park/shared/validation-schemas'
 import {
   BlockCard,
@@ -41,6 +42,7 @@ const inputState = ({ errors, isDirty, isTouched }: FieldMeta) => {
 }
 
 export const RegistrationForm = () => {
+  const { t } = useLingui()
   const navigate = useNavigate()
   const sendVerification = useSendVerification()
   const setDraft = useOnboardingStore(state => state.setDraft)
@@ -82,13 +84,15 @@ export const RegistrationForm = () => {
         form.handleSubmit()
       }}
     >
-      <HeroCard title='Добро пожаловать!'>
-        Добро пожаловать в личное пространство жильцов и собственников квартир
-        ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от
-        управляющей компании, форма для подачи заявок на устранение неполадок,
-        контакты дежурных служб и история ваших обращений. Мы хотим, чтобы
-        каждый вопрос решался быстро и понятно — чтобы жизнь в доме была
-        удобнее, а управление домом — прозрачнее.
+      <HeroCard title={t`Добро пожаловать!`}>
+        <Trans>
+          Добро пожаловать в личное пространство жильцов и собственников квартир
+          ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления
+          от управляющей компании, форма для подачи заявок на устранение
+          неполадок, контакты дежурных служб и история ваших обращений. Мы
+          хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в
+          доме была удобнее, а управление домом — прозрачнее.
+        </Trans>
       </HeroCard>
 
       <form.Field name='name'>
@@ -96,8 +100,8 @@ export const RegistrationForm = () => {
           <Input
             icon='user'
             inputMode='text'
-            label='Имя'
-            placeholder='Введите ваше имя'
+            label={t`Имя`}
+            placeholder={t`Введите ваше имя`}
             state={inputState(field.state.meta)}
             value={field.state.value}
             onBlur={field.handleBlur}
@@ -111,7 +115,7 @@ export const RegistrationForm = () => {
           <Input
             icon='phone'
             inputMode='tel'
-            label='Телефон'
+            label={t`Телефон`}
             placeholder='+7 7xxx xxx xxxx'
             state={inputState(field.state.meta)}
             value={field.state.value}
@@ -122,25 +126,29 @@ export const RegistrationForm = () => {
       </form.Field>
 
       <InfoCallout icon='shield-check'>
-        Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только
-        администрация — для быстрой связи в экстренных случаях (затопление,
-        пожар).
+        <Trans>
+          Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только
+          администрация — для быстрой связи в экстренных случаях (затопление,
+          пожар).
+        </Trans>
       </InfoCallout>
 
       <div className={css.section}>
-        <SectionHeader title='Выберите блок' />
+        <SectionHeader title={t`Выберите блок`} />
         <form.Field name='block'>
           {field => (
             <fieldset className={css.group}>
-              <legend className='sr-only'>Блок</legend>
+              <legend className='sr-only'>
+                <Trans>Блок</Trans>
+              </legend>
               <div className={css.blocks}>
                 {blockIds.map(block => (
                   <BlockCard
                     key={block}
-                    description={`${blockFloors[block]} жилых этажей`}
+                    description={t`${blockFloors[block]} жилых этажей`}
                     icon='building-2'
                     isSelected={field.state.value === block}
-                    title={`Блок ${block}`}
+                    title={t`Блок ${block}`}
                     tone={blockTones[block]}
                     onClick={() => field.handleChange(block)}
                   />
@@ -156,7 +164,7 @@ export const RegistrationForm = () => {
           <Input
             icon='door-closed'
             inputMode='numeric'
-            label='Номер квартиры'
+            label={t`Номер квартиры`}
             placeholder='142'
             state={inputState(field.state.meta)}
             value={
@@ -172,17 +180,19 @@ export const RegistrationForm = () => {
       </form.Field>
 
       <div className={css.section}>
-        <SectionHeader title='Кто вы?' />
+        <SectionHeader title={t`Кто вы?`} />
         <form.Field name='role'>
           {field => (
             <fieldset className={css.group}>
-              <legend className='sr-only'>Роль</legend>
+              <legend className='sr-only'>
+                <Trans>Роль</Trans>
+              </legend>
               <div className={css.roleCard}>
                 <SelectOption
                   icon='house'
                   isSelected={field.state.value === 'owner'}
-                  label='Собственник квартиры'
-                  subtitle='Владею жильём'
+                  label={t`Собственник квартиры`}
+                  subtitle={t`Владею жильём`}
                   tone='brand'
                   onClick={() => field.handleChange('owner')}
                 />
@@ -190,8 +200,8 @@ export const RegistrationForm = () => {
                 <SelectOption
                   icon='key-round'
                   isSelected={field.state.value === 'tenant'}
-                  label='Арендатор'
-                  subtitle='Снимаю жильё'
+                  label={t`Арендатор`}
+                  subtitle={t`Снимаю жильё`}
                   tone='danger'
                   onClick={() => field.handleChange('tenant')}
                 />
@@ -209,14 +219,18 @@ export const RegistrationForm = () => {
           rel='noopener noreferrer'
           target='_blank'
         >
-          Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности
-          и Условия Google
+          <Trans>
+            Эта форма защищена reCAPTCHA, применяются Политика
+            конфиденциальности и Условия Google
+          </Trans>
         </a>
       </InfoCallout>
 
       {sendVerification.isError && (
         <InfoCallout icon='circle-alert' variant='danger'>
-          Не удалось отправить код. Проверьте соединение и попробуйте снова.
+          <Trans>
+            Не удалось отправить код. Проверьте соединение и попробуйте снова.
+          </Trans>
         </InfoCallout>
       )}
 
@@ -230,7 +244,7 @@ export const RegistrationForm = () => {
             isLoading={sendVerification.isPending}
             type='submit'
           >
-            Далее
+            <Trans>Далее</Trans>
           </Button>
         )}
       </form.Subscribe>

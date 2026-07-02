@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/react/macro'
 import { Button, Content, HeroImage, ScreenHeader } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 
@@ -12,15 +13,19 @@ export const NotFoundPage = () => {
       <Content>
         <HeroImage src='images/not-found.png' />
         <div className={css.heading}>
-          <h1 className={css.title}>Страница не найдена</h1>
+          <h1 className={css.title}>
+            <Trans>Страница не найдена</Trans>
+          </h1>
           <p className={css.subtitle}>
-            Запрашиваемая страница не существует или была перемещена. Проверьте
-            адрес или вернитесь на главную.
+            <Trans>
+              Запрашиваемая страница не существует или была перемещена.
+              Проверьте адрес или вернитесь на главную.
+            </Trans>
           </p>
         </div>
         <div className={css.spacer} />
         <Button icon='house' onClick={() => navigate({ to: '/home' })}>
-          На главную
+          <Trans>На главную</Trans>
         </Button>
       </Content>
     </>
