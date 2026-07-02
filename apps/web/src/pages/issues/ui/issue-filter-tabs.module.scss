@@ -1,0 +1,14 @@
+.tabs {
+  border: 0;
+  display: flex;
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 4px 0;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

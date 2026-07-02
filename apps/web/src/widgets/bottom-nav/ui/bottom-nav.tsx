@@ -6,7 +6,7 @@ import { Link } from '@tanstack/react-router'
 
 import css from './bottom-nav.module.scss'
 
-export type NavTab = '/home' | '/announcements' | '/settings'
+export type NavTab = '/home' | '/announcements' | '/issues' | '/settings'
 
 type Tab = {
   glyph: IconGlyph
@@ -23,11 +23,7 @@ export const BottomNav = ({ active }: BottomNavProps) => {
   const tabs: Tab[] = [
     { glyph: 'house', label: t`Главная`, to: '/home' },
     { glyph: 'megaphone', label: t`Объявления`, to: '/announcements' },
-    {
-      glyph: 'clipboard-list',
-      label: t`Заявки`,
-      href: 'https://trello.com/b/O9Sh7i6z/raiymbek-park',
-    },
+    { glyph: 'clipboard-list', label: t`Заявки`, to: '/issues' },
     { glyph: 'settings', label: t`Настройки`, to: '/settings' },
   ]
 
