@@ -5,7 +5,7 @@ import { persistLocale, readStoredLocale } from './locale-storage'
 beforeEach(() => localStorage.clear())
 afterEach(() => localStorage.clear())
 
-test('validation S4 — no stored value returns null', () => {
+test('readStoredLocale returns null when nothing is stored', () => {
   expect(readStoredLocale()).toBeNull()
 })
 
