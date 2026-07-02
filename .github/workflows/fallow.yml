@@ -13,7 +13,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 22.19.0
           cache: npm
 
       - run: npm ci
@@ -30,6 +30,9 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: i18n catalogs complete
+        run: npm --prefix apps/web run i18n:compile
+
   fallow:
     runs-on: ubuntu-latest
     steps:
@@ -37,7 +40,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 22.19.0
           cache: npm
 
       - run: npm ci
@@ -63,7 +66,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 22.19.0
           cache: npm
 
       - run: npm ci
@@ -112,7 +115,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 22.19.0
           cache: npm
 
       - run: npm ci
@@ -147,7 +150,7 @@ jobs:
 
       - uses: actions/setup-node@v5
         with:
-          node-version: 22
+          node-version: 22.19.0
           cache: npm
 
       - run: npm ci

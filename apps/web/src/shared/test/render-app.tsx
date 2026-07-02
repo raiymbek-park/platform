@@ -1,3 +1,5 @@
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import {
   createMemoryHistory,
@@ -21,11 +23,13 @@ export const renderApp = (initialPath: string) => {
   })
 
   render(
-    <QueryClientProvider client={queryClient}>
-      <TRPCProvider queryClient={queryClient} trpcClient={trpcClient}>
-        <RouterProvider router={router} />
-      </TRPCProvider>
-    </QueryClientProvider>,
+    <I18nProvider i18n={i18n}>
+      <QueryClientProvider client={queryClient}>
+        <TRPCProvider queryClient={queryClient} trpcClient={trpcClient}>
+          <RouterProvider router={router} />
+        </TRPCProvider>
+      </QueryClientProvider>
+    </I18nProvider>,
   )
 
   return {

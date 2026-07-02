@@ -2,11 +2,13 @@ import '@/app/fonts/fonts.scss'
 import '@/app/tokens.scss'
 import '@/app/app.scss'
 
+import { I18nProvider } from '@lingui/react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 
 import { routeTree } from '@/app/routeTree.gen'
 import { queryClient, TRPCProvider, trpc, trpcClient } from '@/shared/api'
+import { i18n } from '@/shared/i18n'
 
 const router = createRouter({
   routeTree,
@@ -23,9 +25,11 @@ declare module '@tanstack/react-router' {
 }
 
 export const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TRPCProvider queryClient={queryClient} trpcClient={trpcClient}>
-      <RouterProvider router={router} />
-    </TRPCProvider>
-  </QueryClientProvider>
+  <I18nProvider i18n={i18n}>
+    <QueryClientProvider client={queryClient}>
+      <TRPCProvider queryClient={queryClient} trpcClient={trpcClient}>
+        <RouterProvider router={router} />
+      </TRPCProvider>
+    </QueryClientProvider>
+  </I18nProvider>
 )

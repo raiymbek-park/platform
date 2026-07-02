@@ -1,0 +1,310 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-07-02 13:45+0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: kk\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#. placeholder {0}: blockFloors[block]
+#: src/features/onboarding/ui/registration-form.tsx:148
+msgid "{0} жилых этажей"
+msgstr "{0} тұрғын қабат"
+
+#: src/pages/home/ui/contacts-section.tsx:14
+msgid "Аварийные контакты"
+msgstr "Апаттық байланыстар"
+
+#: src/features/onboarding/ui/registration-form.tsx:203
+msgid "Арендатор"
+msgstr "Жалдаушы"
+
+#: src/features/onboarding/ui/registration-form.tsx:142
+msgid "Блок"
+msgstr "Блок"
+
+#. placeholder {0}: data.block
+#. placeholder {1}: data.apartment
+#: src/pages/home/ui/building-hero.tsx:15
+msgid "Блок {0} · Квартира {1}"
+msgstr "Блок {0} · Пәтер {1}"
+
+#: src/features/onboarding/ui/registration-form.tsx:151
+msgid "Блок {block}"
+msgstr "Блок {block}"
+
+#: src/features/onboarding/ui/otp-verification.tsx:117
+msgid "Ваш код отправляется на проверку…"
+msgstr "Кодыңыз тексеруге жіберілуде…"
+
+#: src/features/onboarding/ui/registration-form.tsx:129
+msgid "Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только администрация — для быстрой связи в экстренных случаях (затопление, пожар)."
+msgstr "Сіздің жеке деректеріңіз басқа тұрғындардан жасырылған. Оларға тек әкімшіліктің қолы жетеді — төтенше жағдайларда (су тасқыны, өрт) жедел байланыс үшін."
+
+#: src/features/onboarding/ui/registration-form.tsx:104
+msgid "Введите ваше имя"
+msgstr "Атыңызды енгізіңіз"
+
+#: src/features/onboarding/ui/otp-heading.tsx:13
+msgid "Введите код из SMS"
+msgstr "SMS кодын енгізіңіз"
+
+#: src/features/onboarding/lib/validators.ts:16
+msgid "Введите номер квартиры"
+msgstr "Пәтер нөмірін енгізіңіз"
+
+#: src/features/onboarding/ui/registration-form.tsx:195
+msgid "Владею жильём"
+msgstr "Баспана меншігімде"
+
+#: src/features/onboarding/ui/otp-actions.tsx:49
+msgid "Вставить код из буфера"
+msgstr "Кодты буферден қою"
+
+#: src/pages/home/ui/services-section.tsx:74
+msgid "Вступить в общий чат жильцов"
+msgstr "Тұрғындардың ортақ чатына қосылу"
+
+#: src/features/onboarding/lib/validators.ts:30
+#: src/features/onboarding/ui/registration-form.tsx:137
+msgid "Выберите блок"
+msgstr "Блокты таңдаңыз"
+
+#: src/features/onboarding/lib/validators.ts:35
+msgid "Выберите роль"
+msgstr "Рөлді таңдаңыз"
+
+#: src/widgets/bottom-nav/ui/bottom-nav.tsx:24
+msgid "Главная"
+msgstr "Басты бет"
+
+#: src/features/onboarding/ui/registration-form.tsx:247
+msgid "Далее"
+msgstr "Келесі"
+
+#: src/features/onboarding/ui/registration-form.tsx:88
+msgid "Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее."
+msgstr "«Raiymbek Park» тұрғын кешенінің тұрғындары мен пәтер иелеріне арналған жеке кеңістікке қош келдіңіз. Мұнда ең маңыздысы жиналған: басқарушы компанияның жаңа хабарландырулары, ақаулықтарды жою өтінімдерін беру формасы, кезекші қызметтердің байланыстары және өтініштеріңіздің тарихы. Біз әрбір мәселе жылдам әрі түсінікті шешілгенін қалаймыз — үйдегі өмір ыңғайлы, ал үйді басқару ашық болуы үшін."
+
+#: src/features/onboarding/ui/registration-form.tsx:87
+msgid "Добро пожаловать!"
+msgstr "Қош келдіңіз!"
+
+#: src/features/onboarding/ui/account-locked.tsx:32
+msgid "Доступ заблокирован"
+msgstr "Қол жеткізу бұғатталған"
+
+#: src/pages/home/ui/welcome-feed.tsx:24
+msgid "За время вашего отсутствия всё было спокойно — новостей нет."
+msgstr "Сіз болмаған уақытта бәрі тыныш болды — жаңалық жоқ."
+
+#: src/pages/home/ui/welcome-feed.tsx:31
+msgid "За время вашего отсутствия появились изменения:"
+msgstr "Сіз болмаған уақытта өзгерістер пайда болды:"
+
+#: src/pages/home/ui/welcome-feed.tsx:32
+msgid "Загрузка последних событий…"
+msgstr "Соңғы оқиғалар жүктелуде…"
+
+#: src/pages/home/ui/contacts-section.tsx:17
+msgid "Загрузка…"
+msgstr "Жүктелуде…"
+
+#: src/pages/not-found/ui/not-found-page.tsx:20
+msgid "Запрашиваемая страница не существует или была перемещена. Проверьте адрес или вернитесь на главную."
+msgstr "Сұралған бет жоқ немесе басқа жерге ауыстырылған. Мекенжайды тексеріңіз немесе басты бетке оралыңыз."
+
+#: src/features/onboarding/ui/otp-actions.tsx:61
+msgid "Запросить код повторно"
+msgstr "Кодты қайта сұрау"
+
+#. placeholder {0}: formatCooldown(resendCooldown)
+#: src/features/onboarding/ui/otp-actions.tsx:60
+msgid "Запросить код повторно через {0}"
+msgstr "Кодты {0} кейін қайта сұрау"
+
+#: src/widgets/bottom-nav/ui/bottom-nav.tsx:28
+msgid "Заявки"
+msgstr "Өтінімдер"
+
+#: src/pages/home/ui/services-section.tsx:36
+msgid "Заявки, объявления и связь с управляющей компанией"
+msgstr "Өтінімдер, хабарландырулар және басқарушы компаниямен байланыс"
+
+#: src/features/onboarding/ui/registration-form.tsx:103
+msgid "Имя"
+msgstr "Аты"
+
+#: src/features/onboarding/lib/validators.ts:18
+msgid "Квартира вне диапазона выбранного блока"
+msgstr "Пәтер таңдалған блоктың ауқымынан тыс"
+
+#: src/features/onboarding/ui/otp-verification.tsx:98
+msgid "Код подтверждения"
+msgstr "Растау коды"
+
+#: src/features/onboarding/ui/registration-form.tsx:183
+msgid "Кто вы?"
+msgstr "Сіз кімсіз?"
+
+#: src/features/onboarding/ui/otp-heading.tsx:16
+msgid "Мы отправили 6-значный код подтверждения на ваш номер"
+msgstr "Біз сіздің нөміріңізге 6 таңбалы растау кодын жібердік"
+
+#: src/pages/not-found/ui/not-found-page.tsx:28
+msgid "На главную"
+msgstr "Басты бетке"
+
+#: src/features/onboarding/ui/otp-actions.tsx:36
+msgid "Назад"
+msgstr "Артқа"
+
+#: src/app/routes/settings.tsx:11
+#: src/widgets/bottom-nav/ui/bottom-nav.tsx:31
+msgid "Настройки"
+msgstr "Баптаулар"
+
+#: src/features/onboarding/ui/otp-verification.tsx:76
+msgid "Не удалось завершить регистрацию. Повторите попытку."
+msgstr "Тіркеуді аяқтау мүмкін болмады. Қайталап көріңіз."
+
+#: src/pages/home/ui/contacts-section.tsx:22
+msgid "Не удалось загрузить контакты"
+msgstr "Байланыстарды жүктеу мүмкін болмады"
+
+#: src/pages/home/ui/welcome-feed.tsx:33
+msgid "Не удалось загрузить последние события"
+msgstr "Соңғы оқиғаларды жүктеу мүмкін болмады"
+
+#: src/features/onboarding/ui/registration-form.tsx:231
+msgid "Не удалось отправить код. Проверьте соединение и попробуйте снова."
+msgstr "Кодты жіберу мүмкін болмады. Байланысты тексеріп, қайта көріңіз."
+
+#: src/features/onboarding/ui/otp-verification.tsx:75
+msgid "Не удалось проверить код. Проверьте соединение."
+msgstr "Кодты тексеру мүмкін болмады. Байланысты тексеріңіз."
+
+#: src/features/onboarding/ui/otp-verification.tsx:74
+msgid "Неверный код. Попробуйте ещё раз."
+msgstr "Код қате. Қайтадан көріңіз."
+
+#: src/pages/home/ui/services-section.tsx:42
+msgid "Новости и уведомления от УК"
+msgstr "Басқарушы компанияның жаңалықтары мен хабарламалары"
+
+#: src/pages/home/ui/welcome-feed.tsx:25
+msgid "Новых событий пока нет."
+msgstr "Әзірге жаңа оқиғалар жоқ."
+
+#: src/features/onboarding/ui/registration-form.tsx:167
+msgid "Номер квартиры"
+msgstr "Пәтер нөмірі"
+
+#: src/app/routes/announcements.tsx:11
+#: src/pages/home/ui/services-section.tsx:44
+#: src/widgets/bottom-nav/ui/bottom-nav.tsx:25
+msgid "Объявления"
+msgstr "Хабарландырулар"
+
+#: src/pages/home/ui/services-section.tsx:58
+msgid "Отслеживайте ход ваших обращений"
+msgstr "Өтініштеріңіздің барысын қадағалаңыз"
+
+#: src/features/onboarding/ui/account-locked.tsx:56
+msgid "Повторить"
+msgstr "Қайталау"
+
+#: src/features/onboarding/ui/otp-verification.tsx:128
+msgid "Повторить попытку"
+msgstr "Қайталап көру"
+
+#: src/pages/home/ui/services-section.tsx:50
+msgid "Подайте обращение в УК"
+msgstr "Басқарушы компанияға өтініш жіберіңіз"
+
+#: src/pages/home/ui/welcome-feed.tsx:23
+msgid "Пока вас не было, ничего не произошло."
+msgstr "Сіз болмаған кезде ештеңе болған жоқ."
+
+#: src/features/onboarding/ui/account-locked.tsx:45
+msgid "Пока не получается отправить код. Попробуйте чуть позже."
+msgstr "Кодты жіберу әзірге мүмкін болмай тұр. Сәл кейінірек көріңіз."
+
+#: src/pages/home/ui/welcome-feed.tsx:20
+msgid "Привет, {name}! 👋"
+msgstr "Сәлем, {name}! 👋"
+
+#: src/pages/home/ui/welcome-feed.tsx:20
+msgid "Привет! 👋"
+msgstr "Сәлем! 👋"
+
+#: src/pages/placeholder/ui/placeholder-page.tsx:20
+msgid "Раздел в разработке"
+msgstr "Бөлім әзірленуде"
+
+#: src/features/onboarding/ui/registration-form.tsx:188
+msgid "Роль"
+msgstr "Рөл"
+
+#: src/pages/home/ui/services-section.tsx:37
+msgid "Сервисы"
+msgstr "Сервистер"
+
+#: src/features/onboarding/ui/account-locked.tsx:35
+msgid "Слишком много попыток. Подождите немного и попробуйте снова."
+msgstr "Тым көп әрекет жасалды. Сәл күтіп, қайта көріңіз."
+
+#: src/features/onboarding/lib/validators.ts:15
+msgid "Сначала выберите блок"
+msgstr "Алдымен блокты таңдаңыз"
+
+#: src/features/onboarding/ui/registration-form.tsx:204
+msgid "Снимаю жильё"
+msgstr "Баспана жалдаймын"
+
+#: src/features/onboarding/ui/registration-form.tsx:194
+msgid "Собственник квартиры"
+msgstr "Пәтер иесі"
+
+#: src/pages/home/ui/services-section.tsx:52
+msgid "Создать заявку"
+msgstr "Өтінім жасау"
+
+#: src/pages/home/ui/services-section.tsx:68
+msgid "Создать объявление"
+msgstr "Хабарландыру жасау"
+
+#: src/pages/home/ui/services-section.tsx:60
+msgid "Статус заявки"
+msgstr "Өтінім күйі"
+
+#: src/pages/not-found/ui/not-found-page.tsx:17
+msgid "Страница не найдена"
+msgstr "Бет табылмады"
+
+#: src/features/onboarding/ui/registration-form.tsx:118
+msgid "Телефон"
+msgstr "Телефон"
+
+#: src/pages/home/ui/services-section.tsx:66
+msgid "У вас есть предложение или поиск, пишите сюда"
+msgstr "Ұсынысыңыз бар ма немесе бірдеңе іздеп жүрсіз бе — осында жазыңыз"
+
+#: src/pages/home/ui/welcome-feed.tsx:26
+msgid "Хорошие новости: пока вас не было, ничего важного не произошло."
+msgstr "Жақсы жаңалық: сіз болмаған кезде маңызды ештеңе болған жоқ."
+
+#: src/pages/home/ui/services-section.tsx:76
+msgid "Чат дома в WhatsApp"
+msgstr "Үй чаты WhatsApp-та"
+
+#: src/features/onboarding/ui/registration-form.tsx:222
+msgid "Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google"
+msgstr "Бұл форма reCAPTCHA арқылы қорғалған, Google Құпиялылық саясаты мен Шарттары қолданылады"

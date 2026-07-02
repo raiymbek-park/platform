@@ -1,3 +1,4 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Button } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 
@@ -25,13 +26,14 @@ export const OtpActions = ({
   onPaste,
   onResend,
 }: OtpActionsProps) => {
+  const { t } = useLingui()
   const navigate = useNavigate()
   const clipboardCode = useClipboardCode()
 
   return (
     <div className={css.actions}>
       <Button
-        aria-label='Назад'
+        aria-label={t`Назад`}
         disabled={isChecking}
         icon='arrow-left'
         variant='icon'
@@ -44,7 +46,7 @@ export const OtpActions = ({
           icon='clipboard-paste'
           onClick={() => onPaste(clipboardCode)}
         >
-          Вставить код из буфера
+          <Trans>Вставить код из буфера</Trans>
         </Button>
       ) : (
         <Button
@@ -55,8 +57,8 @@ export const OtpActions = ({
           onClick={onResend}
         >
           {resendCooldown > 0
-            ? `Запросить код повторно через ${formatCooldown(resendCooldown)}`
-            : 'Запросить код повторно'}
+            ? t`Запросить код повторно через ${formatCooldown(resendCooldown)}`
+            : t`Запросить код повторно`}
         </Button>
       )}
     </div>

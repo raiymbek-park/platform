@@ -1,5 +1,6 @@
 import type { AppRouter } from '@raiymbek-park/api'
 
+import { i18n } from '@lingui/core'
 import { createTRPCClient, httpBatchLink } from '@trpc/client'
 import {
   createTRPCContext,
@@ -12,15 +13,18 @@ import { auth } from '@/shared/firebase'
 
 export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>()
 
-const authHeaders = async () => {
+const requestHeaders = async () => {
   const token = await auth.currentUser?.getIdToken()
-  return token ? { authorization: `Bearer ${token}` } : {}
+  return {
+    ...(token ? { authorization: `Bearer ${token}` } : {}),
+    'x-locale': i18n.locale,
+  }
 }
 
 export const trpcClient = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      headers: authHeaders,
+      headers: requestHeaders,
       url: env.apiUrl,
     }),
   ],

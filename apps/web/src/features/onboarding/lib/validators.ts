@@ -1,7 +1,7 @@
 import type { BlockId } from '@raiymbek-park/shared/validation-schemas'
 
+import { t } from '@lingui/core/macro'
 import {
-  APARTMENT_RANGE_MESSAGE,
   isApartmentInBlock,
   nameSchema,
   phoneSchema,
@@ -12,9 +12,11 @@ import { z } from 'zod'
 export type { Role } from '@raiymbek-park/shared/validation-schemas'
 
 const apartmentMessage = (block: BlockId | null, apartment: number) => {
-  if (block === null) return 'Сначала выберите блок'
-  if (Number.isNaN(apartment)) return 'Введите номер квартиры'
-  if (!isApartmentInBlock(block, apartment)) return APARTMENT_RANGE_MESSAGE
+  if (block === null) return t`Сначала выберите блок`
+  if (Number.isNaN(apartment)) return t`Введите номер квартиры`
+  if (!isApartmentInBlock(block, apartment)) {
+    return t`Квартира вне диапазона выбранного блока`
+  }
   return undefined
 }
 
@@ -25,12 +27,12 @@ export const registrationSchema = z
     block: z
       .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
       .nullable()
-      .refine(v => v !== null, 'Выберите блок'),
+      .refine(v => v !== null, { error: () => t`Выберите блок` }),
     apartment: z.number().or(z.nan()),
     role: z
       .enum(roles)
       .nullable()
-      .refine(v => v !== null, 'Выберите роль'),
+      .refine(v => v !== null, { error: () => t`Выберите роль` }),
   })
   .superRefine((value, ctx) => {
     const message = apartmentMessage(value.block, value.apartment)

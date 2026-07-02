@@ -1,3 +1,4 @@
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Button, HeroImage, InfoCallout, Input } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
@@ -15,11 +16,8 @@ import { OtpActions } from './otp-actions'
 import { OtpHeading } from './otp-heading'
 import css from './otp-verification.module.scss'
 
-const verifyError = 'Неверный код. Попробуйте ещё раз.'
-const networkError = 'Не удалось проверить код. Проверьте соединение.'
-const registerError = 'Не удалось завершить регистрацию. Повторите попытку.'
-
 export const OtpVerification = () => {
+  const { t } = useLingui()
   const navigate = useNavigate()
   const draft = useOnboardingStore(state => state.draft)
   const phone = draft.phone
@@ -73,6 +71,10 @@ export const OtpVerification = () => {
     )
   }
 
+  const verifyError = t`Неверный код. Попробуйте ещё раз.`
+  const networkError = t`Не удалось проверить код. Проверьте соединение.`
+  const registerError = t`Не удалось завершить регистрацию. Повторите попытку.`
+
   const resolveError = () => {
     if (confirmCode.isError) {
       return isWrongCode(confirmCode.error) ? verifyError : networkError
@@ -93,7 +95,7 @@ export const OtpVerification = () => {
 
       <Input
         ref={otp.inputRef}
-        aria-label='Код подтверждения'
+        aria-label={t`Код подтверждения`}
         autoFocus
         className={css.code}
         disabled={isChecking}
@@ -112,7 +114,7 @@ export const OtpVerification = () => {
 
       {isChecking && (
         <InfoCallout icon='loader-circle' variant='progress'>
-          Ваш код отправляется на проверку…
+          <Trans>Ваш код отправляется на проверку…</Trans>
         </InfoCallout>
       )}
 
@@ -123,7 +125,7 @@ export const OtpVerification = () => {
           variant='secondary'
           onClick={register}
         >
-          Повторить попытку
+          <Trans>Повторить попытку</Trans>
         </Button>
       )}
 
