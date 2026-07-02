@@ -11,21 +11,14 @@
 .head {
   align-items: center;
   display: flex;
-  gap: 8px;
-  justify-content: space-between;
+  gap: 12px;
 }
 
-.badges {
+.titleBlock {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.number {
-  color: var(--text-muted);
-  flex-shrink: 0;
-  font-size: 13px;
-  font-weight: 700;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .title {
@@ -33,6 +26,12 @@
   font-size: 17px;
   font-weight: 700;
   margin: 0;
+}
+
+.meta {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .body {
@@ -53,6 +52,44 @@
   gap: 6px;
 }
 
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+
+.contact {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.contactIcon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.contactText {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.contactAction {
+  color: var(--action);
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+}
+
 .footer {
   align-items: center;
   display: flex;
@@ -67,13 +104,17 @@
   gap: 8px;
 }
 
-.author {
-  color: var(--text-muted);
+.readMore {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--action);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  font-family: inherit;
   font-size: 13px;
-  font-weight: 600;
-  min-width: 0;
-  overflow: hidden;
-  text-align: right;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-weight: 700;
+  gap: 4px;
+  padding: 0;
 }

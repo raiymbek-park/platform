@@ -19,6 +19,7 @@ export type IssueAuthor = {
   apartment: number
   block: number
   name: string
+  phone: string
 }
 
 export type Issue = {
@@ -72,6 +73,7 @@ const toAuthor = (data: DocumentData): IssueAuthor => ({
   apartment: toNumber(data.apartment),
   block: toNumber(data.block),
   name: toText(data.name),
+  phone: toText(data.phone),
 })
 
 const parseIssue = (

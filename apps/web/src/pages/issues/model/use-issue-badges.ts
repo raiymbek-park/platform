@@ -1,9 +1,12 @@
 import type {
   ClassificationTag,
-  IssueCategory,
   IssueStatus,
 } from '@raiymbek-park/shared/validation-schemas'
-import type { IssueCardBadge, StatusTagTone } from '@raiymbek-park/ui'
+import type {
+  IconGlyph,
+  IssueCardBadge,
+  StatusTagTone,
+} from '@raiymbek-park/ui'
 import type { IssueView } from './use-issues-data'
 
 import { useLingui } from '@lingui/react/macro'
@@ -18,22 +21,14 @@ export const statusOrder: IssueStatus[] = [
   'planned',
 ]
 
-const categoryTone: Record<IssueCategory, StatusTagTone> = {
-  repair: 'info',
-  replacement: 'accent',
-  complaint: 'warning',
-  violation: 'danger',
-  other: 'neutral',
-}
-
-const statusTone: Record<IssueStatus, StatusTagTone> = {
-  incoming: 'info',
-  'in-progress': 'accent',
-  planned: 'info',
-  blocked: 'danger',
-  'resident-review': 'warning',
-  done: 'brand',
-  rejected: 'neutral',
+const statusGlyph: Record<IssueStatus, IconGlyph> = {
+  incoming: 'inbox',
+  'in-progress': 'wrench',
+  planned: 'calendar-clock',
+  blocked: 'ban',
+  'resident-review': 'users-round',
+  done: 'circle-check-big',
+  rejected: 'circle-x',
 }
 
 const tagTone: Record<ClassificationTag, StatusTagTone> = {
@@ -45,20 +40,22 @@ const tagTone: Record<ClassificationTag, StatusTagTone> = {
 export const useIssueBadges = () => {
   const { t } = useLingui()
 
-  const categoryLabel: Record<IssueCategory, string> = {
-    repair: t`Ремонт`,
-    replacement: t`Замена`,
-    complaint: t`Жалоба`,
-    violation: t`Нарушение`,
-    other: t`Другое`,
-  }
-
-  const statusLabel: Record<IssueStatus, string> = {
+  const filterLabel: Record<IssueStatus, string> = {
     incoming: t`Входящие`,
     'in-progress': t`В работе`,
     planned: t`Запланировано`,
     blocked: t`Заблокировано`,
     'resident-review': t`На рассмотрение жильцам`,
+    done: t`Выполнено`,
+    rejected: t`Отклонено`,
+  }
+
+  const cardStatusLabel: Record<IssueStatus, string> = {
+    incoming: t`Новая заявка`,
+    'in-progress': t`В работе`,
+    planned: t`Запланировано`,
+    blocked: t`Заблокировано`,
+    'resident-review': t`На рассмотрении жильцов`,
     done: t`Выполнено`,
     rejected: t`Отклонено`,
   }
@@ -69,31 +66,22 @@ export const useIssueBadges = () => {
     duplicate: t`Дубликат`,
   }
 
-  const statusName = (status: IssueStatus) => statusLabel[status]
+  const statusName = (status: IssueStatus) => filterLabel[status]
 
-  const cardBadges = (issue: IssueView): IssueCardBadge[] => {
-    const badges: IssueCardBadge[] = [
-      {
-        id: 'category',
-        label: categoryLabel[issue.category],
-        tone: categoryTone[issue.category],
-      },
-      {
-        id: 'status',
-        label: statusLabel[issue.status],
-        tone: statusTone[issue.status],
-      },
-    ]
-    if (!issue.urgent) return badges
-    return [...badges, { id: 'urgent', label: t`Срочно`, tone: 'danger' }]
-  }
-
-  const cardTags = (issue: IssueView): IssueCardBadge[] =>
-    issue.tags.map(tag => ({
+  const cardTags = (issue: IssueView): IssueCardBadge[] => {
+    const tags: IssueCardBadge[] = issue.tags.map(tag => ({
       id: tag,
       label: tagLabel[tag],
       tone: tagTone[tag],
     }))
+    if (!issue.urgent) return tags
+    return [{ id: 'urgent', label: t`Срочно`, tone: 'danger' }, ...tags]
+  }
 
-  return { cardBadges, cardTags, statusName }
+  return {
+    cardStatusLabel: (status: IssueStatus) => cardStatusLabel[status],
+    cardTags,
+    statusGlyph: (status: IssueStatus) => statusGlyph[status],
+    statusName,
+  }
 }

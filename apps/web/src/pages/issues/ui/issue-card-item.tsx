@@ -1,9 +1,16 @@
-import type { ReactionKind } from '@raiymbek-park/shared/validation-schemas'
+import type {
+  IssueStatus,
+  ReactionKind,
+} from '@raiymbek-park/shared/validation-schemas'
+import type { IssueCardContact } from '@raiymbek-park/ui'
 import type { IssueView } from '../model/use-issues-data'
 
+import { i18n } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
 import { IssueCard, Reaction } from '@raiymbek-park/ui'
+import { useState } from 'react'
 
+import { formatIssueDate } from '../model/format-issue-date'
 import { useIssueBadges } from '../model/use-issue-badges'
 
 export type IssueCardItemProps = {
@@ -20,17 +27,32 @@ export const IssueCardItem = ({
   onReact,
 }: IssueCardItemProps) => {
   const { t } = useLingui()
-  const { cardBadges, cardTags } = useIssueBadges()
+  const { cardStatusLabel, cardTags, statusGlyph } = useIssueBadges()
+  const [isExpanded, setExpanded] = useState(false)
 
-  const author = t`${issue.authorName} · Блок ${issue.block}, кв. ${issue.apartment}`
+  const status: IssueStatus = issue.status
+  const meta = t`Заявка №${issue.number} · ${cardStatusLabel(status)}`
+
+  const contacts: IssueCardContact[] = [
+    { glyph: 'user-round', text: issue.authorName },
+    { glyph: 'phone', isAction: true, text: issue.authorPhone },
+    { glyph: 'calendar', text: formatIssueDate(issue.createdAt, i18n.locale) },
+    {
+      glyph: 'map-pin',
+      text: t`Блок ${issue.block} · Квартира ${issue.apartment}`,
+    },
+  ]
 
   return (
     <IssueCard
-      author={author}
-      badges={cardBadges(issue)}
+      badgeGlyph={statusGlyph(status)}
+      collapseLabel={t`Свернуть`}
+      contacts={contacts}
       data-testid='issue-card'
       description={issue.description}
-      number={`#${issue.number}`}
+      expandLabel={t`Подробнее`}
+      isExpanded={isExpanded}
+      meta={meta}
       reactions={
         <>
           <Reaction
@@ -51,6 +73,7 @@ export const IssueCardItem = ({
       }
       tags={cardTags(issue)}
       title={issue.title}
+      onToggleExpand={() => setExpanded(expanded => !expanded)}
     />
   )
 }

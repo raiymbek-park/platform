@@ -15,6 +15,7 @@ export type { InfoCalloutProps } from './info-callout/info-callout'
 export type { InputProps } from './input/input'
 export type {
   IssueCardBadge,
+  IssueCardContact,
   IssueCardProps,
 } from './issue-card/issue-card'
 export type { LocationBadgeProps } from './location-badge/location-badge'

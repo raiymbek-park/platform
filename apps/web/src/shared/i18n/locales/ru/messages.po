@@ -17,8 +17,8 @@ msgstr ""
 #. placeholder {1}: issue.block
 #. placeholder {2}: issue.apartment
 #: src/pages/issues/ui/issue-card-item.tsx:25
-msgid "{0} · Блок {1}, кв. {2}"
-msgstr "{0} · Блок {1}, кв. {2}"
+#~ msgid "{0} · Блок {1}, кв. {2}"
+#~ msgstr "{0} · Блок {1}, кв. {2}"
 
 #. placeholder {0}: blockFloors[block]
 #: src/features/onboarding/ui/registration-form.tsx:148
@@ -38,8 +38,11 @@ msgid "Блок"
 msgstr "Блок"
 
 #. placeholder {0}: data.block
+#. placeholder {0}: issue.block
 #. placeholder {1}: data.apartment
+#. placeholder {1}: issue.apartment
 #: src/pages/home/ui/building-hero.tsx:15
+#: src/pages/issues/ui/issue-card-item.tsx:42
 msgid "Блок {0} · Квартира {1}"
 msgstr "Блок {0} · Квартира {1}"
 
@@ -47,7 +50,8 @@ msgstr "Блок {0} · Квартира {1}"
 msgid "Блок {block}"
 msgstr "Блок {block}"
 
-#: src/pages/issues/model/use-issue-badges.ts:58
+#: src/pages/issues/model/use-issue-badges.ts:45
+#: src/pages/issues/model/use-issue-badges.ts:55
 msgid "В работе"
 msgstr "В работе"
 
@@ -83,7 +87,7 @@ msgstr "Вставить код из буфера"
 msgid "Вступить в общий чат жильцов"
 msgstr "Вступить в общий чат жильцов"
 
-#: src/pages/issues/model/use-issue-badges.ts:57
+#: src/pages/issues/model/use-issue-badges.ts:44
 msgid "Входящие"
 msgstr "Входящие"
 
@@ -96,7 +100,8 @@ msgstr "Выберите блок"
 msgid "Выберите роль"
 msgstr "Выберите роль"
 
-#: src/pages/issues/model/use-issue-badges.ts:62
+#: src/pages/issues/model/use-issue-badges.ts:49
+#: src/pages/issues/model/use-issue-badges.ts:59
 msgid "Выполнено"
 msgstr "Выполнено"
 
@@ -121,16 +126,16 @@ msgid "Доступ заблокирован"
 msgstr "Доступ заблокирован"
 
 #: src/pages/issues/model/use-issue-badges.ts:53
-msgid "Другое"
-msgstr "Другое"
+#~ msgid "Другое"
+#~ msgstr "Другое"
 
-#: src/pages/issues/model/use-issue-badges.ts:69
+#: src/pages/issues/model/use-issue-badges.ts:66
 msgid "Дубликат"
 msgstr "Дубликат"
 
 #: src/pages/issues/model/use-issue-badges.ts:51
-msgid "Жалоба"
-msgstr "Жалоба"
+#~ msgid "Жалоба"
+#~ msgstr "Жалоба"
 
 #: src/pages/home/ui/welcome-feed.tsx:24
 msgid "За время вашего отсутствия всё было спокойно — новостей нет."
@@ -140,7 +145,8 @@ msgstr "За время вашего отсутствия всё было спо
 msgid "За время вашего отсутствия появились изменения:"
 msgstr "За время вашего отсутствия появились изменения:"
 
-#: src/pages/issues/model/use-issue-badges.ts:60
+#: src/pages/issues/model/use-issue-badges.ts:47
+#: src/pages/issues/model/use-issue-badges.ts:57
 msgid "Заблокировано"
 msgstr "Заблокировано"
 
@@ -153,10 +159,11 @@ msgid "Загрузка…"
 msgstr "Загрузка…"
 
 #: src/pages/issues/model/use-issue-badges.ts:50
-msgid "Замена"
-msgstr "Замена"
+#~ msgid "Замена"
+#~ msgstr "Замена"
 
-#: src/pages/issues/model/use-issue-badges.ts:59
+#: src/pages/issues/model/use-issue-badges.ts:46
+#: src/pages/issues/model/use-issue-badges.ts:56
 msgid "Запланировано"
 msgstr "Запланировано"
 
@@ -172,6 +179,12 @@ msgstr "Запросить код повторно"
 #: src/features/onboarding/ui/otp-actions.tsx:60
 msgid "Запросить код повторно через {0}"
 msgstr "Запросить код повторно через {0}"
+
+#. placeholder {0}: issue.number
+#. placeholder {1}: cardStatusLabel(status)
+#: src/pages/issues/ui/issue-card-item.tsx:34
+msgid "Заявка №{0} · {1}"
+msgstr "Заявка №{0} · {1}"
 
 #: src/pages/issues/ui/issues-page.tsx:25
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:26
@@ -206,17 +219,21 @@ msgstr "Мы отправили 6-значный код подтверждени
 msgid "На главную"
 msgstr "На главную"
 
-#: src/pages/issues/model/use-issue-badges.ts:61
+#: src/pages/issues/model/use-issue-badges.ts:48
 msgid "На рассмотрение жильцам"
 msgstr "На рассмотрение жильцам"
+
+#: src/pages/issues/model/use-issue-badges.ts:58
+msgid "На рассмотрении жильцов"
+msgstr "На рассмотрении жильцов"
 
 #: src/features/onboarding/ui/otp-actions.tsx:36
 msgid "Назад"
 msgstr "Назад"
 
 #: src/pages/issues/model/use-issue-badges.ts:52
-msgid "Нарушение"
-msgstr "Нарушение"
+#~ msgid "Нарушение"
+#~ msgstr "Нарушение"
 
 #: src/app/routes/settings.tsx:11
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:27
@@ -259,6 +276,10 @@ msgstr "Неверный код. Попробуйте ещё раз."
 msgid "Нет данных"
 msgstr "Нет данных"
 
+#: src/pages/issues/model/use-issue-badges.ts:54
+msgid "Новая заявка"
+msgstr "Новая заявка"
+
 #: src/pages/home/ui/services-section.tsx:42
 msgid "Новости и уведомления от УК"
 msgstr "Новости и уведомления от УК"
@@ -281,7 +302,8 @@ msgstr "Обращения жильцов в управляющую компан
 msgid "Объявления"
 msgstr "Объявления"
 
-#: src/pages/issues/model/use-issue-badges.ts:63
+#: src/pages/issues/model/use-issue-badges.ts:50
+#: src/pages/issues/model/use-issue-badges.ts:60
 msgid "Отклонено"
 msgstr "Отклонено"
 
@@ -289,7 +311,7 @@ msgstr "Отклонено"
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Отслеживайте ход ваших обращений"
 
-#: src/pages/issues/model/use-issue-badges.ts:67
+#: src/pages/issues/model/use-issue-badges.ts:64
 msgid "По гарантии"
 msgstr "По гарантии"
 
@@ -306,7 +328,12 @@ msgstr "Повторить попытку"
 msgid "Подайте обращение в УК"
 msgstr "Подайте обращение в УК"
 
-#: src/pages/issues/ui/issue-search.tsx:17
+#: src/pages/issues/ui/issue-card-item.tsx:53
+msgid "Подробнее"
+msgstr "Подробнее"
+
+#: src/pages/issues/ui/issue-search.tsx:15
+#: src/pages/issues/ui/issue-search.tsx:18
 msgid "Поиск по заявкам"
 msgstr "Поиск по заявкам"
 
@@ -331,12 +358,16 @@ msgid "Раздел в разработке"
 msgstr "Раздел в разработке"
 
 #: src/pages/issues/model/use-issue-badges.ts:49
-msgid "Ремонт"
-msgstr "Ремонт"
+#~ msgid "Ремонт"
+#~ msgstr "Ремонт"
 
 #: src/features/onboarding/ui/registration-form.tsx:188
 msgid "Роль"
 msgstr "Роль"
+
+#: src/pages/issues/ui/issue-card-item.tsx:49
+msgid "Свернуть"
+msgstr "Свернуть"
 
 #: src/pages/home/ui/services-section.tsx:37
 msgid "Сервисы"
@@ -366,7 +397,7 @@ msgstr "Создать заявку"
 msgid "Создать объявление"
 msgstr "Создать объявление"
 
-#: src/pages/issues/model/use-issue-badges.ts:88
+#: src/pages/issues/model/use-issue-badges.ts:78
 msgid "Срочно"
 msgstr "Срочно"
 
@@ -382,7 +413,7 @@ msgstr "Страница не найдена"
 msgid "Телефон"
 msgstr "Телефон"
 
-#: src/pages/issues/model/use-issue-badges.ts:68
+#: src/pages/issues/model/use-issue-badges.ts:65
 msgid "Требуется уточнение"
 msgstr "Требуется уточнение"
 
