@@ -1,0 +1,32 @@
+.sheet {
+  background: var(--background);
+  border: 0;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -8px 30px var(--shadow);
+  margin: 0 auto auto;
+  max-width: 480px;
+  padding: 8px 20px 24px;
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  width: 100%;
+
+  &::backdrop {
+    background: var(--scrim);
+  }
+}
+
+.handle {
+  background: var(--border);
+  border-radius: 180px;
+  display: block;
+  height: 5px;
+  margin: 0 auto 16px;
+  width: 44px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

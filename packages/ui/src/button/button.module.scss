@@ -36,6 +36,16 @@
     opacity: 0.7;
   }
 
+  &-variant-danger {
+    background: var(--danger);
+    color: var(--surface);
+
+    &:active {
+      background: var(--danger);
+      box-shadow: none;
+    }
+  }
+
   &-variant-secondary {
     background: var(--surface);
     box-shadow: 0 4px 20px var(--shadow);

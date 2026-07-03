@@ -31,6 +31,7 @@ const contactClass = (contact: IssueCardContact) => {
 }
 
 export type IssueCardProps = ComponentProps<'article'> & {
+  actions?: ReactNode
   badgeGlyph: IconGlyph
   badgeTone: IconChipTone
   collapseLabel: ReactNode
@@ -106,6 +107,7 @@ const CardMedia = ({
 )
 
 export const IssueCard = ({
+  actions,
   badgeGlyph,
   badgeTone,
   className,
@@ -131,6 +133,7 @@ export const IssueCard = ({
           <h3 className={css.title}>{title}</h3>
           <span className={css.meta}>{meta}</span>
         </div>
+        {actions && <div className={css.actions}>{actions}</div>}
       </header>
       <p className={css.body}>{description}</p>
       {tags && tags.length > 0 && <CardTags tags={tags} />}
