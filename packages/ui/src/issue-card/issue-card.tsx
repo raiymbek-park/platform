@@ -35,7 +35,7 @@ export type IssueCardProps = ComponentProps<'article'> & {
   badgeTone: IconChipTone
   collapseLabel: ReactNode
   contacts: IssueCardContact[]
-  description: ReactNode
+  description: string
   expandLabel: ReactNode
   isExpanded?: boolean
   media?: string[]
