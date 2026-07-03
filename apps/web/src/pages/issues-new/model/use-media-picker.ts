@@ -1,6 +1,7 @@
 import type { ImageFormItem } from '@raiymbek-park/ui'
 
 import { useLingui } from '@lingui/react/macro'
+import { randomId } from '@raiymbek-park/shared'
 import {
   MEDIA_MAX_BYTES,
   MEDIA_MAX_ITEMS,
@@ -16,7 +17,7 @@ type PickedFile = {
 
 const toPicked = (file: File): PickedFile => ({
   file,
-  id: crypto.randomUUID(),
+  id: randomId(),
   isVideo: file.type.startsWith('video'),
   url: URL.createObjectURL(file),
 })

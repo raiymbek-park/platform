@@ -4,6 +4,7 @@ import { joinCss, pickCss } from '@raiymbek-park/shared'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import css from './carousel.module.scss'
+import { isVideoUrl } from './is-video-url'
 
 export type CarouselItem = {
   id: string
@@ -98,11 +99,14 @@ export const Carousel = ({
         }}
       >
         {items.map(item =>
-          item.isVideo ? (
+          (item.isVideo ?? isVideoUrl(item.url)) ? (
             <video
               key={item.id}
               className={css.media}
+              controls
               muted
+              playsInline
+              preload='metadata'
               src={item.url}
               onLoadedMetadata={reportHeight}
             />

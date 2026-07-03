@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react'
 
 import { useLingui } from '@lingui/react/macro'
+import { randomId } from '@raiymbek-park/shared'
 import {
   Button,
   Content,
@@ -40,7 +41,7 @@ export const IssuesNewPage = () => {
     if (!values || media.error) return
 
     setSubmitting(true)
-    const id = crypto.randomUUID()
+    const id = randomId()
     const uploaded = await uploadIssueMedia(id, media.files).catch(() => null)
     if (uploaded === null) {
       setSubmitError(t`Не удалось загрузить файлы. Попробуйте ещё раз.`)
