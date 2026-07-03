@@ -56,11 +56,13 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
     await expect(caller.me()).resolves.toEqual({
       apartment: 0,
       block: 0,
+      id: null,
       name: '',
+      role: 'resident',
     })
   })
 
-  it('returns only name, block, apartment for an existing resident', async () => {
+  it('returns the profile without the phone for an existing resident', async () => {
     mockGetResident.mockResolvedValueOnce({
       apartment: 42,
       block: 1,
@@ -76,7 +78,9 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
     await expect(caller.me()).resolves.toEqual({
       apartment: 42,
       block: 1,
+      id: 'uid-1',
       name: 'Иван Петров',
+      role: 'owner',
     })
   })
 })
