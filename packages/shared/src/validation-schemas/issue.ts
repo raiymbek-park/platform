@@ -64,6 +64,7 @@ export const ISSUE_PAGE_SIZE = 20
 
 export const issueListInputSchema = z.object({
   cursor: z.number().optional(),
+  search: z.string().optional(),
   status: issueFilterSchema.default(DEFAULT_ISSUE_STATUS),
 })
 

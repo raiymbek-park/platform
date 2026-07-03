@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url'
 import { getStorage } from 'firebase-admin/storage'
 
 import { getDb, Timestamp } from '../src/firestore'
+import { buildKeywords } from '../src/issues/keywords'
 
 type SeedIssue = {
   apartment: number
@@ -229,6 +230,10 @@ const run = async () => {
         commentCount: issue.commentCount,
         createdAt: Timestamp.fromMillis(now - index * hour),
         description: issue.description,
+        keywords: buildKeywords({
+          number: issue.number,
+          titles: [issue.title],
+        }),
         media,
         number: issue.number,
         reactions: issue.reactions,

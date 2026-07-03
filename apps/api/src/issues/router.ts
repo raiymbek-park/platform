@@ -16,6 +16,7 @@ export const issuesRouter = router({
       return listIssues({
         cursor: input.cursor,
         role,
+        search: input.search,
         status: input.status,
         uid: ctx.uid,
       })

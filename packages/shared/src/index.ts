@@ -1,2 +1,8 @@
 export { cssVariables, joinCss, pickCss } from './css'
-export { toCamel, toKebab } from './utilities'
+export {
+  SEARCH_MIN_CHARS,
+  searchTerms,
+  toCamel,
+  toKebab,
+  tokenize,
+} from './utilities'

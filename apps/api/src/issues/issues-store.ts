@@ -8,6 +8,7 @@ import type {
 } from '@raiymbek-park/shared/validation-schemas'
 import type { DocumentData } from 'firebase-admin/firestore'
 
+import { searchTerms } from '@raiymbek-park/shared'
 import {
   classificationTags,
   ISSUE_PAGE_SIZE,
@@ -17,6 +18,8 @@ import {
 } from '@raiymbek-park/shared/validation-schemas'
 
 import { getDb, Timestamp } from '../firestore'
+
+const SEARCH_TERM_LIMIT = 30
 
 export type IssueAuthor = {
   apartment: number
@@ -33,6 +36,7 @@ export type Issue = {
   description: string
   dislikeCount: number
   id: string
+  keywords: string[]
   likeCount: number
   media: string[]
   myReaction: ReactionKind | null
@@ -113,6 +117,7 @@ const parseIssue = (
     description: toText(data.description),
     dislikeCount: kinds.filter(kind => kind === 'dislike').length,
     id,
+    keywords: toStringArray(data.keywords),
     likeCount: kinds.filter(kind => kind === 'like').length,
     media: toStringArray(data.media),
     myReaction: uid ? (reactions[uid] ?? null) : null,
@@ -127,6 +132,7 @@ const parseIssue = (
 type ListIssuesInput = {
   cursor?: number
   role: PermissionRole | null
+  search?: string
   status: IssueFilter
   uid: string | null
 }
@@ -139,12 +145,17 @@ type ListIssuesResult = {
 export const listIssues = async ({
   cursor,
   role,
+  search,
   status,
   uid,
 }: ListIssuesInput): Promise<ListIssuesResult> => {
   const scoped =
     status === 'all' ? collection() : collection().where('status', '==', status)
-  const ordered = scoped.orderBy('createdAt', 'desc')
+  const terms = searchTerms(search ?? '').slice(0, SEARCH_TERM_LIMIT)
+  const searched = terms.length
+    ? scoped.where('keywords', 'array-contains-any', terms)
+    : scoped
+  const ordered = searched.orderBy('createdAt', 'desc')
   const paged =
     cursor === undefined
       ? ordered
