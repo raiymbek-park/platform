@@ -44,11 +44,26 @@ export const useIssueCategories = (): CategoryOption[] => {
       value: 'violation',
     },
     {
-      icon: 'ellipsis',
+      icon: 'coffee',
       label: t`Прочее`,
       subtitle: t`Другая категория`,
       tone: 'warning',
       value: 'other',
     },
   ]
+}
+
+export type CategoryTheme = {
+  glyph: IconGlyph
+  tone: IconChipTone
+}
+
+export const useCategoryTheme = (
+  category: IssueCategory | null,
+): CategoryTheme => {
+  const selected = useIssueCategories().find(item => item.value === category)
+  return {
+    glyph: selected?.icon ?? 'hammer',
+    tone: selected?.tone ?? 'info',
+  }
 }

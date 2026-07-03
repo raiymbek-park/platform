@@ -1,15 +1,13 @@
 import type { ChangeEvent, ComponentProps, ReactNode } from 'react'
+import type { CarouselItem } from '../carousel/carousel'
 
-import { joinCss, pickCss } from '@raiymbek-park/shared'
+import { joinCss } from '@raiymbek-park/shared'
 
+import { Carousel } from '../carousel/carousel'
 import { Icon } from '../icon'
 import css from './image-form.module.scss'
 
-export type ImageFormItem = {
-  id: string
-  isVideo?: boolean
-  url: string
-}
+export type ImageFormItem = CarouselItem
 
 export type ImageFormProps = Omit<
   ComponentProps<'div'>,
@@ -25,7 +23,7 @@ export type ImageFormProps = Omit<
   onSelect: (index: number) => void
 }
 
-const dotCss = pickCss(css, css.dot)
+const placeholderSrc = `${import.meta.env.BASE_URL}images/add-images.png`
 
 export const ImageForm = ({
   accept = 'image/*,video/*',
@@ -39,43 +37,28 @@ export const ImageForm = ({
   onSelect,
   ...restProps
 }: ImageFormProps) => {
-  const active = photos[activeIndex]
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.target
     if (files && files.length > 0) onAdd(files)
     event.target.value = ''
   }
 
+  const isEmpty = photos.length === 0
+
   return (
     <div className={joinCss(css.form, className)} {...restProps}>
-      <div className={css.gallery}>
-        {active ? (
-          active.isVideo ? (
-            <video className={css.media} muted src={active.url} />
-          ) : (
-            <img alt='' className={css.media} src={active.url} />
-          )
+      <div className={joinCss(css.gallery, isEmpty && css.galleryEmpty)}>
+        {isEmpty ? (
+          <img alt='' className={css.placeholder} src={placeholderSrc} />
         ) : (
-          <div className={css.placeholder}>
-            <Icon glyph='image-plus' size={32} />
-          </div>
-        )}
-        {photos.length > 1 && (
-          <div className={css.dots}>
-            {photos.map((photo, index) => (
-              <button
-                key={photo.id}
-                aria-label={String(index + 1)}
-                className={dotCss({ isActive: index === activeIndex })}
-                type='button'
-                onClick={() => onSelect(index)}
-              />
-            ))}
-          </div>
+          <Carousel
+            activeIndex={activeIndex}
+            items={photos}
+            onIndexChange={onSelect}
+          />
         )}
       </div>
-      <div className={css.actions}>
+      <div className={joinCss(css.actions, isEmpty && css.actionsEmpty)}>
         <label className={css.add}>
           <input
             accept={accept}
@@ -84,18 +67,15 @@ export const ImageForm = ({
             type='file'
             onChange={handleChange}
           />
-          <Icon glyph='image-plus' size={20} />
+          <Icon glyph='image-plus' size={16} />
           {addLabel}
         </label>
-        <button
-          className={css.remove}
-          disabled={photos.length === 0}
-          type='button'
-          onClick={onRemove}
-        >
-          <Icon glyph='trash-2' size={20} />
-          {removeLabel}
-        </button>
+        {!isEmpty && (
+          <button className={css.remove} type='button' onClick={onRemove}>
+            <Icon glyph='trash-2' size={16} />
+            {removeLabel}
+          </button>
+        )}
       </div>
     </div>
   )

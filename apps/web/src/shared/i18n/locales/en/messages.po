@@ -42,7 +42,7 @@ msgstr "Block"
 #. placeholder {1}: data.apartment
 #. placeholder {1}: issue.apartment
 #: src/pages/home/ui/building-hero.tsx:15
-#: src/pages/issues/ui/issue-card-item.tsx:58
+#: src/pages/issues/ui/issue-card-item.tsx:65
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
 
@@ -118,10 +118,10 @@ msgid "Далее"
 msgstr "Next"
 
 #: src/pages/issues/ui/issue-actions-menu.tsx:22
-msgid "Действия"
-msgstr "Actions"
+#~ msgid "Действия"
+#~ msgstr "Actions"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:114
+#: src/pages/issues-new/ui/issues-new-page.tsx:119
 msgid "Добавить"
 msgstr "Add"
 
@@ -202,7 +202,7 @@ msgstr "Resend code in {0}"
 
 #. placeholder {0}: issue.number
 #. placeholder {1}: cardStatusLabel(status)
-#: src/pages/issues/ui/issue-card-item.tsx:42
+#: src/pages/issues/ui/issue-card-item.tsx:46
 msgid "Заявка №{0} · {1}"
 msgstr "Issue №{0} · {1}"
 
@@ -232,7 +232,7 @@ msgstr "Apartment is outside the selected block's range"
 msgid "Код подтверждения"
 msgstr "Verification code"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:86
+#: src/pages/issues-new/ui/issues-new-page.tsx:90
 msgid "Кратко опишите проблему"
 msgstr "Briefly describe the problem"
 
@@ -261,7 +261,7 @@ msgid "На рассмотрении жильцов"
 msgstr "Under resident review"
 
 #: src/features/onboarding/ui/otp-actions.tsx:36
-#: src/pages/issues-new/ui/issues-new-page.tsx:134
+#: src/pages/issues-new/ui/issues-new-page.tsx:137
 msgid "Назад"
 msgstr "Back"
 
@@ -282,7 +282,7 @@ msgstr "Settings"
 msgid "Не найдено ни одной заявки."
 msgstr "No issues found."
 
-#: src/pages/issues/ui/issue-card-item.tsx:90
+#: src/pages/issues/ui/issue-card-item.tsx:110
 msgid "Не нравится"
 msgstr "Dislike"
 
@@ -302,7 +302,7 @@ msgstr "Couldn't load contacts"
 msgid "Не удалось загрузить последние события"
 msgstr "Couldn't load recent events"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:44
+#: src/pages/issues-new/ui/issues-new-page.tsx:48
 msgid "Не удалось загрузить файлы. Попробуйте ещё раз."
 msgstr "Could not upload the files. Please try again."
 
@@ -314,7 +314,7 @@ msgstr "Failed to send the code. Check your connection and try again."
 msgid "Не удалось проверить код. Проверьте соединение."
 msgstr "Couldn't verify the code. Check your connection."
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:52
+#: src/pages/issues-new/ui/issues-new-page.tsx:56
 msgid "Не удалось создать заявку. Попробуйте ещё раз."
 msgstr "Could not open the issue. Please try again."
 
@@ -330,7 +330,7 @@ msgstr "Invalid code. Please try again."
 msgid "Нет данных"
 msgstr "No data"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:67
+#: src/pages/issues-new/ui/issues-new-page.tsx:71
 #: src/pages/issues/model/use-issue-badges.ts:69
 #: src/pages/issues/ui/issues-page.tsx:46
 msgid "Новая заявка"
@@ -352,7 +352,7 @@ msgstr "No new events yet."
 msgid "Номер квартиры"
 msgstr "Apartment number"
 
-#: src/pages/issues/ui/issue-card-item.tsx:82
+#: src/pages/issues/ui/issue-card-item.tsx:102
 msgid "Нравится"
 msgstr "Like"
 
@@ -370,7 +370,7 @@ msgstr "The total file size must not exceed 200 MB"
 msgid "Объявления"
 msgstr "Announcements"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:98
+#: src/pages/issues-new/ui/issues-new-page.tsx:103
 msgid "Описание"
 msgstr "Description"
 
@@ -378,7 +378,7 @@ msgstr "Description"
 msgid "Описание должно содержать от 10 до 1000 символов"
 msgstr "The description must be 10 to 1000 characters"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:69
+#: src/pages/issues-new/ui/issues-new-page.tsx:73
 msgid "Опишите проблему или вопрос, который вы хотите направить управляющей компании или жителям нашего ЖК."
 msgstr "Describe the problem or question you want to raise with the management company or your neighbours."
 
@@ -391,7 +391,7 @@ msgstr "Rejected"
 msgid "Отмена"
 msgstr "Cancel"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:146
+#: src/pages/issues-new/ui/issues-new-page.tsx:149
 msgid "Отправить"
 msgstr "Submit"
 
@@ -420,11 +420,11 @@ msgstr "Try again"
 msgid "Подайте обращение в УК"
 msgstr "Submit a request to the management company"
 
-#: src/pages/issues/ui/issue-card-item.tsx:75
+#: src/pages/issues/ui/issue-card-item.tsx:95
 msgid "Подробнее"
 msgstr "Details"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:100
+#: src/pages/issues-new/ui/issues-new-page.tsx:105
 msgid "Подробно опишите, что случилось и где…"
 msgstr "Describe in detail what happened and where…"
 
@@ -460,6 +460,10 @@ msgstr "Other"
 msgid "Раздел в разработке"
 msgstr "Section under development"
 
+#: src/pages/issues/ui/issue-card-item.tsx:76
+msgid "Редактировать"
+msgstr "Edit"
+
 #: src/pages/issues-new/model/use-issue-categories.ts:20
 msgid "Ремонт"
 msgstr "Repair"
@@ -468,7 +472,7 @@ msgstr "Repair"
 msgid "Роль"
 msgstr "Role"
 
-#: src/pages/issues/ui/issue-card-item.tsx:71
+#: src/pages/issues/ui/issue-card-item.tsx:91
 msgid "Свернуть"
 msgstr "Collapse"
 
@@ -517,7 +521,7 @@ msgstr "Page not found"
 msgid "Телефон"
 msgstr "Phone"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:84
+#: src/pages/issues-new/ui/issues-new-page.tsx:88
 msgid "Тема заявки"
 msgstr "Issue title"
 
@@ -541,8 +545,8 @@ msgstr "Needs clarification"
 msgid "У вас есть предложение или поиск, пишите сюда"
 msgstr "Have an offer or looking for something? Post it here"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:116
-#: src/pages/issues/ui/issue-actions-menu.tsx:28
+#: src/pages/issues-new/ui/issues-new-page.tsx:121
+#: src/pages/issues/ui/issue-card-item.tsx:82
 #: src/pages/issues/ui/issue-delete-confirm.tsx:32
 msgid "Удалить"
 msgstr "Delete"
@@ -551,7 +555,7 @@ msgstr "Delete"
 msgid "Удалить заявку?"
 msgstr "Delete the issue?"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:111
+#: src/pages/issues-new/ui/issues-new-page.tsx:116
 msgid "Фото"
 msgstr "Photos"
 

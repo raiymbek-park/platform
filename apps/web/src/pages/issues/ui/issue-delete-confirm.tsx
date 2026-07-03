@@ -1,7 +1,5 @@
 import { useLingui } from '@lingui/react/macro'
-import { Button, IconChip, PopupMenu } from '@raiymbek-park/ui'
-
-import css from './issue-delete-confirm.module.scss'
+import { ConfirmPopup } from '@raiymbek-park/ui'
 
 export type IssueDeleteConfirmProps = {
   isLoading?: boolean
@@ -19,22 +17,16 @@ export const IssueDeleteConfirm = ({
   const { t } = useLingui()
 
   return (
-    <PopupMenu isOpen={isOpen} onClose={onCancel}>
-      <div className={css.confirm}>
-        <IconChip glyph='trash-2' iconSize={30} size={72} tone='danger' />
-        <h2 className={css.title}>{t`Удалить заявку?`}</h2>
-        <p className={css.message}>
-          {t`Это действие нельзя отменить. Заявка будет удалена безвозвратно.`}
-        </p>
-      </div>
-      <div className={css.actions}>
-        <Button isLoading={isLoading} variant='danger' onClick={onConfirm}>
-          {t`Удалить`}
-        </Button>
-        <Button disabled={isLoading} variant='secondary' onClick={onCancel}>
-          {t`Отмена`}
-        </Button>
-      </div>
-    </PopupMenu>
+    <ConfirmPopup
+      cancelLabel={t`Отмена`}
+      confirmLabel={t`Удалить`}
+      illustration={`${import.meta.env.BASE_URL}images/recycle-bin.png`}
+      isLoading={isLoading}
+      isOpen={isOpen}
+      message={t`Это действие нельзя отменить. Заявка будет удалена безвозвратно.`}
+      title={t`Удалить заявку?`}
+      onCancel={onCancel}
+      onConfirm={onConfirm}
+    />
   )
 }

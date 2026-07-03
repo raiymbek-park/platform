@@ -6158,8 +6158,8 @@
               "id": "lrwZ0",
               "type": "ref",
               "ref": "tHQhz",
-              "x": 190,
-              "y": 246
+              "x": 195,
+              "y": 248
             }
           ]
         },
@@ -6211,8 +6211,8 @@
                   "id": "fMWcV",
                   "type": "ref",
                   "ref": "tHQhz",
-                  "x": 149,
-                  "y": 265
+                  "x": 154,
+                  "y": 267
                 }
               ]
             },
@@ -7494,8 +7494,8 @@
                       "id": "rY8w3",
                       "type": "ref",
                       "ref": "tHQhz",
-                      "x": 165,
-                      "y": 225
+                      "x": 170,
+                      "y": 227
                     }
                   ]
                 }
@@ -7809,7 +7809,7 @@
           "id": "tHQhz",
           "name": "dots",
           "reusable": true,
-          "fill": "#181b1fa6",
+          "fill": "#181b1fd9",
           "cornerRadius": 8,
           "gap": 4,
           "padding": 2,
@@ -7821,40 +7821,40 @@
               "id": "Unk7z",
               "name": "dot",
               "fill": "$disabled-surface",
-              "width": 6,
-              "height": 6
+              "width": 4,
+              "height": 4
             },
             {
               "type": "ellipse",
               "id": "y6jX1U",
               "name": "dot-active",
               "fill": "$surface",
-              "width": 8,
-              "height": 8
+              "width": 6,
+              "height": 6
             },
             {
               "type": "ellipse",
               "id": "V7RGRD",
               "name": "dot",
               "fill": "$disabled-surface",
-              "width": 6,
-              "height": 6
+              "width": 4,
+              "height": 4
             },
             {
               "type": "ellipse",
               "id": "nbqUp",
               "name": "dot",
               "fill": "$disabled-surface",
-              "width": 6,
-              "height": 6
+              "width": 4,
+              "height": 4
             },
             {
               "type": "ellipse",
               "id": "P1Dkj5",
               "name": "dot",
               "fill": "$disabled-surface",
-              "width": 6,
-              "height": 6
+              "width": 4,
+              "height": 4
             }
           ]
         }

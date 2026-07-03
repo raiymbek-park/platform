@@ -5,7 +5,6 @@
 }
 
 .illustration {
-  border-radius: 20px;
   height: 170px;
   object-fit: cover;
   width: 100%;
@@ -47,10 +46,6 @@
   color: var(--danger);
   font-size: 13px;
   font-weight: var(--weight-medium);
-}
-
-.footer {
-  padding-inline: 20px;
 }
 
 .dock {

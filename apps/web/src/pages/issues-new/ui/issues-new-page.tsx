@@ -7,7 +7,6 @@ import {
   ImageForm,
   InfoCallout,
   Input,
-  ScreenFooter,
   ScreenHeader,
   Textarea,
 } from '@raiymbek-park/ui'
@@ -16,6 +15,7 @@ import { useState } from 'react'
 
 import { uploadIssueMedia } from '../model/upload-media'
 import { useCreateIssue } from '../model/use-create-issue'
+import { useCategoryTheme } from '../model/use-issue-categories'
 import { useIssueForm } from '../model/use-issue-form'
 import { useMediaPicker } from '../model/use-media-picker'
 import { CategoryField } from './category-field'
@@ -26,6 +26,7 @@ export const IssuesNewPage = () => {
   const navigate = useNavigate()
   const form = useIssueForm()
   const media = useMediaPicker()
+  const theme = useCategoryTheme(form.category)
   const { createIssue } = useCreateIssue()
   const [isSubmitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -39,7 +40,8 @@ export const IssuesNewPage = () => {
     if (!values || media.error) return
 
     setSubmitting(true)
-    const uploaded = await uploadIssueMedia(media.files).catch(() => null)
+    const id = crypto.randomUUID()
+    const uploaded = await uploadIssueMedia(id, media.files).catch(() => null)
     if (uploaded === null) {
       setSubmitError(t`Не удалось загрузить файлы. Попробуйте ещё раз.`)
       setSubmitting(false)
@@ -47,7 +49,7 @@ export const IssuesNewPage = () => {
     }
 
     try {
-      await createIssue({ ...values, media: uploaded })
+      await createIssue({ id, ...values, media: uploaded })
     } catch {
       setSubmitError(t`Не удалось создать заявку. Попробуйте ещё раз.`)
       setSubmitting(false)
@@ -57,12 +59,12 @@ export const IssuesNewPage = () => {
   return (
     <form className={css.form} onSubmit={handleSubmit}>
       <ScreenHeader />
+      <img
+        alt=''
+        className={css.illustration}
+        src={`${import.meta.env.BASE_URL}images/create-issue.png`}
+      />
       <Content gap={24}>
-        <img
-          alt=''
-          className={css.illustration}
-          src={`${import.meta.env.BASE_URL}images/create-issue.png`}
-        />
         <header className={css.intro}>
           <h1 className={css.title}>{t`Новая заявка`}</h1>
           <p className={css.subtitle}>
@@ -80,11 +82,12 @@ export const IssuesNewPage = () => {
 
         <div className={css.field}>
           <Input
-            icon='hammer'
+            icon={theme.glyph}
             label={t`Тема заявки`}
             maxLength={80}
             placeholder={t`Кратко опишите проблему`}
             state={form.errors.title ? 'error' : undefined}
+            tone={theme.tone}
             value={form.title}
             onChange={event => form.setTitle(event.target.value)}
           />
@@ -126,9 +129,7 @@ export const IssuesNewPage = () => {
             {submitError}
           </InfoCallout>
         )}
-      </Content>
 
-      <ScreenFooter className={css.footer}>
         <div className={css.dock}>
           <Button
             aria-label={t`Назад`}
@@ -146,7 +147,7 @@ export const IssuesNewPage = () => {
             {t`Отправить`}
           </Button>
         </div>
-      </ScreenFooter>
+      </Content>
     </form>
   )
 }

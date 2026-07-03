@@ -4,7 +4,9 @@ import type { IconChipTone } from '../icon-chip/icon-chip'
 import type { StatusTagTone } from '../status-tag/status-tag'
 
 import { joinCss } from '@raiymbek-park/shared'
+import { useState } from 'react'
 
+import { Carousel } from '../carousel/carousel'
 import { Divider } from '../divider/divider'
 import { Icon } from '../icon'
 import { IconChip } from '../icon-chip/icon-chip'
@@ -91,20 +93,40 @@ const CardFooter = ({
   </footer>
 )
 
+const CardBody = ({
+  description,
+  isExpanded,
+}: {
+  description: string
+  isExpanded?: boolean
+}) => (
+  <p className={joinCss(css.body, isExpanded && css.bodyExpanded)}>
+    {description}
+  </p>
+)
+
 const CardMedia = ({
   isExpanded,
-  src,
+  media,
 }: {
   isExpanded?: boolean
-  src: string
-}) => (
-  <img
-    alt=''
-    className={joinCss(css.photo, isExpanded && css.expanded)}
-    loading='lazy'
-    src={src}
-  />
-)
+  media: string[]
+}) => {
+  const [naturalHeight, setNaturalHeight] = useState(150)
+
+  return (
+    <div
+      className={css.media}
+      style={isExpanded ? { height: naturalHeight } : undefined}
+    >
+      <Carousel
+        items={media.map(url => ({ id: url, url }))}
+        showDots={isExpanded}
+        onNaturalHeight={setNaturalHeight}
+      />
+    </div>
+  )
+}
 
 export const IssueCard = ({
   actions,
@@ -125,7 +147,9 @@ export const IssueCard = ({
   ...restProps
 }: IssueCardProps) => (
   <article className={joinCss(css.card, className)} {...restProps}>
-    {media?.[0] && <CardMedia isExpanded={isExpanded} src={media[0]} />}
+    {media && media.length > 0 && (
+      <CardMedia isExpanded={isExpanded} media={media} />
+    )}
     <div className={css.content}>
       <header className={css.head}>
         <IconChip glyph={badgeGlyph} iconSize={20} size={40} tone={badgeTone} />
@@ -133,14 +157,14 @@ export const IssueCard = ({
           <h3 className={css.title}>{title}</h3>
           <span className={css.meta}>{meta}</span>
         </div>
-        {actions && <div className={css.actions}>{actions}</div>}
       </header>
-      <p className={css.body}>{description}</p>
+      <CardBody description={description} isExpanded={isExpanded} />
       {tags && tags.length > 0 && <CardTags tags={tags} />}
       <div className={joinCss(css.details, isExpanded && css.detailsOpen)}>
         <div className={css.detailsInner}>
           <Divider />
           <CardContacts contacts={contacts} />
+          {actions && <div className={css.actions}>{actions}</div>}
         </div>
       </div>
       <CardFooter

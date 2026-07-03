@@ -1,4 +1,4 @@
-import type { IssueCreateInput } from '@raiymbek-park/shared/validation-schemas'
+import type { IssueCreatePayload } from '@raiymbek-park/shared/validation-schemas'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
@@ -12,7 +12,7 @@ export const useCreateIssue = () => {
   const mutation = useMutation(trpc.issues.create.mutationOptions())
   const listKey = trpc.issues.list.pathKey()
 
-  const createIssue = async (input: IssueCreateInput) => {
+  const createIssue = async (input: IssueCreatePayload) => {
     await mutation.mutateAsync(input)
     await queryClient.invalidateQueries({
       queryKey: listKey,

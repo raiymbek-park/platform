@@ -260,7 +260,7 @@
       "id": "CreateRequestScreen",
       "x": 454,
       "y": 0,
-      "name": "Create Todo",
+      "name": "Create Issue",
       "clip": true,
       "width": 390,
       "fill": "$ds:background",
@@ -491,8 +491,9 @@
                           "fill": "$ds:warning-soft"
                         },
                         "ds:opt-icon": {
-                          "icon": "ellipsis",
-                          "fill": "$ds:warning"
+                          "icon": "coffee",
+                          "fill": "$ds:warning",
+                          "library": "lucide"
                         },
                         "ds:opt-name": {
                           "content": "Прочее"
@@ -681,7 +682,7 @@
       "id": "RequestsScreen",
       "x": 0,
       "y": 0,
-      "name": "Todos",
+      "name": "Issues",
       "clip": true,
       "width": 390,
       "fill": "$ds:background",

@@ -1,5 +1,5 @@
 import {
-  issueCreateInputSchema,
+  issueCreatePayloadSchema,
   issueDeleteInputSchema,
   issueListInputSchema,
   reactionInputSchema,
@@ -50,7 +50,7 @@ export const issuesRouter = router({
       return { ok: true }
     }),
   create: publicProcedure
-    .input(issueCreateInputSchema)
+    .input(issueCreatePayloadSchema)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.uid) {
         throw new TRPCError({

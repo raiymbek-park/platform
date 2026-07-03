@@ -180,8 +180,8 @@ A genuinely breaking change requires listing affected consumer files, confirming
 
 ## Tool Policy
 
-- **Allowed:** Read, Write, Edit, Glob, Grep, Bash (`jq`, `sed`, `awk`).
-- **Forbidden:** `mcp__pencil__*` (not needed when editing JSON directly — and denied at the project level); Python/Node or any other runtime for routine read/search/write.
+- **Allowed:** Read, Write, Edit, Glob, Grep, Bash (`jq`, `sed`, `awk`). Pencil MCP **read/render** tools — `get_editor_state`, `get_screenshot`, `get_variables`, `snapshot_layout`, `batch_get`, `export_nodes`, `export_html` — for inspecting or screenshotting designs (e.g. rendering a mock for a pixel side-by-side).
+- **Forbidden:** Pencil MCP **mutations** (`batch_design`) — edit `.pen` via `jq` atomic writes instead (the MCP can't guarantee atomicity and may clash with the desktop app's auto-save); Python/Node or any other runtime for routine read/search/write.
 - Use `jq` for JSON queries and mutations, `Grep` for text search, `Glob` for path search.
 - See [pen-jq.md](pen-jq.md) for recipes and the post-write validation suite.
 

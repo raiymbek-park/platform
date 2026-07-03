@@ -105,6 +105,12 @@ export const issueCreateInputSchema = z.object({
 
 export type IssueCreateInput = z.infer<typeof issueCreateInputSchema>
 
+export const issueCreatePayloadSchema = issueCreateInputSchema.extend({
+  id: z.string().min(1),
+})
+
+export type IssueCreatePayload = z.infer<typeof issueCreatePayloadSchema>
+
 export const issueDeleteInputSchema = z.object({
   issueId: z.string().min(1),
 })

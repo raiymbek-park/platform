@@ -1,7 +1,7 @@
 import type {
   ClassificationTag,
   IssueCategory,
-  IssueCreateInput,
+  IssueCreatePayload,
   IssueFilter,
   IssueStatus,
   PermissionRole,
@@ -21,6 +21,7 @@ import {
 
 import { FieldValue, getDb, Timestamp } from '../firestore'
 import { getResident } from '../resident/resident-store'
+import { deleteIssueMedia } from '../storage'
 import { buildKeywords } from './keywords'
 
 const SEARCH_TERM_LIMIT = 30
@@ -212,16 +213,16 @@ const authorSnapshot = (resident: Resident | null): IssueAuthor => {
 
 export const createIssue = async (
   uid: string,
-  input: IssueCreateInput,
+  input: IssueCreatePayload,
 ): Promise<{ id: string; number: number }> => {
   const author = authorSnapshot(await getResident(uid))
   return getDb().runTransaction(async transaction => {
     const counter = counterRef()
     const snap = await transaction.get(counter)
     const number = nextNumber(snap.data()?.value)
-    const issueRef = collection().doc()
+    const issueRef = collection().doc(input.id)
     transaction.set(counter, { value: number }, { merge: true })
-    transaction.set(issueRef, {
+    transaction.create(issueRef, {
       author,
       authorId: uid,
       category: input.category,
@@ -237,7 +238,7 @@ export const createIssue = async (
       title: input.title,
       urgent: input.urgent,
     })
-    return { id: issueRef.id, number }
+    return { id: input.id, number }
   })
 }
 
@@ -249,14 +250,18 @@ export const deleteIssue = async (
   issueId: string,
 ): Promise<DeleteOutcome> => {
   const ref = collection().doc(issueId)
-  return getDb().runTransaction(async transaction => {
-    const snap = await transaction.get(ref)
-    if (!snap.exists) return 'not-found'
-    const data = snap.data() ?? {}
-    const isNew = toStatus(data.status) === 'new'
-    const isAuthor = toText(data.authorId) === uid
-    if (!isNew || (!isAuthor && role !== 'administration')) return 'forbidden'
-    transaction.delete(ref)
-    return 'ok'
-  })
+  const outcome = await getDb().runTransaction<DeleteOutcome>(
+    async transaction => {
+      const snap = await transaction.get(ref)
+      if (!snap.exists) return 'not-found'
+      const data = snap.data() ?? {}
+      const isNew = toStatus(data.status) === 'new'
+      const isAuthor = toText(data.authorId) === uid
+      if (!isNew || (!isAuthor && role !== 'administration')) return 'forbidden'
+      transaction.delete(ref)
+      return 'ok'
+    },
+  )
+  if (outcome === 'ok') await deleteIssueMedia(issueId).catch(() => undefined)
+  return outcome
 }

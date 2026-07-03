@@ -2,7 +2,9 @@ export type { ActionCardProps } from './action-card/action-card'
 export type { AnnounceCardProps } from './announce-card/announce-card'
 export type { BlockCardProps } from './block-card/block-card'
 export type { ButtonProps } from './button/button'
+export type { CarouselItem, CarouselProps } from './carousel/carousel'
 export type { CommentCountProps } from './comment-count/comment-count'
+export type { ConfirmPopupProps } from './confirm-popup/confirm-popup'
 export type { ContactCardProps } from './contact-card/contact-card'
 export type { ContentProps } from './content/content'
 export type { DividerProps } from './divider/divider'
@@ -17,6 +19,10 @@ export type {
   ImageFormProps,
 } from './image-form/image-form'
 export type { InfoCalloutProps } from './info-callout/info-callout'
+export type {
+  InlineButtonProps,
+  InlineButtonTone,
+} from './inline-button/inline-button'
 export type { InputProps } from './input/input'
 export type {
   IssueCardBadge,
@@ -42,7 +48,9 @@ export { ActionCard } from './action-card/action-card'
 export { AnnounceCard } from './announce-card/announce-card'
 export { BlockCard } from './block-card/block-card'
 export { Button } from './button/button'
+export { Carousel } from './carousel/carousel'
 export { CommentCount } from './comment-count/comment-count'
+export { ConfirmPopup } from './confirm-popup/confirm-popup'
 export { ContactCard } from './contact-card/contact-card'
 export { Content } from './content/content'
 export { Divider } from './divider/divider'
@@ -54,6 +62,7 @@ export { Icon } from './icon'
 export { IconChip } from './icon-chip/icon-chip'
 export { ImageForm } from './image-form/image-form'
 export { InfoCallout } from './info-callout/info-callout'
+export { InlineButton } from './inline-button/inline-button'
 export { Input } from './input/input'
 export { IssueCard } from './issue-card/issue-card'
 export { LocationBadge } from './location-badge/location-badge'

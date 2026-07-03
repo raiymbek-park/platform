@@ -7,14 +7,15 @@ import {
 
 import { auth, storage } from '@/shared/firebase'
 
-export const uploadIssueMedia = async (files: File[]): Promise<string[]> => {
-  const uid = auth.currentUser?.uid
-  if (!uid) throw new Error('unauthenticated')
+export const uploadIssueMedia = async (
+  issueId: string,
+  files: File[],
+): Promise<string[]> => {
+  if (!auth.currentUser?.uid) throw new Error('unauthenticated')
 
-  const batchId = crypto.randomUUID()
   const targets = files.map((file, index) => ({
     file,
-    ref: ref(storage, `users/${uid}/issues/${batchId}/${index}-${file.name}`),
+    ref: ref(storage, `issues/${issueId}/${index}-${file.name}`),
   }))
 
   try {

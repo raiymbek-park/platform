@@ -1,0 +1,40 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+}
+
+.illustration {
+  align-self: center;
+  border-radius: 16px;
+  height: 100px;
+  object-fit: cover;
+  width: 100px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  color: var(--foreground);
+  font-size: 17px;
+  font-weight: var(--weight-bold);
+  margin: 0;
+}
+
+.message {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: var(--weight-medium);
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}

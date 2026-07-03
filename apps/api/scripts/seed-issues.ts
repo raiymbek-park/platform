@@ -8,6 +8,7 @@ import { getStorage } from 'firebase-admin/storage'
 
 import { getDb, Timestamp } from '../src/firestore'
 import { buildKeywords } from '../src/issues/keywords'
+import { resolveBucketName } from '../src/storage'
 
 type SeedIssue = {
   apartment: number
@@ -171,22 +172,7 @@ const designImagesDir = join(
   'images',
 )
 
-const resolveBucket = async () => {
-  const project = process.env.GOOGLE_CLOUD_PROJECT ?? 'raiymbek-park-sa99'
-  const candidates = [
-    `${project}.firebasestorage.app`,
-    `${project}.appspot.com`,
-  ]
-  const found = await Promise.all(
-    candidates.map(async name => {
-      const [exists] = await getStorage().bucket(name).exists()
-      return exists ? name : null
-    }),
-  )
-  const name = found.find(Boolean)
-  if (!name) throw new Error(`No storage bucket found for project ${project}`)
-  return getStorage().bucket(name)
-}
+const resolveBucket = async () => getStorage().bucket(await resolveBucketName())
 
 type StorageBucket = Awaited<ReturnType<typeof resolveBucket>>
 
@@ -196,7 +182,7 @@ const uploadMedia = async (
   filename: string,
 ): Promise<string> => {
   const token = randomUUID()
-  const destination = `assets/issues/seed-${issueNumber}/${filename}`
+  const destination = `issues/seed-${issueNumber}/${filename}`
   await bucket.upload(join(designImagesDir, filename), {
     destination,
     metadata: {

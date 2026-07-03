@@ -5,18 +5,11 @@
   overflow: hidden;
 }
 
-.photo {
-  display: block;
+.media {
   height: 150px;
-  interpolate-size: allow-keywords;
-  object-fit: cover;
-  object-position: center;
-  transition: height 500ms ease;
+  overflow: hidden;
+  transition: height 300ms ease;
   width: 100%;
-}
-
-.expanded {
-  height: auto;
 }
 
 .content {
@@ -41,8 +34,8 @@
 }
 
 .actions {
-  align-self: flex-start;
-  flex-shrink: 0;
+  display: flex;
+  gap: 20px;
 }
 
 .title {
@@ -70,6 +63,11 @@
   overflow: hidden;
 }
 
+.bodyExpanded {
+  -webkit-line-clamp: unset;
+  display: block;
+}
+
 .tags {
   display: flex;
   flex-wrap: wrap;
@@ -93,14 +91,14 @@
 .detailsInner {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   overflow: hidden;
 }
 
 .contacts {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   margin: 0;
 }
 
