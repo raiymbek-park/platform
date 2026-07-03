@@ -69,6 +69,7 @@ export const IssueCardItem = ({
       reactions={
         <>
           <Reaction
+            aria-label={t`Нравится`}
             count={issue.likeCount}
             disabled={!canReact}
             isActive={issue.myReaction === 'like'}
@@ -76,6 +77,7 @@ export const IssueCardItem = ({
             onClick={() => onReact(issue.id, 'like', issue.myReaction)}
           />
           <Reaction
+            aria-label={t`Не нравится`}
             count={issue.dislikeCount}
             disabled={!canReact}
             isActive={issue.myReaction === 'dislike'}
