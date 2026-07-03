@@ -34,6 +34,41 @@ export const trpcMutationError = (
 const trpcQuery = (procedure: string, data: unknown): HttpHandler =>
   http.get(trpcUrl(procedure), () => batchData(data))
 
+const unwrap = (entry: unknown): unknown =>
+  entry && typeof entry === 'object' && 'json' in entry ? entry.json : entry
+
+export const trpcQueries = (
+  resolvers: Record<string, (input: unknown) => unknown>,
+): HttpHandler =>
+  http.get(trpcUrl(':procedures'), async ({ params, request }) => {
+    const procedures = String(params.procedures).split(',')
+    const raw = JSON.parse(
+      new URL(request.url).searchParams.get('input') ?? '{}',
+    )
+    const results = await Promise.all(
+      procedures.map(async (procedure, index) => ({
+        result: {
+          data: await resolvers[procedure]?.(unwrap(raw[String(index)])),
+        },
+      })),
+    )
+    return HttpResponse.json(results)
+  })
+
+export const trpcQueriesError = (
+  code = 'INTERNAL_SERVER_ERROR',
+  httpStatus = 500,
+): HttpHandler =>
+  http.get(trpcUrl(':procedures'), ({ params }) => {
+    const procedures = String(params.procedures).split(',')
+    return HttpResponse.json(
+      procedures.map(() => ({
+        error: { message: code, code: -32603, data: { code, httpStatus } },
+      })),
+      { status: httpStatus },
+    )
+  })
+
 const homeHandlers = [
   trpcQuery('resident.me', {
     apartment: 42,
