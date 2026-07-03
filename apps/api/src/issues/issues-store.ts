@@ -172,11 +172,11 @@ export const setReaction = async (
   issueId: string,
   uid: string,
   kind: ReactionKind,
-): Promise<void> => {
+): Promise<boolean> => {
   const ref = collection().doc(issueId)
-  await getDb().runTransaction(async transaction => {
+  return getDb().runTransaction(async transaction => {
     const snap = await transaction.get(ref)
-    if (!snap.exists) return
+    if (!snap.exists) return false
     const reactions = toReactions(snap.data()?.reactions)
     const next =
       reactions[uid] === kind
@@ -185,5 +185,6 @@ export const setReaction = async (
           )
         : { ...reactions, [uid]: kind }
     transaction.update(ref, { reactions: next })
+    return true
   })
 }

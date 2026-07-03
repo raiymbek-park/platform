@@ -36,7 +36,10 @@ export const issuesRouter = router({
         throw new TRPCError({ code: 'FORBIDDEN', message: 'reactionForbidden' })
       }
 
-      await setReaction(input.issueId, ctx.uid, input.kind)
+      const updated = await setReaction(input.issueId, ctx.uid, input.kind)
+      if (!updated) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'issueNotFound' })
+      }
       return { ok: true }
     }),
 })
