@@ -31,7 +31,6 @@ rules live in `validation.md`.
   Given: a Resident whose like was applied optimistically
   When:  the reaction request fails
   Then:  the optimistic like is rolled back to the previous count and reaction
-         an error indication is shown
 
 ## Scenario 5: Edit fails
 

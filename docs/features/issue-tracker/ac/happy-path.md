@@ -8,8 +8,9 @@ category names refer to the values fixed in `prd.md`.
   Given: a signed-in user of any role on `/issues`
   When:  the list loads with the default filter (New)
   Then:  issues with status New are shown, newest first
-         each card shows the category, current status, any classification tags, the author, and the
-         like/dislike counts
+         each card shows the category, current status, any classification tags, the author, the
+         like/dislike counts, and the comment count
+         a card whose issue has media shows its first photo as a collapsed preview
          the status-filter tabs are visible, with New active
          the bottom navigation shows the Issues tab as active
 
@@ -87,9 +88,9 @@ category names refer to the values fixed in `prd.md`.
 ## Scenario 12: Search the issue list
 
   Given: a signed-in user on `/issues` with a status filter active
-  When:  they type a query into the search field
-  Then:  only issues that match the query in their title, description, or number are shown, and only
-         among those in the active status filter
+  When:  they type a query of at least three characters into the search field
+  Then:  only issues whose title has a word beginning with the query, or whose number matches, are shown
+         only issues within the active status filter are shown
          clearing the query restores the full filtered list
 
 ## Scenario 13: Skeletons while the list loads
@@ -98,3 +99,34 @@ category names refer to the values fixed in `prd.md`.
   When:  the list request is still pending
   Then:  skeleton (ghost) cards are shown in place of the list
          once the issues arrive, the skeletons are replaced by the issue cards
+
+## Scenario 14: Infinite scroll loads more issues
+
+  Given: a signed-in user on `/issues` with a filter that holds more issues than one page
+  When:  they scroll to the end of the loaded list
+  Then:  the next page of issues is requested and appended below the current ones
+         a loading placeholder is shown while the next page is in flight
+
+## Scenario 15: Media preview expands with the card
+
+  Given: a signed-in user viewing an issue with one or more photos, shown collapsed
+  When:  they expand the card
+  Then:  the media preview grows from its collapsed height to the photo's full height
+  When:  they collapse the card again
+  Then:  the preview returns to its collapsed height
+
+## Scenario 16: The All tab shows issues of every status
+
+  Given: a signed-in user on `/issues` with issues existing across several statuses
+  When:  they select the "All" filter tab
+  Then:  issues of every status are shown together, newest first
+         the "All" tab becomes active
+         the active filter is reflected in the URL search parameter
+
+## Scenario 17: A search shows loading placeholders, not the empty state, while it resolves
+
+  Given: a signed-in user typing a query of at least three characters that no already-loaded issue
+         matches
+  When:  the search request is still in flight
+  Then:  skeleton loading placeholders are shown in place of the list
+         the empty state is not shown while the request is in flight

@@ -120,19 +120,19 @@ the interface is not sufficient.
 
 ## Search rules
 
-## Scenario 17: Search matches title, description, or number, case-insensitively
+## Scenario 17: Search matches title or number, case-insensitively
 
   Given: a signed-in user on the issue list
-  When:  the query matches an issue's title, description, or number in any letter case, ignoring
-         surrounding whitespace
-  Then:  that issue is shown; issues matching none of the three fields are hidden
+  When:  a word in the issue's title begins with the query, or the query matches the issue's number, in
+         any letter case and ignoring surrounding whitespace
+  Then:  that issue is shown; issues matching neither the title nor the number are hidden
 
-## Scenario 18: An empty or whitespace-only query applies no filter narrowing
+## Scenario 18: A query below three characters applies no filter narrowing
 
-  Given: a signed-in user with the In progress filter active and a query that is empty or
-         whitespace-only
+  Given: a signed-in user with the In progress filter active and a query that is empty, whitespace-only,
+         or shorter than three characters
   When:  the list is computed
-  Then:  no search narrowing is applied and the full In progress list is shown
+  Then:  no search narrowing is applied and the full In progress list is shown, with no empty state
 
 ## Reaction rules
 
@@ -151,3 +151,14 @@ the interface is not sufficient.
   When:  they switch to a different status tab
   Then:  the query remains in the search field and continues to narrow the issues shown under the
          newly selected filter
+
+## Author phone visibility
+
+## Scenario 21: The author's phone is visible only to Managers, Administration, and the author
+
+  Given: an issue opened by one user
+  When:  a Resident, Owner, or Viewer who is not the author views it
+  Then:  the payload carries no phone number for the author
+  When:  the issue's own author, a Manager, or an Administration user views it
+  Then:  the author's phone number is included
+         the phone is omitted by the server, not merely hidden in the interface

@@ -99,3 +99,25 @@ Boundary conditions around fields, reactions, and status filtering. Values refer
          tab's list request has resolved
   When:  the first tab's request resolves after the switch
   Then:  the list shown corresponds to the newly selected tab, not the abandoned request's results
+
+## Scenario 16: Search narrows only from the third character
+
+  Given: a signed-in user on the issue list
+  When:  they type one or two characters into the search field
+  Then:  no narrowing is applied and the full filtered list is shown, with no empty state
+  When:  they type a third character
+  Then:  the list narrows to the matching issues
+
+## Scenario 17: Search finds matches beyond the loaded pages
+
+  Given: a filter whose issues span more pages than are currently loaded
+  When:  the user searches (three or more characters) for an issue on a page not yet fetched
+  Then:  that issue is found and shown — search is resolved on the server across the whole filter, not
+         only the issues already loaded
+
+## Scenario 18: A rapid double-tap on a reaction settles on the correct final state
+
+  Given: a Resident who taps like and, before the first request settles, taps like again
+  When:  the first reaction request settles after the second tap
+  Then:  the reaction reflects the second tap (the like is turned off) and the settling of the first
+         request does not revert it
