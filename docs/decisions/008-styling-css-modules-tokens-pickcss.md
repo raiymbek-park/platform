@@ -48,7 +48,11 @@ Use **CSS Modules in SCSS**, with all design decisions as **CSS custom-property
 tokens** (`app/tokens.scss`, semantic colour names, literal sizing scales), and
 compose stateful classes with **`pickCss`** and runtime values with
 **`cssVariables`** (both from `@raiymbek-park/shared`). Global SCSS is limited to
-resets/tokens; element-specific styling lives in component modules.
+resets/tokens; element-specific styling lives in component modules. Colour is
+tokenized semantically and font-weight is tokenized through the `--weight-*`
+scale — the single non-colour token scale — while every other sizing value
+(spacing, font size, radius, icon and avatar size) stays a literal `px` in the
+component module.
 
 ## Consequences
 
