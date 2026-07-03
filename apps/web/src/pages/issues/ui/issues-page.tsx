@@ -40,7 +40,7 @@ export const IssuesPage = () => {
         </header>
         <IssueSearch value={query} onChange={handleSearch} />
         <IssueFilterTabs />
-        <IssueList query={search} status={status} />
+        <IssueList query={query} search={search} status={status} />
       </Content>
       <BottomNav active='/issues' />
     </>

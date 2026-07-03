@@ -240,7 +240,7 @@ msgstr "Back"
 msgid "Настройки"
 msgstr "Settings"
 
-#: src/pages/issues/ui/issue-list.tsx:78
+#: src/pages/issues/ui/issue-list.tsx:76
 msgid "Не найдено ни одной заявки."
 msgstr "No issues found."
 
@@ -272,7 +272,7 @@ msgstr "Couldn't verify the code. Check your connection."
 msgid "Неверный код. Попробуйте ещё раз."
 msgstr "Invalid code. Please try again."
 
-#: src/pages/issues/ui/issue-list.tsx:79
+#: src/pages/issues/ui/issue-list.tsx:77
 msgid "Нет данных"
 msgstr "No data"
 
@@ -315,7 +315,7 @@ msgstr "Rejected"
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Track the progress of your requests"
 
-#: src/pages/issues/ui/issue-search.tsx:16
+#: src/pages/issues/ui/issue-search.tsx:23
 msgid "Очистить поиск"
 msgstr "Clear search"
 
@@ -340,10 +340,13 @@ msgstr "Submit a request to the management company"
 msgid "Подробнее"
 msgstr "Details"
 
-#: src/pages/issues/ui/issue-search.tsx:15
-#: src/pages/issues/ui/issue-search.tsx:18
+#: src/pages/issues/ui/issue-search.tsx:17
 msgid "Поиск по заявкам"
 msgstr "Search issues"
+
+#: src/pages/issues/ui/issue-search.tsx:19
+msgid "Поиск по заявкам, от 3 символов"
+msgstr "Search issues, 3+ characters"
 
 #: src/pages/home/ui/welcome-feed.tsx:23
 msgid "Пока вас не было, ничего не произошло."

@@ -16,7 +16,7 @@ export const IssueSearch = ({ onChange, value }: IssueSearchProps) => {
     <Input
       aria-label={t`Поиск по заявкам`}
       data-testid='issue-search'
-      placeholder={t`Поиск по заявкам`}
+      placeholder={t`Поиск по заявкам, от 3 символов`}
       trailing={
         value && (
           <button

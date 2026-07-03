@@ -8,7 +8,6 @@ import {
   SkeletonCard,
 } from '@raiymbek-park/ui'
 
-import { matchIssue } from '../model/match-issue'
 import { useIntersectionObserver } from '../model/use-intersection-observer'
 import { useIssuesData } from '../model/use-issues-data'
 import { useReactionAccess } from '../model/use-reaction-access'
@@ -22,20 +21,22 @@ const emptyImage = `${import.meta.env.BASE_URL}images/no-data.png`
 
 export type IssueListProps = {
   query: string
+  search: string
   status: IssueFilter
 }
 
-export const IssueList = ({ query, status }: IssueListProps) => {
+export const IssueList = ({ query, search, status }: IssueListProps) => {
   const { t } = useLingui()
   const {
     fetchNextPage,
     hasNextPage,
     isError,
+    isFetching,
     isFetchingNextPage,
     isPending,
     issues,
     refetch,
-  } = useIssuesData(status)
+  } = useIssuesData({ query, search, status })
   const { canReact } = useReactionAccess()
   const { react } = useUpdateIssueReaction()
   const sentinelRef = useIntersectionObserver<HTMLDivElement>({
@@ -45,15 +46,15 @@ export const IssueList = ({ query, status }: IssueListProps) => {
     },
   })
 
-  if (isPending) {
-    return (
-      <div className={css.list} data-testid='issue-skeletons'>
-        {SKELETON_KEYS.map(key => (
-          <SkeletonCard key={key} />
-        ))}
-      </div>
-    )
-  }
+  const skeletons = (
+    <div className={css.list} data-testid='issue-skeletons'>
+      {SKELETON_KEYS.map(key => (
+        <SkeletonCard key={key} />
+      ))}
+    </div>
+  )
+
+  if (isPending) return skeletons
 
   if (isError) {
     return (
@@ -68,10 +69,10 @@ export const IssueList = ({ query, status }: IssueListProps) => {
     )
   }
 
-  const visibleIssues = issues.filter(issue => matchIssue(issue, query))
-
-  if (visibleIssues.length === 0) {
-    return (
+  if (issues.length === 0) {
+    return isFetching || query !== search ? (
+      skeletons
+    ) : (
       <EmptyState
         data-testid='issue-empty'
         image={emptyImage}
@@ -83,7 +84,7 @@ export const IssueList = ({ query, status }: IssueListProps) => {
 
   return (
     <div className={css.list}>
-      {visibleIssues.map(issue => (
+      {issues.map(issue => (
         <IssueCardItem
           key={issue.id}
           canReact={canReact}

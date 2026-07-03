@@ -1,11 +1,9 @@
 import type { IssueView } from './use-issues-data'
 
+import { searchTerms } from '@raiymbek-park/shared'
+
 export const matchIssue = (issue: IssueView, query: string): boolean => {
-  const needle = query.trim().toLowerCase()
-  if (!needle) return true
-  return (
-    issue.title.toLowerCase().includes(needle) ||
-    issue.description.toLowerCase().includes(needle) ||
-    String(issue.number).includes(needle)
-  )
+  const terms = searchTerms(query)
+  if (!terms.length) return true
+  return terms.some(term => issue.keywords.includes(term))
 }

@@ -240,7 +240,7 @@ msgstr "Назад"
 msgid "Настройки"
 msgstr "Настройки"
 
-#: src/pages/issues/ui/issue-list.tsx:78
+#: src/pages/issues/ui/issue-list.tsx:76
 msgid "Не найдено ни одной заявки."
 msgstr "Не найдено ни одной заявки."
 
@@ -272,7 +272,7 @@ msgstr "Не удалось проверить код. Проверьте сое
 msgid "Неверный код. Попробуйте ещё раз."
 msgstr "Неверный код. Попробуйте ещё раз."
 
-#: src/pages/issues/ui/issue-list.tsx:79
+#: src/pages/issues/ui/issue-list.tsx:77
 msgid "Нет данных"
 msgstr "Нет данных"
 
@@ -315,7 +315,7 @@ msgstr "Отклонено"
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Отслеживайте ход ваших обращений"
 
-#: src/pages/issues/ui/issue-search.tsx:16
+#: src/pages/issues/ui/issue-search.tsx:23
 msgid "Очистить поиск"
 msgstr "Очистить поиск"
 
@@ -340,10 +340,13 @@ msgstr "Подайте обращение в УК"
 msgid "Подробнее"
 msgstr "Подробнее"
 
-#: src/pages/issues/ui/issue-search.tsx:15
-#: src/pages/issues/ui/issue-search.tsx:18
+#: src/pages/issues/ui/issue-search.tsx:17
 msgid "Поиск по заявкам"
 msgstr "Поиск по заявкам"
+
+#: src/pages/issues/ui/issue-search.tsx:19
+msgid "Поиск по заявкам, от 3 символов"
+msgstr "Поиск по заявкам, от 3 символов"
 
 #: src/pages/home/ui/welcome-feed.tsx:23
 msgid "Пока вас не было, ничего не произошло."
