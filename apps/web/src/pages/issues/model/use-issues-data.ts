@@ -9,6 +9,7 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 import { useTRPC } from '@/shared/api'
 
 import { matchIssue } from './match-issue'
+import { useStoreDeletedIssues } from './use-store-deleted-issues'
 import { useStoreReactions } from './use-store-reactions'
 
 export type IssueView = Omit<Issue, 'author'> & {
@@ -68,6 +69,7 @@ export const useIssuesData = ({
 }: UseIssuesDataInput) => {
   const trpc = useTRPC()
   const reactions = useStoreReactions(store => store.reactions)
+  const deletedIds = useStoreDeletedIssues(store => store.deletedIds)
   const list = useInfiniteQuery(
     trpc.issues.list.infiniteQueryOptions(
       { search, status },
@@ -84,6 +86,7 @@ export const useIssuesData = ({
   const issues =
     list.data?.pages
       .flatMap(page => page.issues)
+      .filter(issue => !deletedIds.has(issue.id))
       .map(issue => toView(issue, reactions[issue.id])) ?? []
   const isProjecting = query !== search || list.isPlaceholderData
 

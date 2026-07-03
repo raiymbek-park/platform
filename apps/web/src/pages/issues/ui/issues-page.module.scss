@@ -17,3 +17,19 @@
   font-weight: var(--weight-medium);
   margin: 0;
 }
+
+.fab {
+  align-items: center;
+  background: var(--action);
+  border-radius: 180px;
+  bottom: 92px;
+  box-shadow: 0 4px 20px var(--shadow);
+  color: var(--surface);
+  display: flex;
+  height: 56px;
+  justify-content: center;
+  position: fixed;
+  right: 20px;
+  width: 56px;
+  z-index: 2;
+}

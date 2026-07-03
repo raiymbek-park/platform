@@ -83,6 +83,7 @@ const toIssue = ({ createdAt, media, number, status, title }: Seed): Issue => ({
   description: '',
   dislikeCount: 0,
   id: `issue-${number}`,
+  isMine: false,
   keywords: keywordsOf(title, number),
   likeCount: 0,
   media: media ?? [],

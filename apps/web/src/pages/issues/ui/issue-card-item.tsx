@@ -12,10 +12,13 @@ import { useState } from 'react'
 
 import { formatIssueDate } from '../model/format-issue-date'
 import { useIssueBadges } from '../model/use-issue-badges'
+import { IssueActionsMenu } from './issue-actions-menu'
 
 export type IssueCardItemProps = {
+  canDelete: boolean
   canReact: boolean
   issue: IssueView
+  onDelete: (issueId: string) => void
   onReact: (
     issueId: string,
     kind: ReactionKind,
@@ -24,8 +27,10 @@ export type IssueCardItemProps = {
 }
 
 export const IssueCardItem = ({
+  canDelete,
   canReact,
   issue,
+  onDelete,
   onReact,
 }: IssueCardItemProps) => {
   const { t } = useLingui()
@@ -56,6 +61,11 @@ export const IssueCardItem = ({
 
   return (
     <IssueCard
+      actions={
+        canDelete ? (
+          <IssueActionsMenu onDelete={() => onDelete(issue.id)} />
+        ) : undefined
+      }
       badgeGlyph={statusGlyph(status)}
       badgeTone={statusTone(status)}
       collapseLabel={t`Свернуть`}

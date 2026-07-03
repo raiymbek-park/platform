@@ -14,6 +14,7 @@ const issueView = (keywords: string[]): IssueView => ({
   description: '',
   dislikeCount: 0,
   id: 'issue-1',
+  isMine: false,
   keywords,
   likeCount: 0,
   media: [],

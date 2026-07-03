@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro'
-import { Content, ScreenHeader } from '@raiymbek-park/ui'
-import { getRouteApi } from '@tanstack/react-router'
+import { Content, Icon, ScreenHeader } from '@raiymbek-park/ui'
+import { getRouteApi, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 
 import { BottomNav } from '@/widgets/bottom-nav'
@@ -42,6 +42,14 @@ export const IssuesPage = () => {
         <IssueFilterTabs />
         <IssueList query={query} search={search} status={status} />
       </Content>
+      <Link
+        aria-label={t`Новая заявка`}
+        className={css.fab}
+        search={{ status: 'new' }}
+        to='/issues/new'
+      >
+        <Icon glyph='plus' size={26} />
+      </Link>
       <BottomNav active='/issues' />
     </>
   )
