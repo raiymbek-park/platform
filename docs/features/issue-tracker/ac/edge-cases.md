@@ -1,4 +1,4 @@
-# Task Tracker — Edge Cases
+# Issue Tracker — Edge Cases
 
 Boundary conditions around fields, reactions, and status filtering. Values refer to `prd.md`.
 
@@ -50,7 +50,7 @@ Boundary conditions around fields, reactions, and status filtering. Values refer
   When:  they apply Under warranty, Needs clarification, and Duplicate together and save
   Then:  all three tags are applied to the issue
 
-## Scenario 9: Editing or deleting an issue that has moved past Incoming is blocked
+## Scenario 9: Editing or deleting an issue that has moved past New is blocked
 
   Given: a Resident whose own issue is now In progress
   When:  they open the actions menu on it
@@ -60,15 +60,18 @@ Boundary conditions around fields, reactions, and status filtering. Values refer
 
 ## Scenario 10: A filter with a single issue then that issue changes status
 
-  Given: an Incoming filter showing exactly one issue
+  Given: an New filter showing exactly one issue
   When:  a Manager moves that issue to In progress and the Resident's list refreshes
-  Then:  the Incoming filter shows the empty state and the issue appears under In progress
+  Then:  the New filter shows the empty state and the issue appears under In progress
 
 ## Scenario 11: Long author name or many tags on a card
 
   Given: an issue whose author name is long and that carries several classification tags
   When:  its card renders in the list
-  Then:  the card lays out without breaking (text truncates or wraps; tags remain readable)
+  Then:  the author name does not overflow the card — it is truncated (with an ellipsis) or wraps
+         within the name's own line
+         every applied tag remains fully visible on the card, none clipped or hidden behind another
+         element
 
 ## Scenario 12: Search with no matches
 
@@ -89,3 +92,32 @@ Boundary conditions around fields, reactions, and status filtering. Values refer
   Then:  the attachment is accepted (the bounds are inclusive)
   When:  they add an 11th item, or the total exceeds 200 MB
   Then:  the addition is rejected
+
+## Scenario 15: Switching filters while a list request is in flight
+
+  Given: a signed-in user on `/issues` who switches from one status tab to another before the first
+         tab's list request has resolved
+  When:  the first tab's request resolves after the switch
+  Then:  the list shown corresponds to the newly selected tab, not the abandoned request's results
+
+## Scenario 16: Search narrows only from the third character
+
+  Given: a signed-in user on the issue list
+  When:  they type one or two characters into the search field
+  Then:  no narrowing is applied and the full filtered list is shown, with no empty state
+  When:  they type a third character
+  Then:  the list narrows to the matching issues
+
+## Scenario 17: Search finds matches beyond the loaded pages
+
+  Given: a filter whose issues span more pages than are currently loaded
+  When:  the user searches (three or more characters) for an issue on a page not yet fetched
+  Then:  that issue is found and shown — search is resolved on the server across the whole filter, not
+         only the issues already loaded
+
+## Scenario 18: A rapid double-tap on a reaction settles on the correct final state
+
+  Given: a Resident who taps like and, before the first request settles, taps like again
+  When:  the first reaction request settles after the second tap
+  Then:  the reaction reflects the second tap (the like is turned off) and the settling of the first
+         request does not revert it

@@ -7,13 +7,13 @@
 .title {
   color: var(--foreground);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: var(--weight-bold);
   margin: 0;
 }
 
 .description {
   color: var(--text-secondary);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   margin: 0;
 }

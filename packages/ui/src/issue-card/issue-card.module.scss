@@ -1,0 +1,160 @@
+.card {
+  background: var(--surface);
+  border-radius: 18px;
+  box-shadow: 0 4px 20px var(--shadow);
+  overflow: hidden;
+}
+
+.photo {
+  display: block;
+  height: 150px;
+  interpolate-size: allow-keywords;
+  object-fit: cover;
+  object-position: center;
+  transition: height 500ms ease;
+  width: 100%;
+}
+
+.expanded {
+  height: auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.head {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  color: var(--foreground);
+  font-size: 17px;
+  font-weight: var(--weight-bold);
+  margin: 0;
+}
+
+.meta {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+}
+
+.body {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  font-size: 14px;
+  font-weight: var(--weight-medium);
+  line-height: 1.5;
+  margin: 0;
+  overflow: hidden;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.details {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin-top: -12px;
+  transition:
+    grid-template-rows 300ms ease,
+    margin-top 300ms ease;
+}
+
+.detailsOpen {
+  grid-template-rows: 1fr;
+  margin-top: 0;
+}
+
+.detailsInner {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+}
+
+.contact {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.contactIcon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.contactText {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  margin: 0;
+}
+
+.contactName {
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+  margin: 0;
+}
+
+.contactAction {
+  color: var(--action);
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+  margin: 0;
+}
+
+.footer {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding-top: 4px;
+}
+
+.reactions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.readMore {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  color: var(--action);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: var(--weight-bold);
+  gap: 4px;
+  padding: 0;
+}

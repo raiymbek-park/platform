@@ -71,7 +71,7 @@
                   "name": "tab",
                   "descendants": {
                     "ds:filter-tab-label-active": {
-                      "content": "Входящие"
+                      "content": "Новые"
                     }
                   }
                 },
@@ -741,10 +741,10 @@
                   "id": "req-tab-in",
                   "type": "ref",
                   "ref": "ds:FilterTabActive",
-                  "name": "tab-incoming",
+                  "name": "tab-new",
                   "descendants": {
                     "ds:filter-tab-label-active": {
-                      "content": "Входящие"
+                      "content": "Новые"
                     }
                   }
                 },
@@ -1532,7 +1532,7 @@
                       "id": "rd-opt-in",
                       "type": "ref",
                       "ref": "ds:SelectOptionDefault",
-                      "name": "status-incoming",
+                      "name": "status-new",
                       "width": "fill_container",
                       "descendants": {
                         "ds:opt-icon-wrap": {
@@ -1543,7 +1543,7 @@
                           "fill": "$ds:warning"
                         },
                         "ds:opt-name": {
-                          "content": "Входящие"
+                          "content": "Новые"
                         },
                         "ds:opt-role": {
                           "content": "Новая, ещё не в работе"

@@ -16,5 +16,5 @@
 .text {
   color: var(--foreground);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: var(--weight-bold);
 }

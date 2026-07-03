@@ -1,4 +1,4 @@
-# Task Tracker — Validation and Permission Rules
+# Issue Tracker — Validation and Permission Rules
 
 Field bounds refer to the **Field Rules** section of `prd.md`. Permission rules refer to the
 **Roles and Permissions** matrix. Every permission rule is enforced on the server; hiding a control in
@@ -68,10 +68,10 @@ the interface is not sufficient.
   Then:  the server rejects every one of these actions
          they can still view the issue list and detail
 
-## Scenario 10: Resident and Owner may open, react, and manage their own Incoming issues
+## Scenario 10: Resident and Owner may open, react, and manage their own New issues
 
   Given: a Resident (or Owner)
-  When:  they open an issue, react to any issue, or edit/delete an Incoming issue they opened
+  When:  they open an issue, react to any issue, or edit/delete an New issue they opened
   Then:  each action succeeds
 
 ## Scenario 11: Resident cannot change status
@@ -99,12 +99,12 @@ the interface is not sufficient.
   Given: an Administration user
   When:  they open an issue, react, or change any issue's status
   Then:  each action succeeds
-  When:  they edit or delete an Incoming issue (including one opened by someone else)
+  When:  they edit or delete an New issue (including one opened by someone else)
   Then:  the action succeeds
 
-## Scenario 15: Editing and deletion are locked once an issue leaves Incoming
+## Scenario 15: Editing and deletion are locked once an issue leaves New
 
-  Given: an issue whose status has changed away from Incoming
+  Given: an issue whose status has changed away from New
   When:  the author, or an Administration user, attempts to edit or delete it
   Then:  the server rejects the action for everyone
          changing the issue's status is still allowed for a Manager or Administration
@@ -120,17 +120,45 @@ the interface is not sufficient.
 
 ## Search rules
 
-## Scenario 17: Search matches title, description, or number, case-insensitively
+## Scenario 17: Search matches title or number, case-insensitively
 
   Given: a signed-in user on the issue list
-  When:  the query matches an issue's title, description, or number in any letter case, ignoring
-         surrounding whitespace
-  Then:  that issue is shown; issues matching none of the three fields are hidden
+  When:  a word in the issue's title begins with the query, or the query matches the issue's number, in
+         any letter case and ignoring surrounding whitespace
+  Then:  that issue is shown; issues matching neither the title nor the number are hidden
 
-## Scenario 18: Search combines with the active status filter
+## Scenario 18: A query below three characters applies no filter narrowing
 
-  Given: a signed-in user with the In progress filter active and a non-empty query
+  Given: a signed-in user with the In progress filter active and a query that is empty, whitespace-only,
+         or shorter than three characters
   When:  the list is computed
-  Then:  only issues that are both In progress and match the query are shown
-  When:  the query is empty or whitespace-only
-  Then:  no search narrowing is applied and the full In progress list is shown
+  Then:  no search narrowing is applied and the full In progress list is shown, with no empty state
+
+## Reaction rules
+
+## Scenario 19: Rapid double-tap on a reaction is not sent twice
+
+  Given: a Resident who taps like on an issue with no reaction from them
+  When:  they tap like again before the first tap has finished processing
+  Then:  the second tap has no additional effect — the issue ends with exactly one recorded like and
+         the count increased by one, not two
+
+## Search and filter interaction
+
+## Scenario 20: Search query persists when the status filter changes
+
+  Given: a signed-in user on `/issues` with a non-empty search query and a status filter active
+  When:  they switch to a different status tab
+  Then:  the query remains in the search field and continues to narrow the issues shown under the
+         newly selected filter
+
+## Author phone visibility
+
+## Scenario 21: The author's phone is visible only to Managers, Administration, and the author
+
+  Given: an issue opened by one user
+  When:  a Resident, Owner, or Viewer who is not the author views it
+  Then:  the payload carries no phone number for the author
+  When:  the issue's own author, a Manager, or an Administration user views it
+  Then:  the author's phone number is included
+         the phone is omitted by the server, not merely hidden in the interface

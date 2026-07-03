@@ -1,4 +1,4 @@
-# Task Tracker — Error States
+# Issue Tracker — Error States
 
 External failures — network and server errors while loading or mutating issues. Field and permission
 rules live in `validation.md`.
@@ -31,7 +31,6 @@ rules live in `validation.md`.
   Given: a Resident whose like was applied optimistically
   When:  the reaction request fails
   Then:  the optimistic like is rolled back to the previous count and reaction
-         an error indication is shown
 
 ## Scenario 5: Edit fails
 
@@ -59,3 +58,11 @@ rules live in `validation.md`.
   Given: a user viewing an issue that has since been deleted
   When:  they react, edit, delete, or change its status
   Then:  the server reports the issue is gone and the interface returns to the list
+
+## Scenario 9: Issue list succeeds after a delay
+
+  Given: a signed-in user on `/issues`
+  When:  the list request takes longer than usual but eventually succeeds
+  Then:  skeleton cards remain shown for the full wait, with no error state shown before the response
+         arrives
+         once the response arrives, the skeleton cards are replaced by the issue cards as usual

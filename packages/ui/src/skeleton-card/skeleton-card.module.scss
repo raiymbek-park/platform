@@ -1,0 +1,63 @@
+.skeleton {
+  background: var(--surface);
+  border-radius: 18px;
+  box-shadow: 0 4px 20px var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.head {
+  display: flex;
+  gap: 8px;
+}
+
+.foot {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.block {
+  animation: pulse 1.4s ease-in-out infinite;
+  background: var(--background);
+  border-radius: 8px;
+  display: block;
+}
+
+.badge {
+  height: 20px;
+  width: 74px;
+}
+
+.title {
+  height: 18px;
+  width: 65%;
+}
+
+.line {
+  height: 13px;
+  width: 100%;
+}
+
+.short {
+  height: 13px;
+  width: 80%;
+}
+
+.pill {
+  border-radius: 180px;
+  height: 34px;
+  width: 62px;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}

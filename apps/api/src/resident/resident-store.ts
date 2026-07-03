@@ -1,4 +1,7 @@
+import type { PermissionRole } from '@raiymbek-park/shared/validation-schemas'
 import type { DocumentData } from 'firebase-admin/firestore'
+
+import { resolveRole } from '@raiymbek-park/shared/validation-schemas'
 
 import { FieldValue, getDb, Timestamp } from '../firestore'
 
@@ -39,6 +42,9 @@ export const getResident = async (uid: string): Promise<Resident | null> => {
   const data = snap.data()
   return data ? parseResident(data) : null
 }
+
+export const getRole = async (uid: string): Promise<PermissionRole> =>
+  resolveRole((await getResident(uid))?.role)
 
 export const getLastVisit = async (uid: string): Promise<Timestamp | null> => {
   const snap = await docRef(uid).get()

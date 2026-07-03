@@ -66,6 +66,16 @@ updatedRecords: Map<string, Partial<Entity>>
 - Avoid pagination/infinite query inconsistencies
 - Ensure safe refetch & invalidation
 
+### Store the resulting state, not the gesture
+
+An overlay holds the value the UI should show **after** the change — the resolved end
+state — not the user's action or a delta to be re-derived later. If the overlay stores an
+intent (e.g. "toggle X") and the projection recomputes the outcome against server truth on
+every render, rapid or repeated interactions desync: each one re-derives from a base that
+has not caught up yet, so the second interaction in a burst lands on the wrong result.
+Store the target state; let a newer interaction overwrite it. Projection then only renders
+the overlay, it never re-decides the outcome.
+
 ## Projection Strategy (View Model Layer)
 
 Displayed UI data is always **derived**, never duplicated.
@@ -81,6 +91,12 @@ Projection may include: client-side filtering, sorting, grouping, visibility rul
 - Never store derived datasets in Zustand
 - Always compute projections from Query data
 - Treat projections as pure functions
+- Compose the whole `Query -> Projection -> Overlay -> UI` chain in **one** place — the
+  query/view-model hook that owns the data — and return ready-to-render values. Components
+  consume the merged result; they must not subscribe to the query and the overlay
+  separately and merge inside the view. Two independent subscriptions update in separate
+  renders, so the view momentarily paints one source against a stale copy of the other (a
+  visible flash on settle).
 
 ## Mutation Lifecycle
 
@@ -107,6 +123,15 @@ Refetching is a normal and expected operation. Overlays remain stable because th
 - Do not attempt manual cache reconciliation
 - Allow Query to resolve server truth
 - Overlays adapt automatically
+- Invalidation refetches **active** queries only by default; inactive cached variants of
+  the same data (other filters, tabs, or pages) stay stale until they are observed again.
+  An overlay keyed by entity id spans those variants, so clear it only once every variant
+  the user can reach is fresh — refetch all affected variants before cleanup (in TanStack,
+  invalidate with `refetchType: 'all'`, since the default `'active'` skips inactive
+  variants), or gate the overlay's removal on the freshness of the query being viewed.
+  Otherwise switching to a still-stale variant flashes pre-mutation data. Order the cleanup
+  after the refetch resolves: while it is in flight the overlay must stay, so it keeps
+  covering every variant until truth lands.
 
 ## Forbidden Patterns
 

@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "seed:issues": "tsx scripts/seed-issues.ts",
     "start": "tsx src/index.ts",
     "test:emulator": "firebase emulators:exec --only firestore \"vitest run\"",
     "typecheck": "tsc --noEmit"

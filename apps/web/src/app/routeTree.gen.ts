@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as IssuesRouteImport } from './routes/issues'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as IndexRouteImport } from './routes/index'
@@ -27,6 +28,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IssuesRoute = IssuesRouteImport.update({
+  id: '/issues',
+  path: '/issues',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeRoute = HomeRouteImport.update({
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/announcements': typeof AnnouncementsRoute
   '/home': typeof HomeRoute
+  '/issues': typeof IssuesRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/settings': typeof SettingsRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/announcements': typeof AnnouncementsRoute
   '/home': typeof HomeRoute
+  '/issues': typeof IssuesRoute
   '/settings': typeof SettingsRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
@@ -91,6 +99,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/announcements': typeof AnnouncementsRoute
   '/home': typeof HomeRoute
+  '/issues': typeof IssuesRoute
   '/onboarding': typeof OnboardingRouteWithChildren
   '/settings': typeof SettingsRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
@@ -104,6 +113,7 @@ export interface FileRouteTypes {
     | '/'
     | '/announcements'
     | '/home'
+    | '/issues'
     | '/onboarding'
     | '/settings'
     | '/onboarding/locked'
@@ -115,6 +125,7 @@ export interface FileRouteTypes {
     | '/'
     | '/announcements'
     | '/home'
+    | '/issues'
     | '/settings'
     | '/onboarding/locked'
     | '/onboarding/verification'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/announcements'
     | '/home'
+    | '/issues'
     | '/onboarding'
     | '/settings'
     | '/onboarding/locked'
@@ -137,6 +149,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnnouncementsRoute: typeof AnnouncementsRoute
   HomeRoute: typeof HomeRoute
+  IssuesRoute: typeof IssuesRoute
   OnboardingRoute: typeof OnboardingRouteWithChildren
   SettingsRoute: typeof SettingsRoute
 }
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/issues': {
+      id: '/issues'
+      path: '/issues'
+      fullPath: '/issues'
+      preLoaderRoute: typeof IssuesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/home': {
@@ -231,6 +251,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnnouncementsRoute: AnnouncementsRoute,
   HomeRoute: HomeRoute,
+  IssuesRoute: IssuesRoute,
   OnboardingRoute: OnboardingRouteWithChildren,
   SettingsRoute: SettingsRoute,
 }

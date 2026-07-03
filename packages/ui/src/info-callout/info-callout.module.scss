@@ -35,7 +35,7 @@
 .message {
   color: var(--foreground);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   line-height: 1.5;
   margin: 0;
   opacity: 0.8;
