@@ -82,3 +82,31 @@ export const reactionInputSchema = z.object({
 })
 
 export type ReactionInput = z.infer<typeof reactionInputSchema>
+
+export const MEDIA_MAX_ITEMS = 10
+export const MEDIA_MAX_BYTES = 200 * 1024 * 1024
+
+export const ISSUE_TITLE_MIN = 3
+export const ISSUE_TITLE_MAX = 80
+export const ISSUE_DESCRIPTION_MIN = 10
+export const ISSUE_DESCRIPTION_MAX = 1000
+
+export const issueCreateInputSchema = z.object({
+  category: issueCategorySchema,
+  description: z
+    .string()
+    .trim()
+    .min(ISSUE_DESCRIPTION_MIN)
+    .max(ISSUE_DESCRIPTION_MAX),
+  media: z.array(z.string()).max(MEDIA_MAX_ITEMS).default([]),
+  title: z.string().trim().min(ISSUE_TITLE_MIN).max(ISSUE_TITLE_MAX),
+  urgent: z.boolean().default(false),
+})
+
+export type IssueCreateInput = z.infer<typeof issueCreateInputSchema>
+
+export const issueDeleteInputSchema = z.object({
+  issueId: z.string().min(1),
+})
+
+export type IssueDeleteInput = z.infer<typeof issueDeleteInputSchema>
