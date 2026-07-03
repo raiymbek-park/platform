@@ -1,4 +1,4 @@
-# Task Tracker — Validation and Permission Rules
+# Issue Tracker — Validation and Permission Rules
 
 Field bounds refer to the **Field Rules** section of `prd.md`. Permission rules refer to the
 **Roles and Permissions** matrix. Every permission rule is enforced on the server; hiding a control in
@@ -68,10 +68,10 @@ the interface is not sufficient.
   Then:  the server rejects every one of these actions
          they can still view the issue list and detail
 
-## Scenario 10: Resident and Owner may open, react, and manage their own Incoming issues
+## Scenario 10: Resident and Owner may open, react, and manage their own New issues
 
   Given: a Resident (or Owner)
-  When:  they open an issue, react to any issue, or edit/delete an Incoming issue they opened
+  When:  they open an issue, react to any issue, or edit/delete an New issue they opened
   Then:  each action succeeds
 
 ## Scenario 11: Resident cannot change status
@@ -99,12 +99,12 @@ the interface is not sufficient.
   Given: an Administration user
   When:  they open an issue, react, or change any issue's status
   Then:  each action succeeds
-  When:  they edit or delete an Incoming issue (including one opened by someone else)
+  When:  they edit or delete an New issue (including one opened by someone else)
   Then:  the action succeeds
 
-## Scenario 15: Editing and deletion are locked once an issue leaves Incoming
+## Scenario 15: Editing and deletion are locked once an issue leaves New
 
-  Given: an issue whose status has changed away from Incoming
+  Given: an issue whose status has changed away from New
   When:  the author, or an Administration user, attempts to edit or delete it
   Then:  the server rejects the action for everyone
          changing the issue's status is still allowed for a Manager or Administration

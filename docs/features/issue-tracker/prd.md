@@ -1,4 +1,4 @@
-# Task Tracker — Resident Issues and Status Workflow
+# Issue Tracker — Resident Issues and Status Workflow
 
 ## Problem and Goal
 
@@ -17,7 +17,7 @@ role permissions.
 
 - **Residents** — open issues, follow their status, and react. This is the default role for everyone.
 - **Owners** — the same as Residents for everything in this feature.
-- **Managers** — triage incoming issues and change their status.
+- **Managers** — triage new issues and change their status.
 - **Administration** — full moderation: edit, delete, and re-status any issue, and keep the board
   clear of spam and abuse.
 - **Viewers** — accounts downgraded from Resident; they can browse but cannot act.
@@ -31,14 +31,19 @@ Permissions are enforced **on the server** for every action, not merely hidden i
 |---|:--:|:--:|:--:|:--:|:--:|
 | View issue list and detail | ✓ | ✓ | ✓ | ✓ | ✓ |
 | Open an issue | — | ✓ | ✓ | — | ✓ |
-| Edit or delete an issue you opened *(while Incoming)* | — | ✓ | ✓ | — | ✓ |
+| Edit or delete an issue you opened *(while New)* | — | ✓ | ✓ | — | ✓ |
 | Like / dislike any issue | — | ✓ | ✓ | ✓ | ✓ |
 | Change any issue's status | — | — | — | ✓ | ✓ |
-| Edit or delete **any** issue *(moderation, while Incoming)* | — | — | — | — | ✓ |
+| Edit or delete **any** issue *(moderation, while New)* | — | — | — | — | ✓ |
+| See the author's phone number | — | — | — | ✓ | ✓ |
+
+Everyone sees the author's name, block, and apartment on an issue. The author's **phone** is shared
+only with Managers, Administration, and the issue's own author — no other role receives it, and the
+server omits it from the payload rather than hiding it in the interface.
 
 A Manager changes status only — never edits or deletes an issue. Editing and deletion are possible
-only while an issue is Incoming: once a Manager takes it into work — the first status change away from
-Incoming — the issue is locked, and no one (author or Administration) can edit or delete it; only its
+only while an issue is New: once a Manager takes it into work — the first status change away from
+New — the issue is locked, and no one (author or Administration) can edit or delete it; only its
 status keeps changing.
 
 The onboarding owner/tenant choice is stored only as a label; it grants no elevated role — everyone is
@@ -54,16 +59,16 @@ these are built here.*
 
 ### In scope
 
-- **Issue list** — status-filter tabs (Incoming, In progress, Blocked, Done, Rejected, Under resident
+- **Issue list** — status-filter tabs (New, In progress, Blocked, Done, Rejected, Under resident
   review, Planned), a text search over the filtered issues, and issue cards showing the category,
   current status, classification tags, author, and reaction counts. While the list loads, skeleton
   cards stand in for it; an empty state appears when the active filter and search together hold no
   issues.
 - **Open an issue** — a Resident or Owner picks a category, optionally marks it Urgent, enters a title
-  and a description, optionally attaches media, and submits. A new issue starts as **Incoming**.
-- **Edit or delete your own issue while it is Incoming** — the author opens an actions menu on their
+  and a description, optionally attaches media, and submits. A new issue starts as **New**.
+- **Edit or delete your own issue while it is New** — the author opens an actions menu on their
   issue to edit it (the same category/title/description/media form used to open it) or to delete it
-  behind a confirmation step. Administration may do this to any Incoming issue. Once a Manager takes
+  behind a confirmation step. Administration may do this to any New issue. Once a Manager takes
   the issue into work, editing and deletion are disabled for everyone.
 - **Issue detail and status change** — a Manager opens an issue, sets a new status, and may add
   classification tags (Under warranty, Needs clarification, Duplicate), media, and a comment.
@@ -88,8 +93,10 @@ these are built here.*
 - **Classification tags** (added by a Manager on the detail screen): Under warranty, Needs
   clarification, Duplicate — zero or more of the three may be applied.
 - **Title**, **description**, and **optional media** (photos and/or videos).
-- **Author** — name, phone, block, and apartment taken from the signed-in profile.
-- **Status** (one at a time): **Incoming** (initial), then any of In progress, Planned, Blocked, Under
+- **Author** — name, phone, block, and apartment taken from the signed-in profile. Name, block, and
+  apartment show to everyone; the phone reaches only Managers, Administration, and the author (see
+  Roles and Permissions).
+- **Status** (one at a time): **New** (initial), then any of In progress, Planned, Blocked, Under
   resident review, Done, Rejected. A Manager or Administration may move an issue to any status at any
   time — there is no fixed transition order.
 - **Reactions** — like and dislike counts.
@@ -112,7 +119,7 @@ these are built here.*
 - **Description** — required; trimmed length 10–1000 characters.
 - **Media** — optional; up to 10 photos and/or videos combined, total size at most 200 MB. Applies to
   opening an issue and to a status change.
-- **Editing window** — an issue may be edited or deleted only while its status is Incoming; after the
+- **Editing window** — an issue may be edited or deleted only while its status is New; after the
   first status change it is locked for editing and deletion for everyone.
 - **Status** (status change) — required; exactly one of the seven statuses.
 - **Classification tags** (status change) — optional; zero or more of Under warranty, Needs
@@ -125,7 +132,7 @@ A Resident opens the Issues tab; while the list loads, skeleton cards stand in, 
 grouped by status, newest first. They can switch the status tabs or type in the search field to find
 an issue by its title, description, or number. To report a problem they tap the create button, choose
 a category such as Repair, optionally mark it Urgent, write a short title and a description, optionally
-attach media, and submit — the issue appears as Incoming. While it is still Incoming they can open the
+attach media, and submit — the issue appears as New. While it is still New they can open the
 actions menu on their own issue to edit or delete it behind a confirmation; once a Manager takes it into
 work it can no longer be edited or deleted. A Manager opens the issue, sets its status
 (for example, Planned), optionally tags it (Under warranty), and leaves a comment; residents following
@@ -135,8 +142,8 @@ everything but cannot act.
 
 ## Success Metrics
 
-- A Resident can open an issue from start to finish, see it listed as Incoming, and edit or delete it
-  while it is still Incoming.
+- A Resident can open an issue from start to finish, see it listed as New, and edit or delete it
+  while it is still New.
 - A Manager can move an issue through its statuses, and residents see each change.
 - The server rejects unauthorized actions: a Viewer cannot open an issue, a Resident cannot change a
   status or touch another resident's issue, and a Manager cannot edit or delete.
@@ -163,7 +170,7 @@ Canonical names used in code, routes, and stored data. Display labels are Russia
 are not. Do not introduce synonyms (request, task, ticket, заявка) in code — the entity is an **issue**.
 
 - **Entity / route** — `issue`; the list route is `/issues`.
-- **Statuses** — `incoming`, `in-progress`, `planned`, `blocked`, `resident-review`, `done`,
+- **Statuses** — `new`, `in-progress`, `planned`, `blocked`, `resident-review`, `done`,
   `rejected`.
 - **Categories** — `repair`, `replacement`, `complaint`, `violation`, `other`; plus the boolean
   `urgent` flag.

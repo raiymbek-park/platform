@@ -1,4 +1,4 @@
-# Task Tracker — Error States
+# Issue Tracker — Error States
 
 External failures — network and server errors while loading or mutating issues. Field and permission
 rules live in `validation.md`.

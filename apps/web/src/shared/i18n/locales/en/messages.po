@@ -42,7 +42,7 @@ msgstr "Block"
 #. placeholder {1}: data.apartment
 #. placeholder {1}: issue.apartment
 #: src/pages/home/ui/building-hero.tsx:15
-#: src/pages/issues/ui/issue-card-item.tsx:42
+#: src/pages/issues/ui/issue-card-item.tsx:53
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
 
@@ -50,8 +50,8 @@ msgstr "Block {0} · Apartment {1}"
 msgid "Блок {block}"
 msgstr "Block {block}"
 
-#: src/pages/issues/model/use-issue-badges.ts:45
-#: src/pages/issues/model/use-issue-badges.ts:55
+#: src/pages/issues/model/use-issue-badges.ts:60
+#: src/pages/issues/model/use-issue-badges.ts:70
 msgid "В работе"
 msgstr "In progress"
 
@@ -79,6 +79,10 @@ msgstr "Enter the apartment number"
 msgid "Владею жильём"
 msgstr "I own the property"
 
+#: src/pages/issues/model/use-issue-badges.ts:58
+msgid "Все"
+msgstr "All"
+
 #: src/features/onboarding/ui/otp-actions.tsx:49
 msgid "Вставить код из буфера"
 msgstr "Paste code from clipboard"
@@ -86,10 +90,6 @@ msgstr "Paste code from clipboard"
 #: src/pages/home/ui/services-section.tsx:74
 msgid "Вступить в общий чат жильцов"
 msgstr "Join the residents' group chat"
-
-#: src/pages/issues/model/use-issue-badges.ts:44
-msgid "Входящие"
-msgstr "Incoming"
 
 #: src/features/onboarding/lib/validators.ts:30
 #: src/features/onboarding/ui/registration-form.tsx:137
@@ -100,8 +100,8 @@ msgstr "Select a block"
 msgid "Выберите роль"
 msgstr "Select a role"
 
-#: src/pages/issues/model/use-issue-badges.ts:49
-#: src/pages/issues/model/use-issue-badges.ts:59
+#: src/pages/issues/model/use-issue-badges.ts:64
+#: src/pages/issues/model/use-issue-badges.ts:74
 msgid "Выполнено"
 msgstr "Done"
 
@@ -129,7 +129,7 @@ msgstr "Access blocked"
 #~ msgid "Другое"
 #~ msgstr "Other"
 
-#: src/pages/issues/model/use-issue-badges.ts:66
+#: src/pages/issues/model/use-issue-badges.ts:81
 msgid "Дубликат"
 msgstr "Duplicate"
 
@@ -145,8 +145,8 @@ msgstr "All was quiet while you were away — no news."
 msgid "За время вашего отсутствия появились изменения:"
 msgstr "Changes appeared while you were away:"
 
-#: src/pages/issues/model/use-issue-badges.ts:47
-#: src/pages/issues/model/use-issue-badges.ts:57
+#: src/pages/issues/model/use-issue-badges.ts:62
+#: src/pages/issues/model/use-issue-badges.ts:72
 msgid "Заблокировано"
 msgstr "Blocked"
 
@@ -162,8 +162,8 @@ msgstr "Loading…"
 #~ msgid "Замена"
 #~ msgstr "Replacement"
 
-#: src/pages/issues/model/use-issue-badges.ts:46
-#: src/pages/issues/model/use-issue-badges.ts:56
+#: src/pages/issues/model/use-issue-badges.ts:61
+#: src/pages/issues/model/use-issue-badges.ts:71
 msgid "Запланировано"
 msgstr "Planned"
 
@@ -182,11 +182,11 @@ msgstr "Resend code in {0}"
 
 #. placeholder {0}: issue.number
 #. placeholder {1}: cardStatusLabel(status)
-#: src/pages/issues/ui/issue-card-item.tsx:34
+#: src/pages/issues/ui/issue-card-item.tsx:37
 msgid "Заявка №{0} · {1}"
 msgstr "Issue №{0} · {1}"
 
-#: src/pages/issues/ui/issues-page.tsx:25
+#: src/pages/issues/ui/issues-page.tsx:36
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:26
 msgid "Заявки"
 msgstr "Requests"
@@ -219,11 +219,11 @@ msgstr "We sent a 6-digit verification code to your number"
 msgid "На главную"
 msgstr "Go home"
 
-#: src/pages/issues/model/use-issue-badges.ts:48
+#: src/pages/issues/model/use-issue-badges.ts:63
 msgid "На рассмотрение жильцам"
 msgstr "Under resident review"
 
-#: src/pages/issues/model/use-issue-badges.ts:58
+#: src/pages/issues/model/use-issue-badges.ts:73
 msgid "На рассмотрении жильцов"
 msgstr "Under resident review"
 
@@ -240,7 +240,7 @@ msgstr "Back"
 msgid "Настройки"
 msgstr "Settings"
 
-#: src/pages/issues/ui/issue-list.tsx:63
+#: src/pages/issues/ui/issue-list.tsx:78
 msgid "Не найдено ни одной заявки."
 msgstr "No issues found."
 
@@ -248,7 +248,7 @@ msgstr "No issues found."
 msgid "Не удалось завершить регистрацию. Повторите попытку."
 msgstr "Couldn't complete registration. Please try again."
 
-#: src/pages/issues/ui/issue-list.tsx:47
+#: src/pages/issues/ui/issue-list.tsx:62
 msgid "Не удалось загрузить заявки"
 msgstr "Couldn’t load issues"
 
@@ -272,17 +272,21 @@ msgstr "Couldn't verify the code. Check your connection."
 msgid "Неверный код. Попробуйте ещё раз."
 msgstr "Invalid code. Please try again."
 
-#: src/pages/issues/ui/issue-list.tsx:64
+#: src/pages/issues/ui/issue-list.tsx:79
 msgid "Нет данных"
 msgstr "No data"
 
-#: src/pages/issues/model/use-issue-badges.ts:54
+#: src/pages/issues/model/use-issue-badges.ts:69
 msgid "Новая заявка"
 msgstr "New issue"
 
 #: src/pages/home/ui/services-section.tsx:42
 msgid "Новости и уведомления от УК"
 msgstr "News and notifications from the management company"
+
+#: src/pages/issues/model/use-issue-badges.ts:59
+msgid "Новые"
+msgstr "New"
 
 #: src/pages/home/ui/welcome-feed.tsx:25
 msgid "Новых событий пока нет."
@@ -292,7 +296,7 @@ msgstr "No new events yet."
 msgid "Номер квартиры"
 msgstr "Apartment number"
 
-#: src/pages/issues/ui/issues-page.tsx:27
+#: src/pages/issues/ui/issues-page.tsx:38
 msgid "Обращения жильцов в управляющую компанию и их статусы."
 msgstr "Resident issues to the management company and their statuses."
 
@@ -302,8 +306,8 @@ msgstr "Resident issues to the management company and their statuses."
 msgid "Объявления"
 msgstr "Announcements"
 
-#: src/pages/issues/model/use-issue-badges.ts:50
-#: src/pages/issues/model/use-issue-badges.ts:60
+#: src/pages/issues/model/use-issue-badges.ts:65
+#: src/pages/issues/model/use-issue-badges.ts:75
 msgid "Отклонено"
 msgstr "Rejected"
 
@@ -311,12 +315,16 @@ msgstr "Rejected"
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Track the progress of your requests"
 
-#: src/pages/issues/model/use-issue-badges.ts:64
+#: src/pages/issues/ui/issue-search.tsx:16
+msgid "Очистить поиск"
+msgstr "Clear search"
+
+#: src/pages/issues/model/use-issue-badges.ts:79
 msgid "По гарантии"
 msgstr "Under warranty"
 
 #: src/features/onboarding/ui/account-locked.tsx:56
-#: src/pages/issues/ui/issue-list.tsx:50
+#: src/pages/issues/ui/issue-list.tsx:65
 msgid "Повторить"
 msgstr "Retry"
 
@@ -328,7 +336,7 @@ msgstr "Try again"
 msgid "Подайте обращение в УК"
 msgstr "Submit a request to the management company"
 
-#: src/pages/issues/ui/issue-card-item.tsx:53
+#: src/pages/issues/ui/issue-card-item.tsx:65
 msgid "Подробнее"
 msgstr "Details"
 
@@ -365,7 +373,7 @@ msgstr "Section under development"
 msgid "Роль"
 msgstr "Role"
 
-#: src/pages/issues/ui/issue-card-item.tsx:49
+#: src/pages/issues/ui/issue-card-item.tsx:61
 msgid "Свернуть"
 msgstr "Collapse"
 
@@ -397,7 +405,7 @@ msgstr "Create a request"
 msgid "Создать объявление"
 msgstr "Create an announcement"
 
-#: src/pages/issues/model/use-issue-badges.ts:78
+#: src/pages/issues/model/use-issue-badges.ts:93
 msgid "Срочно"
 msgstr "Urgent"
 
@@ -413,7 +421,7 @@ msgstr "Page not found"
 msgid "Телефон"
 msgstr "Phone"
 
-#: src/pages/issues/model/use-issue-badges.ts:65
+#: src/pages/issues/model/use-issue-badges.ts:80
 msgid "Требуется уточнение"
 msgstr "Needs clarification"
 

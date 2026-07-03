@@ -1,21 +1,21 @@
-# Task Tracker — Happy Path
+# Issue Tracker — Happy Path
 
-Status names (Incoming, In progress, Planned, Blocked, Under resident review, Done, Rejected) and
+Status names (New, In progress, Planned, Blocked, Under resident review, Done, Rejected) and
 category names refer to the values fixed in `prd.md`.
 
 ## Scenario 1: See the issue list grouped by status
 
   Given: a signed-in user of any role on `/issues`
-  When:  the list loads with the default filter (Incoming)
-  Then:  issues with status Incoming are shown, newest first
+  When:  the list loads with the default filter (New)
+  Then:  issues with status New are shown, newest first
          each card shows the category, current status, any classification tags, the author, and the
          like/dislike counts
-         the status-filter tabs are visible, with Incoming active
+         the status-filter tabs are visible, with New active
          the bottom navigation shows the Issues tab as active
 
 ## Scenario 2: Switch the status filter
 
-  Given: a signed-in user on `/issues` with the Incoming filter active
+  Given: a signed-in user on `/issues` with the New filter active
   When:  they tap the "In progress" tab
   Then:  only issues with status In progress are shown
          the "In progress" tab becomes active
@@ -32,21 +32,21 @@ category names refer to the values fixed in `prd.md`.
 
   Given: a Resident on the create-issue screen
   When:  they pick the category Repair, enter a valid title and description, and submit
-  Then:  the issue is created with status Incoming
+  Then:  the issue is created with status New
          the author is set from the signed-in profile (name, phone, block, apartment)
          the issue is assigned the next sequential number
-         the app returns to the issue list and the new issue appears under the Incoming filter
+         the app returns to the issue list and the new issue appears under the New filter
 
 ## Scenario 5: Open an urgent issue with media
 
   Given: a Resident on the create-issue screen
   When:  they pick a category, mark it Urgent, enter a valid title and description, attach one or more
          photos or videos (up to 10 items, 200 MB total), and submit
-  Then:  the issue is created with status Incoming, the Urgent flag set, and the media attached
+  Then:  the issue is created with status New, the Urgent flag set, and the media attached
 
 ## Scenario 6: Manager changes an issue's status
 
-  Given: a Manager on the detail screen of an Incoming issue
+  Given: a Manager on the detail screen of an New issue
   When:  they select the status Planned, add the tag "Under warranty" and a comment, and save
   Then:  the issue's status becomes Planned
          the tag "Under warranty" is applied and the comment is recorded
@@ -65,22 +65,22 @@ category names refer to the values fixed in `prd.md`.
   When:  they tap like
   Then:  the like count increases by one and their reaction is recorded as a like
 
-## Scenario 9: Edit your own Incoming issue
+## Scenario 9: Edit your own New issue
 
-  Given: a Resident viewing an Incoming issue they opened
+  Given: a Resident viewing an New issue they opened
   When:  they reopen it in the form, change the description to another valid value, and save
   Then:  the issue's description is updated
          the issue's status, number, and author are unchanged
 
-## Scenario 10: Delete your own Incoming issue
+## Scenario 10: Delete your own New issue
 
-  Given: a Resident viewing an Incoming issue they opened
+  Given: a Resident viewing an New issue they opened
   When:  they delete it (confirming the prompt)
   Then:  the issue is removed and no longer appears in any status filter
 
-## Scenario 11: Administration moderates another user's Incoming issue
+## Scenario 11: Administration moderates another user's New issue
 
-  Given: an Administration user viewing an Incoming issue opened by someone else
+  Given: an Administration user viewing an New issue opened by someone else
   When:  they edit its title to a valid value and save, or delete it
   Then:  the edit or deletion succeeds
 

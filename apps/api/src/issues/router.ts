@@ -11,7 +11,15 @@ import { listIssues, setReaction } from './issues-store'
 export const issuesRouter = router({
   list: publicProcedure
     .input(issueListInputSchema)
-    .query(({ ctx, input }) => listIssues(input.status, ctx.uid)),
+    .query(async ({ ctx, input }) => {
+      const role = ctx.uid ? await getRole(ctx.uid) : null
+      return listIssues({
+        cursor: input.cursor,
+        role,
+        status: input.status,
+        uid: ctx.uid,
+      })
+    }),
   react: publicProcedure
     .input(reactionInputSchema)
     .mutation(async ({ ctx, input }) => {

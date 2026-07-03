@@ -1,19 +1,19 @@
 .intro {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .title {
   color: var(--foreground);
   font-size: 22px;
-  font-weight: 800;
+  font-weight: var(--weight-extrabold);
   margin: 0;
 }
 
 .subtitle {
   color: var(--text-secondary);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   margin: 0;
 }

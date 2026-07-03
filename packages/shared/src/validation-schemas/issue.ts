@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const issueStatuses = [
-  'incoming',
+  'new',
   'in-progress',
   'planned',
   'blocked',
@@ -11,6 +11,10 @@ export const issueStatuses = [
 ] as const
 
 export type IssueStatus = (typeof issueStatuses)[number]
+
+export const issueFilters = ['all', ...issueStatuses] as const
+
+export type IssueFilter = (typeof issueFilters)[number]
 
 export const issueCategories = [
   'repair',
@@ -45,24 +49,28 @@ export const reactionKinds = ['like', 'dislike'] as const
 export type ReactionKind = (typeof reactionKinds)[number]
 
 export const issueStatusSchema = z.enum(issueStatuses)
+export const issueFilterSchema = z.enum(issueFilters)
 export const issueCategorySchema = z.enum(issueCategories)
 export const classificationTagSchema = z.enum(classificationTags)
 export const reactionKindSchema = z.enum(reactionKinds)
 
-export const DEFAULT_ISSUE_STATUS: IssueStatus = 'incoming'
+export const DEFAULT_ISSUE_STATUS: IssueStatus = 'new'
 export const DEFAULT_PERMISSION_ROLE: PermissionRole = 'resident'
 
 export const resolveRole = (raw: unknown): PermissionRole =>
   permissionRoles.find(role => role === raw) ?? DEFAULT_PERMISSION_ROLE
 
+export const ISSUE_PAGE_SIZE = 20
+
 export const issueListInputSchema = z.object({
-  status: issueStatusSchema.default(DEFAULT_ISSUE_STATUS),
+  cursor: z.number().optional(),
+  status: issueFilterSchema.default(DEFAULT_ISSUE_STATUS),
 })
 
 export type IssueListInput = z.infer<typeof issueListInputSchema>
 
 export const issueSearchSchema = z.object({
-  status: issueStatusSchema.catch(DEFAULT_ISSUE_STATUS),
+  status: issueFilterSchema.catch(DEFAULT_ISSUE_STATUS),
 })
 
 export type IssueSearch = z.infer<typeof issueSearchSchema>

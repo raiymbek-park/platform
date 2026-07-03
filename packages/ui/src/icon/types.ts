@@ -19,6 +19,7 @@ export type IconGlyph =
   | 'door-closed'
   | 'droplet-off'
   | 'droplets'
+  | 'eraser'
   | 'house'
   | 'inbox'
   | 'key-round'

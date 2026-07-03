@@ -23,13 +23,13 @@
 .name {
   color: var(--foreground);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: var(--weight-bold);
 }
 
 .role {
   color: var(--foreground);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   opacity: 0.6;
 }
 

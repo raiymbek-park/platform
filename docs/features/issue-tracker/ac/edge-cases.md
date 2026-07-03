@@ -1,4 +1,4 @@
-# Task Tracker — Edge Cases
+# Issue Tracker — Edge Cases
 
 Boundary conditions around fields, reactions, and status filtering. Values refer to `prd.md`.
 
@@ -50,7 +50,7 @@ Boundary conditions around fields, reactions, and status filtering. Values refer
   When:  they apply Under warranty, Needs clarification, and Duplicate together and save
   Then:  all three tags are applied to the issue
 
-## Scenario 9: Editing or deleting an issue that has moved past Incoming is blocked
+## Scenario 9: Editing or deleting an issue that has moved past New is blocked
 
   Given: a Resident whose own issue is now In progress
   When:  they open the actions menu on it
@@ -60,9 +60,9 @@ Boundary conditions around fields, reactions, and status filtering. Values refer
 
 ## Scenario 10: A filter with a single issue then that issue changes status
 
-  Given: an Incoming filter showing exactly one issue
+  Given: an New filter showing exactly one issue
   When:  a Manager moves that issue to In progress and the Resident's list refreshes
-  Then:  the Incoming filter shows the empty state and the issue appears under In progress
+  Then:  the New filter shows the empty state and the issue appears under In progress
 
 ## Scenario 11: Long author name or many tags on a card
 

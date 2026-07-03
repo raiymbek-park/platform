@@ -1,13 +1,16 @@
 import type {
   ClassificationTag,
   IssueCategory,
+  IssueFilter,
   IssueStatus,
+  PermissionRole,
   ReactionKind,
 } from '@raiymbek-park/shared/validation-schemas'
 import type { DocumentData } from 'firebase-admin/firestore'
 
 import {
   classificationTags,
+  ISSUE_PAGE_SIZE,
   issueCategories,
   issueStatuses,
   reactionKinds,
@@ -19,17 +22,19 @@ export type IssueAuthor = {
   apartment: number
   block: number
   name: string
-  phone: string
+  phone?: string
 }
 
 export type Issue = {
   author: IssueAuthor
   category: IssueCategory
+  commentCount: number
   createdAt: number
   description: string
   dislikeCount: number
   id: string
   likeCount: number
+  media: string[]
   myReaction: ReactionKind | null
   number: number
   status: IssueStatus
@@ -50,12 +55,15 @@ const toCategory = (value: unknown): IssueCategory =>
   issueCategories.find(category => category === value) ?? 'other'
 
 const toStatus = (value: unknown): IssueStatus =>
-  issueStatuses.find(status => status === value) ?? 'incoming'
+  issueStatuses.find(status => status === value) ?? 'new'
 
 const toTags = (value: unknown): ClassificationTag[] =>
   Array.isArray(value)
     ? classificationTags.filter(tag => value.includes(tag))
     : []
+
+const toStringArray = (value: unknown): string[] =>
+  Array.isArray(value) ? value.filter(item => typeof item === 'string') : []
 
 const isReactionKind = (kind: string): kind is ReactionKind =>
   reactionKinds.some(x => x === kind)
@@ -69,17 +77,27 @@ const toReactions = (value: unknown): Record<string, ReactionKind> => {
   )
 }
 
-const toAuthor = (data: DocumentData): IssueAuthor => ({
+const toAuthor = (data: DocumentData, canSeePhone: boolean): IssueAuthor => ({
   apartment: toNumber(data.apartment),
   block: toNumber(data.block),
   name: toText(data.name),
-  phone: toText(data.phone),
+  ...(canSeePhone ? { phone: toText(data.phone) } : {}),
 })
+
+const canSeePhone = (
+  role: PermissionRole | null,
+  uid: string | null,
+  authorId: string,
+): boolean =>
+  role === 'manager' ||
+  role === 'administration' ||
+  (uid !== null && authorId !== '' && authorId === uid)
 
 const parseIssue = (
   id: string,
   data: DocumentData,
   uid: string | null,
+  role: PermissionRole | null,
 ): Issue => {
   const reactions = toReactions(data.reactions)
   const kinds = Object.values(reactions)
@@ -88,13 +106,15 @@ const parseIssue = (
   const author =
     typeof data.author === 'object' && data.author !== null ? data.author : {}
   return {
-    author: toAuthor(author),
+    author: toAuthor(author, canSeePhone(role, uid, toText(data.authorId))),
     category: toCategory(data.category),
+    commentCount: toNumber(data.commentCount),
     createdAt,
     description: toText(data.description),
     dislikeCount: kinds.filter(kind => kind === 'dislike').length,
     id,
     likeCount: kinds.filter(kind => kind === 'like').length,
+    media: toStringArray(data.media),
     myReaction: uid ? (reactions[uid] ?? null) : null,
     number: toNumber(data.number),
     status: toStatus(data.status),
@@ -104,15 +124,37 @@ const parseIssue = (
   }
 }
 
-export const listIssues = async (
-  status: IssueStatus,
-  uid: string | null,
-): Promise<Issue[]> => {
-  const snap = await collection()
-    .where('status', '==', status)
-    .orderBy('createdAt', 'desc')
-    .get()
-  return snap.docs.map(doc => parseIssue(doc.id, doc.data(), uid))
+type ListIssuesInput = {
+  cursor?: number
+  role: PermissionRole | null
+  status: IssueFilter
+  uid: string | null
+}
+
+type ListIssuesResult = {
+  issues: Issue[]
+  nextCursor: number | null
+}
+
+export const listIssues = async ({
+  cursor,
+  role,
+  status,
+  uid,
+}: ListIssuesInput): Promise<ListIssuesResult> => {
+  const scoped =
+    status === 'all' ? collection() : collection().where('status', '==', status)
+  const ordered = scoped.orderBy('createdAt', 'desc')
+  const paged =
+    cursor === undefined
+      ? ordered
+      : ordered.startAfter(Timestamp.fromMillis(cursor))
+  const snap = await paged.limit(ISSUE_PAGE_SIZE).get()
+  const issues = snap.docs.map(doc => parseIssue(doc.id, doc.data(), uid, role))
+  const last = issues.at(-1)
+  const nextCursor =
+    last && issues.length === ISSUE_PAGE_SIZE ? last.createdAt : null
+  return { issues, nextCursor }
 }
 
 export const setReaction = async (

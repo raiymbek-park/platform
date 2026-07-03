@@ -27,7 +27,7 @@
 .title {
   color: var(--foreground);
   font-size: 22px;
-  font-weight: 800;
+  font-weight: var(--weight-extrabold);
   margin: 0;
   text-align: center;
 }
@@ -35,7 +35,7 @@
 .message {
   color: var(--text-secondary);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   margin: 0;
   text-align: center;
 }

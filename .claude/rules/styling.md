@@ -143,7 +143,7 @@ the literal `px` value in the component SCSS module that needs it.
 **There are no numeric tokens.** Every spacing, font size, radius, and icon/avatar size —
 including the base 16px rhythm — is a literal.
 
-- **Font sizes** — literal `px` (e.g. `font-size: 15px`). **13px is the floor — never render text below it.**
+- **Font sizes** — literal `px` (e.g. `font-size: 15px`). **13px is the floor — never render text below it.** Exception: design-system badges/tags (e.g. `StatusTag`) render at 10px to match the design system; the 13px floor applies to body and reading text, not compact badge labels.
 - **Border radius** — literal `px` (e.g. `border-radius: 18px`).
 - **Icon / avatar sizes** — literal `px` on the icon/avatar box.
 - **Spacing** — literal `px` (e.g. `padding: 16px`, `gap: 8px`).
@@ -156,8 +156,25 @@ tokens. Do not reintroduce them.
 **Always use tokens for:**
 - Colors (background, color, border, fill, stroke) — never literal hex
 - Elevation shadows — `var(--shadow)` used directly (the token is already translucent; never `color-mix` it down to a percentage)
+- Font weights — `var(--weight-*)`, never a literal `font-weight` number
 
-Tokens are **colors only** (plus the `--shadow` color).
+Tokens are **colors, the `--shadow` color, and font weights** — nothing else.
+
+### Font-weight tokens — the one non-color scale
+
+Font weight is a small, shared, semantic scale (unlike per-component `px` sizing), so it *is*
+tokenized. Use `var(--weight-*)`; never write a literal `font-weight` number in a component
+module. The scale mirrors the design's type primitives exactly:
+
+| Token | Value | Design role (Text primitives) |
+|-------|-------|-------------------------------|
+| `--weight-medium` | 500 | body, caption, input |
+| `--weight-semibold` | 600 | meta, inactive filter tab |
+| `--weight-bold` | 700 | heading, emphasis, action, active filter tab |
+| `--weight-extrabold` | 800 | screen title |
+
+The `@font-face` weight *range* (`font-weight: 400 800`) in `fonts.scss` stays literal — it
+declares the variable font's axis, not an applied weight.
 
 **Use literal values for:**
 - All sizing — spacing, font sizes, border radii, icon/avatar sizes — write the literal `px`.
@@ -207,7 +224,8 @@ Default rule: use `100svh` for splash screens, modals, and full-viewport overlay
 ## Forbidden
 
 - Hardcoded hex colors in component styles → use semantic color tokens
-- Reintroducing any sizing token (`--spacing-*`, `--font-size-*`, `--radius-*`, `--icon-*`, `--avatar-*`) → write the literal `px`; tokens are colors only
+- Reintroducing any sizing token (`--spacing-*`, `--font-size-*`, `--radius-*`, `--icon-*`, `--avatar-*`) → write the literal `px`; the only non-color tokens are the `--weight-*` scale
+- A literal `font-weight` number in a component module → use `var(--weight-*)`
 - `color-mix(... var(--shadow) N% ...)` → the shadow token is already translucent; use `var(--shadow)` directly
 - Literal color names in tokens (`--yellow`, `--green`) → use semantic names
 - Catch-all dimension tokens that span unrelated components (`--component-height`, `--input-and-button-height`) → declare the literal `min-height` per component

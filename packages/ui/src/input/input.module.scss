@@ -8,7 +8,7 @@
 .label {
   color: var(--foreground);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: var(--weight-bold);
 }
 
 .box {
@@ -54,11 +54,6 @@
   flex-shrink: 0;
 }
 
-.trailing {
-  color: var(--text-muted);
-  flex-shrink: 0;
-}
-
 .field {
   background: transparent;
   border: 0;
@@ -66,7 +61,7 @@
   flex: 1;
   font-family: inherit;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: var(--weight-medium);
   min-width: 0;
   outline: none;
 

@@ -1,8 +1,10 @@
 import type {
   ClassificationTag,
+  IssueFilter,
   IssueStatus,
 } from '@raiymbek-park/shared/validation-schemas'
 import type {
+  IconChipTone,
   IconGlyph,
   IssueCardBadge,
   StatusTagTone,
@@ -12,7 +14,7 @@ import type { IssueView } from './use-issues-data'
 import { useLingui } from '@lingui/react/macro'
 
 export const statusOrder: IssueStatus[] = [
-  'incoming',
+  'new',
   'in-progress',
   'blocked',
   'done',
@@ -21,14 +23,26 @@ export const statusOrder: IssueStatus[] = [
   'planned',
 ]
 
+export const filterOrder: IssueFilter[] = ['all', ...statusOrder]
+
 const statusGlyph: Record<IssueStatus, IconGlyph> = {
-  incoming: 'inbox',
+  new: 'inbox',
   'in-progress': 'wrench',
   planned: 'calendar-clock',
   blocked: 'ban',
   'resident-review': 'users-round',
   done: 'circle-check-big',
   rejected: 'circle-x',
+}
+
+const statusTone: Record<IssueStatus, IconChipTone> = {
+  new: 'warning',
+  'in-progress': 'action',
+  planned: 'action',
+  blocked: 'danger',
+  'resident-review': 'accent',
+  done: 'brand',
+  rejected: 'danger',
 }
 
 const tagTone: Record<ClassificationTag, StatusTagTone> = {
@@ -40,8 +54,9 @@ const tagTone: Record<ClassificationTag, StatusTagTone> = {
 export const useIssueBadges = () => {
   const { t } = useLingui()
 
-  const filterLabel: Record<IssueStatus, string> = {
-    incoming: t`Входящие`,
+  const filterLabel: Record<IssueFilter, string> = {
+    all: t`Все`,
+    new: t`Новые`,
     'in-progress': t`В работе`,
     planned: t`Запланировано`,
     blocked: t`Заблокировано`,
@@ -51,7 +66,7 @@ export const useIssueBadges = () => {
   }
 
   const cardStatusLabel: Record<IssueStatus, string> = {
-    incoming: t`Новая заявка`,
+    new: t`Новая заявка`,
     'in-progress': t`В работе`,
     planned: t`Запланировано`,
     blocked: t`Заблокировано`,
@@ -66,7 +81,7 @@ export const useIssueBadges = () => {
     duplicate: t`Дубликат`,
   }
 
-  const statusName = (status: IssueStatus) => filterLabel[status]
+  const filterName = (filter: IssueFilter) => filterLabel[filter]
 
   const cardTags = (issue: IssueView): IssueCardBadge[] => {
     const tags: IssueCardBadge[] = issue.tags.map(tag => ({
@@ -81,7 +96,8 @@ export const useIssueBadges = () => {
   return {
     cardStatusLabel: (status: IssueStatus) => cardStatusLabel[status],
     cardTags,
+    filterName,
     statusGlyph: (status: IssueStatus) => statusGlyph[status],
-    statusName,
+    statusTone: (status: IssueStatus) => statusTone[status],
   }
 }

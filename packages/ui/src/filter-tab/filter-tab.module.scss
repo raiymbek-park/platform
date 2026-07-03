@@ -9,7 +9,7 @@
   display: inline-flex;
   font-family: inherit;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: var(--weight-semibold);
   justify-content: center;
   min-height: 36px;
   padding: 8px 14px;
@@ -18,5 +18,6 @@
   &-is-active {
     background: var(--action);
     color: var(--surface);
+    font-weight: var(--weight-bold);
   }
 }

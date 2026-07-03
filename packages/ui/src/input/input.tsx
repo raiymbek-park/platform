@@ -11,7 +11,7 @@ export type InputProps = ComponentProps<'input'> & {
   icon?: IconGlyph
   label?: ReactNode
   state?: 'error' | 'success'
-  trailingIcon?: IconGlyph
+  trailing?: ReactNode
 }
 
 const boxCss = pickCss(css, css.box)
@@ -27,7 +27,7 @@ export const Input = ({
   label,
   ref,
   state,
-  trailingIcon,
+  trailing,
   ...restProps
 }: InputProps) => (
   <label className={joinCss(css.input, className)}>
@@ -38,9 +38,7 @@ export const Input = ({
       {state && (
         <Icon className={css.status} glyph={statusGlyph[state]} size={18} />
       )}
-      {!state && trailingIcon && (
-        <Icon className={css.trailing} glyph={trailingIcon} size={18} />
-      )}
+      {!state && trailing}
     </span>
   </label>
 )

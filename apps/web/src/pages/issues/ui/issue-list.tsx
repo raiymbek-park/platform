@@ -1,4 +1,4 @@
-import type { IssueStatus } from '@raiymbek-park/shared/validation-schemas'
+import type { IssueFilter } from '@raiymbek-park/shared/validation-schemas'
 
 import { useLingui } from '@lingui/react/macro'
 import {
@@ -9,6 +9,7 @@ import {
 } from '@raiymbek-park/ui'
 
 import { matchIssue } from '../model/match-issue'
+import { useIntersectionObserver } from '../model/use-intersection-observer'
 import { useIssuesData } from '../model/use-issues-data'
 import { useReactionAccess } from '../model/use-reaction-access'
 import { useUpdateIssueReaction } from '../model/use-update-issue-reaction'
@@ -21,14 +22,28 @@ const emptyImage = `${import.meta.env.BASE_URL}images/no-data.png`
 
 export type IssueListProps = {
   query: string
-  status: IssueStatus
+  status: IssueFilter
 }
 
 export const IssueList = ({ query, status }: IssueListProps) => {
   const { t } = useLingui()
-  const { data, isError, isPending, refetch } = useIssuesData(status)
+  const {
+    fetchNextPage,
+    hasNextPage,
+    isError,
+    isFetchingNextPage,
+    isPending,
+    issues,
+    refetch,
+  } = useIssuesData(status)
   const { canReact } = useReactionAccess()
-  const { isReacting, react } = useUpdateIssueReaction(status)
+  const { react } = useUpdateIssueReaction()
+  const sentinelRef = useIntersectionObserver<HTMLDivElement>({
+    enabled: hasNextPage,
+    onChange: isIntersecting => {
+      if (isIntersecting && !isFetchingNextPage) fetchNextPage()
+    },
+  })
 
   if (isPending) {
     return (
@@ -53,9 +68,9 @@ export const IssueList = ({ query, status }: IssueListProps) => {
     )
   }
 
-  const issues = data.filter(issue => matchIssue(issue, query))
+  const visibleIssues = issues.filter(issue => matchIssue(issue, query))
 
-  if (issues.length === 0) {
+  if (visibleIssues.length === 0) {
     return (
       <EmptyState
         data-testid='issue-empty'
@@ -68,15 +83,16 @@ export const IssueList = ({ query, status }: IssueListProps) => {
 
   return (
     <div className={css.list}>
-      {issues.map(issue => (
+      {visibleIssues.map(issue => (
         <IssueCardItem
           key={issue.id}
           canReact={canReact}
-          isReacting={isReacting(issue.id)}
           issue={issue}
           onReact={react}
         />
       ))}
+      {isFetchingNextPage && <SkeletonCard data-testid='issue-more-skeleton' />}
+      <div ref={sentinelRef} data-testid='issue-sentinel' />
     </div>
   )
 }

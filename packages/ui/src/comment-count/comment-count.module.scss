@@ -1,0 +1,15 @@
+.comment {
+  align-items: center;
+  background: var(--background);
+  border-radius: 180px;
+  color: var(--text-muted);
+  display: inline-flex;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 12px;
+}
+
+.count {
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+}
