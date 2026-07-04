@@ -147,7 +147,6 @@ export const IssuesNewPage = () => {
             onRemove={media.removeCurrent}
             onSelect={media.select}
           />
-          {media.error && <span className={css.error}>{media.error}</span>}
         </div>
 
         <div className={css.dock}>

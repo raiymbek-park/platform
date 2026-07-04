@@ -37,10 +37,12 @@
   background: transparent;
   border: 0;
   color: var(--foreground);
+  field-sizing: content;
   flex: 1;
   font-family: inherit;
   font-size: 15px;
   font-weight: var(--weight-medium);
+  max-height: 320px;
   min-height: 88px;
   min-width: 0;
   outline: none;

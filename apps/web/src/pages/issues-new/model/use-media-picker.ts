@@ -8,12 +8,16 @@ import {
 } from '@raiymbek-park/shared/validation-schemas'
 import { useState } from 'react'
 
+import { showToastMessage } from '@/shared/toast'
+
 type PickedFile = {
   file: File
   id: string
   isVideo: boolean
   url: string
 }
+
+const MEDIA_MAX_MB = MEDIA_MAX_BYTES / 1024 / 1024
 
 const toPicked = (file: File): PickedFile => ({
   file,
@@ -22,26 +26,35 @@ const toPicked = (file: File): PickedFile => ({
   url: URL.createObjectURL(file),
 })
 
-const totalBytes = (files: PickedFile[]) =>
-  files.reduce((sum, { file }) => sum + file.size, 0)
+const totalBytes = (files: File[]) =>
+  files.reduce((sum, file) => sum + file.size, 0)
 
 export const useMediaPicker = () => {
   const { t } = useLingui()
   const [picked, setPicked] = useState<PickedFile[]>([])
   const [activeIndex, setActiveIndex] = useState(0)
-  const [error, setError] = useState<string | null>(null)
 
   const add = (fileList: FileList) => {
-    const next = [...picked, ...Array.from(fileList).map(toPicked)]
-    if (next.length > MEDIA_MAX_ITEMS) {
-      setError(t`Можно прикрепить не более 10 файлов`)
+    const incoming = Array.from(fileList)
+
+    if (picked.length + incoming.length > MEDIA_MAX_ITEMS) {
+      showToastMessage({
+        kind: 'error',
+        text: t`Можно прикрепить не более ${MEDIA_MAX_ITEMS} файлов`,
+      })
       return
     }
-    if (totalBytes(next) > MEDIA_MAX_BYTES) {
-      setError(t`Общий размер файлов не должен превышать 200 МБ`)
+
+    const files = [...picked.map(item => item.file), ...incoming]
+    if (totalBytes(files) > MEDIA_MAX_BYTES) {
+      showToastMessage({
+        kind: 'error',
+        text: t`Файл слишком большой: суммарный размер вложений не должен превышать ${MEDIA_MAX_MB} МБ`,
+      })
       return
     }
-    setError(null)
+
+    const next = [...picked, ...incoming.map(toPicked)]
     setPicked(next)
     setActiveIndex(next.length - 1)
   }
@@ -51,7 +64,6 @@ export const useMediaPicker = () => {
     if (!target) return
     URL.revokeObjectURL(target.url)
     const next = picked.filter(file => file.id !== target.id)
-    setError(null)
     setPicked(next)
     setActiveIndex(index => Math.max(0, Math.min(index, next.length - 1)))
   }
@@ -65,7 +77,6 @@ export const useMediaPicker = () => {
   return {
     activeIndex,
     add,
-    error,
     files: picked.map(({ file }) => file),
     photos,
     removeCurrent,
