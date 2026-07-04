@@ -5,7 +5,7 @@ type Registered = {
 
 let registered: Registered[] = []
 
-export class TestIntersectionObserver {
+export class TestIntersectionObserver implements IntersectionObserver {
   readonly root = null
   readonly rootMargin = ''
   readonly scrollMargin = ''

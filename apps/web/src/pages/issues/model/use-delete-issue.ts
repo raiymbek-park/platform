@@ -6,6 +6,7 @@ import { useStoreDeletedIssues } from './use-store-deleted-issues'
 
 type DeleteOptions = {
   onFailure: () => void
+  onSuccess: () => void
 }
 
 export const useDeleteIssue = () => {
@@ -16,16 +17,23 @@ export const useDeleteIssue = () => {
   const restore = useStoreDeletedIssues(store => store.restore)
   const mutation = useMutation(trpc.issues.delete.mutationOptions())
 
-  const deleteIssue = (issueId: string, { onFailure }: DeleteOptions) => {
+  const deleteIssue = (
+    issueId: string,
+    { onFailure, onSuccess }: DeleteOptions,
+  ) => {
     remove(issueId)
     mutation.mutate(
       { issueId },
       {
         onError: error => {
-          if (error.data?.code === 'NOT_FOUND') return
+          if (error.data?.code === 'NOT_FOUND') {
+            onSuccess()
+            return
+          }
           restore(issueId)
           onFailure()
         },
+        onSuccess,
         onSettled: async () => {
           await queryClient.invalidateQueries({
             queryKey: listKey,

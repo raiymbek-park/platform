@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import { useLingui } from '@lingui/react/macro'
 import { ActionCard, SectionHeader } from '@raiymbek-park/ui'
+import { Link } from '@tanstack/react-router'
 
 import css from './services-section.module.scss'
 
@@ -45,22 +46,26 @@ export const ServicesSection = () => {
             tone='accent'
           />
         </ServiceLink>
-        <ServiceLink url='https://forms.gle/TEQ88tykp8K2MjfQ9'>
-          <ActionCard
-            description={t`Подайте обращение в УК`}
-            glyph='clipboard-list'
-            title={t`Создать заявку`}
-            tone='brand'
-          />
-        </ServiceLink>
-        <ServiceLink url='https://trello.com/b/O9Sh7i6z'>
-          <ActionCard
-            description={t`Отслеживайте ход ваших обращений`}
-            glyph='list-checks'
-            title={t`Статус заявки`}
-            tone='warning'
-          />
-        </ServiceLink>
+        <li>
+          <Link className={css.link} to='/issues/new'>
+            <ActionCard
+              description={t`Подайте обращение в УК`}
+              glyph='clipboard-list'
+              title={t`Создать заявку`}
+              tone='brand'
+            />
+          </Link>
+        </li>
+        <li>
+          <Link className={css.link} search={{ status: 'all' }} to='/issues'>
+            <ActionCard
+              description={t`Отслеживайте ход ваших обращений`}
+              glyph='list-checks'
+              title={t`Статус заявки`}
+              tone='warning'
+            />
+          </Link>
+        </li>
         <ServiceLink url='/announcements'>
           <ActionCard
             description={t`У вас есть предложение или поиск, пишите сюда`}

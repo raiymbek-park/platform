@@ -6053,9 +6053,7 @@
                   "width": "fill_container",
                   "content": "Не удалось сохранить заявку. Попробуйте ещё раз.",
                   "lineHeight": 1.4,
-                  "fill": "$foreground",
-                  "x": 52,
-                  "y": 16
+                  "fill": "$foreground"
                 },
                 {
                   "type": "icon",

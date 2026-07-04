@@ -16,6 +16,8 @@ import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
 
+import { inputState } from '@/shared/form'
+
 import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { normalizePhone } from '../lib/phone'
 import { registrationSchema } from '../lib/validators'
@@ -28,17 +30,6 @@ const blockTones: Record<BlockId, 'brand' | 'danger' | 'accent' | 'info'> = {
   2: 'brand',
   3: 'accent',
   4: 'info',
-}
-
-type FieldMeta = {
-  errors: readonly unknown[]
-  isDirty: boolean
-  isTouched: boolean
-}
-
-const inputState = ({ errors, isDirty, isTouched }: FieldMeta) => {
-  if (errors.length > 0) return isTouched ? 'error' : undefined
-  return isDirty ? 'success' : undefined
 }
 
 export const RegistrationForm = () => {

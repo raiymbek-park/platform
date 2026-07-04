@@ -45,13 +45,16 @@ rules live in `validation.md`.
   When:  the delete request fails
   Then:  an error message is shown and the issue remains in the list
 
-## Scenario 7: Media upload fails during open or status change
+## Scenario 7: Some media fail to upload
 
-  Given: a user submitting an issue or status change with media attached
-  When:  a photo or video upload fails
-  Then:  an error message is shown, the rest of the entered values are preserved, and the action can
-         be retried
-         the issue is not created or updated with partial media
+  Given: a Resident submitting a valid create-issue form with several photos or videos attached
+  When:  some attachments fail to upload while others succeed
+  Then:  the issue is created with the successfully uploaded media attached
+         the attachments that failed are dropped — not stored and not retried
+         a message reports how many attachments did not upload
+  When:  every attachment fails to upload
+  Then:  the issue is still created from its text alone, with no media, and the failure count is
+         reported
 
 ## Scenario 8: Acting on an issue that no longer exists
 

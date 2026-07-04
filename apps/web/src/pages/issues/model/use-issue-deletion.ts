@@ -22,6 +22,8 @@ export const useIssueDeletion = () => {
           kind: 'error',
           text: t`Не удалось удалить заявку. Попробуйте ещё раз.`,
         }),
+      onSuccess: () =>
+        showToastMessage({ kind: 'success', text: t`Заявка удалена.` }),
     })
   }
 

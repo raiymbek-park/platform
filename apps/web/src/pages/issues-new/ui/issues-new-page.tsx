@@ -7,10 +7,13 @@ import {
   ImageForm,
   Input,
   ScreenHeader,
+  ScreenTitle,
   Textarea,
 } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
+
+import { inputState } from '@/shared/form'
 
 import { issueFormSchema } from '../lib/validators'
 import { useCreateIssue } from '../model/use-create-issue'
@@ -18,17 +21,6 @@ import { categoryTheme } from '../model/use-issue-categories'
 import { useMediaPicker } from '../model/use-media-picker'
 import { CategoryField } from './category-field'
 import css from './issues-new-page.module.scss'
-
-type FieldMeta = {
-  errors: readonly unknown[]
-  isDirty: boolean
-  isTouched: boolean
-}
-
-const inputState = ({ errors, isDirty, isTouched }: FieldMeta) => {
-  if (errors.length > 0) return isTouched ? 'error' : undefined
-  return isDirty ? 'success' : undefined
-}
 
 const defaultValues: IssueFormValues = {
   category: null,
@@ -75,12 +67,10 @@ export const IssuesNewPage = () => {
         src={`${import.meta.env.BASE_URL}images/create-issue.png`}
       />
       <Content gap={24}>
-        <header className={css.intro}>
-          <h1 className={css.title}>{t`Новая заявка`}</h1>
-          <p className={css.subtitle}>
-            {t`Опишите проблему или вопрос, который вы хотите направить управляющей компании или жителям нашего ЖК.`}
-          </p>
-        </header>
+        <ScreenTitle
+          subtitle={t`Опишите проблему или вопрос, который вы хотите направить управляющей компании или жителям нашего ЖК.`}
+          title={t`Новая заявка`}
+        />
 
         <form.Field name='category'>
           {field => (

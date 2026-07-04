@@ -1,6 +1,6 @@
 import { useLingui } from '@lingui/react/macro'
 import { pickCss } from '@raiymbek-park/shared'
-import { Content, Icon, ScreenHeader } from '@raiymbek-park/ui'
+import { Content, Icon, ScreenHeader, ScreenTitle } from '@raiymbek-park/ui'
 import { getRouteApi, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 
@@ -37,12 +37,10 @@ export const IssuesPage = () => {
     <>
       <ScreenHeader />
       <Content gap={16}>
-        <header className={css.intro}>
-          <h1 className={css.title}>{t`Заявки`}</h1>
-          <p className={css.subtitle}>
-            {t`Обращения жильцов в управляющую компанию и их статусы.`}
-          </p>
-        </header>
+        <ScreenTitle
+          subtitle={t`Обращения жильцов в управляющую компанию и их статусы.`}
+          title={t`Заявки`}
+        />
         <IssueSearch value={query} onChange={handleSearch} />
         <IssueFilterTabs />
         <IssueList query={query} search={search} status={status} />
