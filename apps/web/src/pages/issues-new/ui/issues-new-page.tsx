@@ -1,64 +1,73 @@
-import type { FormEvent } from 'react'
+import type { IssueFormValues } from '../lib/validators'
 
 import { useLingui } from '@lingui/react/macro'
-import { randomId } from '@raiymbek-park/shared'
 import {
   Button,
   Content,
   ImageForm,
-  InfoCallout,
   Input,
   ScreenHeader,
   Textarea,
 } from '@raiymbek-park/ui'
+import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
 
-import { uploadIssueMedia } from '../model/upload-media'
+import { issueFormSchema } from '../lib/validators'
 import { useCreateIssue } from '../model/use-create-issue'
-import { useCategoryTheme } from '../model/use-issue-categories'
-import { useIssueForm } from '../model/use-issue-form'
+import { categoryTheme } from '../model/use-issue-categories'
 import { useMediaPicker } from '../model/use-media-picker'
 import { CategoryField } from './category-field'
 import css from './issues-new-page.module.scss'
 
+type FieldMeta = {
+  errors: readonly unknown[]
+  isDirty: boolean
+  isTouched: boolean
+}
+
+const inputState = ({ errors, isDirty, isTouched }: FieldMeta) => {
+  if (errors.length > 0) return isTouched ? 'error' : undefined
+  return isDirty ? 'success' : undefined
+}
+
+const defaultValues: IssueFormValues = {
+  category: null,
+  description: '',
+  title: '',
+  urgent: false,
+}
+
 export const IssuesNewPage = () => {
   const { t } = useLingui()
   const navigate = useNavigate()
-  const form = useIssueForm()
   const media = useMediaPicker()
-  const theme = useCategoryTheme(form.category)
-  const { createIssue } = useCreateIssue()
-  const [isSubmitting, setSubmitting] = useState(false)
-  const [submitError, setSubmitError] = useState<string | null>(null)
+  const { createIssue, isPending } = useCreateIssue()
+
+  const form = useForm({
+    defaultValues,
+    validators: { onChange: issueFormSchema },
+    onSubmit: ({ value }) => {
+      if (value.category === null) return
+      createIssue({
+        category: value.category,
+        description: value.description,
+        files: media.files,
+        title: value.title,
+        urgent: value.urgent,
+      })
+    },
+  })
 
   const goBack = () => navigate({ search: { status: 'new' }, to: '/issues' })
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setSubmitError(null)
-    const values = form.validate()
-    if (!values || media.error) return
-
-    setSubmitting(true)
-    const id = randomId()
-    const uploaded = await uploadIssueMedia(id, media.files).catch(() => null)
-    if (uploaded === null) {
-      setSubmitError(t`Не удалось загрузить файлы. Попробуйте ещё раз.`)
-      setSubmitting(false)
-      return
-    }
-
-    try {
-      await createIssue({ id, ...values, media: uploaded })
-    } catch {
-      setSubmitError(t`Не удалось создать заявку. Попробуйте ещё раз.`)
-      setSubmitting(false)
-    }
-  }
-
   return (
-    <form className={css.form} onSubmit={handleSubmit}>
+    <form
+      className={css.form}
+      onSubmit={event => {
+        event.preventDefault()
+        form.handleSubmit()
+      }}
+    >
       <ScreenHeader />
       <img
         alt=''
@@ -73,43 +82,59 @@ export const IssuesNewPage = () => {
           </p>
         </header>
 
-        <CategoryField
-          category={form.category}
-          error={form.errors.category}
-          urgent={form.urgent}
-          onSelect={form.setCategory}
-          onToggleUrgent={form.toggleUrgent}
-        />
-
-        <div className={css.field}>
-          <Input
-            icon={theme.glyph}
-            label={t`Тема заявки`}
-            maxLength={80}
-            placeholder={t`Кратко опишите проблему`}
-            state={form.errors.title ? 'error' : undefined}
-            tone={theme.tone}
-            value={form.title}
-            onChange={event => form.setTitle(event.target.value)}
-          />
-          {form.errors.title && (
-            <span className={css.error}>{form.errors.title}</span>
+        <form.Field name='category'>
+          {field => (
+            <form.Field name='urgent'>
+              {urgentField => (
+                <CategoryField
+                  category={field.state.value}
+                  urgent={urgentField.state.value}
+                  onSelect={field.handleChange}
+                  onToggleUrgent={() =>
+                    urgentField.handleChange(!urgentField.state.value)
+                  }
+                />
+              )}
+            </form.Field>
           )}
-        </div>
+        </form.Field>
 
-        <div className={css.field}>
-          <Textarea
-            label={t`Описание`}
-            maxLength={1000}
-            placeholder={t`Подробно опишите, что случилось и где…`}
-            state={form.errors.description ? 'error' : undefined}
-            value={form.description}
-            onChange={event => form.setDescription(event.target.value)}
-          />
-          {form.errors.description && (
-            <span className={css.error}>{form.errors.description}</span>
+        <form.Subscribe selector={state => state.values.category}>
+          {category => {
+            const theme = categoryTheme(category)
+            return (
+              <form.Field name='title'>
+                {field => (
+                  <Input
+                    icon={theme.glyph}
+                    label={t`Тема заявки`}
+                    maxLength={80}
+                    placeholder={t`Кратко опишите проблему`}
+                    state={inputState(field.state.meta)}
+                    tone={theme.tone}
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={event => field.handleChange(event.target.value)}
+                  />
+                )}
+              </form.Field>
+            )
+          }}
+        </form.Subscribe>
+
+        <form.Field name='description'>
+          {field => (
+            <Textarea
+              label={t`Описание`}
+              maxLength={1000}
+              placeholder={t`Подробно опишите, что случилось и где…`}
+              state={inputState(field.state.meta)}
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={event => field.handleChange(event.target.value)}
+            />
           )}
-        </div>
+        </form.Field>
 
         <div className={css.field}>
           <span className={css.label}>{t`Фото`}</span>
@@ -125,12 +150,6 @@ export const IssuesNewPage = () => {
           {media.error && <span className={css.error}>{media.error}</span>}
         </div>
 
-        {submitError && (
-          <InfoCallout icon='circle-alert' variant='danger'>
-            {submitError}
-          </InfoCallout>
-        )}
-
         <div className={css.dock}>
           <Button
             aria-label={t`Назад`}
@@ -139,14 +158,19 @@ export const IssuesNewPage = () => {
             variant='icon'
             onClick={goBack}
           />
-          <Button
-            className={css.submit}
-            icon='send-horizontal'
-            isLoading={isSubmitting}
-            type='submit'
-          >
-            {t`Отправить`}
-          </Button>
+          <form.Subscribe selector={state => state.canSubmit}>
+            {canSubmit => (
+              <Button
+                className={css.submit}
+                disabled={!canSubmit || isPending}
+                icon='send-horizontal'
+                isLoading={isPending}
+                type='submit'
+              >
+                {t`Отправить`}
+              </Button>
+            )}
+          </form.Subscribe>
         </div>
       </Content>
     </form>

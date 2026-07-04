@@ -9,10 +9,35 @@
   position: fixed;
   top: auto;
   bottom: 0;
+  transform: translateY(100%);
+  transition:
+    transform 300ms ease,
+    display 300ms allow-discrete,
+    overlay 300ms allow-discrete;
   width: 100%;
 
+  &[open] {
+    transform: translateY(0);
+
+    @starting-style {
+      transform: translateY(100%);
+    }
+  }
+
   &::backdrop {
+    background: transparent;
+    transition:
+      background 300ms ease,
+      display 300ms allow-discrete,
+      overlay 300ms allow-discrete;
+  }
+
+  &[open]::backdrop {
     background: var(--scrim);
+
+    @starting-style {
+      background: transparent;
+    }
   }
 }
 

@@ -2,7 +2,7 @@
 
 .chip {
   --chip-bg: var(--brand-soft);
-  --chip-fg: var(--brand);
+  --chip-fg: var(--brand-text);
 
   @include chip(var(--chip-size, 40px), 13px);
 

@@ -87,11 +87,6 @@ export const IssueList = ({ query, search, status }: IssueListProps) => {
 
   return (
     <div className={css.list}>
-      {deletion.error && (
-        <InfoCallout icon='circle-alert' variant='danger'>
-          {deletion.error}
-        </InfoCallout>
-      )}
       {issues.map(issue => (
         <IssueCardItem
           key={issue.id}

@@ -1,6 +1,8 @@
 import { useLingui } from '@lingui/react/macro'
 import { useState } from 'react'
 
+import { showToastMessage } from '@/shared/toast'
+
 import { useDeleteIssue } from './use-delete-issue'
 import { useIssueActionsAccess } from './use-issue-actions-access'
 
@@ -9,7 +11,6 @@ export const useIssueDeletion = () => {
   const { canDelete } = useIssueActionsAccess()
   const { deleteIssue } = useDeleteIssue()
   const [pendingId, setPendingId] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   const confirm = () => {
     if (!pendingId) return
@@ -17,7 +18,10 @@ export const useIssueDeletion = () => {
     setPendingId(null)
     deleteIssue(id, {
       onFailure: () =>
-        setError(t`Не удалось удалить заявку. Попробуйте ещё раз.`),
+        showToastMessage({
+          kind: 'error',
+          text: t`Не удалось удалить заявку. Попробуйте ещё раз.`,
+        }),
     })
   }
 
@@ -25,7 +29,6 @@ export const useIssueDeletion = () => {
     canDelete,
     cancel: () => setPendingId(null),
     confirm,
-    error,
     isConfirmOpen: pendingId !== null,
     request: setPendingId,
   }

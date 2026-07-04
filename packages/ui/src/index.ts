@@ -43,6 +43,7 @@ export type {
 export type { SkeletonCardProps } from './skeleton-card/skeleton-card'
 export type { StatusTagProps, StatusTagTone } from './status-tag/status-tag'
 export type { TextareaProps } from './textarea/textarea'
+export type { ToastMessageProps } from './toast-message/toast-message'
 
 export { ActionCard } from './action-card/action-card'
 export { AnnounceCard } from './announce-card/announce-card'
@@ -76,3 +77,4 @@ export { SelectOption } from './select-option/select-option'
 export { SkeletonCard } from './skeleton-card/skeleton-card'
 export { StatusTag } from './status-tag/status-tag'
 export { Textarea } from './textarea/textarea'
+export { ToastMessage } from './toast-message/toast-message'

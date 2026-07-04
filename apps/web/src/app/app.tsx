@@ -9,6 +9,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { routeTree } from '@/app/routeTree.gen'
 import { queryClient, TRPCProvider, trpc, trpcClient } from '@/shared/api'
 import { i18n } from '@/shared/i18n'
+import { ToastHost } from '@/shared/toast'
 
 const router = createRouter({
   routeTree,
@@ -31,5 +32,6 @@ export const App = () => (
         <RouterProvider router={router} />
       </TRPCProvider>
     </QueryClientProvider>
+    <ToastHost />
   </I18nProvider>
 )
