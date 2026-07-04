@@ -40,20 +40,20 @@ const seedIssue: Issue = {
 
 let issues: Issue[] = [seedIssue]
 
-const serveList = () =>
+const serveList = (role: 'resident' | 'administration' = 'resident') =>
   trpcQueries({
     'issues.list': () => ({ issues, nextCursor: null }),
     'resident.me': () => ({
       apartment: 42,
       block: 1,
       name: 'Алиса',
-      role: 'resident',
+      role,
     }),
   })
 
-const serve = () =>
+const serve = (role: 'resident' | 'administration' = 'resident') =>
   trpcServer.use(
-    serveList(),
+    serveList(role),
     trpcMutation('issues.delete', raw => {
       const { issueId } = issueDeleteInputSchema.parse(raw)
       issues = issues.filter(issue => issue.id !== issueId)
@@ -132,6 +132,37 @@ test('error-states 8: a NOT_FOUND delete error is treated as already deleted, ke
 test('edge-cases 9: an issue past the New status shows no delete action on its card', async () => {
   issues = [{ ...seedIssue, status: 'in-progress' }]
   serve()
+  const { user } = renderApp('/issues?status=all')
+  await screen.findByText('Течёт кран на кухне')
+
+  const cardElement = await card()
+  await user.click(
+    within(cardElement).getByRole('button', { name: /Подробнее/ }),
+  )
+
+  expect(
+    within(cardElement).queryByRole('button', { name: 'Удалить' }),
+  ).not.toBeInTheDocument()
+})
+
+test('happy-path 11: an Administration user can delete a new issue opened by someone else', async () => {
+  issues = [{ ...seedIssue, isMine: false }]
+  serve('administration')
+  const { user } = renderApp('/issues?status=all')
+  await screen.findByText('Течёт кран на кухне')
+
+  const confirmButton = await openDeleteConfirm(user)
+  await user.click(confirmButton)
+
+  expect(await screen.findByText('Заявка удалена.')).toBeInTheDocument()
+  await waitFor(() =>
+    expect(screen.queryByText('Течёт кран на кухне')).not.toBeInTheDocument(),
+  )
+})
+
+test('validation 12: a Resident sees no delete action on an issue opened by someone else', async () => {
+  issues = [{ ...seedIssue, isMine: false }]
+  serve('resident')
   const { user } = renderApp('/issues?status=all')
   await screen.findByText('Течёт кран на кухне')
 

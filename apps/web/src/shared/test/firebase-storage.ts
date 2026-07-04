@@ -41,7 +41,9 @@ export const firebaseStorageModule = {
 
 export const firebaseStorage = {
   failUploadsNamed: (...names: string[]) => {
-    names.forEach(name => state.failNames.add(name))
+    names.forEach(name => {
+      state.failNames.add(name)
+    })
   },
   uploaded: () => state.uploaded,
   deleted: () => state.deleted,
