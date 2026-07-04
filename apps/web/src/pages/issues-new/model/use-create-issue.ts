@@ -27,8 +27,9 @@ export const useCreateIssue = () => {
   const mutation = useMutation({
     mutationFn: async ({ files, ...values }: CreateIssueVariables) => {
       const id = randomId()
-      const media = await uploadIssueMedia(id, files)
-      return trpcClient.issues.create.mutate({ id, ...values, media })
+      const { failedCount, urls } = await uploadIssueMedia(id, files)
+      await trpcClient.issues.create.mutate({ id, ...values, media: urls })
+      return failedCount
     },
   })
 
@@ -39,13 +40,20 @@ export const useCreateIssue = () => {
           kind: 'error',
           text: t`Не удалось сохранить заявку. Попробуйте ещё раз.`,
         }),
-      onSuccess: async () => {
+      onSuccess: async failedCount => {
         await queryClient.invalidateQueries({
           queryKey: listKey,
           refetchType: 'all',
         })
         await navigate({ search: { status: 'new' }, to: '/issues' })
-        showToastMessage({ kind: 'success', text: t`Заявка отправлена.` })
+        showToastMessage(
+          failedCount > 0
+            ? {
+                kind: 'info',
+                text: t`Заявка создана. Файлов не загрузилось: ${failedCount}`,
+              }
+            : { kind: 'success', text: t`Заявка отправлена.` },
+        )
       },
     })
   }

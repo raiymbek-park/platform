@@ -1,11 +1,8 @@
 import { randomId } from '@raiymbek-park/shared'
-import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytesResumable,
-} from 'firebase/storage'
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
+
 import { auth, storage } from '@/shared/firebase'
+
 import { compressImage } from './compress-image'
 
 const MIME_EXTENSIONS: Record<string, string> = {
@@ -28,36 +25,25 @@ const extensionFromName = (name: string): string | undefined => {
 const extensionFor = (file: File): string =>
   MIME_EXTENSIONS[file.type] ?? extensionFromName(file.name) ?? 'bin'
 
-export const uploadIssueMedia = async (
-  issueId: string,
-  files: File[],
-): Promise<string[]> => {
-  if (!auth.currentUser?.uid) throw new Error('unauthenticated')
+const isFulfilled = <T>(
+  result: PromiseSettledResult<T>,
+): result is PromiseFulfilledResult<T> => result.status === 'fulfilled'
 
-  const targets = await Promise.all(
-    files.map(async file => {
-      const upload = await compressImage(file)
-      return {
-        file: upload,
-        ref: ref(
-          storage,
-          `issues/${issueId}/${randomId()}.${extensionFor(upload)}`,
-        ),
-      }
-    }),
-  )
+export const uploadIssueMedia = (issueId: string, files: File[]) => {
+  if (!auth.currentUser?.uid)
+    return Promise.reject(new Error('unauthenticated'))
 
-  try {
-    return await Promise.all(
-      targets.map(async ({ file, ref: target }) => {
-        await uploadBytesResumable(target, file)
-        return getDownloadURL(target)
-      }),
-    )
-  } catch (error) {
-    await Promise.allSettled(
-      targets.map(({ ref: target }) => deleteObject(target)),
-    )
-    throw error
-  }
+  const uploads = files.map(async file => {
+    const compressed = await compressImage(file)
+    const path = `issues/${issueId}/${randomId()}.${extensionFor(compressed)}`
+    const target = ref(storage, path)
+    await uploadBytesResumable(target, compressed)
+    return getDownloadURL(target)
+  })
+
+  return Promise.allSettled(uploads).then(results => {
+    const urls = results.filter(isFulfilled).map(result => result.value)
+    const failedCount = results.length - urls.length
+    return { urls, failedCount }
+  })
 }
