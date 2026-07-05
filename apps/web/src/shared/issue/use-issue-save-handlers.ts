@@ -1,3 +1,5 @@
+import type { IssueFilter } from '@raiymbek-park/shared/validation-schemas'
+
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 
@@ -16,30 +18,39 @@ export const useIssueSaveHandlers = (messages: SaveMessages) => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const listKey = trpc.issues.list.pathKey()
+  const detailKey = trpc.issues.get.pathKey()
 
-  const backToList = () =>
-    navigate({ search: { status: 'new' }, to: '/issues' })
+  return (filter: IssueFilter) => {
+    const backToList = () =>
+      navigate({ search: { status: filter }, to: '/issues' })
 
-  return {
-    onError: async (error: unknown) => {
-      if (isNotFoundError(error)) {
+    return {
+      onError: async (error: unknown) => {
+        if (isNotFoundError(error)) {
+          await backToList()
+          showToastMessage({ kind: 'error', text: messages.notFound })
+          return
+        }
+        showToastMessage({ kind: 'error', text: messages.error })
+      },
+      onSuccess: async (failedCount: number) => {
+        await Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: listKey,
+            refetchType: 'all',
+          }),
+          queryClient.invalidateQueries({
+            queryKey: detailKey,
+            refetchType: 'all',
+          }),
+        ])
         await backToList()
-        showToastMessage({ kind: 'error', text: messages.notFound })
-        return
-      }
-      showToastMessage({ kind: 'error', text: messages.error })
-    },
-    onSuccess: async (failedCount: number) => {
-      await queryClient.invalidateQueries({
-        queryKey: listKey,
-        refetchType: 'all',
-      })
-      await backToList()
-      showToastMessage(
-        failedCount > 0
-          ? { kind: 'info', text: messages.partial(failedCount) }
-          : { kind: 'success', text: messages.success },
-      )
-    },
+        showToastMessage(
+          failedCount > 0
+            ? { kind: 'info', text: messages.partial(failedCount) }
+            : { kind: 'success', text: messages.success },
+        )
+      },
+    }
   }
 }

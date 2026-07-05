@@ -34,6 +34,7 @@ export const useChangeStatus = (issueId: string) => {
       partial: count => t`Статус обновлён. Файлов не загрузилось: ${count}`,
       success: t`Статус обновлён.`,
     },
+    variables => variables.status,
   )
 
   return { changeStatus: submit, isPending }
