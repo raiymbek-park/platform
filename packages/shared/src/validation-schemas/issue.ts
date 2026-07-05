@@ -90,6 +90,7 @@ export const ISSUE_TITLE_MIN = 3
 export const ISSUE_TITLE_MAX = 80
 export const ISSUE_DESCRIPTION_MIN = 10
 export const ISSUE_DESCRIPTION_MAX = 1000
+export const ISSUE_COMMENT_MAX = 1000
 
 export const issueCreateInputSchema = z.object({
   category: issueCategorySchema,
@@ -111,8 +112,29 @@ export const issueCreatePayloadSchema = issueCreateInputSchema.extend({
 
 export type IssueCreatePayload = z.infer<typeof issueCreatePayloadSchema>
 
-export const issueDeleteInputSchema = z.object({
+export const issueUpdateInputSchema = issueCreateInputSchema.extend({
+  id: z.string().min(1),
+})
+
+export type IssueUpdateInput = z.infer<typeof issueUpdateInputSchema>
+
+export const issueRefInputSchema = z.object({
   issueId: z.string().min(1),
 })
 
+export const issueDeleteInputSchema = issueRefInputSchema
+
 export type IssueDeleteInput = z.infer<typeof issueDeleteInputSchema>
+
+export const issueGetInputSchema = issueRefInputSchema
+
+export type IssueGetInput = z.infer<typeof issueGetInputSchema>
+
+export const statusChangeInputSchema = issueRefInputSchema.extend({
+  comment: z.string().trim().max(ISSUE_COMMENT_MAX).optional(),
+  media: z.array(z.string()).max(MEDIA_MAX_ITEMS).default([]),
+  status: issueStatusSchema,
+  tags: z.array(classificationTagSchema).default([]),
+})
+
+export type StatusChangeInput = z.infer<typeof statusChangeInputSchema>
