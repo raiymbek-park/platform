@@ -3,6 +3,7 @@ import type { ComponentProps, PointerEvent } from 'react'
 import { joinCss, pickCss } from '@raiymbek-park/shared'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import placeholder from '../issue-card/image-placeholder.jpg'
 import css from './carousel.module.scss'
 import { isVideoUrl } from './is-video-url'
 
@@ -24,6 +25,44 @@ const trackCss = pickCss(css, css.track)
 const dotCss = pickCss(css, css.dot)
 
 const SWIPE_THRESHOLD = 50
+
+const MediaSlide = ({
+  item,
+  onLoad,
+}: {
+  item: CarouselItem
+  onLoad: () => void
+}) => {
+  const isVideo = item.isVideo ?? isVideoUrl(item.url)
+  const [src, setSrc] = useState(placeholder)
+
+  useEffect(() => {
+    if (isVideo) return
+    const image = new Image()
+    image.onload = () => setSrc(item.url)
+    image.src = item.url
+  }, [isVideo, item.url])
+
+  return isVideo ? (
+    <video
+      className={css.media}
+      controls
+      muted
+      playsInline
+      preload='metadata'
+      src={item.url}
+      onLoadedMetadata={onLoad}
+    />
+  ) : (
+    <img
+      alt=''
+      className={css.media}
+      draggable={false}
+      src={src}
+      onLoad={onLoad}
+    />
+  )
+}
 
 export const Carousel = ({
   activeIndex,
@@ -103,29 +142,9 @@ export const Carousel = ({
           transform: `translateX(calc(${-index * 100}% + ${drag}px))`,
         }}
       >
-        {items.map(item =>
-          (item.isVideo ?? isVideoUrl(item.url)) ? (
-            <video
-              key={item.id}
-              className={css.media}
-              controls
-              muted
-              playsInline
-              preload='metadata'
-              src={item.url}
-              onLoadedMetadata={reportHeight}
-            />
-          ) : (
-            <img
-              key={item.id}
-              alt=''
-              className={css.media}
-              draggable={false}
-              src={item.url}
-              onLoad={reportHeight}
-            />
-          ),
-        )}
+        {items.map(item => (
+          <MediaSlide key={item.id} item={item} onLoad={reportHeight} />
+        ))}
       </div>
       {showDots && items.length > 1 && (
         <div className={css.dots}>
