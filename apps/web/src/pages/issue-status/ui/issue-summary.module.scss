@@ -1,0 +1,59 @@
+.summary {
+  background: var(--surface);
+  border-radius: 24px;
+  box-shadow: 0 4px 20px var(--shadow);
+  overflow: hidden;
+}
+
+.media {
+  height: 200px;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+}
+
+.head {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.title {
+  color: var(--foreground);
+  font-size: 16px;
+  font-weight: var(--weight-bold);
+  margin: 0;
+}
+
+.meta {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+}
+
+.contact {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  gap: 8px;
+}
+
+.contactIcon {
+  color: var(--text-muted);
+}
+
+.name {
+  font-size: 15px;
+  font-weight: var(--weight-bold);
+}

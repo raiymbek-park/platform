@@ -1,3 +1,5 @@
+import type { MediaItem } from './use-media-picker'
+
 import { randomId } from '@raiymbek-park/shared'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 
@@ -29,21 +31,33 @@ const isFulfilled = <T>(
   result: PromiseSettledResult<T>,
 ): result is PromiseFulfilledResult<T> => result.status === 'fulfilled'
 
+const uploadFile = async (issueId: string, file: File): Promise<string> => {
+  const compressed = await compressImage(file)
+  const path = `issues/${issueId}/${randomId()}.${extensionFor(compressed)}`
+  const target = ref(storage, path)
+  await uploadBytesResumable(target, compressed)
+  return getDownloadURL(target)
+}
+
+const collect = (results: PromiseSettledResult<string>[]) => {
+  const urls = results.filter(isFulfilled).map(result => result.value)
+  return { failedCount: results.length - urls.length, urls }
+}
+
 export const uploadIssueMedia = (issueId: string, files: File[]) => {
   if (!auth.currentUser?.uid)
     return Promise.reject(new Error('unauthenticated'))
 
-  const uploads = files.map(async file => {
-    const compressed = await compressImage(file)
-    const path = `issues/${issueId}/${randomId()}.${extensionFor(compressed)}`
-    const target = ref(storage, path)
-    await uploadBytesResumable(target, compressed)
-    return getDownloadURL(target)
-  })
+  const uploads = files.map(file => uploadFile(issueId, file))
+  return Promise.allSettled(uploads).then(collect)
+}
 
-  return Promise.allSettled(uploads).then(results => {
-    const urls = results.filter(isFulfilled).map(result => result.value)
-    const failedCount = results.length - urls.length
-    return { urls, failedCount }
-  })
+export const uploadMediaItems = (issueId: string, items: MediaItem[]) => {
+  if (!auth.currentUser?.uid)
+    return Promise.reject(new Error('unauthenticated'))
+
+  const uploads = items.map(item =>
+    item.file ? uploadFile(issueId, item.file) : Promise.resolve(item.url),
+  )
+  return Promise.allSettled(uploads).then(collect)
 }

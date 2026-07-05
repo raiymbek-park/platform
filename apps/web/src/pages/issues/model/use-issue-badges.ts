@@ -1,17 +1,15 @@
 import type {
   ClassificationTag,
+  IssueCategory,
   IssueFilter,
   IssueStatus,
 } from '@raiymbek-park/shared/validation-schemas'
-import type {
-  IconChipTone,
-  IconGlyph,
-  IssueCardBadge,
-  StatusTagTone,
-} from '@raiymbek-park/ui'
+import type { IssueCardBadge, StatusTagTone } from '@raiymbek-park/ui'
 import type { IssueView } from './use-issues-data'
 
 import { useLingui } from '@lingui/react/macro'
+
+import { statusGlyphs, statusTones } from '@/shared/issue'
 
 const statusOrder: IssueStatus[] = [
   'new',
@@ -25,30 +23,18 @@ const statusOrder: IssueStatus[] = [
 
 export const filterOrder: IssueFilter[] = ['all', ...statusOrder]
 
-const statusGlyph: Record<IssueStatus, IconGlyph> = {
-  new: 'inbox',
-  'in-progress': 'wrench',
-  planned: 'calendar-clock',
-  blocked: 'ban',
-  'resident-review': 'users-round',
-  done: 'circle-check-big',
-  rejected: 'circle-x',
-}
-
-const statusTone: Record<IssueStatus, IconChipTone> = {
-  new: 'warning',
-  'in-progress': 'action',
-  planned: 'action',
-  blocked: 'danger',
-  'resident-review': 'accent',
-  done: 'brand',
-  rejected: 'danger',
-}
-
 const tagTone: Record<ClassificationTag, StatusTagTone> = {
   warranty: 'brand',
   'needs-clarification': 'neutral',
   duplicate: 'neutral',
+}
+
+const categoryTone: Record<IssueCategory, StatusTagTone> = {
+  repair: 'info',
+  replacement: 'accent',
+  complaint: 'warning',
+  violation: 'danger',
+  other: 'neutral',
 }
 
 export const useIssueBadges = () => {
@@ -81,23 +67,38 @@ export const useIssueBadges = () => {
     duplicate: t`Дубликат`,
   }
 
+  const categoryLabel: Record<IssueCategory, string> = {
+    repair: t`Ремонт`,
+    replacement: t`Замена`,
+    complaint: t`Жалоба`,
+    violation: t`Нарушение`,
+    other: t`Прочее`,
+  }
+
   const filterName = (filter: IssueFilter) => filterLabel[filter]
 
   const cardTags = (issue: IssueView): IssueCardBadge[] => {
+    const urgent: IssueCardBadge[] = issue.urgent
+      ? [{ id: 'urgent', label: t`Срочно`, tone: 'danger' }]
+      : []
+    const category: IssueCardBadge = {
+      id: 'category',
+      label: categoryLabel[issue.category],
+      tone: categoryTone[issue.category],
+    }
     const tags: IssueCardBadge[] = issue.tags.map(tag => ({
       id: tag,
       label: tagLabel[tag],
       tone: tagTone[tag],
     }))
-    if (!issue.urgent) return tags
-    return [{ id: 'urgent', label: t`Срочно`, tone: 'danger' }, ...tags]
+    return [...urgent, category, ...tags]
   }
 
   return {
     cardStatusLabel: (status: IssueStatus) => cardStatusLabel[status],
     cardTags,
     filterName,
-    statusGlyph: (status: IssueStatus) => statusGlyph[status],
-    statusTone: (status: IssueStatus) => statusTone[status],
+    statusGlyph: (status: IssueStatus) => statusGlyphs[status],
+    statusTone: (status: IssueStatus) => statusTones[status],
   }
 }

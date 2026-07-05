@@ -34,6 +34,11 @@
     --chip-fg: var(--action);
   }
 
+  &-tone-neutral {
+    --chip-bg: var(--disabled-surface);
+    --chip-fg: var(--text-secondary);
+  }
+
   &-variant-solid {
     background: var(--chip-fg);
     color: var(--surface);

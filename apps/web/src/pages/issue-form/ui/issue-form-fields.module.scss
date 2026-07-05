@@ -1,0 +1,11 @@
+.form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.illustration {
+  height: 170px;
+  object-fit: cover;
+  width: 100%;
+}

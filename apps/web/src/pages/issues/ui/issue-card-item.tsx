@@ -13,13 +13,16 @@ import {
   IssueCard,
   Reaction,
 } from '@raiymbek-park/ui'
+import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
 import { formatIssueDate } from '../model/format-issue-date'
 import { useIssueBadges } from '../model/use-issue-badges'
 
 export type IssueCardItemProps = {
+  canChangeStatus: boolean
   canDelete: boolean
+  canEdit: boolean
   canReact: boolean
   issue: IssueView
   onDelete: (issueId: string) => void
@@ -31,13 +34,16 @@ export type IssueCardItemProps = {
 }
 
 export const IssueCardItem = ({
+  canChangeStatus,
   canDelete,
+  canEdit,
   canReact,
   issue,
   onDelete,
   onReact,
 }: IssueCardItemProps) => {
   const { t } = useLingui()
+  const navigate = useNavigate()
   const { cardStatusLabel, cardTags, statusGlyph, statusTone } =
     useIssueBadges()
   const [isExpanded, setExpanded] = useState(false)
@@ -45,8 +51,13 @@ export const IssueCardItem = ({
   const status: IssueStatus = issue.status
   const meta = t`Заявка №${issue.number} · ${cardStatusLabel(status)}`
 
-  // Editing an issue lands in T3 — the button is shown per the design, no-op for now.
-  const editIssue = () => {}
+  const editIssue = () =>
+    navigate({ params: { issueId: issue.id }, to: '/issues/edit/$issueId' })
+
+  const changeStatus = () =>
+    navigate({ params: { issueId: issue.id }, to: '/issues/status/$issueId' })
+
+  const hasActions = canEdit || canChangeStatus || canDelete
 
   const contacts: IssueCardContact[] = [
     { glyph: 'user-round', isEmphasis: true, text: issue.authorName },
@@ -69,20 +80,32 @@ export const IssueCardItem = ({
   return (
     <IssueCard
       actions={
-        canDelete ? (
+        hasActions ? (
           <>
-            <InlineButton
-              glyph='square-pen'
-              label={t`Редактировать`}
-              tone='info'
-              onClick={editIssue}
-            />
-            <InlineButton
-              glyph='trash-2'
-              label={t`Удалить`}
-              tone='danger'
-              onClick={() => onDelete(issue.id)}
-            />
+            {canEdit && (
+              <InlineButton
+                glyph='square-pen'
+                label={t`Редактировать`}
+                tone='info'
+                onClick={editIssue}
+              />
+            )}
+            {canChangeStatus && (
+              <InlineButton
+                glyph='refresh-cw'
+                label={t`Сменить статус`}
+                tone='success'
+                onClick={changeStatus}
+              />
+            )}
+            {canDelete && (
+              <InlineButton
+                glyph='trash-2'
+                label={t`Удалить`}
+                tone='danger'
+                onClick={() => onDelete(issue.id)}
+              />
+            )}
           </>
         ) : undefined
       }

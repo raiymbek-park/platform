@@ -38,6 +38,16 @@ const messages = {
     kk: 'Өтінімді жоюға болмайды',
     en: 'This issue cannot be deleted',
   },
+  issueUpdateForbidden: {
+    ru: 'Заявку нельзя изменить',
+    kk: 'Өтінімді өзгертуге болмайды',
+    en: 'This issue cannot be edited',
+  },
+  statusChangeForbidden: {
+    ru: 'Недостаточно прав для смены статуса',
+    kk: 'Мәртебені өзгертуге құқық жеткіліксіз',
+    en: 'Not allowed to change the status',
+  },
 } satisfies Record<string, Record<Locale, string>>
 
 const isMessageKey = (key: string): key is keyof typeof messages =>

@@ -13,6 +13,7 @@ export type IconChipTone =
   | 'info'
   | 'warning'
   | 'action'
+  | 'neutral'
 
 export type IconChipVariant = 'soft' | 'solid'
 

@@ -4,10 +4,16 @@ import type {
   IssueCreatePayload,
   IssueFilter,
   IssueStatus,
+  IssueUpdateInput,
   PermissionRole,
   ReactionKind,
+  StatusChangeInput,
 } from '@raiymbek-park/shared/validation-schemas'
-import type { DocumentData } from 'firebase-admin/firestore'
+import type {
+  DocumentData,
+  DocumentReference,
+  Transaction,
+} from 'firebase-admin/firestore'
 import type { Resident } from '../resident/resident-store'
 
 import { searchTerms } from '@raiymbek-park/shared'
@@ -242,7 +248,91 @@ export const createIssue = async (
   })
 }
 
-export type DeleteOutcome = 'ok' | 'not-found' | 'forbidden'
+const canModifyIssue = (
+  data: DocumentData,
+  uid: string,
+  role: PermissionRole,
+): boolean => {
+  const isNew = toStatus(data.status) === 'new'
+  const isAuthor = toText(data.authorId) === uid
+  return isNew && (isAuthor || role === 'administration')
+}
+
+export const getIssue = async (
+  uid: string | null,
+  role: PermissionRole | null,
+  issueId: string,
+): Promise<Issue | null> => {
+  const snap = await collection().doc(issueId).get()
+  if (!snap.exists) return null
+  return parseIssue(snap.id, snap.data() ?? {}, uid, role)
+}
+
+export type WriteOutcome = 'ok' | 'not-found' | 'forbidden'
+
+const modifyIssue = (
+  ref: DocumentReference,
+  uid: string,
+  role: PermissionRole,
+  write: (transaction: Transaction, data: DocumentData) => void,
+): Promise<WriteOutcome> =>
+  getDb().runTransaction<WriteOutcome>(async transaction => {
+    const snap = await transaction.get(ref)
+    if (!snap.exists) return 'not-found'
+    const data = snap.data() ?? {}
+    if (!canModifyIssue(data, uid, role)) return 'forbidden'
+    write(transaction, data)
+    return 'ok'
+  })
+
+export const updateIssue = (
+  uid: string,
+  role: PermissionRole,
+  input: IssueUpdateInput,
+): Promise<WriteOutcome> => {
+  const ref = collection().doc(input.id)
+  return modifyIssue(ref, uid, role, (transaction, data) => {
+    transaction.update(ref, {
+      category: input.category,
+      description: input.description,
+      keywords: buildKeywords({
+        number: toNumber(data.number),
+        titles: [input.title],
+      }),
+      media: input.media,
+      title: input.title,
+      urgent: input.urgent,
+    })
+  })
+}
+
+export const changeStatus = async (
+  uid: string,
+  input: StatusChangeInput,
+): Promise<boolean> => {
+  const ref = collection().doc(input.issueId)
+  return getDb().runTransaction(async transaction => {
+    const snap = await transaction.get(ref)
+    if (!snap.exists) return false
+    const comment = input.comment ?? ''
+    transaction.update(ref, {
+      status: input.status,
+      tags: input.tags,
+      ...(comment ? { commentCount: FieldValue.increment(1) } : {}),
+    })
+    transaction.set(ref.collection('statusChanges').doc(), {
+      authorId: uid,
+      comment,
+      createdAt: FieldValue.serverTimestamp(),
+      media: input.media,
+      status: input.status,
+      tags: input.tags,
+    })
+    return true
+  })
+}
+
+export type DeleteOutcome = WriteOutcome
 
 export const deleteIssue = async (
   uid: string,
@@ -250,17 +340,8 @@ export const deleteIssue = async (
   issueId: string,
 ): Promise<DeleteOutcome> => {
   const ref = collection().doc(issueId)
-  const outcome = await getDb().runTransaction<DeleteOutcome>(
-    async transaction => {
-      const snap = await transaction.get(ref)
-      if (!snap.exists) return 'not-found'
-      const data = snap.data() ?? {}
-      const isNew = toStatus(data.status) === 'new'
-      const isAuthor = toText(data.authorId) === uid
-      if (!isNew || (!isAuthor && role !== 'administration')) return 'forbidden'
-      transaction.delete(ref)
-      return 'ok'
-    },
+  const outcome = await modifyIssue(ref, uid, role, transaction =>
+    transaction.delete(ref),
   )
   if (outcome === 'ok') await deleteIssueMedia(issueId).catch(() => undefined)
   return outcome
