@@ -72,14 +72,18 @@ export const Carousel = ({
     setDrag(event.clientX - startX.current)
   }
 
+  const reset = () => {
+    startX.current = null
+    setDrag(0)
+    setDragging(false)
+  }
+
   const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
     if (startX.current === null) return
     const delta = event.clientX - startX.current
     if (delta < -SWIPE_THRESHOLD && index < items.length - 1) change(index + 1)
     else if (delta > SWIPE_THRESHOLD && index > 0) change(index - 1)
-    startX.current = null
-    setDrag(0)
-    setDragging(false)
+    reset()
   }
 
   return (
@@ -87,6 +91,7 @@ export const Carousel = ({
       ref={rootRef}
       className={joinCss(css.carousel, className)}
       {...restProps}
+      onPointerCancel={reset}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

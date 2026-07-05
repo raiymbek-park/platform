@@ -6,7 +6,7 @@ import {
   MEDIA_MAX_BYTES,
   MEDIA_MAX_ITEMS,
 } from '@raiymbek-park/shared/validation-schemas'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { showToastMessage } from '@/shared/toast'
 
@@ -33,6 +33,17 @@ export const useMediaPicker = () => {
   const { t } = useLingui()
   const [picked, setPicked] = useState<PickedFile[]>([])
   const [activeIndex, setActiveIndex] = useState(0)
+  const pickedRef = useRef(picked)
+  pickedRef.current = picked
+
+  useEffect(
+    () => () => {
+      pickedRef.current.forEach(item => {
+        URL.revokeObjectURL(item.url)
+      })
+    },
+    [],
+  )
 
   const add = (fileList: FileList) => {
     const incoming = Array.from(fileList)
