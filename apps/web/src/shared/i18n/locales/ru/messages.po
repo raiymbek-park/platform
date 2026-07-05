@@ -51,8 +51,8 @@ msgid "Блок {block}"
 msgstr "Блок {block}"
 
 #: src/pages/issue-status/model/use-status-options.ts:22
-#: src/pages/issues/model/use-issue-badges.ts:37
-#: src/pages/issues/model/use-issue-badges.ts:47
+#: src/pages/issues/model/use-issue-badges.ts:46
+#: src/pages/issues/model/use-issue-badges.ts:56
 msgid "В работе"
 msgstr "В работе"
 
@@ -80,7 +80,7 @@ msgstr "Введите номер квартиры"
 msgid "Владею жильём"
 msgstr "Владею жильём"
 
-#: src/pages/issues/model/use-issue-badges.ts:35
+#: src/pages/issues/model/use-issue-badges.ts:44
 msgid "Все"
 msgstr "Все"
 
@@ -106,8 +106,8 @@ msgid "Выберите роль"
 msgstr "Выберите роль"
 
 #: src/pages/issue-status/model/use-status-options.ts:34
-#: src/pages/issues/model/use-issue-badges.ts:41
-#: src/pages/issues/model/use-issue-badges.ts:51
+#: src/pages/issues/model/use-issue-badges.ts:50
+#: src/pages/issues/model/use-issue-badges.ts:60
 msgid "Выполнено"
 msgstr "Выполнено"
 
@@ -123,12 +123,11 @@ msgstr "Далее"
 #~ msgid "Действия"
 #~ msgstr "Действия"
 
-#: src/pages/issue-form/ui/issue-form-fields.tsx:140
-#: src/pages/issue-status/ui/status-form.tsx:109
+#: src/shared/media/media-field.tsx:22
 msgid "Добавить"
 msgstr "Добавить"
 
-#: src/pages/issue-status/ui/status-form.tsx:123
+#: src/pages/issue-status/ui/status-form.tsx:106
 msgid "Добавьте комментарий к смене статуса…"
 msgstr "Добавьте комментарий к смене статуса…"
 
@@ -140,8 +139,7 @@ msgstr "Добро пожаловать в личное пространство
 msgid "Добро пожаловать!"
 msgstr "Добро пожаловать!"
 
-#: src/pages/issue-status/ui/tag-select.tsx:21
-#: src/pages/issue-status/ui/tag-select.tsx:24
+#: src/pages/issue-status/ui/tag-select.tsx:38
 msgid "Дополнительная информация"
 msgstr "Дополнительная информация"
 
@@ -158,11 +156,12 @@ msgstr "Другая категория"
 #~ msgstr "Другое"
 
 #: src/pages/issue-status/model/use-tag-options.ts:20
-#: src/pages/issues/model/use-issue-badges.ts:58
+#: src/pages/issues/model/use-issue-badges.ts:67
 msgid "Дубликат"
 msgstr "Дубликат"
 
 #: src/pages/issue-form/model/use-issue-categories.ts:34
+#: src/pages/issues/model/use-issue-badges.ts:73
 msgid "Жалоба"
 msgstr "Жалоба"
 
@@ -175,8 +174,8 @@ msgid "За время вашего отсутствия появились из
 msgstr "За время вашего отсутствия появились изменения:"
 
 #: src/pages/issue-status/model/use-status-options.ts:29
-#: src/pages/issues/model/use-issue-badges.ts:39
-#: src/pages/issues/model/use-issue-badges.ts:49
+#: src/pages/issues/model/use-issue-badges.ts:48
+#: src/pages/issues/model/use-issue-badges.ts:58
 msgid "Заблокировано"
 msgstr "Заблокировано"
 
@@ -193,6 +192,7 @@ msgid "Закрыть"
 msgstr "Закрыть"
 
 #: src/pages/issue-form/model/use-issue-categories.ts:37
+#: src/pages/issues/model/use-issue-badges.ts:72
 msgid "Замена"
 msgstr "Замена"
 
@@ -201,8 +201,8 @@ msgid "Замена оборудования"
 msgstr "Замена оборудования"
 
 #: src/pages/issue-status/model/use-status-options.ts:26
-#: src/pages/issues/model/use-issue-badges.ts:38
-#: src/pages/issues/model/use-issue-badges.ts:48
+#: src/pages/issues/model/use-issue-badges.ts:47
+#: src/pages/issues/model/use-issue-badges.ts:57
 msgid "Запланировано"
 msgstr "Запланировано"
 
@@ -226,7 +226,7 @@ msgid "Заявка №{0} · {1}"
 msgstr "Заявка №{0} · {1}"
 
 #. placeholder {0}: issue.number
-#: src/pages/issue-status/ui/status-form.tsx:80
+#: src/pages/issue-status/ui/status-form.tsx:74
 msgid "Заявка №{0} · {currentLabel}"
 msgstr "Заявка №{0} · {currentLabel}"
 
@@ -235,8 +235,9 @@ msgstr "Заявка №{0} · {currentLabel}"
 msgid "Заявка №{0} · {label}"
 msgstr "Заявка №{0} · {label}"
 
-#: src/pages/issue-form/model/use-update-issue.ts:46
-#: src/pages/issue-status/model/use-change-status.ts:47
+#: src/pages/issue-form/model/use-create-issue.ts:29
+#: src/pages/issue-form/model/use-update-issue.ts:32
+#: src/pages/issue-status/model/use-change-status.ts:33
 #: src/shared/issue/use-issue-query.ts:20
 msgid "Заявка не найдена."
 msgstr "Заявка не найдена."
@@ -245,7 +246,7 @@ msgstr "Заявка не найдена."
 msgid "Заявка отклонена"
 msgstr "Заявка отклонена"
 
-#: src/pages/issue-form/model/use-create-issue.ts:54
+#: src/pages/issue-form/model/use-create-issue.ts:31
 msgid "Заявка отправлена."
 msgstr "Заявка отправлена."
 
@@ -253,9 +254,13 @@ msgstr "Заявка отправлена."
 msgid "Заявка решена"
 msgstr "Заявка решена"
 
+#: src/pages/issue-form/model/use-create-issue.ts:30
+msgid "Заявка создана. Файлов не загрузилось: {count}"
+msgstr "Заявка создана. Файлов не загрузилось: {count}"
+
 #: src/pages/issue-form/model/use-create-issue.ts:52
-msgid "Заявка создана. Файлов не загрузилось: {failedCount}"
-msgstr "Заявка создана. Файлов не загрузилось: {failedCount}"
+#~ msgid "Заявка создана. Файлов не загрузилось: {failedCount}"
+#~ msgstr "Заявка создана. Файлов не загрузилось: {failedCount}"
 
 #: src/pages/issue-status/model/use-status-options.ts:20
 msgid "Заявка только поступила"
@@ -274,13 +279,17 @@ msgstr "Заявки"
 msgid "Заявки, объявления и связь с управляющей компанией"
 msgstr "Заявки, объявления и связь с управляющей компанией"
 
-#: src/pages/issue-form/model/use-update-issue.ts:66
+#: src/pages/issue-form/model/use-update-issue.ts:34
 msgid "Изменения сохранены."
 msgstr "Изменения сохранены."
 
+#: src/pages/issue-form/model/use-update-issue.ts:33
+msgid "Изменения сохранены. Файлов не загрузилось: {count}"
+msgstr "Изменения сохранены. Файлов не загрузилось: {count}"
+
 #: src/pages/issue-form/model/use-update-issue.ts:64
-msgid "Изменения сохранены. Файлов не загрузилось: {failedCount}"
-msgstr "Изменения сохранены. Файлов не загрузилось: {failedCount}"
+#~ msgid "Изменения сохранены. Файлов не загрузилось: {failedCount}"
+#~ msgstr "Изменения сохранены. Файлов не загрузилось: {failedCount}"
 
 #: src/pages/issue-form/ui/edit-issue-form.tsx:29
 msgid "Измените заявку и сохраните изменения."
@@ -303,7 +312,7 @@ msgstr "Квартира вне диапазона выбранного блок
 msgid "Код подтверждения"
 msgstr "Код подтверждения"
 
-#: src/pages/issue-status/ui/status-form.tsx:121
+#: src/pages/issue-status/ui/status-form.tsx:104
 msgid "Комментарий"
 msgstr "Комментарий"
 
@@ -332,20 +341,21 @@ msgid "На главную"
 msgstr "На главную"
 
 #: src/pages/issue-status/model/use-status-options.ts:31
-#: src/pages/issues/model/use-issue-badges.ts:40
+#: src/pages/issues/model/use-issue-badges.ts:49
 msgid "На рассмотрение жильцам"
 msgstr "На рассмотрение жильцам"
 
-#: src/pages/issues/model/use-issue-badges.ts:50
+#: src/pages/issues/model/use-issue-badges.ts:59
 msgid "На рассмотрении жильцов"
 msgstr "На рассмотрении жильцов"
 
 #: src/features/onboarding/ui/otp-actions.tsx:36
-#: src/pages/issue-form/ui/issue-form-fields.tsx:151
+#: src/shared/issue/form-dock.tsx:31
 msgid "Назад"
 msgstr "Назад"
 
 #: src/pages/issue-form/model/use-issue-categories.ts:38
+#: src/pages/issues/model/use-issue-badges.ts:74
 msgid "Нарушение"
 msgstr "Нарушение"
 
@@ -394,7 +404,7 @@ msgstr "Не удалось отправить код. Проверьте сое
 msgid "Не удалось проверить код. Проверьте соединение."
 msgstr "Не удалось проверить код. Проверьте соединение."
 
-#: src/pages/issue-status/model/use-change-status.ts:52
+#: src/pages/issue-status/model/use-change-status.ts:32
 msgid "Не удалось сменить статус. Попробуйте ещё раз."
 msgstr "Не удалось сменить статус. Попробуйте ещё раз."
 
@@ -402,11 +412,11 @@ msgstr "Не удалось сменить статус. Попробуйте е
 #~ msgid "Не удалось создать заявку. Попробуйте ещё раз."
 #~ msgstr "Не удалось создать заявку. Попробуйте ещё раз."
 
-#: src/pages/issue-form/model/use-create-issue.ts:40
+#: src/pages/issue-form/model/use-create-issue.ts:28
 msgid "Не удалось сохранить заявку. Попробуйте ещё раз."
 msgstr "Не удалось сохранить заявку. Попробуйте ещё раз."
 
-#: src/pages/issue-form/model/use-update-issue.ts:51
+#: src/pages/issue-form/model/use-update-issue.ts:31
 msgid "Не удалось сохранить изменения. Попробуйте ещё раз."
 msgstr "Не удалось сохранить изменения. Попробуйте ещё раз."
 
@@ -423,7 +433,7 @@ msgid "Нет данных"
 msgstr "Нет данных"
 
 #: src/pages/issue-form/ui/create-issue-form.tsx:30
-#: src/pages/issues/model/use-issue-badges.ts:46
+#: src/pages/issues/model/use-issue-badges.ts:55
 #: src/pages/issues/ui/issues-page.tsx:49
 msgid "Новая заявка"
 msgstr "Новая заявка"
@@ -432,7 +442,7 @@ msgstr "Новая заявка"
 msgid "Новости и уведомления от УК"
 msgstr "Новости и уведомления от УК"
 
-#: src/pages/issues/model/use-issue-badges.ts:36
+#: src/pages/issues/model/use-issue-badges.ts:45
 msgid "Новые"
 msgstr "Новые"
 
@@ -441,7 +451,6 @@ msgid "Новый"
 msgstr "Новый"
 
 #: src/pages/issue-status/ui/status-select.tsx:21
-#: src/pages/issue-status/ui/status-select.tsx:24
 msgid "Новый статус"
 msgstr "Новый статус"
 
@@ -492,12 +501,12 @@ msgid "Опишите проблему или вопрос, который вы 
 msgstr "Опишите проблему или вопрос, который вы хотите направить управляющей компании или жителям нашего ЖК."
 
 #: src/pages/issue-status/model/use-status-options.ts:35
-#: src/pages/issues/model/use-issue-badges.ts:42
-#: src/pages/issues/model/use-issue-badges.ts:52
+#: src/pages/issues/model/use-issue-badges.ts:51
+#: src/pages/issues/model/use-issue-badges.ts:61
 msgid "Отклонено"
 msgstr "Отклонено"
 
-#: src/pages/issue-status/ui/status-form.tsx:134
+#: src/pages/issue-status/ui/status-form.tsx:118
 #: src/pages/issues/ui/issue-delete-confirm.tsx:21
 msgid "Отмена"
 msgstr "Отмена"
@@ -515,7 +524,7 @@ msgid "Очистить поиск"
 msgstr "Очистить поиск"
 
 #: src/pages/issue-status/model/use-tag-options.ts:15
-#: src/pages/issues/model/use-issue-badges.ts:56
+#: src/pages/issues/model/use-issue-badges.ts:65
 msgid "По гарантии"
 msgstr "По гарантии"
 
@@ -569,6 +578,7 @@ msgid "Привет! 👋"
 msgstr "Привет! 👋"
 
 #: src/pages/issue-form/model/use-issue-categories.ts:35
+#: src/pages/issues/model/use-issue-badges.ts:75
 msgid "Прочее"
 msgstr "Прочее"
 
@@ -589,6 +599,7 @@ msgid "Редактировать заявку"
 msgstr "Редактировать заявку"
 
 #: src/pages/issue-form/model/use-issue-categories.ts:36
+#: src/pages/issues/model/use-issue-badges.ts:71
 msgid "Ремонт"
 msgstr "Ремонт"
 
@@ -612,7 +623,7 @@ msgstr "Сервисы"
 msgid "Слишком много попыток. Подождите немного и попробуйте снова."
 msgstr "Слишком много попыток. Подождите немного и попробуйте снова."
 
-#: src/pages/issue-status/ui/status-form.tsx:81
+#: src/pages/issue-status/ui/status-form.tsx:75
 msgid "Смена статуса"
 msgstr "Смена статуса"
 
@@ -641,12 +652,12 @@ msgid "Создать объявление"
 msgstr "Создать объявление"
 
 #: src/pages/issue-form/ui/edit-issue-form.tsx:28
-#: src/pages/issue-status/ui/status-form.tsx:149
+#: src/pages/issue-status/ui/status-form.tsx:122
 msgid "Сохранить"
 msgstr "Сохранить"
 
 #: src/pages/issue-form/ui/category-field.tsx:53
-#: src/pages/issues/model/use-issue-badges.ts:70
+#: src/pages/issues/model/use-issue-badges.ts:82
 msgid "Срочно"
 msgstr "Срочно"
 
@@ -654,13 +665,17 @@ msgstr "Срочно"
 msgid "Статус заявки"
 msgstr "Статус заявки"
 
-#: src/pages/issue-status/model/use-change-status.ts:67
+#: src/pages/issue-status/model/use-change-status.ts:35
 msgid "Статус обновлён."
 msgstr "Статус обновлён."
 
+#: src/pages/issue-status/model/use-change-status.ts:34
+msgid "Статус обновлён. Файлов не загрузилось: {count}"
+msgstr "Статус обновлён. Файлов не загрузилось: {count}"
+
 #: src/pages/issue-status/model/use-change-status.ts:65
-msgid "Статус обновлён. Файлов не загрузилось: {failedCount}"
-msgstr "Статус обновлён. Файлов не загрузилось: {failedCount}"
+#~ msgid "Статус обновлён. Файлов не загрузилось: {failedCount}"
+#~ msgstr "Статус обновлён. Файлов не загрузилось: {failedCount}"
 
 #: src/pages/not-found/ui/not-found-page.tsx:17
 msgid "Страница не найдена"
@@ -687,7 +702,7 @@ msgid "Требуется ремонт"
 msgstr "Требуется ремонт"
 
 #: src/pages/issue-status/model/use-tag-options.ts:17
-#: src/pages/issues/model/use-issue-badges.ts:57
+#: src/pages/issues/model/use-issue-badges.ts:66
 msgid "Требуется уточнение"
 msgstr "Требуется уточнение"
 
@@ -695,10 +710,9 @@ msgstr "Требуется уточнение"
 msgid "У вас есть предложение или поиск, пишите сюда"
 msgstr "У вас есть предложение или поиск, пишите сюда"
 
-#: src/pages/issue-form/ui/issue-form-fields.tsx:142
-#: src/pages/issue-status/ui/status-form.tsx:111
 #: src/pages/issues/ui/issue-card-item.tsx:104
 #: src/pages/issues/ui/issue-delete-confirm.tsx:22
+#: src/shared/media/media-field.tsx:24
 msgid "Удалить"
 msgstr "Удалить"
 
@@ -718,11 +732,11 @@ msgstr "Устранение по гарантии"
 msgid "Файл слишком большой: суммарный размер вложений не должен превышать {MEDIA_MAX_MB} МБ"
 msgstr "Файл слишком большой: суммарный размер вложений не должен превышать {MEDIA_MAX_MB} МБ"
 
-#: src/pages/issue-form/ui/issue-form-fields.tsx:137
+#: src/pages/issue-form/ui/issue-form-fields.tsx:136
 msgid "Фото"
 msgstr "Фото"
 
-#: src/pages/issue-status/ui/status-form.tsx:106
+#: src/pages/issue-status/ui/status-form.tsx:99
 msgid "Фото фиксация"
 msgstr "Фото фиксация"
 
