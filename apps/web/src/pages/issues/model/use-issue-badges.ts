@@ -1,5 +1,6 @@
 import type {
   ClassificationTag,
+  IssueCategory,
   IssueFilter,
   IssueStatus,
 } from '@raiymbek-park/shared/validation-schemas'
@@ -26,6 +27,14 @@ const tagTone: Record<ClassificationTag, StatusTagTone> = {
   warranty: 'brand',
   'needs-clarification': 'neutral',
   duplicate: 'neutral',
+}
+
+const categoryTone: Record<IssueCategory, StatusTagTone> = {
+  repair: 'info',
+  replacement: 'accent',
+  complaint: 'warning',
+  violation: 'danger',
+  other: 'neutral',
 }
 
 export const useIssueBadges = () => {
@@ -58,16 +67,31 @@ export const useIssueBadges = () => {
     duplicate: t`Дубликат`,
   }
 
+  const categoryLabel: Record<IssueCategory, string> = {
+    repair: t`Ремонт`,
+    replacement: t`Замена`,
+    complaint: t`Жалоба`,
+    violation: t`Нарушение`,
+    other: t`Прочее`,
+  }
+
   const filterName = (filter: IssueFilter) => filterLabel[filter]
 
   const cardTags = (issue: IssueView): IssueCardBadge[] => {
+    const urgent: IssueCardBadge[] = issue.urgent
+      ? [{ id: 'urgent', label: t`Срочно`, tone: 'danger' }]
+      : []
+    const category: IssueCardBadge = {
+      id: 'category',
+      label: categoryLabel[issue.category],
+      tone: categoryTone[issue.category],
+    }
     const tags: IssueCardBadge[] = issue.tags.map(tag => ({
       id: tag,
       label: tagLabel[tag],
       tone: tagTone[tag],
     }))
-    if (!issue.urgent) return tags
-    return [{ id: 'urgent', label: t`Срочно`, tone: 'danger' }, ...tags]
+    return [...urgent, category, ...tags]
   }
 
   return {

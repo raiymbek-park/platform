@@ -92,7 +92,7 @@ export const IssueCardItem = ({
             )}
             {canChangeStatus && (
               <InlineButton
-                glyph='list-checks'
+                glyph='refresh-cw'
                 label={t`Сменить статус`}
                 tone='success'
                 onClick={changeStatus}
