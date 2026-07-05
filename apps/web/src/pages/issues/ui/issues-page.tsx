@@ -13,7 +13,7 @@ import { IssueList } from './issue-list'
 import { IssueSearch } from './issue-search'
 import css from './issues-page.module.scss'
 
-const route = getRouteApi('/issues')
+const route = getRouteApi('/issues/')
 
 const fabCss = pickCss(css, css.fab)
 
@@ -48,7 +48,6 @@ export const IssuesPage = () => {
       <Link
         aria-label={t`Новая заявка`}
         className={fabCss({ isHidden: isScrollingDown })}
-        search={{ status: 'new' }}
         to='/issues/new'
       >
         <Icon glyph='plus' size={26} />

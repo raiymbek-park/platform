@@ -1,0 +1,28 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  color: var(--foreground);
+  font-size: 16px;
+  font-weight: var(--weight-bold);
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 24px;
+  box-shadow: 0 4px 20px var(--shadow);
+  padding: 10px 16px;
+}
+
+.group {
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}

@@ -9,6 +9,7 @@ import {
 } from '@raiymbek-park/ui'
 
 import { useIntersectionObserver } from '../model/use-intersection-observer'
+import { useIssueActionsAccess } from '../model/use-issue-actions-access'
 import { useIssueDeletion } from '../model/use-issue-deletion'
 import { useIssuesData } from '../model/use-issues-data'
 import { useReactionAccess } from '../model/use-reaction-access'
@@ -41,6 +42,7 @@ export const IssueList = ({ query, search, status }: IssueListProps) => {
   } = useIssuesData({ query, search, status })
   const { canReact } = useReactionAccess()
   const { react } = useUpdateIssueReaction()
+  const access = useIssueActionsAccess()
   const deletion = useIssueDeletion()
   const sentinelRef = useIntersectionObserver<HTMLDivElement>({
     enabled: hasNextPage,
@@ -90,7 +92,9 @@ export const IssueList = ({ query, search, status }: IssueListProps) => {
       {issues.map(issue => (
         <IssueCardItem
           key={issue.id}
-          canDelete={deletion.canDelete(issue)}
+          canChangeStatus={access.canChangeStatus}
+          canDelete={access.canDelete(issue)}
+          canEdit={access.canEdit(issue)}
           canReact={canReact}
           issue={issue}
           onDelete={deletion.request}

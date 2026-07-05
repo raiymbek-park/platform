@@ -1,10 +1,10 @@
-import type { IssueFormValues } from '../lib/validators'
+import type { IconGlyph } from '@raiymbek-park/ui'
+import type { MediaPicker } from '@/shared/media'
+import type { IssueFormSubmit, IssueFormValues } from '../lib/validators'
 
 import { useLingui } from '@lingui/react/macro'
 import {
-  Button,
   Content,
-  ImageForm,
   Input,
   ScreenHeader,
   ScreenTitle,
@@ -14,36 +14,46 @@ import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 
 import { inputState } from '@/shared/form'
+import { FormDock } from '@/shared/issue'
+import { MediaField } from '@/shared/media'
 
 import { issueFormSchema } from '../lib/validators'
-import { useCreateIssue } from '../model/use-create-issue'
 import { categoryTheme } from '../model/use-issue-categories'
-import { useMediaPicker } from '../model/use-media-picker'
 import { CategoryField } from './category-field'
-import css from './issues-new-page.module.scss'
+import css from './issue-form-fields.module.scss'
 
-const defaultValues: IssueFormValues = {
-  category: null,
-  description: '',
-  title: '',
-  urgent: false,
+export type IssueFormFieldsProps = {
+  defaultValues: IssueFormValues
+  isPending: boolean
+  media: MediaPicker
+  submitIcon: IconGlyph
+  submitLabel: string
+  subtitle: string
+  title: string
+  onSubmit: (values: IssueFormSubmit) => void
 }
 
-export const IssuesNewPage = () => {
+export const IssueFormFields = ({
+  defaultValues,
+  isPending,
+  media,
+  submitIcon,
+  submitLabel,
+  subtitle,
+  title,
+  onSubmit,
+}: IssueFormFieldsProps) => {
   const { t } = useLingui()
   const navigate = useNavigate()
-  const media = useMediaPicker()
-  const { createIssue, isPending } = useCreateIssue()
 
   const form = useForm({
     defaultValues,
     validators: { onChange: issueFormSchema },
     onSubmit: ({ value }) => {
       if (value.category === null) return
-      createIssue({
+      onSubmit({
         category: value.category,
         description: value.description,
-        files: media.files,
         title: value.title,
         urgent: value.urgent,
       })
@@ -67,10 +77,7 @@ export const IssuesNewPage = () => {
         src={`${import.meta.env.BASE_URL}images/create-issue.png`}
       />
       <Content gap={24}>
-        <ScreenTitle
-          subtitle={t`Опишите проблему или вопрос, который вы хотите направить управляющей компании или жителям нашего ЖК.`}
-          title={t`Новая заявка`}
-        />
+        <ScreenTitle subtitle={subtitle} title={title} />
 
         <form.Field name='category'>
           {field => (
@@ -126,41 +133,19 @@ export const IssuesNewPage = () => {
           )}
         </form.Field>
 
-        <div className={css.field}>
-          <span className={css.label}>{t`Фото`}</span>
-          <ImageForm
-            activeIndex={media.activeIndex}
-            addLabel={t`Добавить`}
-            photos={media.photos}
-            removeLabel={t`Удалить`}
-            onAdd={media.add}
-            onRemove={media.removeCurrent}
-            onSelect={media.select}
-          />
-        </div>
+        <MediaField label={t`Фото`} media={media} />
 
-        <div className={css.dock}>
-          <Button
-            aria-label={t`Назад`}
-            icon='arrow-left'
-            type='button'
-            variant='icon'
-            onClick={goBack}
-          />
-          <form.Subscribe selector={state => state.canSubmit}>
-            {canSubmit => (
-              <Button
-                className={css.submit}
-                disabled={!canSubmit || isPending}
-                icon='send-horizontal'
-                isLoading={isPending}
-                type='submit'
-              >
-                {t`Отправить`}
-              </Button>
-            )}
-          </form.Subscribe>
-        </div>
+        <form.Subscribe selector={state => state.canSubmit}>
+          {canSubmit => (
+            <FormDock
+              canSubmit={canSubmit}
+              isPending={isPending}
+              submitIcon={submitIcon}
+              submitLabel={submitLabel}
+              onBack={goBack}
+            />
+          )}
+        </form.Subscribe>
       </Content>
     </form>
   )

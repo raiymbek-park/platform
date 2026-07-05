@@ -7,7 +7,7 @@ import { useIntersectionObserver } from '../model/use-intersection-observer'
 import { filterOrder, useIssueBadges } from '../model/use-issue-badges'
 import css from './issue-filter-tabs.module.scss'
 
-const route = getRouteApi('/issues')
+const route = getRouteApi('/issues/')
 
 export const IssueFilterTabs = () => {
   const { status } = route.useSearch()

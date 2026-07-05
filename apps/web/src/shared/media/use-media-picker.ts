@@ -10,37 +10,53 @@ import { useEffect, useRef, useState } from 'react'
 
 import { showToastMessage } from '@/shared/toast'
 
-type PickedFile = {
-  file: File
+export type MediaItem = {
+  file?: File
   id: string
   isVideo: boolean
   url: string
 }
 
+type UseMediaPickerInput = {
+  initialUrls?: string[]
+}
+
 const MEDIA_MAX_MB = MEDIA_MAX_BYTES / 1024 / 1024
 
-const toPicked = (file: File): PickedFile => ({
+const VIDEO_URL = /\.(3gp|avi|mkv|mov|mp4|webm)(\?|$)/i
+
+const toPicked = (file: File): MediaItem => ({
   file,
   id: randomId(),
   isVideo: file.type.startsWith('video'),
   url: URL.createObjectURL(file),
 })
 
-const totalBytes = (files: File[]) =>
-  files.reduce((sum, file) => sum + file.size, 0)
+const toRemote = (url: string): MediaItem => ({
+  id: url,
+  isVideo: VIDEO_URL.test(url),
+  url,
+})
 
-export const useMediaPicker = () => {
+const totalBytes = (items: MediaItem[]) =>
+  items.reduce((sum, item) => sum + (item.file?.size ?? 0), 0)
+
+const revoke = (item: MediaItem) => {
+  if (item.file) URL.revokeObjectURL(item.url)
+}
+
+export const useMediaPicker = ({ initialUrls }: UseMediaPickerInput = {}) => {
   const { t } = useLingui()
-  const [picked, setPicked] = useState<PickedFile[]>([])
+  const [items, setItems] = useState<MediaItem[]>(
+    () => initialUrls?.map(toRemote) ?? [],
+  )
   const [activeIndex, setActiveIndex] = useState(0)
-  const pickedRef = useRef(picked)
-  pickedRef.current = picked
+  const itemsRef = useRef(items)
+  itemsRef.current = items
 
   useEffect(
     () => () => {
-      pickedRef.current.forEach(item => {
-        URL.revokeObjectURL(item.url)
-      })
+      itemsRef.current.forEach(revoke)
     },
     [],
   )
@@ -48,7 +64,7 @@ export const useMediaPicker = () => {
   const add = (fileList: FileList) => {
     const incoming = Array.from(fileList)
 
-    if (picked.length + incoming.length > MEDIA_MAX_ITEMS) {
+    if (items.length + incoming.length > MEDIA_MAX_ITEMS) {
       showToastMessage({
         kind: 'error',
         text: t`Можно прикрепить не более ${MEDIA_MAX_ITEMS} файлов`,
@@ -56,8 +72,9 @@ export const useMediaPicker = () => {
       return
     }
 
-    const files = [...picked.map(item => item.file), ...incoming]
-    if (totalBytes(files) > MEDIA_MAX_BYTES) {
+    const next = [...items, ...incoming.map(toPicked)]
+    if (totalBytes(next) > MEDIA_MAX_BYTES) {
+      next.slice(items.length).forEach(revoke)
       showToastMessage({
         kind: 'error',
         text: t`Файл слишком большой: суммарный размер вложений не должен превышать ${MEDIA_MAX_MB} МБ`,
@@ -65,21 +82,20 @@ export const useMediaPicker = () => {
       return
     }
 
-    const next = [...picked, ...incoming.map(toPicked)]
-    setPicked(next)
+    setItems(next)
     setActiveIndex(next.length - 1)
   }
 
   const removeCurrent = () => {
-    const target = picked[activeIndex]
+    const target = items[activeIndex]
     if (!target) return
-    URL.revokeObjectURL(target.url)
-    const next = picked.filter(file => file.id !== target.id)
-    setPicked(next)
+    revoke(target)
+    const next = items.filter(item => item.id !== target.id)
+    setItems(next)
     setActiveIndex(index => Math.max(0, Math.min(index, next.length - 1)))
   }
 
-  const photos: ImageFormItem[] = picked.map(({ id, isVideo, url }) => ({
+  const photos: ImageFormItem[] = items.map(({ id, isVideo, url }) => ({
     id,
     isVideo,
     url,
@@ -88,9 +104,12 @@ export const useMediaPicker = () => {
   return {
     activeIndex,
     add,
-    files: picked.map(({ file }) => file),
+    files: items.flatMap(item => (item.file ? [item.file] : [])),
+    items,
     photos,
     removeCurrent,
     select: setActiveIndex,
   }
 }
+
+export type MediaPicker = ReturnType<typeof useMediaPicker>

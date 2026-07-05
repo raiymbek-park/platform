@@ -21,7 +21,7 @@ msgstr ""
 #~ msgstr "{0} · Block {1}, apt. {2}"
 
 #. placeholder {0}: blockFloors[block]
-#: src/features/onboarding/ui/registration-form.tsx:148
+#: src/features/onboarding/ui/registration-form.tsx:139
 msgid "{0} жилых этажей"
 msgstr "{0} residential floors"
 
@@ -29,11 +29,11 @@ msgstr "{0} residential floors"
 msgid "Аварийные контакты"
 msgstr "Emergency contacts"
 
-#: src/features/onboarding/ui/registration-form.tsx:203
+#: src/features/onboarding/ui/registration-form.tsx:194
 msgid "Арендатор"
 msgstr "Tenant"
 
-#: src/features/onboarding/ui/registration-form.tsx:142
+#: src/features/onboarding/ui/registration-form.tsx:133
 msgid "Блок"
 msgstr "Block"
 
@@ -42,16 +42,17 @@ msgstr "Block"
 #. placeholder {1}: data.apartment
 #. placeholder {1}: issue.apartment
 #: src/pages/home/ui/building-hero.tsx:15
-#: src/pages/issues/ui/issue-card-item.tsx:65
+#: src/pages/issues/ui/issue-card-item.tsx:76
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
 
-#: src/features/onboarding/ui/registration-form.tsx:151
+#: src/features/onboarding/ui/registration-form.tsx:142
 msgid "Блок {block}"
 msgstr "Block {block}"
 
-#: src/pages/issues/model/use-issue-badges.ts:60
-#: src/pages/issues/model/use-issue-badges.ts:70
+#: src/pages/issue-status/model/use-status-options.ts:22
+#: src/pages/issues/model/use-issue-badges.ts:37
+#: src/pages/issues/model/use-issue-badges.ts:47
 msgid "В работе"
 msgstr "In progress"
 
@@ -59,11 +60,11 @@ msgstr "In progress"
 msgid "Ваш код отправляется на проверку…"
 msgstr "Your code is being verified…"
 
-#: src/features/onboarding/ui/registration-form.tsx:129
+#: src/features/onboarding/ui/registration-form.tsx:120
 msgid "Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только администрация — для быстрой связи в экстренных случаях (затопление, пожар)."
 msgstr "Your personal data is hidden from other residents. Only the administration has access to it — for quick contact in emergencies (flooding, fire)."
 
-#: src/features/onboarding/ui/registration-form.tsx:104
+#: src/features/onboarding/ui/registration-form.tsx:95
 msgid "Введите ваше имя"
 msgstr "Enter your name"
 
@@ -75,11 +76,11 @@ msgstr "Enter the code from the SMS"
 msgid "Введите номер квартиры"
 msgstr "Enter the apartment number"
 
-#: src/features/onboarding/ui/registration-form.tsx:195
+#: src/features/onboarding/ui/registration-form.tsx:186
 msgid "Владею жильём"
 msgstr "I own the property"
 
-#: src/pages/issues/model/use-issue-badges.ts:58
+#: src/pages/issues/model/use-issue-badges.ts:35
 msgid "Все"
 msgstr "All"
 
@@ -87,25 +88,26 @@ msgstr "All"
 msgid "Вставить код из буфера"
 msgstr "Paste code from clipboard"
 
-#: src/pages/home/ui/services-section.tsx:74
+#: src/pages/home/ui/services-section.tsx:79
 msgid "Вступить в общий чат жильцов"
 msgstr "Join the residents' group chat"
 
 #: src/features/onboarding/lib/validators.ts:30
-#: src/features/onboarding/ui/registration-form.tsx:137
+#: src/features/onboarding/ui/registration-form.tsx:128
 msgid "Выберите блок"
 msgstr "Select a block"
 
 #: src/pages/issues-new/model/use-issue-form.ts:30
-msgid "Выберите категорию"
-msgstr "Select a category"
+#~ msgid "Выберите категорию"
+#~ msgstr "Select a category"
 
 #: src/features/onboarding/lib/validators.ts:35
 msgid "Выберите роль"
 msgstr "Select a role"
 
-#: src/pages/issues/model/use-issue-badges.ts:64
-#: src/pages/issues/model/use-issue-badges.ts:74
+#: src/pages/issue-status/model/use-status-options.ts:34
+#: src/pages/issues/model/use-issue-badges.ts:41
+#: src/pages/issues/model/use-issue-badges.ts:51
 msgid "Выполнено"
 msgstr "Done"
 
@@ -113,7 +115,7 @@ msgstr "Done"
 msgid "Главная"
 msgstr "Home"
 
-#: src/features/onboarding/ui/registration-form.tsx:247
+#: src/features/onboarding/ui/registration-form.tsx:238
 msgid "Далее"
 msgstr "Next"
 
@@ -121,23 +123,33 @@ msgstr "Next"
 #~ msgid "Действия"
 #~ msgstr "Actions"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:119
+#: src/pages/issue-form/ui/issue-form-fields.tsx:140
+#: src/pages/issue-status/ui/status-form.tsx:109
 msgid "Добавить"
 msgstr "Add"
 
-#: src/features/onboarding/ui/registration-form.tsx:88
+#: src/pages/issue-status/ui/status-form.tsx:123
+msgid "Добавьте комментарий к смене статуса…"
+msgstr "Add a comment about the status change…"
+
+#: src/features/onboarding/ui/registration-form.tsx:79
 msgid "Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее."
 msgstr "Welcome to the personal space for residents and apartment owners of the Raiymbek Park complex. Everything important is gathered here: the latest announcements from the management company, a form to submit repair requests, contacts for on-duty services, and the history of your requests. We want every issue resolved quickly and clearly — so that living here is more comfortable and managing the building more transparent."
 
-#: src/features/onboarding/ui/registration-form.tsx:87
+#: src/features/onboarding/ui/registration-form.tsx:78
 msgid "Добро пожаловать!"
 msgstr "Welcome!"
+
+#: src/pages/issue-status/ui/tag-select.tsx:21
+#: src/pages/issue-status/ui/tag-select.tsx:24
+msgid "Дополнительная информация"
+msgstr "Additional information"
 
 #: src/features/onboarding/ui/account-locked.tsx:32
 msgid "Доступ заблокирован"
 msgstr "Access blocked"
 
-#: src/pages/issues-new/model/use-issue-categories.ts:49
+#: src/pages/issue-form/model/use-issue-categories.ts:35
 msgid "Другая категория"
 msgstr "Another category"
 
@@ -145,11 +157,12 @@ msgstr "Another category"
 #~ msgid "Другое"
 #~ msgstr "Other"
 
-#: src/pages/issues/model/use-issue-badges.ts:81
+#: src/pages/issue-status/model/use-tag-options.ts:20
+#: src/pages/issues/model/use-issue-badges.ts:58
 msgid "Дубликат"
 msgstr "Duplicate"
 
-#: src/pages/issues-new/model/use-issue-categories.ts:34
+#: src/pages/issue-form/model/use-issue-categories.ts:34
 msgid "Жалоба"
 msgstr "Complaint"
 
@@ -161,8 +174,9 @@ msgstr "All was quiet while you were away — no news."
 msgid "За время вашего отсутствия появились изменения:"
 msgstr "Changes appeared while you were away:"
 
-#: src/pages/issues/model/use-issue-badges.ts:62
-#: src/pages/issues/model/use-issue-badges.ts:72
+#: src/pages/issue-status/model/use-status-options.ts:29
+#: src/pages/issues/model/use-issue-badges.ts:39
+#: src/pages/issues/model/use-issue-badges.ts:49
 msgid "Заблокировано"
 msgstr "Blocked"
 
@@ -174,16 +188,21 @@ msgstr "Loading recent events…"
 msgid "Загрузка…"
 msgstr "Loading…"
 
-#: src/pages/issues-new/model/use-issue-categories.ts:27
+#: src/shared/toast/toast-host.tsx:61
+msgid "Закрыть"
+msgstr "Close"
+
+#: src/pages/issue-form/model/use-issue-categories.ts:37
 msgid "Замена"
 msgstr "Replacement"
 
-#: src/pages/issues-new/model/use-issue-categories.ts:28
+#: src/pages/issue-form/model/use-issue-categories.ts:37
 msgid "Замена оборудования"
 msgstr "Equipment replacement"
 
-#: src/pages/issues/model/use-issue-badges.ts:61
-#: src/pages/issues/model/use-issue-badges.ts:71
+#: src/pages/issue-status/model/use-status-options.ts:26
+#: src/pages/issues/model/use-issue-badges.ts:38
+#: src/pages/issues/model/use-issue-badges.ts:48
 msgid "Запланировано"
 msgstr "Planned"
 
@@ -202,25 +221,77 @@ msgstr "Resend code in {0}"
 
 #. placeholder {0}: issue.number
 #. placeholder {1}: cardStatusLabel(status)
-#: src/pages/issues/ui/issue-card-item.tsx:46
+#: src/pages/issues/ui/issue-card-item.tsx:52
 msgid "Заявка №{0} · {1}"
 msgstr "Issue №{0} · {1}"
 
-#: src/pages/issues/ui/issues-page.tsx:36
+#. placeholder {0}: issue.number
+#: src/pages/issue-status/ui/status-form.tsx:80
+msgid "Заявка №{0} · {currentLabel}"
+msgstr "Issue #{0} · {currentLabel}"
+
+#. placeholder {0}: issue.number
+#: src/pages/issue-status/ui/issue-summary.tsx:41
+msgid "Заявка №{0} · {label}"
+msgstr "Issue #{0} · {label}"
+
+#: src/pages/issue-form/model/use-update-issue.ts:46
+#: src/pages/issue-status/model/use-change-status.ts:47
+#: src/shared/issue/use-issue-query.ts:20
+msgid "Заявка не найдена."
+msgstr "Issue not found."
+
+#: src/pages/issue-status/model/use-status-options.ts:35
+msgid "Заявка отклонена"
+msgstr "Issue rejected"
+
+#: src/pages/issue-form/model/use-create-issue.ts:54
+msgid "Заявка отправлена."
+msgstr "Issue submitted."
+
+#: src/pages/issue-status/model/use-status-options.ts:34
+msgid "Заявка решена"
+msgstr "Issue resolved"
+
+#: src/pages/issue-form/model/use-create-issue.ts:52
+msgid "Заявка создана. Файлов не загрузилось: {failedCount}"
+msgstr "Issue created. Files not uploaded: {failedCount}"
+
+#: src/pages/issue-status/model/use-status-options.ts:20
+msgid "Заявка только поступила"
+msgstr "The issue has just arrived"
+
+#: src/pages/issues/model/use-issue-deletion.ts:26
+msgid "Заявка удалена."
+msgstr "Issue deleted."
+
+#: src/pages/issues/ui/issues-page.tsx:42
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:26
 msgid "Заявки"
 msgstr "Requests"
 
-#: src/pages/home/ui/services-section.tsx:36
+#: src/pages/home/ui/services-section.tsx:37
 msgid "Заявки, объявления и связь с управляющей компанией"
 msgstr "Requests, announcements, and contact with the management company"
 
-#: src/features/onboarding/ui/registration-form.tsx:103
+#: src/pages/issue-form/model/use-update-issue.ts:66
+msgid "Изменения сохранены."
+msgstr "Changes saved."
+
+#: src/pages/issue-form/model/use-update-issue.ts:64
+msgid "Изменения сохранены. Файлов не загрузилось: {failedCount}"
+msgstr "Changes saved. Files not uploaded: {failedCount}"
+
+#: src/pages/issue-form/ui/edit-issue-form.tsx:29
+msgid "Измените заявку и сохраните изменения."
+msgstr "Edit the issue and save your changes."
+
+#: src/features/onboarding/ui/registration-form.tsx:94
 msgid "Имя"
 msgstr "Name"
 
-#: src/pages/issues-new/ui/category-field.tsx:30
-#: src/pages/issues-new/ui/category-field.tsx:33
+#: src/pages/issue-form/ui/category-field.tsx:30
+#: src/pages/issue-form/ui/category-field.tsx:33
 msgid "Категория"
 msgstr "Category"
 
@@ -232,17 +303,25 @@ msgstr "Apartment is outside the selected block's range"
 msgid "Код подтверждения"
 msgstr "Verification code"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:90
+#: src/pages/issue-status/ui/status-form.tsx:121
+msgid "Комментарий"
+msgstr "Comment"
+
+#: src/pages/issue-form/ui/issue-form-fields.tsx:109
 msgid "Кратко опишите проблему"
 msgstr "Briefly describe the problem"
 
-#: src/features/onboarding/ui/registration-form.tsx:183
+#: src/features/onboarding/ui/registration-form.tsx:174
 msgid "Кто вы?"
 msgstr "Who are you?"
 
+#: src/shared/media/use-media-picker.ts:70
+msgid "Можно прикрепить не более {MEDIA_MAX_ITEMS} файлов"
+msgstr "You can attach at most {MEDIA_MAX_ITEMS} files"
+
 #: src/pages/issues-new/model/use-media-picker.ts:36
-msgid "Можно прикрепить не более 10 файлов"
-msgstr "You can attach up to 10 files"
+#~ msgid "Можно прикрепить не более 10 файлов"
+#~ msgstr "You can attach up to 10 files"
 
 #: src/features/onboarding/ui/otp-heading.tsx:16
 msgid "Мы отправили 6-значный код подтверждения на ваш номер"
@@ -252,24 +331,25 @@ msgstr "We sent a 6-digit verification code to your number"
 msgid "На главную"
 msgstr "Go home"
 
-#: src/pages/issues/model/use-issue-badges.ts:63
+#: src/pages/issue-status/model/use-status-options.ts:31
+#: src/pages/issues/model/use-issue-badges.ts:40
 msgid "На рассмотрение жильцам"
 msgstr "Under resident review"
 
-#: src/pages/issues/model/use-issue-badges.ts:73
+#: src/pages/issues/model/use-issue-badges.ts:50
 msgid "На рассмотрении жильцов"
 msgstr "Under resident review"
 
 #: src/features/onboarding/ui/otp-actions.tsx:36
-#: src/pages/issues-new/ui/issues-new-page.tsx:137
+#: src/pages/issue-form/ui/issue-form-fields.tsx:151
 msgid "Назад"
 msgstr "Back"
 
-#: src/pages/issues-new/model/use-issue-categories.ts:41
+#: src/pages/issue-form/model/use-issue-categories.ts:38
 msgid "Нарушение"
 msgstr "Violation"
 
-#: src/pages/issues-new/model/use-issue-categories.ts:42
+#: src/pages/issue-form/model/use-issue-categories.ts:38
 msgid "Нарушение правил"
 msgstr "Rule violation"
 
@@ -278,11 +358,11 @@ msgstr "Rule violation"
 msgid "Настройки"
 msgstr "Settings"
 
-#: src/pages/issues/ui/issue-list.tsx:82
+#: src/pages/issues/ui/issue-list.tsx:84
 msgid "Не найдено ни одной заявки."
 msgstr "No issues found."
 
-#: src/pages/issues/ui/issue-card-item.tsx:110
+#: src/pages/issues/ui/issue-card-item.tsx:133
 msgid "Не нравится"
 msgstr "Dislike"
 
@@ -290,7 +370,7 @@ msgstr "Dislike"
 msgid "Не удалось завершить регистрацию. Повторите попытку."
 msgstr "Couldn't complete registration. Please try again."
 
-#: src/pages/issues/ui/issue-list.tsx:66
+#: src/pages/issues/ui/issue-list.tsx:68
 msgid "Не удалось загрузить заявки"
 msgstr "Couldn’t load issues"
 
@@ -303,10 +383,10 @@ msgid "Не удалось загрузить последние события"
 msgstr "Couldn't load recent events"
 
 #: src/pages/issues-new/ui/issues-new-page.tsx:48
-msgid "Не удалось загрузить файлы. Попробуйте ещё раз."
-msgstr "Could not upload the files. Please try again."
+#~ msgid "Не удалось загрузить файлы. Попробуйте ещё раз."
+#~ msgstr "Could not upload the files. Please try again."
 
-#: src/features/onboarding/ui/registration-form.tsx:231
+#: src/features/onboarding/ui/registration-form.tsx:222
 msgid "Не удалось отправить код. Проверьте соединение и попробуйте снова."
 msgstr "Failed to send the code. Check your connection and try again."
 
@@ -314,11 +394,23 @@ msgstr "Failed to send the code. Check your connection and try again."
 msgid "Не удалось проверить код. Проверьте соединение."
 msgstr "Couldn't verify the code. Check your connection."
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:56
-msgid "Не удалось создать заявку. Попробуйте ещё раз."
-msgstr "Could not open the issue. Please try again."
+#: src/pages/issue-status/model/use-change-status.ts:52
+msgid "Не удалось сменить статус. Попробуйте ещё раз."
+msgstr "Could not change the status. Please try again."
 
-#: src/pages/issues/model/use-issue-deletion.ts:20
+#: src/pages/issues-new/ui/issues-new-page.tsx:56
+#~ msgid "Не удалось создать заявку. Попробуйте ещё раз."
+#~ msgstr "Could not open the issue. Please try again."
+
+#: src/pages/issue-form/model/use-create-issue.ts:40
+msgid "Не удалось сохранить заявку. Попробуйте ещё раз."
+msgstr "Could not save the issue. Please try again."
+
+#: src/pages/issue-form/model/use-update-issue.ts:51
+msgid "Не удалось сохранить изменения. Попробуйте ещё раз."
+msgstr "Could not save the changes. Please try again."
+
+#: src/pages/issues/model/use-issue-deletion.ts:23
 msgid "Не удалось удалить заявку. Попробуйте ещё раз."
 msgstr "Could not delete the issue. Please try again."
 
@@ -326,76 +418,95 @@ msgstr "Could not delete the issue. Please try again."
 msgid "Неверный код. Попробуйте ещё раз."
 msgstr "Invalid code. Please try again."
 
-#: src/pages/issues/ui/issue-list.tsx:83
+#: src/pages/issues/ui/issue-list.tsx:85
 msgid "Нет данных"
 msgstr "No data"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:71
-#: src/pages/issues/model/use-issue-badges.ts:69
-#: src/pages/issues/ui/issues-page.tsx:46
+#: src/pages/issue-form/ui/create-issue-form.tsx:30
+#: src/pages/issues/model/use-issue-badges.ts:46
+#: src/pages/issues/ui/issues-page.tsx:49
 msgid "Новая заявка"
 msgstr "New issue"
 
-#: src/pages/home/ui/services-section.tsx:42
+#: src/pages/home/ui/services-section.tsx:43
 msgid "Новости и уведомления от УК"
 msgstr "News and notifications from the management company"
 
-#: src/pages/issues/model/use-issue-badges.ts:59
+#: src/pages/issues/model/use-issue-badges.ts:36
 msgid "Новые"
 msgstr "New"
+
+#: src/pages/issue-status/model/use-status-options.ts:20
+msgid "Новый"
+msgstr "New"
+
+#: src/pages/issue-status/ui/status-select.tsx:21
+#: src/pages/issue-status/ui/status-select.tsx:24
+msgid "Новый статус"
+msgstr "New status"
 
 #: src/pages/home/ui/welcome-feed.tsx:25
 msgid "Новых событий пока нет."
 msgstr "No new events yet."
 
-#: src/features/onboarding/ui/registration-form.tsx:167
+#: src/features/onboarding/ui/registration-form.tsx:158
 msgid "Номер квартиры"
 msgstr "Apartment number"
 
-#: src/pages/issues/ui/issue-card-item.tsx:102
+#: src/pages/issues/ui/issue-card-item.tsx:125
 msgid "Нравится"
 msgstr "Like"
 
-#: src/pages/issues/ui/issues-page.tsx:38
+#: src/pages/issue-status/model/use-status-options.ts:32
+msgid "Нужно решение жильцов"
+msgstr "Residents' decision required"
+
+#: src/pages/issue-status/model/use-tag-options.ts:18
+msgid "Нужны дополнительные детали"
+msgstr "Additional details required"
+
+#: src/pages/issues/ui/issues-page.tsx:41
 msgid "Обращения жильцов в управляющую компанию и их статусы."
 msgstr "Resident issues to the management company and their statuses."
 
 #: src/pages/issues-new/model/use-media-picker.ts:40
-msgid "Общий размер файлов не должен превышать 200 МБ"
-msgstr "The total file size must not exceed 200 MB"
+#~ msgid "Общий размер файлов не должен превышать 200 МБ"
+#~ msgstr "The total file size must not exceed 200 MB"
 
 #: src/app/routes/announcements.tsx:11
-#: src/pages/home/ui/services-section.tsx:44
+#: src/pages/home/ui/services-section.tsx:45
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:25
 msgid "Объявления"
 msgstr "Announcements"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:103
+#: src/pages/issue-form/ui/issue-form-fields.tsx:125
 msgid "Описание"
 msgstr "Description"
 
 #: src/pages/issues-new/model/use-issue-form.ts:31
-msgid "Описание должно содержать от 10 до 1000 символов"
-msgstr "The description must be 10 to 1000 characters"
+#~ msgid "Описание должно содержать от 10 до 1000 символов"
+#~ msgstr "The description must be 10 to 1000 characters"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:73
+#: src/pages/issue-form/ui/create-issue-form.tsx:29
 msgid "Опишите проблему или вопрос, который вы хотите направить управляющей компании или жителям нашего ЖК."
 msgstr "Describe the problem or question you want to raise with the management company or your neighbours."
 
-#: src/pages/issues/model/use-issue-badges.ts:65
-#: src/pages/issues/model/use-issue-badges.ts:75
+#: src/pages/issue-status/model/use-status-options.ts:35
+#: src/pages/issues/model/use-issue-badges.ts:42
+#: src/pages/issues/model/use-issue-badges.ts:52
 msgid "Отклонено"
 msgstr "Rejected"
 
-#: src/pages/issues/ui/issue-delete-confirm.tsx:35
+#: src/pages/issue-status/ui/status-form.tsx:134
+#: src/pages/issues/ui/issue-delete-confirm.tsx:21
 msgid "Отмена"
 msgstr "Cancel"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:149
+#: src/pages/issue-form/ui/create-issue-form.tsx:28
 msgid "Отправить"
 msgstr "Submit"
 
-#: src/pages/home/ui/services-section.tsx:58
+#: src/pages/home/ui/services-section.tsx:62
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Track the progress of your requests"
 
@@ -403,12 +514,13 @@ msgstr "Track the progress of your requests"
 msgid "Очистить поиск"
 msgstr "Clear search"
 
-#: src/pages/issues/model/use-issue-badges.ts:79
+#: src/pages/issue-status/model/use-tag-options.ts:15
+#: src/pages/issues/model/use-issue-badges.ts:56
 msgid "По гарантии"
 msgstr "Under warranty"
 
 #: src/features/onboarding/ui/account-locked.tsx:56
-#: src/pages/issues/ui/issue-list.tsx:69
+#: src/pages/issues/ui/issue-list.tsx:71
 msgid "Повторить"
 msgstr "Retry"
 
@@ -416,15 +528,19 @@ msgstr "Retry"
 msgid "Повторить попытку"
 msgstr "Try again"
 
-#: src/pages/home/ui/services-section.tsx:50
+#: src/pages/issue-status/model/use-tag-options.ts:20
+msgid "Повторяет другую заявку"
+msgstr "Duplicates another issue"
+
+#: src/pages/home/ui/services-section.tsx:52
 msgid "Подайте обращение в УК"
 msgstr "Submit a request to the management company"
 
-#: src/pages/issues/ui/issue-card-item.tsx:95
+#: src/pages/issues/ui/issue-card-item.tsx:118
 msgid "Подробнее"
 msgstr "Details"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:105
+#: src/pages/issue-form/ui/issue-form-fields.tsx:127
 msgid "Подробно опишите, что случилось и где…"
 msgstr "Describe in detail what happened and where…"
 
@@ -452,31 +568,43 @@ msgstr "Hi, {name}! 👋"
 msgid "Привет! 👋"
 msgstr "Hi! 👋"
 
-#: src/pages/issues-new/model/use-issue-categories.ts:48
+#: src/pages/issue-form/model/use-issue-categories.ts:35
 msgid "Прочее"
 msgstr "Other"
+
+#: src/pages/issue-status/model/use-status-options.ts:27
+msgid "Работы запланированы на будущее"
+msgstr "Work is planned for the future"
 
 #: src/pages/placeholder/ui/placeholder-page.tsx:20
 msgid "Раздел в разработке"
 msgstr "Section under development"
 
-#: src/pages/issues/ui/issue-card-item.tsx:76
+#: src/pages/issues/ui/issue-card-item.tsx:88
 msgid "Редактировать"
 msgstr "Edit"
 
-#: src/pages/issues-new/model/use-issue-categories.ts:20
+#: src/pages/issue-form/ui/edit-issue-form.tsx:30
+msgid "Редактировать заявку"
+msgstr "Edit issue"
+
+#: src/pages/issue-form/model/use-issue-categories.ts:36
 msgid "Ремонт"
 msgstr "Repair"
 
-#: src/features/onboarding/ui/registration-form.tsx:188
+#: src/pages/issue-status/model/use-status-options.ts:29
+msgid "Решение приостановлено"
+msgstr "Resolution is on hold"
+
+#: src/features/onboarding/ui/registration-form.tsx:179
 msgid "Роль"
 msgstr "Role"
 
-#: src/pages/issues/ui/issue-card-item.tsx:91
+#: src/pages/issues/ui/issue-card-item.tsx:114
 msgid "Свернуть"
 msgstr "Collapse"
 
-#: src/pages/home/ui/services-section.tsx:37
+#: src/pages/home/ui/services-section.tsx:38
 msgid "Сервисы"
 msgstr "Services"
 
@@ -484,97 +612,136 @@ msgstr "Services"
 msgid "Слишком много попыток. Подождите немного и попробуйте снова."
 msgstr "Too many attempts. Wait a little and try again."
 
+#: src/pages/issue-status/ui/status-form.tsx:81
+msgid "Смена статуса"
+msgstr "Change status"
+
+#: src/pages/issues/ui/issue-card-item.tsx:96
+msgid "Сменить статус"
+msgstr "Change status"
+
 #: src/features/onboarding/lib/validators.ts:15
 msgid "Сначала выберите блок"
 msgstr "Select a block first"
 
-#: src/features/onboarding/ui/registration-form.tsx:204
+#: src/features/onboarding/ui/registration-form.tsx:195
 msgid "Снимаю жильё"
 msgstr "I rent the property"
 
-#: src/features/onboarding/ui/registration-form.tsx:194
+#: src/features/onboarding/ui/registration-form.tsx:185
 msgid "Собственник квартиры"
 msgstr "Property owner"
 
-#: src/pages/home/ui/services-section.tsx:52
+#: src/pages/home/ui/services-section.tsx:54
 msgid "Создать заявку"
 msgstr "Create a request"
 
-#: src/pages/home/ui/services-section.tsx:68
+#: src/pages/home/ui/services-section.tsx:73
 msgid "Создать объявление"
 msgstr "Create an announcement"
 
-#: src/pages/issues-new/ui/category-field.tsx:53
-#: src/pages/issues/model/use-issue-badges.ts:93
+#: src/pages/issue-form/ui/edit-issue-form.tsx:28
+#: src/pages/issue-status/ui/status-form.tsx:149
+msgid "Сохранить"
+msgstr "Save"
+
+#: src/pages/issue-form/ui/category-field.tsx:53
+#: src/pages/issues/model/use-issue-badges.ts:70
 msgid "Срочно"
 msgstr "Urgent"
 
-#: src/pages/home/ui/services-section.tsx:60
+#: src/pages/home/ui/services-section.tsx:64
 msgid "Статус заявки"
 msgstr "Request status"
+
+#: src/pages/issue-status/model/use-change-status.ts:67
+msgid "Статус обновлён."
+msgstr "Status updated."
+
+#: src/pages/issue-status/model/use-change-status.ts:65
+msgid "Статус обновлён. Файлов не загрузилось: {failedCount}"
+msgstr "Status updated. Files not uploaded: {failedCount}"
 
 #: src/pages/not-found/ui/not-found-page.tsx:17
 msgid "Страница не найдена"
 msgstr "Page not found"
 
-#: src/features/onboarding/ui/registration-form.tsx:118
+#: src/features/onboarding/ui/registration-form.tsx:109
 msgid "Телефон"
 msgstr "Phone"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:88
+#: src/pages/issue-form/ui/issue-form-fields.tsx:107
 msgid "Тема заявки"
 msgstr "Issue title"
 
 #: src/pages/issues-new/model/use-issue-form.ts:32
-msgid "Тема заявки должна содержать от 3 до 80 символов"
-msgstr "The title must be 3 to 80 characters"
+#~ msgid "Тема заявки должна содержать от 3 до 80 символов"
+#~ msgstr "The title must be 3 to 80 characters"
 
-#: src/pages/issues-new/ui/category-field.tsx:54
+#: src/pages/issue-form/ui/category-field.tsx:54
 msgid "Требует срочного решения"
 msgstr "Needs urgent action"
 
-#: src/pages/issues-new/model/use-issue-categories.ts:21
+#: src/pages/issue-form/model/use-issue-categories.ts:36
 msgid "Требуется ремонт"
 msgstr "Repair needed"
 
-#: src/pages/issues/model/use-issue-badges.ts:80
+#: src/pages/issue-status/model/use-tag-options.ts:17
+#: src/pages/issues/model/use-issue-badges.ts:57
 msgid "Требуется уточнение"
 msgstr "Needs clarification"
 
-#: src/pages/home/ui/services-section.tsx:66
+#: src/pages/home/ui/services-section.tsx:71
 msgid "У вас есть предложение или поиск, пишите сюда"
 msgstr "Have an offer or looking for something? Post it here"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:121
-#: src/pages/issues/ui/issue-card-item.tsx:82
-#: src/pages/issues/ui/issue-delete-confirm.tsx:32
+#: src/pages/issue-form/ui/issue-form-fields.tsx:142
+#: src/pages/issue-status/ui/status-form.tsx:111
+#: src/pages/issues/ui/issue-card-item.tsx:104
+#: src/pages/issues/ui/issue-delete-confirm.tsx:22
 msgid "Удалить"
 msgstr "Delete"
 
-#: src/pages/issues/ui/issue-delete-confirm.tsx:25
+#: src/pages/issues/ui/issue-delete-confirm.tsx:27
 msgid "Удалить заявку?"
 msgstr "Delete the issue?"
 
-#: src/pages/issues-new/ui/issues-new-page.tsx:116
+#: src/pages/issue-status/model/use-status-options.ts:23
+msgid "Управляющая компания решает заявку"
+msgstr "The management company is handling the issue"
+
+#: src/pages/issue-status/model/use-tag-options.ts:15
+msgid "Устранение по гарантии"
+msgstr "Covered under warranty"
+
+#: src/shared/media/use-media-picker.ts:80
+msgid "Файл слишком большой: суммарный размер вложений не должен превышать {MEDIA_MAX_MB} МБ"
+msgstr "File too large: the total size of attachments must not exceed {MEDIA_MAX_MB} MB"
+
+#: src/pages/issue-form/ui/issue-form-fields.tsx:137
 msgid "Фото"
 msgstr "Photos"
+
+#: src/pages/issue-status/ui/status-form.tsx:106
+msgid "Фото фиксация"
+msgstr "Photo record"
 
 #: src/pages/home/ui/welcome-feed.tsx:26
 msgid "Хорошие новости: пока вас не было, ничего важного не произошло."
 msgstr "Good news: nothing important happened while you were away."
 
-#: src/pages/issues-new/model/use-issue-categories.ts:35
+#: src/pages/issue-form/model/use-issue-categories.ts:34
 msgid "Хочу пожаловаться"
 msgstr "I want to complain"
 
-#: src/pages/home/ui/services-section.tsx:76
+#: src/pages/home/ui/services-section.tsx:81
 msgid "Чат дома в WhatsApp"
 msgstr "Building chat on WhatsApp"
 
-#: src/features/onboarding/ui/registration-form.tsx:222
+#: src/features/onboarding/ui/registration-form.tsx:213
 msgid "Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google"
 msgstr "This form is protected by reCAPTCHA; the Google Privacy Policy and Terms of Service apply"
 
-#: src/pages/issues/ui/issue-delete-confirm.tsx:27
+#: src/pages/issues/ui/issue-delete-confirm.tsx:26
 msgid "Это действие нельзя отменить. Заявка будет удалена безвозвратно."
 msgstr "This action cannot be undone. The issue will be permanently deleted."

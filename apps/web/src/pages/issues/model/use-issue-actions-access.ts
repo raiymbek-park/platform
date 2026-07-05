@@ -7,10 +7,15 @@ import { useTRPC } from '@/shared/api'
 export const useIssueActionsAccess = () => {
   const trpc = useTRPC()
   const { data } = useQuery(trpc.resident.me.queryOptions())
-  const isAdministration = data?.role === 'administration'
+  const role = data?.role
+  const isAdministration = role === 'administration'
 
-  const canDelete = (issue: IssueView) =>
+  const canManage = (issue: IssueView) =>
     issue.status === 'new' && (issue.isMine || isAdministration)
 
-  return { canDelete }
+  return {
+    canChangeStatus: role === 'manager' || isAdministration,
+    canDelete: canManage,
+    canEdit: canManage,
+  }
 }

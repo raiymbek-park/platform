@@ -1,3 +1,5 @@
+import type { IssueCategory } from '@raiymbek-park/shared/validation-schemas'
+
 import {
   ISSUE_DESCRIPTION_MAX,
   ISSUE_DESCRIPTION_MIN,
@@ -19,3 +21,10 @@ export const issueFormSchema = z.object({
 })
 
 export type IssueFormValues = z.input<typeof issueFormSchema>
+
+export type IssueFormSubmit = {
+  category: IssueCategory
+  description: string
+  title: string
+  urgent: boolean
+}

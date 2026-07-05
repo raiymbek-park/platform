@@ -3,15 +3,12 @@ import type {
   IssueFilter,
   IssueStatus,
 } from '@raiymbek-park/shared/validation-schemas'
-import type {
-  IconChipTone,
-  IconGlyph,
-  IssueCardBadge,
-  StatusTagTone,
-} from '@raiymbek-park/ui'
+import type { IssueCardBadge, StatusTagTone } from '@raiymbek-park/ui'
 import type { IssueView } from './use-issues-data'
 
 import { useLingui } from '@lingui/react/macro'
+
+import { statusGlyphs, statusTones } from '@/shared/issue'
 
 const statusOrder: IssueStatus[] = [
   'new',
@@ -24,26 +21,6 @@ const statusOrder: IssueStatus[] = [
 ]
 
 export const filterOrder: IssueFilter[] = ['all', ...statusOrder]
-
-const statusGlyph: Record<IssueStatus, IconGlyph> = {
-  new: 'inbox',
-  'in-progress': 'wrench',
-  planned: 'calendar-clock',
-  blocked: 'ban',
-  'resident-review': 'users-round',
-  done: 'circle-check-big',
-  rejected: 'circle-x',
-}
-
-const statusTone: Record<IssueStatus, IconChipTone> = {
-  new: 'warning',
-  'in-progress': 'action',
-  planned: 'action',
-  blocked: 'danger',
-  'resident-review': 'accent',
-  done: 'brand',
-  rejected: 'danger',
-}
 
 const tagTone: Record<ClassificationTag, StatusTagTone> = {
   warranty: 'brand',
@@ -97,7 +74,7 @@ export const useIssueBadges = () => {
     cardStatusLabel: (status: IssueStatus) => cardStatusLabel[status],
     cardTags,
     filterName,
-    statusGlyph: (status: IssueStatus) => statusGlyph[status],
-    statusTone: (status: IssueStatus) => statusTone[status],
+    statusGlyph: (status: IssueStatus) => statusGlyphs[status],
+    statusTone: (status: IssueStatus) => statusTones[status],
   }
 }

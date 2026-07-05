@@ -1,1 +1,1 @@
-export { IssuesNewPage } from './ui/issues-new-page'
+export { IssueFormPage } from './ui/issue-form-page'
