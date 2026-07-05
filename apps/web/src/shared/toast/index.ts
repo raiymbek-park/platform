@@ -1,2 +1,2 @@
-export { showToastMessage } from './model/use-toast-store'
-export { ToastHost } from './ui/toast-host'
+export { ToastHost } from './toast-host'
+export { showToastMessage } from './use-toast-store'

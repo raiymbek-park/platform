@@ -1,13 +1,13 @@
 import type { IconGlyph } from '@raiymbek-park/ui'
-import type { Toast, ToastKind } from '../model/use-toast-store'
+import type { Toast, ToastKind } from './use-toast-store'
 
 import { useLingui } from '@lingui/react/macro'
 import { pickCss } from '@raiymbek-park/shared'
 import { ToastMessage } from '@raiymbek-park/ui'
 import { useEffect, useState } from 'react'
 
-import { useToastStore } from '../model/use-toast-store'
 import css from './toast-host.module.scss'
+import { useToastStore } from './use-toast-store'
 
 const iconByKind: Record<ToastKind, IconGlyph> = {
   error: 'triangle-alert',

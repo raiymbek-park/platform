@@ -25,9 +25,15 @@
   // Used by the Lingui CLI macro extraction (i18n:extract) at build time via the
   // babel preset, not through a JS import, so the static graph can't see it.
   "ignoreDependencies": ["@lingui/babel-plugin-lingui-macro"],
-  // Test files legitimately repeat setup/assertion scaffolding to stay
-  // self-contained and readable — exclude them from clone detection.
+  // Test files legitimately repeat setup/assertion scaffolding, and
+  // vitest.stryker.config.ts intentionally mirrors vitest.config.ts — it must
+  // keep the lingui plugins in sync or Stryker mutation testing silently breaks.
+  // Exclude both from clone detection.
   "duplicates": {
-    "ignore": ["**/*.test.ts", "**/*.test.tsx"]
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "apps/web/vitest.stryker.config.ts"
+    ]
   }
 }

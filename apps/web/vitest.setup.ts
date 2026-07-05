@@ -11,7 +11,7 @@ import {
   TestIntersectionObserver,
 } from '@/shared/test/intersection-observer'
 import { trpcServer } from '@/shared/test/trpc-server'
-import { useToastStore } from '@/shared/toast/model/use-toast-store'
+import { useToastStore } from '@/shared/toast/use-toast-store'
 
 i18n.loadAndActivate({ locale: 'ru', messages: {} })
 
