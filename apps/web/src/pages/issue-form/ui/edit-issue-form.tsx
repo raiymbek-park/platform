@@ -34,13 +34,14 @@ const EditIssueFormReady = ({ issue }: { issue: Issue }) => {
 }
 
 export const EditIssueForm = ({ issueId }: { issueId: string }) => {
+  const { t } = useLingui()
   const { isError, isLoading, issue, refetch } = useIssueQuery(issueId)
 
   if (isLoading) {
     return (
       <>
         <ScreenHeader />
-        <Spinner />
+        <Spinner label={t`Загрузка…`} />
       </>
     )
   }

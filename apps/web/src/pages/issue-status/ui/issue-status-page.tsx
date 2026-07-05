@@ -1,3 +1,4 @@
+import { useLingui } from '@lingui/react/macro'
 import { ScreenHeader, Spinner } from '@raiymbek-park/ui'
 
 import { IssueLoadError, useIssueQuery } from '@/shared/issue'
@@ -9,13 +10,14 @@ export type IssueStatusPageProps = {
 }
 
 export const IssueStatusPage = ({ issueId }: IssueStatusPageProps) => {
+  const { t } = useLingui()
   const { isError, isLoading, issue, refetch } = useIssueQuery(issueId)
 
   if (isLoading) {
     return (
       <>
         <ScreenHeader />
-        <Spinner />
+        <Spinner label={t`Загрузка…`} />
       </>
     )
   }

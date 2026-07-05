@@ -184,6 +184,8 @@ msgid "Загрузка последних событий…"
 msgstr "Загрузка последних событий…"
 
 #: src/pages/home/ui/contacts-section.tsx:17
+#: src/pages/issue-form/ui/edit-issue-form.tsx:44
+#: src/pages/issue-status/ui/issue-status-page.tsx:20
 msgid "Загрузка…"
 msgstr "Загрузка…"
 
