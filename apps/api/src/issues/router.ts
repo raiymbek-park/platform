@@ -58,7 +58,14 @@ export const issuesRouter = router({
   get: publicProcedure
     .input(issueGetInputSchema)
     .query(async ({ ctx, input }) => {
-      const role = ctx.uid ? await getRole(ctx.uid) : null
+      if (!ctx.uid) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'phoneNotVerified',
+        })
+      }
+
+      const role = await getRole(ctx.uid)
       const issue = await getIssue(ctx.uid, role, input.issueId)
       if (!issue) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'issueNotFound' })
