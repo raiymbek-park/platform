@@ -40,7 +40,7 @@ export const StatusForm = ({ issue }: StatusFormProps) => {
 
   const defaultValues: StatusFormValues = {
     comment: '',
-    status: null,
+    status: issue.status,
     tags: issue.tags,
   }
 
