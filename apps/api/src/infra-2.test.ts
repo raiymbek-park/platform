@@ -40,7 +40,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
     const db = getDb()
     await Promise.all([
       clearCollection(db, 'residents'),
-      clearCollection(db, 'serviceContacts'),
+      clearCollection(db, 'service-contacts'),
       clearCollection(db, 'events'),
     ])
   }
@@ -98,7 +98,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
     it('serviceContacts come ordered by order ascending with the domain shape', async () => {
       const db = getDb()
 
-      await db.collection('serviceContacts').doc('second').set({
+      await db.collection('service-contacts').doc('second').set({
         name: 'Plumber',
         phone: '+77001112233',
         role: 'plumber',
@@ -106,7 +106,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         tone: 'info',
         order: 2,
       })
-      await db.collection('serviceContacts').doc('first').set({
+      await db.collection('service-contacts').doc('first').set({
         name: 'Manager',
         phone: '+77001234567',
         role: 'manager',
@@ -278,7 +278,9 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       const clientDb = unauthed.firestore()
 
       await assertFails(clientDb.collection('residents').doc('any').get())
-      await assertFails(clientDb.collection('serviceContacts').doc('any').get())
+      await assertFails(
+        clientDb.collection('service-contacts').doc('any').get(),
+      )
       await assertFails(clientDb.collection('events').doc('any').get())
 
       await assertFails(
@@ -379,7 +381,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       const db = getDb()
       const { Timestamp } = await import('./firestore')
 
-      await db.collection('serviceContacts').doc('unknown-icons').set({
+      await db.collection('service-contacts').doc('unknown-icons').set({
         name: 'Test Contact',
         phone: '+77001234567',
         role: 'other',

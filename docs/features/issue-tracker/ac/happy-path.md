@@ -37,6 +37,7 @@ category names refer to the values fixed in `prd.md`.
          the author is set from the signed-in profile (name, phone, block, apartment)
          the issue is assigned the next sequential number
          the app returns to the issue list and the new issue appears under the New filter
+         a confirmation that the issue was submitted is shown
 
 ## Scenario 5: Open an urgent issue with media
 
@@ -78,6 +79,7 @@ category names refer to the values fixed in `prd.md`.
   Given: a Resident viewing an New issue they opened
   When:  they delete it (confirming the prompt)
   Then:  the issue is removed and no longer appears in any status filter
+         a confirmation that the issue was deleted is shown
 
 ## Scenario 11: Administration moderates another user's New issue
 

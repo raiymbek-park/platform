@@ -1,9 +1,7 @@
 export { stubClipboard } from './clipboard'
 export { firebaseAuth } from './firebase-auth'
-export {
-  intersectionObserver,
-  TestIntersectionObserver,
-} from './intersection-observer'
+export { firebaseStorage } from './firebase-storage'
+export { intersectionObserver } from './intersection-observer'
 export { renderApp } from './render-app'
 export {
   trpcMutation,

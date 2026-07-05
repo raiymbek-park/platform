@@ -5,11 +5,13 @@ import { cleanup } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll, vi } from 'vitest'
 
 import { queryClient } from '@/shared/api'
+import { firebaseStorage } from '@/shared/test/firebase-storage'
 import {
   intersectionObserver,
   TestIntersectionObserver,
 } from '@/shared/test/intersection-observer'
 import { trpcServer } from '@/shared/test/trpc-server'
+import { useToastStore } from '@/shared/toast/use-toast-store'
 
 i18n.loadAndActivate({ locale: 'ru', messages: {} })
 
@@ -23,6 +25,12 @@ vi.mock(
   async () => (await import('@/shared/test/firebase-auth')).firebaseAuthModule,
 )
 
+vi.mock(
+  'firebase/storage',
+  async () =>
+    (await import('@/shared/test/firebase-storage')).firebaseStorageModule,
+)
+
 vi.stubGlobal('IntersectionObserver', TestIntersectionObserver)
 
 beforeAll(() => trpcServer.listen({ onUnhandledRequest: 'bypass' }))
@@ -32,6 +40,8 @@ afterEach(() => {
   trpcServer.resetHandlers()
   queryClient.clear()
   intersectionObserver.reset()
+  firebaseStorage.reset()
+  useToastStore.setState({ toasts: [] })
 })
 
 afterAll(() => trpcServer.close())

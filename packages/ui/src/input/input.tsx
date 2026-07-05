@@ -1,5 +1,6 @@
 import type { ComponentProps, ReactNode } from 'react'
 import type { IconGlyph } from '../icon'
+import type { IconChipTone } from '../icon-chip/icon-chip'
 
 import { joinCss, pickCss } from '@raiymbek-park/shared'
 
@@ -11,6 +12,7 @@ export type InputProps = ComponentProps<'input'> & {
   icon?: IconGlyph
   label?: ReactNode
   state?: 'error' | 'success'
+  tone?: IconChipTone
   trailing?: ReactNode
 }
 
@@ -27,13 +29,14 @@ export const Input = ({
   label,
   ref,
   state,
+  tone,
   trailing,
   ...restProps
 }: InputProps) => (
   <label className={joinCss(css.input, className)}>
     {label && <span className={css.label}>{label}</span>}
     <span className={boxCss({ state })}>
-      {icon && <IconChip glyph={icon} iconSize={18} size={34} />}
+      {icon && <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />}
       <input className={css.field} ref={ref} {...restProps} />
       {state && (
         <Icon className={css.status} glyph={statusGlyph[state]} size={18} />

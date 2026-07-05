@@ -1,12 +1,14 @@
 import type {
   ClassificationTag,
   IssueCategory,
+  IssueCreatePayload,
   IssueFilter,
   IssueStatus,
   PermissionRole,
   ReactionKind,
 } from '@raiymbek-park/shared/validation-schemas'
 import type { DocumentData } from 'firebase-admin/firestore'
+import type { Resident } from '../resident/resident-store'
 
 import { searchTerms } from '@raiymbek-park/shared'
 import {
@@ -17,7 +19,10 @@ import {
   reactionKinds,
 } from '@raiymbek-park/shared/validation-schemas'
 
-import { getDb, Timestamp } from '../firestore'
+import { FieldValue, getDb, Timestamp } from '../firestore'
+import { getResident } from '../resident/resident-store'
+import { deleteIssueMedia } from '../storage'
+import { buildKeywords } from './keywords'
 
 const SEARCH_TERM_LIMIT = 30
 
@@ -36,6 +41,7 @@ export type Issue = {
   description: string
   dislikeCount: number
   id: string
+  isMine: boolean
   keywords: string[]
   likeCount: number
   media: string[]
@@ -109,14 +115,16 @@ const parseIssue = (
     data.createdAt instanceof Timestamp ? data.createdAt.toMillis() : 0
   const author =
     typeof data.author === 'object' && data.author !== null ? data.author : {}
+  const authorId = toText(data.authorId)
   return {
-    author: toAuthor(author, canSeePhone(role, uid, toText(data.authorId))),
+    author: toAuthor(author, canSeePhone(role, uid, authorId)),
     category: toCategory(data.category),
     commentCount: toNumber(data.commentCount),
     createdAt,
     description: toText(data.description),
     dislikeCount: kinds.filter(kind => kind === 'dislike').length,
     id,
+    isMine: uid !== null && authorId !== '' && authorId === uid,
     keywords: toStringArray(data.keywords),
     likeCount: kinds.filter(kind => kind === 'like').length,
     media: toStringArray(data.media),
@@ -187,4 +195,73 @@ export const setReaction = async (
     transaction.update(ref, { reactions: next })
     return true
   })
+}
+
+const counterRef = () => getDb().collection('counters').doc('issues')
+
+const nextNumber = (value: unknown): number => toNumber(value) + 1
+
+const authorSnapshot = (resident: Resident | null): IssueAuthor => {
+  const source = resident ?? { apartment: 0, block: 0, name: '', phone: '' }
+  return {
+    apartment: source.apartment,
+    block: source.block,
+    name: source.name,
+    phone: source.phone,
+  }
+}
+
+export const createIssue = async (
+  uid: string,
+  input: IssueCreatePayload,
+): Promise<{ id: string; number: number }> => {
+  const author = authorSnapshot(await getResident(uid))
+  return getDb().runTransaction(async transaction => {
+    const counter = counterRef()
+    const snap = await transaction.get(counter)
+    const number = nextNumber(snap.data()?.value)
+    const issueRef = collection().doc(input.id)
+    transaction.set(counter, { value: number }, { merge: true })
+    transaction.create(issueRef, {
+      author,
+      authorId: uid,
+      category: input.category,
+      commentCount: 0,
+      createdAt: FieldValue.serverTimestamp(),
+      description: input.description,
+      keywords: buildKeywords({ number, titles: [input.title] }),
+      media: input.media,
+      number,
+      reactions: {},
+      status: 'new',
+      tags: [],
+      title: input.title,
+      urgent: input.urgent,
+    })
+    return { id: input.id, number }
+  })
+}
+
+export type DeleteOutcome = 'ok' | 'not-found' | 'forbidden'
+
+export const deleteIssue = async (
+  uid: string,
+  role: PermissionRole,
+  issueId: string,
+): Promise<DeleteOutcome> => {
+  const ref = collection().doc(issueId)
+  const outcome = await getDb().runTransaction<DeleteOutcome>(
+    async transaction => {
+      const snap = await transaction.get(ref)
+      if (!snap.exists) return 'not-found'
+      const data = snap.data() ?? {}
+      const isNew = toStatus(data.status) === 'new'
+      const isAuthor = toText(data.authorId) === uid
+      if (!isNew || (!isAuthor && role !== 'administration')) return 'forbidden'
+      transaction.delete(ref)
+      return 'ok'
+    },
+  )
+  if (outcome === 'ok') await deleteIssueMedia(issueId).catch(() => undefined)
+  return outcome
 }

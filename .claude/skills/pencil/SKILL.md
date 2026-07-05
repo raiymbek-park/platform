@@ -3,7 +3,7 @@ name: pencil
 description: Work with this project's Pencil .pen design files — the design-system library (design/design-system.lib.pen) and consumer screen files (design/*-screen.pen) linked via Pencil library imports. Use this skill whenever a task reads, authors, edits, or refines .pen files — adding or changing screens, reusable components, design tokens/variables, or cross-file refs. .pen files are plain JSON edited directly via jq; the Pencil app is not required and there is no Figma step.
 user-invocable: true
 argument-hint: "refine TARGET | (no arg → load the .pen working rules)"
-allowed-tools: "Read Write Edit Glob Grep Bash"
+allowed-tools: "Read Write Edit Glob Grep Bash mcp__pencil__get_editor_state mcp__pencil__get_screenshot mcp__pencil__get_variables mcp__pencil__snapshot_layout mcp__pencil__batch_get mcp__pencil__export_nodes mcp__pencil__export_html"
 metadata:
   author: sultan99
   version: 4.1.0
@@ -38,8 +38,9 @@ gotchas (`icon_font` dimensions, flex `x`/`y`, single-segment descendants, slot
 replacement). For jq queries, edits, ID generation, and the post-write validation
 suite, see [references/pen-jq.md](references/pen-jq.md).
 
-`.pen` files are plain JSON — edit them with `jq`, **never** the `mcp__pencil__*`
-tools (see the project's root `CLAUDE.md`).
+`.pen` files are plain JSON — **edit** them with `jq` (never MCP mutations /
+`batch_design`); the Pencil MCP **read/render** tools (screenshot, export, inspect)
+are allowed for design comparison. See the project's root `CLAUDE.md`.
 
 ## Subcommands
 

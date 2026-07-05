@@ -45,6 +45,10 @@
   background: var(--border);
   color: var(--surface);
 
+  &-is-checkbox {
+    border-radius: 6px;
+  }
+
   &-is-selected {
     background: var(--brand);
   }

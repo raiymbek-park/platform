@@ -1,0 +1,80 @@
+.form {
+  background: var(--surface);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.gallery {
+  height: 285px;
+  padding-bottom: 8px;
+  position: relative;
+}
+
+.galleryEmpty {
+  align-items: center;
+  display: flex;
+  height: 150px;
+  justify-content: center;
+  padding: 20px;
+}
+
+.placeholder {
+  height: 80px;
+  object-fit: contain;
+  width: 80px;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  padding: 12px 12px 16px;
+}
+
+.actionsEmpty {
+  padding-top: 0;
+}
+
+.add,
+.remove {
+  align-items: center;
+  border: 0;
+  border-radius: 16px;
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+  gap: 6px;
+  justify-content: center;
+  padding: 8px 16px;
+}
+
+.add {
+  background: var(--info-soft);
+  color: var(--info);
+  position: relative;
+}
+
+.remove {
+  background: var(--danger-soft);
+  color: var(--danger);
+
+  &:disabled {
+    background: var(--disabled-surface);
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+}
+
+.input {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}

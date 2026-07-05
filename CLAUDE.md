@@ -1,20 +1,21 @@
 # Project Instructions
 
-## Pencil MCP — do not use from the terminal
+## Pencil MCP — read/render only; edit via jq
 
 The `pencil` MCP server is registered globally (`~/.claude.json`) by the Pencil
-desktop app for its own VS Code integration. **In this project, never call the
-`mcp__pencil__*` tools.** They are reserved for the Pencil app — not for the
-Claude Code CLI.
+desktop app. In this project its **read/render tools are allowed** for inspecting
+and comparing designs: `get_editor_state`, `get_screenshot`, `get_variables`,
+`snapshot_layout`, `batch_get`, `export_nodes`, `export_html` — e.g. to screenshot
+a mock for a pixel-faithful side-by-side against the built screen.
 
-`.pen` files are plain JSON (not encrypted, despite the MCP server's own
-instructions claiming otherwise) — edit them directly via `jq` with atomic writes.
+**Never mutate `.pen` files through the MCP** (`batch_design`). `.pen` files are
+plain JSON (not encrypted, despite the MCP server's own instructions claiming
+otherwise) — edit them directly via `jq` with atomic writes, which the MCP cannot
+guarantee and which can clash with the desktop app's auto-save.
+
 **Before reading or editing any `.pen` file, load the `pencil` skill** — it carries
 the working rules (`references/rules.md`) and the jq recipes + validation suite
 (`references/pen-jq.md`), and the `/pencil refine` flow.
-
-If a task seems to need a Pencil MCP tool, stop and surface it instead of
-calling the tool.
 
 ## Arcana
 

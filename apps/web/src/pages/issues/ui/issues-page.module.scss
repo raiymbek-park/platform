@@ -1,19 +1,24 @@
-.intro {
+.fab {
+  align-items: center;
+  background: var(--action);
+  border-radius: 180px;
+  bottom: 81px;
+  box-shadow: 0 4px 20px var(--shadow);
+  color: var(--surface);
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+  height: 64px;
+  justify-content: center;
+  position: fixed;
+  right: 20px;
+  transition:
+    opacity 300ms ease,
+    transform 300ms ease;
+  width: 64px;
+  z-index: 2;
 
-.title {
-  color: var(--foreground);
-  font-size: 22px;
-  font-weight: var(--weight-extrabold);
-  margin: 0;
-}
-
-.subtitle {
-  color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: var(--weight-medium);
-  margin: 0;
+  &-is-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(120px);
+  }
 }

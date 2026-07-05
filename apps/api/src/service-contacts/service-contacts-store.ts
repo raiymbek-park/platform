@@ -15,7 +15,7 @@ export type ServiceContact = {
 
 export const getServiceContacts = async (): Promise<ServiceContact[]> => {
   const snap = await getDb()
-    .collection('serviceContacts')
+    .collection('service-contacts')
     .orderBy('order', 'asc')
     .get()
   return snap.docs.map(doc => {

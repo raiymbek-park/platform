@@ -11,6 +11,7 @@ import userEvent from '@testing-library/user-event'
 
 import { routeTree } from '@/app/routeTree.gen'
 import { queryClient, TRPCProvider, trpc, trpcClient } from '@/shared/api'
+import { ToastHost } from '@/shared/toast'
 
 export const renderApp = (initialPath: string) => {
   const user = userEvent.setup()
@@ -29,6 +30,7 @@ export const renderApp = (initialPath: string) => {
           <RouterProvider router={router} />
         </TRPCProvider>
       </QueryClientProvider>
+      <ToastHost />
     </I18nProvider>,
   )
 

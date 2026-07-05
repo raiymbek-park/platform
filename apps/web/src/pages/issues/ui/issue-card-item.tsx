@@ -7,15 +7,22 @@ import type { IssueView } from '../model/use-issues-data'
 
 import { i18n } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
-import { CommentCount, IssueCard, Reaction } from '@raiymbek-park/ui'
+import {
+  CommentCount,
+  InlineButton,
+  IssueCard,
+  Reaction,
+} from '@raiymbek-park/ui'
 import { useState } from 'react'
 
 import { formatIssueDate } from '../model/format-issue-date'
 import { useIssueBadges } from '../model/use-issue-badges'
 
 export type IssueCardItemProps = {
+  canDelete: boolean
   canReact: boolean
   issue: IssueView
+  onDelete: (issueId: string) => void
   onReact: (
     issueId: string,
     kind: ReactionKind,
@@ -24,8 +31,10 @@ export type IssueCardItemProps = {
 }
 
 export const IssueCardItem = ({
+  canDelete,
   canReact,
   issue,
+  onDelete,
   onReact,
 }: IssueCardItemProps) => {
   const { t } = useLingui()
@@ -35,6 +44,9 @@ export const IssueCardItem = ({
 
   const status: IssueStatus = issue.status
   const meta = t`Заявка №${issue.number} · ${cardStatusLabel(status)}`
+
+  // Editing an issue lands in T3 — the button is shown per the design, no-op for now.
+  const editIssue = () => {}
 
   const contacts: IssueCardContact[] = [
     { glyph: 'user-round', isEmphasis: true, text: issue.authorName },
@@ -56,6 +68,24 @@ export const IssueCardItem = ({
 
   return (
     <IssueCard
+      actions={
+        canDelete ? (
+          <>
+            <InlineButton
+              glyph='square-pen'
+              label={t`Редактировать`}
+              tone='info'
+              onClick={editIssue}
+            />
+            <InlineButton
+              glyph='trash-2'
+              label={t`Удалить`}
+              tone='danger'
+              onClick={() => onDelete(issue.id)}
+            />
+          </>
+        ) : undefined
+      }
       badgeGlyph={statusGlyph(status)}
       badgeTone={statusTone(status)}
       collapseLabel={t`Свернуть`}

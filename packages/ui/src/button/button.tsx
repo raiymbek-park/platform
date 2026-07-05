@@ -10,7 +10,7 @@ export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconGlyph
   iconPosition?: 'left' | 'right'
   isLoading?: boolean
-  variant?: 'action' | 'icon' | 'secondary'
+  variant?: 'action' | 'danger' | 'icon' | 'secondary'
 }
 
 const buttonCss = pickCss(css, css.button)

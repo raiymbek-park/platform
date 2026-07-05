@@ -5,11 +5,35 @@
     // Firebase runtime, so it is never imported in the JS graph.
     "apps/functions/src/index.ts",
     "apps/web/codecept.conf.ts",
+    // Lingui config — consumed by the Lingui CLI (extract/compile) and read by
+    // vite.config.ts via a URL, never imported in the JS graph.
+    "apps/web/lingui.config.ts",
     "apps/web/src/test/**/*.e2e.ts",
     "apps/web/steiger.config.ts",
     "apps/web/vitest.stryker.config.ts"
   ],
   // Loaded only via dynamic import() inside vi.mock factories in vitest.setup.ts,
   // which the static analyzer cannot trace — its exports are not actually dead.
-  "dynamicallyLoaded": ["apps/web/src/shared/test/firebase-auth.ts"]
+  "dynamicallyLoaded": [
+    "apps/web/src/shared/test/firebase-auth.ts",
+    "apps/web/src/shared/test/firebase-storage.ts"
+  ],
+  // Test double for the DOM IntersectionObserver: its members are dispatched at
+  // runtime via globalThis.IntersectionObserver (vi.stubGlobal), which the static
+  // analyzer can't trace, so every member reads as unused.
+  "ignorePatterns": ["apps/web/src/shared/test/intersection-observer.ts"],
+  // Used by the Lingui CLI macro extraction (i18n:extract) at build time via the
+  // babel preset, not through a JS import, so the static graph can't see it.
+  "ignoreDependencies": ["@lingui/babel-plugin-lingui-macro"],
+  // Test files legitimately repeat setup/assertion scaffolding, and
+  // vitest.stryker.config.ts intentionally mirrors vitest.config.ts — it must
+  // keep the lingui plugins in sync or Stryker mutation testing silently breaks.
+  // Exclude both from clone detection.
+  "duplicates": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "apps/web/vitest.stryker.config.ts"
+    ]
+  }
 }

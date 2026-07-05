@@ -233,31 +233,9 @@
               "name": "Spacer"
             },
             {
-              "type": "frame",
-              "id": "l5f42",
-              "name": "Actions",
-              "width": "fill_container",
-              "gap": 12,
-              "alignItems": "center",
-              "children": [
-                {
-                  "id": "d1GlZ",
-                  "type": "ref",
-                  "ref": "ds:ButtonIcon",
-                  "name": "Back Button"
-                },
-                {
-                  "id": "c1uDX9",
-                  "type": "ref",
-                  "ref": "ds:ButtonPrimary",
-                  "name": "Paste Button",
-                  "descendants": {
-                    "ds:btn-action-text": {
-                      "content": "Вставить код из буфера"
-                    }
-                  }
-                }
-              ]
+              "id": "y6aZO",
+              "type": "ref",
+              "ref": "ds:ButtonSecondary"
             }
           ]
         }

@@ -13,7 +13,7 @@ import type { IssueView } from './use-issues-data'
 
 import { useLingui } from '@lingui/react/macro'
 
-export const statusOrder: IssueStatus[] = [
+const statusOrder: IssueStatus[] = [
   'new',
   'in-progress',
   'blocked',

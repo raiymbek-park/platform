@@ -5906,7 +5906,7 @@
                       "name": "icon",
                       "width": 18,
                       "height": 18,
-                      "icon": "circle-alert",
+                      "icon": "triangle-alert",
                       "library": "lucide",
                       "fill": "$danger"
                     }
@@ -5968,6 +5968,150 @@
                   "width": "fill_container",
                   "content": "Scheduled water shutdown on June 20, 10:00-16:00.",
                   "lineHeight": 1.5
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ToastMessageInfo",
+              "name": "ToastMessageInfo",
+              "reusable": true,
+              "width": "fill_container",
+              "fill": "$info-soft",
+              "cornerRadius": 16,
+              "gap": 12,
+              "padding": [
+                16,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "tmi-ic",
+                  "name": "icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "bell",
+                  "library": "lucide",
+                  "fill": "$info"
+                },
+                {
+                  "id": "tmi-tx",
+                  "type": "ref",
+                  "ref": "TextCaption",
+                  "name": "text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Заявка отправлена в управляющую компанию.",
+                  "lineHeight": 1.4,
+                  "fill": "$foreground"
+                },
+                {
+                  "type": "icon",
+                  "id": "tmi-x",
+                  "name": "close",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "$action"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ToastMessageError",
+              "name": "ToastMessageError",
+              "reusable": true,
+              "width": "fill_container",
+              "fill": "$danger-soft",
+              "cornerRadius": 16,
+              "gap": 12,
+              "padding": [
+                16,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "KfG16",
+                  "name": "icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "triangle-alert",
+                  "library": "lucide",
+                  "fill": "$danger"
+                },
+                {
+                  "id": "tme-tx",
+                  "type": "ref",
+                  "ref": "TextCaption",
+                  "name": "text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Не удалось сохранить заявку. Попробуйте ещё раз.",
+                  "lineHeight": 1.4,
+                  "fill": "$foreground"
+                },
+                {
+                  "type": "icon",
+                  "id": "tme-x",
+                  "name": "close",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "$danger"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ToastMessageSuccess",
+              "name": "ToastMessageSuccess",
+              "reusable": true,
+              "width": "fill_container",
+              "fill": "$brand-subtle",
+              "cornerRadius": 16,
+              "gap": 12,
+              "padding": [
+                16,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "tms-ic",
+                  "name": "icon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "circle-check",
+                  "library": "lucide",
+                  "fill": "$brand-text"
+                },
+                {
+                  "id": "tms-tx",
+                  "type": "ref",
+                  "ref": "TextCaption",
+                  "name": "text",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Готово! Заявка успешно создана.",
+                  "lineHeight": 1.4,
+                  "fill": "$foreground"
+                },
+                {
+                  "type": "icon",
+                  "id": "tms-x",
+                  "name": "close",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "x",
+                  "library": "lucide",
+                  "fill": "$brand-text"
                 }
               ]
             }
@@ -6158,8 +6302,8 @@
               "id": "lrwZ0",
               "type": "ref",
               "ref": "tHQhz",
-              "x": 190,
-              "y": 246
+              "x": 195,
+              "y": 248
             }
           ]
         },
@@ -6211,8 +6355,8 @@
                   "id": "fMWcV",
                   "type": "ref",
                   "ref": "tHQhz",
-                  "x": 149,
-                  "y": 265
+                  "x": 154,
+                  "y": 267
                 }
               ]
             },
@@ -7494,8 +7638,8 @@
                       "id": "rY8w3",
                       "type": "ref",
                       "ref": "tHQhz",
-                      "x": 165,
-                      "y": 225
+                      "x": 170,
+                      "y": 227
                     }
                   ]
                 }
@@ -7809,7 +7953,7 @@
           "id": "tHQhz",
           "name": "dots",
           "reusable": true,
-          "fill": "#181b1fa6",
+          "fill": "#181b1fd9",
           "cornerRadius": 8,
           "gap": 4,
           "padding": 2,
@@ -7821,40 +7965,40 @@
               "id": "Unk7z",
               "name": "dot",
               "fill": "$disabled-surface",
-              "width": 6,
-              "height": 6
+              "width": 4,
+              "height": 4
             },
             {
               "type": "ellipse",
               "id": "y6jX1U",
               "name": "dot-active",
               "fill": "$surface",
-              "width": 8,
-              "height": 8
+              "width": 6,
+              "height": 6
             },
             {
               "type": "ellipse",
               "id": "V7RGRD",
               "name": "dot",
               "fill": "$disabled-surface",
-              "width": 6,
-              "height": 6
+              "width": 4,
+              "height": 4
             },
             {
               "type": "ellipse",
               "id": "nbqUp",
               "name": "dot",
               "fill": "$disabled-surface",
-              "width": 6,
-              "height": 6
+              "width": 4,
+              "height": 4
             },
             {
               "type": "ellipse",
               "id": "P1Dkj5",
               "name": "dot",
               "fill": "$disabled-surface",
-              "width": 6,
-              "height": 6
+              "width": 4,
+              "height": 4
             }
           ]
         }
