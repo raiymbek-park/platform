@@ -10,7 +10,7 @@ export const useIssueQuery = (issueId: string) => {
   const { t } = useLingui()
   const trpc = useTRPC()
   const navigate = useNavigate()
-  const { data, error, isPending } = useQuery(
+  const { data, error, isPending, refetch } = useQuery(
     trpc.issues.get.queryOptions({ issueId }, { retry: false }),
   )
 
@@ -20,5 +20,10 @@ export const useIssueQuery = (issueId: string) => {
     showToastMessage({ kind: 'error', text: t`Заявка не найдена.` })
   }, [error, navigate, t])
 
-  return { isLoading: isPending, issue: data }
+  return {
+    isError: Boolean(error) && !isNotFoundError(error),
+    isLoading: isPending,
+    issue: data,
+    refetch,
+  }
 }

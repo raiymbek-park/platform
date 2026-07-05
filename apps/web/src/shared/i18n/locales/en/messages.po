@@ -384,6 +384,10 @@ msgstr "Couldn't complete registration. Please try again."
 msgid "Не удалось загрузить заявки"
 msgstr "Couldn’t load issues"
 
+#: src/shared/issue/issue-load-error.tsx:14
+msgid "Не удалось загрузить заявку"
+msgstr "Couldn’t load the issue"
+
 #: src/pages/home/ui/contacts-section.tsx:22
 msgid "Не удалось загрузить контакты"
 msgstr "Couldn't load contacts"
@@ -530,6 +534,7 @@ msgstr "Under warranty"
 
 #: src/features/onboarding/ui/account-locked.tsx:56
 #: src/pages/issues/ui/issue-list.tsx:71
+#: src/shared/issue/issue-load-error.tsx:17
 msgid "Повторить"
 msgstr "Retry"
 

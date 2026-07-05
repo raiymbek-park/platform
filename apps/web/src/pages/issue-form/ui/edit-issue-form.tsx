@@ -3,7 +3,7 @@ import type { Issue } from '@raiymbek-park/api'
 import { useLingui } from '@lingui/react/macro'
 import { ScreenHeader, Spinner } from '@raiymbek-park/ui'
 
-import { useIssueQuery } from '@/shared/issue'
+import { IssueLoadError, useIssueQuery } from '@/shared/issue'
 import { useMediaPicker } from '@/shared/media'
 
 import { useUpdateIssue } from '../model/use-update-issue'
@@ -34,7 +34,7 @@ const EditIssueFormReady = ({ issue }: { issue: Issue }) => {
 }
 
 export const EditIssueForm = ({ issueId }: { issueId: string }) => {
-  const { isLoading, issue } = useIssueQuery(issueId)
+  const { isError, isLoading, issue, refetch } = useIssueQuery(issueId)
 
   if (isLoading) {
     return (
@@ -44,6 +44,7 @@ export const EditIssueForm = ({ issueId }: { issueId: string }) => {
       </>
     )
   }
+  if (isError) return <IssueLoadError onRetry={refetch} />
   if (!issue) return null
   return <EditIssueFormReady issue={issue} />
 }

@@ -1,6 +1,6 @@
 import { ScreenHeader, Spinner } from '@raiymbek-park/ui'
 
-import { useIssueQuery } from '@/shared/issue'
+import { IssueLoadError, useIssueQuery } from '@/shared/issue'
 
 import { StatusForm } from './status-form'
 
@@ -9,7 +9,7 @@ export type IssueStatusPageProps = {
 }
 
 export const IssueStatusPage = ({ issueId }: IssueStatusPageProps) => {
-  const { isLoading, issue } = useIssueQuery(issueId)
+  const { isError, isLoading, issue, refetch } = useIssueQuery(issueId)
 
   if (isLoading) {
     return (
@@ -19,6 +19,7 @@ export const IssueStatusPage = ({ issueId }: IssueStatusPageProps) => {
       </>
     )
   }
+  if (isError) return <IssueLoadError onRetry={refetch} />
   if (!issue) return null
   return <StatusForm issue={issue} />
 }
