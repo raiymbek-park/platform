@@ -41,6 +41,9 @@ const MediaSlide = ({
     const image = new Image()
     image.onload = () => setSrc(item.url)
     image.src = item.url
+    return () => {
+      image.onload = null
+    }
   }, [isVideo, item.url])
 
   return isVideo ? (
