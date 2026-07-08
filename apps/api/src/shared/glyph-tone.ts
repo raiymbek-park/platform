@@ -9,6 +9,7 @@ const glyphs = [
   'building-2',
   'shield',
   'droplets',
+  'siren',
 ] as const
 
 const tones = ['brand', 'danger', 'accent', 'info', 'warning'] as const
