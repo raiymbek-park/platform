@@ -12,3 +12,5 @@ export const readStoredLocale = (): Locale | null => {
 export const persistLocale = (locale: Locale): void => {
   localStorage.setItem(STORAGE_KEY, locale)
 }
+
+export const hasLocaleChoice = (): boolean => readStoredLocale() !== null
