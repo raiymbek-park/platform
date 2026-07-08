@@ -33,7 +33,8 @@
     "ignore": [
       "**/*.test.ts",
       "**/*.test.tsx",
-      "apps/web/vitest.stryker.config.ts"
+      "apps/web/vitest.stryker.config.ts",
+      "**/*.gen.ts"
     ]
   }
 }
