@@ -3,7 +3,7 @@ import type { ComponentProps, PointerEvent } from 'react'
 import { joinCss, pickCss } from '@raiymbek-park/shared'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import placeholder from '../issue-card/image-placeholder.jpg'
+import placeholder from '../content-card/image-placeholder.jpg'
 import css from './carousel.module.scss'
 import { isVideoUrl } from './is-video-url'
 

@@ -14,7 +14,7 @@ import type {
   DocumentReference,
   Transaction,
 } from 'firebase-admin/firestore'
-import type { Resident } from '../resident/resident-store'
+import type { WriteOutcome } from '../store-helpers'
 
 import { searchTerms } from '@raiymbek-park/shared'
 import {
@@ -22,12 +22,18 @@ import {
   ISSUE_PAGE_SIZE,
   issueCategories,
   issueStatuses,
-  reactionKinds,
 } from '@raiymbek-park/shared/validation-schemas'
 
 import { FieldValue, getDb, Timestamp } from '../firestore'
-import { getResident } from '../resident/resident-store'
+import { getResident, residentSnapshot } from '../resident/resident-store'
 import { deleteIssueMedia } from '../storage'
+import {
+  toggleReaction,
+  toNumber,
+  toReactions,
+  toStringArray,
+  toText,
+} from '../store-helpers'
 import { buildKeywords } from './keywords'
 
 const SEARCH_TERM_LIMIT = 30
@@ -61,12 +67,6 @@ export type Issue = {
 
 const collection = () => getDb().collection('issues')
 
-const toText = (value: unknown): string =>
-  typeof value === 'string' ? value : ''
-
-const toNumber = (value: unknown): number =>
-  typeof value === 'number' ? value : 0
-
 const toCategory = (value: unknown): IssueCategory =>
   issueCategories.find(category => category === value) ?? 'other'
 
@@ -77,21 +77,6 @@ const toTags = (value: unknown): ClassificationTag[] =>
   Array.isArray(value)
     ? classificationTags.filter(tag => value.includes(tag))
     : []
-
-const toStringArray = (value: unknown): string[] =>
-  Array.isArray(value) ? value.filter(item => typeof item === 'string') : []
-
-const isReactionKind = (kind: string): kind is ReactionKind =>
-  reactionKinds.some(x => x === kind)
-
-const toReactions = (value: unknown): Record<string, ReactionKind> => {
-  if (typeof value !== 'object' || value === null) return {}
-  return Object.fromEntries(
-    Object.entries(value).flatMap(([uid, kind]) =>
-      isReactionKind(kind) ? [[uid, kind]] : [],
-    ),
-  )
-}
 
 const toAuthor = (data: DocumentData, canSeePhone: boolean): IssueAuthor => ({
   apartment: toNumber(data.apartment),
@@ -182,46 +167,21 @@ export const listIssues = async ({
   return { issues, nextCursor }
 }
 
-export const setReaction = async (
+export const setIssueReaction = (
   issueId: string,
   uid: string,
   kind: ReactionKind,
-): Promise<boolean> => {
-  const ref = collection().doc(issueId)
-  return getDb().runTransaction(async transaction => {
-    const snap = await transaction.get(ref)
-    if (!snap.exists) return false
-    const reactions = toReactions(snap.data()?.reactions)
-    const next =
-      reactions[uid] === kind
-        ? Object.fromEntries(
-            Object.entries(reactions).filter(([key]) => key !== uid),
-          )
-        : { ...reactions, [uid]: kind }
-    transaction.update(ref, { reactions: next })
-    return true
-  })
-}
+): Promise<boolean> => toggleReaction(collection().doc(issueId), uid, kind)
 
 const counterRef = () => getDb().collection('counters').doc('issues')
 
 const nextNumber = (value: unknown): number => toNumber(value) + 1
 
-const authorSnapshot = (resident: Resident | null): IssueAuthor => {
-  const source = resident ?? { apartment: 0, block: 0, name: '', phone: '' }
-  return {
-    apartment: source.apartment,
-    block: source.block,
-    name: source.name,
-    phone: source.phone,
-  }
-}
-
 export const createIssue = async (
   uid: string,
   input: IssueCreatePayload,
 ): Promise<{ id: string; number: number }> => {
-  const author = authorSnapshot(await getResident(uid))
+  const author = residentSnapshot(await getResident(uid))
   return getDb().runTransaction(async transaction => {
     const counter = counterRef()
     const snap = await transaction.get(counter)
@@ -267,8 +227,6 @@ export const getIssue = async (
   if (!snap.exists) return null
   return parseIssue(snap.id, snap.data() ?? {}, uid, role)
 }
-
-export type WriteOutcome = 'ok' | 'not-found' | 'forbidden'
 
 const modifyIssue = (
   ref: DocumentReference,

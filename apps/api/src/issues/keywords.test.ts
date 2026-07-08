@@ -2,26 +2,25 @@ import { expect, test } from 'vitest'
 
 import { buildKeywords } from './keywords'
 
-test('expands a word into prefixes from three characters up to the whole word', () => {
+test('expands a word into prefixes from two characters up to the whole word', () => {
   expect(buildKeywords({ number: 1, titles: ['лифта'] })).toEqual(
-    expect.arrayContaining(['лиф', 'лифт', 'лифта']),
+    expect.arrayContaining(['ли', 'лиф', 'лифт', 'лифта']),
   )
 })
 
-test('never emits a prefix shorter than three characters', () => {
+test('never emits a prefix shorter than two characters', () => {
   const keywords = buildKeywords({ number: 1, titles: ['лифта'] })
 
-  expect(keywords).not.toContain('ли')
   expect(keywords).not.toContain('л')
 })
 
-test('keeps a word of three characters or fewer whole', () => {
-  expect(buildKeywords({ number: 1, titles: ['дом'] })).toContain('дом')
+test('keeps a word of two characters or fewer whole', () => {
+  expect(buildKeywords({ number: 1, titles: ['юг'] })).toContain('юг')
 })
 
 test('expands every word of a multi-word title', () => {
   expect(buildKeywords({ number: 1, titles: ['Замена тросов'] })).toEqual(
-    expect.arrayContaining(['зам', 'замена', 'тро', 'тросов']),
+    expect.arrayContaining(['за', 'замена', 'тр', 'тросов']),
   )
 })
 

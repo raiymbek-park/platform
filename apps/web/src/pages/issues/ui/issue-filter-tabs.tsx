@@ -3,7 +3,8 @@ import { FilterTab } from '@raiymbek-park/ui'
 import { getRouteApi } from '@tanstack/react-router'
 import { useState } from 'react'
 
-import { useIntersectionObserver } from '../model/use-intersection-observer'
+import { useIntersectionObserver } from '@/shared/lib'
+
 import { filterOrder, useIssueBadges } from '../model/use-issue-badges'
 import css from './issue-filter-tabs.module.scss'
 

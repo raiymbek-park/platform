@@ -31,9 +31,9 @@ const isFulfilled = <T>(
   result: PromiseSettledResult<T>,
 ): result is PromiseFulfilledResult<T> => result.status === 'fulfilled'
 
-const uploadFile = async (issueId: string, file: File): Promise<string> => {
+const uploadFile = async (folder: string, file: File): Promise<string> => {
   const compressed = await compressImage(file)
-  const path = `issues/${issueId}/${randomId()}.${extensionFor(compressed)}`
+  const path = `${folder}/${randomId()}.${extensionFor(compressed)}`
   const target = ref(storage, path)
   await uploadBytesResumable(target, compressed)
   return getDownloadURL(target)
@@ -44,20 +44,26 @@ const collect = (results: PromiseSettledResult<string>[]) => {
   return { failedCount: results.length - urls.length, urls }
 }
 
-export const uploadIssueMedia = (issueId: string, files: File[]) => {
+const uploadFiles = (folder: string, files: File[]) => {
   if (!auth.currentUser?.uid)
     return Promise.reject(new Error('unauthenticated'))
 
-  const uploads = files.map(file => uploadFile(issueId, file))
+  const uploads = files.map(file => uploadFile(folder, file))
   return Promise.allSettled(uploads).then(collect)
 }
 
-export const uploadMediaItems = (issueId: string, items: MediaItem[]) => {
+const uploadItems = (folder: string, items: MediaItem[]) => {
   if (!auth.currentUser?.uid)
     return Promise.reject(new Error('unauthenticated'))
 
   const uploads = items.map(item =>
-    item.file ? uploadFile(issueId, item.file) : Promise.resolve(item.url),
+    item.file ? uploadFile(folder, item.file) : Promise.resolve(item.url),
   )
   return Promise.allSettled(uploads).then(collect)
 }
+
+export const uploadIssueMedia = (issueId: string, files: File[]) =>
+  uploadFiles(`issues/${issueId}`, files)
+
+export const uploadMediaItems = (issueId: string, items: MediaItem[]) =>
+  uploadItems(`issues/${issueId}`, items)

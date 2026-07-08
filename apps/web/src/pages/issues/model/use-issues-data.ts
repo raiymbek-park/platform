@@ -4,11 +4,11 @@ import type {
   ReactionKind,
 } from '@raiymbek-park/shared/validation-schemas'
 
+import { matchKeywords } from '@raiymbek-park/shared'
 import { useInfiniteQuery } from '@tanstack/react-query'
 
 import { useTRPC } from '@/shared/api'
 
-import { matchIssue } from './match-issue'
 import { useStoreDeletedIssues } from './use-store-deleted-issues'
 import { useStoreReactions } from './use-store-reactions'
 
@@ -98,7 +98,7 @@ export const useIssuesData = ({
     isFetchingNextPage: list.isFetchingNextPage,
     isPending: list.isPending,
     issues: isProjecting
-      ? issues.filter(issue => matchIssue(issue, query))
+      ? issues.filter(issue => matchKeywords(issue.keywords, query))
       : issues,
     refetch: list.refetch,
   }

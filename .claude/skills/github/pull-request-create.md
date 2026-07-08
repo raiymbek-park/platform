@@ -16,16 +16,32 @@ gh issue view <number>
 
 Get issue title, description, and labels.
 
-### Step 3: Analyze current branch
+### Step 3: Run pre-PR gates
+
+Before creating the PR, make sure the branch passes the local CI gates — CI runs the
+same checks and will fail the PR otherwise:
+
+```bash
+npm --prefix apps/web run i18n:extract   # CI diffs .po catalogs against the code;
+                                         # stale line refs after any refactor fail the
+                                         # "i18n catalogs extracted" check
+npm --prefix apps/web run i18n:compile   # strict compile — fails on untranslated strings
+npm run lint && npm run typecheck && npm test
+npm --prefix apps/web run lint:fsd
+```
+
+If `i18n:extract` changed catalog files, commit them before pushing.
+
+### Step 4: Analyze current branch
 
 !`git log main..HEAD --oneline`
 !`git diff main..HEAD --stat`
 
-### Step 4: Generate PR title
+### Step 5: Generate PR title
 
 See [references/rules.md](./references/rules.md) > PR Title Format.
 
-### Step 5: Generate PR description
+### Step 6: Generate PR description
 
 If the project has a pull request template (e.g., `.github/pull_request_template.md`), use it as the structure. Otherwise, use this format:
 
@@ -41,7 +57,7 @@ Closes #<issue-number>
 
 Fill in each section based on the GitHub issue and branch analysis.
 
-### Step 6: Confirm and create PR
+### Step 7: Confirm and create PR
 
 **Confirmation gate:** Show the PR title, target branch, and commit count. If `-y` → proceed. Otherwise → ask "Push and create PR?" and wait.
 
@@ -49,6 +65,6 @@ Fill in each section based on the GitHub issue and branch analysis.
 gh pr create --title "<title>" --body "<description>"
 ```
 
-### Step 7: Output the PR URL
+### Step 8: Output the PR URL
 
 Show the PR URL returned by `gh pr create` to the developer.

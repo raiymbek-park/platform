@@ -9,5 +9,5 @@ export const isSignedIn = async () => {
 
 export const ensureResidentSession = async () => {
   if (await isSignedIn()) return
-  throw redirect({ to: '/onboarding/welcome' })
+  throw redirect({ to: '/onboarding' })
 }

@@ -1,2 +1,8 @@
 export { toCamel, toKebab } from './case'
-export { SEARCH_MIN_CHARS, searchTerms, tokenize } from './tokenize'
+export {
+  matchKeywords,
+  SEARCH_MIN_CHARS,
+  searchPrefixes,
+  searchTerms,
+  tokenize,
+} from './tokenize'

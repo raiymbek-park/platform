@@ -35,9 +35,9 @@ export const ServicesSection = () => {
       />
       <ul className={css.list}>
         <li>
-          <Link className={css.link} to='/announcements'>
+          <Link className={css.link} search={{ tab: 'all' }} to='/posts'>
             <ActionCard
-              description={t`Новости и уведомления от УК`}
+              description={t`Новости, уведомления и частные предложения`}
               glyph='megaphone'
               title={t`Объявления`}
               tone='accent'
@@ -65,7 +65,7 @@ export const ServicesSection = () => {
           </Link>
         </li>
         <li>
-          <Link className={css.link} to='/announcements'>
+          <Link className={css.link} to='/posts/new'>
             <ActionCard
               description={t`У вас есть предложение или поиск, пишите сюда`}
               glyph='shopping-bag'

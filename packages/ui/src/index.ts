@@ -7,6 +7,19 @@ export type { CommentCountProps } from './comment-count/comment-count'
 export type { ConfirmPopupProps } from './confirm-popup/confirm-popup'
 export type { ContactCardProps } from './contact-card/contact-card'
 export type { ContentProps } from './content/content'
+export type { ContentCardContact } from './content-card/card-contacts'
+export type { ContentCardBadge } from './content-card/card-tags'
+export type {
+  IssueCardBadge,
+  IssueCardContact,
+  IssueCardProps,
+} from './content-card/issue-card'
+export type {
+  PostCardBadge,
+  PostCardContact,
+  PostCardProps,
+} from './content-card/post-card'
+export type { CreateFabProps } from './create-fab/create-fab'
 export type { DividerProps } from './divider/divider'
 export type { EmptyStateProps } from './empty-state/empty-state'
 export type { FilterTabProps } from './filter-tab/filter-tab'
@@ -24,12 +37,8 @@ export type {
   InlineButtonTone,
 } from './inline-button/inline-button'
 export type { InputProps } from './input/input'
-export type {
-  IssueCardBadge,
-  IssueCardContact,
-  IssueCardProps,
-} from './issue-card/issue-card'
 export type { LocationBadgeProps } from './location-badge/location-badge'
+export type { MarkdownProps } from './markdown/markdown'
 export type { NavItemProps } from './nav-item/nav-item'
 export type { PopupMenuProps } from './popup-menu/popup-menu'
 export type { ReactionKind, ReactionProps } from './reaction/reaction'
@@ -56,6 +65,9 @@ export { CommentCount } from './comment-count/comment-count'
 export { ConfirmPopup } from './confirm-popup/confirm-popup'
 export { ContactCard } from './contact-card/contact-card'
 export { Content } from './content/content'
+export { IssueCard } from './content-card/issue-card'
+export { PostCard } from './content-card/post-card'
+export { CreateFab } from './create-fab/create-fab'
 export { Divider } from './divider/divider'
 export { EmptyState } from './empty-state/empty-state'
 export { FilterTab } from './filter-tab/filter-tab'
@@ -67,8 +79,8 @@ export { ImageForm } from './image-form/image-form'
 export { InfoCallout } from './info-callout/info-callout'
 export { InlineButton } from './inline-button/inline-button'
 export { Input } from './input/input'
-export { IssueCard } from './issue-card/issue-card'
 export { LocationBadge } from './location-badge/location-badge'
+export { Markdown } from './markdown/markdown'
 export { NavItem } from './nav-item/nav-item'
 export { PopupMenu } from './popup-menu/popup-menu'
 export { Reaction } from './reaction/reaction'

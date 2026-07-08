@@ -32,10 +32,13 @@ msgstr "Block"
 
 #. placeholder {0}: data.block
 #. placeholder {0}: issue.block
+#. placeholder {0}: post.block
 #. placeholder {1}: data.apartment
 #. placeholder {1}: issue.apartment
+#. placeholder {1}: post.apartment
 #: src/pages/home/ui/building-hero.tsx:15
 #: src/pages/issues/ui/issue-card-item.tsx:84
+#: src/pages/posts/ui/post-card-item.tsx:79
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
 
@@ -78,12 +81,17 @@ msgid "Владею жильём"
 msgstr "I own the property"
 
 #: src/pages/issues/model/use-issue-badges.ts:44
+#: src/pages/posts/model/use-post-badges.ts:53
 msgid "Все"
 msgstr "All"
 
 #: src/pages/home/ui/services-section.tsx:79
 msgid "Вступить в общий чат жильцов"
 msgstr "Join the residents' group chat"
+
+#: src/pages/posts/ui/post-card-item.tsx:47
+msgid "Вчера"
+msgstr "Yesterday"
 
 #: src/features/onboarding/lib/validators.ts:30
 #: src/features/onboarding/ui/registration-form.tsx:165
@@ -108,10 +116,18 @@ msgstr "Done"
 msgid "Главная"
 msgstr "Home"
 
+#: src/pages/posts/model/use-post-badges.ts:68
+msgid "Городское управление"
+msgstr "City administration"
+
 #: src/features/onboarding/ui/registration-form.tsx:275
 #: src/pages/onboarding/ui/language-page.tsx:84
 msgid "Далее"
 msgstr "Next"
+
+#: src/pages/posts/model/use-post-badges.ts:59
+msgid "Даром"
+msgstr "Free"
 
 #: src/shared/media/media-field.tsx:22
 msgid "Добавить"
@@ -150,6 +166,10 @@ msgstr "Duplicate"
 #: src/pages/issues/model/use-issue-badges.ts:73
 msgid "Жалоба"
 msgstr "Complaint"
+
+#: src/pages/posts/model/use-post-badges.ts:69
+msgid "ЖК Raiymbek Park"
+msgstr "Raiymbek Park complex"
 
 #: src/pages/home/ui/welcome-feed.tsx:24
 msgid "За время вашего отсутствия всё было спокойно — новостей нет."
@@ -348,6 +368,7 @@ msgid "Не найдено ни одной заявки."
 msgstr "No issues found."
 
 #: src/pages/issues/ui/issue-card-item.tsx:141
+#: src/pages/posts/ui/post-card-item.tsx:131
 msgid "Не нравится"
 msgstr "Dislike"
 
@@ -366,6 +387,10 @@ msgstr "Couldn’t load the issue"
 #: src/pages/home/ui/contacts-section.tsx:22
 msgid "Не удалось загрузить контакты"
 msgstr "Couldn't load contacts"
+
+#: src/pages/posts/ui/post-list.tsx:54
+msgid "Не удалось загрузить ленту"
+msgstr "Failed to load the feed"
 
 #: src/pages/home/ui/welcome-feed.tsx:33
 msgid "Не удалось загрузить последние события"
@@ -404,11 +429,16 @@ msgstr "Could not save the changes. Please try again."
 msgid "Не удалось удалить заявку. Попробуйте ещё раз."
 msgstr "Could not delete the issue. Please try again."
 
+#: src/pages/posts/model/use-post-deletion.ts:21
+msgid "Не удалось удалить объявление. Попробуйте ещё раз."
+msgstr "Failed to delete the post. Please try again."
+
 #: src/features/onboarding/ui/otp-verification.tsx:36
 msgid "Неверный код. Попробуйте ещё раз."
 msgstr "Invalid code. Please try again."
 
 #: src/pages/issues/ui/issue-list.tsx:85
+#: src/pages/posts/ui/post-list.tsx:85
 msgid "Нет данных"
 msgstr "No data"
 
@@ -418,13 +448,25 @@ msgstr "No connection to the server. Check your internet and try again."
 
 #: src/pages/issue-form/ui/create-issue-form.tsx:30
 #: src/pages/issues/model/use-issue-badges.ts:55
-#: src/pages/issues/ui/issues-page.tsx:49
+#: src/pages/issues/ui/issues-page.tsx:50
 msgid "Новая заявка"
 msgstr "New issue"
 
+#: src/pages/posts/ui/posts-page.tsx:50
+msgid "Новое объявление"
+msgstr "New post"
+
 #: src/pages/home/ui/services-section.tsx:40
-msgid "Новости и уведомления от УК"
-msgstr "News and notifications from the management company"
+#~ msgid "Новости и уведомления от УК"
+#~ msgstr "News and notifications from the management company"
+
+#: src/pages/home/ui/services-section.tsx:40
+msgid "Новости, уведомления и частные предложения"
+msgstr "News, notices, and private offers"
+
+#: src/pages/posts/ui/posts-page.tsx:41
+msgid "Новостная лента и частные объявления от жильцов."
+msgstr "News feed and private ads from residents."
 
 #: src/pages/issues/model/use-issue-badges.ts:45
 msgid "Новые"
@@ -447,6 +489,7 @@ msgid "Номер квартиры"
 msgstr "Apartment number"
 
 #: src/pages/issues/ui/issue-card-item.tsx:133
+#: src/pages/posts/ui/post-card-item.tsx:123
 msgid "Нравится"
 msgstr "Like"
 
@@ -462,8 +505,12 @@ msgstr "Additional details required"
 msgid "Обращения жильцов в управляющую компанию и их статусы."
 msgstr "Resident issues to the management company and their statuses."
 
-#: src/app/routes/announcements.tsx:11
+#: src/pages/posts/model/use-post-deletion.ts:24
+msgid "Объявление удалено."
+msgstr "Post deleted."
+
 #: src/pages/home/ui/services-section.tsx:42
+#: src/pages/posts/ui/posts-page.tsx:42
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:26
 msgid "Объявления"
 msgstr "Announcements"
@@ -484,6 +531,7 @@ msgstr "Rejected"
 
 #: src/pages/issue-status/ui/status-form.tsx:109
 #: src/pages/issues/ui/issue-delete-confirm.tsx:21
+#: src/pages/posts/ui/post-delete-confirm.tsx:21
 msgid "Отмена"
 msgstr "Cancel"
 
@@ -496,6 +544,7 @@ msgid "Отслеживайте ход ваших обращений"
 msgstr "Track the progress of your requests"
 
 #: src/pages/issues/ui/issue-search.tsx:23
+#: src/pages/posts/ui/post-search.tsx:23
 msgid "Очистить поиск"
 msgstr "Clear search"
 
@@ -506,6 +555,7 @@ msgstr "Under warranty"
 
 #: src/features/onboarding/ui/account-locked.tsx:61
 #: src/pages/issues/ui/issue-list.tsx:71
+#: src/pages/posts/ui/post-list.tsx:71
 #: src/shared/issue/issue-load-error.tsx:21
 msgid "Повторить"
 msgstr "Retry"
@@ -523,6 +573,7 @@ msgid "Подайте обращение в УК"
 msgstr "Submit a request to the management company"
 
 #: src/pages/issues/ui/issue-card-item.tsx:126
+#: src/pages/posts/ui/post-card-item.tsx:115
 msgid "Подробнее"
 msgstr "Details"
 
@@ -538,6 +589,14 @@ msgstr "Search issues"
 msgid "Поиск по заявкам, от 3 символов"
 msgstr "Search issues, 3+ characters"
 
+#: src/pages/posts/ui/post-search.tsx:17
+msgid "Поиск по объявлениям"
+msgstr "Search posts"
+
+#: src/pages/posts/ui/post-search.tsx:19
+msgid "Поиск по объявлениям, от 2 символов"
+msgstr "Search posts, 2+ characters"
+
 #: src/pages/home/ui/welcome-feed.tsx:23
 msgid "Пока вас не было, ничего не произошло."
 msgstr "Nothing happened while you were away."
@@ -545,6 +604,10 @@ msgstr "Nothing happened while you were away."
 #: src/features/onboarding/ui/account-locked.tsx:31
 msgid "Пока не получается отправить код. Попробуйте чуть позже."
 msgstr "Can't send the code right now. Please try again a bit later."
+
+#: src/pages/posts/ui/post-list.tsx:84
+msgid "Пока нет ни одного объявления."
+msgstr "No posts yet."
 
 #: src/pages/home/ui/welcome-feed.tsx:20
 msgid "Привет, {name}! 👋"
@@ -558,8 +621,13 @@ msgstr "Hi! 👋"
 msgid "Проверьте правильность номера телефона."
 msgstr "Check that your phone number is correct."
 
+#: src/pages/posts/model/use-post-badges.ts:62
+msgid "Продам"
+msgstr "For sale"
+
 #: src/pages/issue-form/model/use-issue-categories.ts:35
 #: src/pages/issues/model/use-issue-badges.ts:75
+#: src/pages/posts/model/use-post-badges.ts:60
 msgid "Прочее"
 msgstr "Other"
 
@@ -572,6 +640,7 @@ msgid "Раздел в разработке"
 msgstr "Section under development"
 
 #: src/pages/issues/ui/issue-card-item.tsx:96
+#: src/pages/posts/ui/post-card-item.tsx:92
 msgid "Редактировать"
 msgstr "Edit"
 
@@ -593,8 +662,17 @@ msgid "Роль"
 msgstr "Role"
 
 #: src/pages/issues/ui/issue-card-item.tsx:122
+#: src/pages/posts/ui/post-card-item.tsx:110
 msgid "Свернуть"
 msgstr "Collapse"
+
+#: src/pages/posts/model/use-post-badges.ts:61
+msgid "Сдам"
+msgstr "For rent"
+
+#: src/pages/posts/ui/post-card-item.tsx:46
+msgid "Сегодня"
+msgstr "Today"
 
 #: src/features/onboarding/lib/auth-error.ts:20
 msgid "Сервис отправки кодов временно перегружен. Попробуйте через несколько минут."
@@ -674,6 +752,10 @@ msgstr "Issue title"
 msgid "Требует срочного решения"
 msgstr "Needs urgent action"
 
+#: src/pages/posts/model/use-post-badges.ts:64
+msgid "Требуется"
+msgstr "Wanted"
+
 #: src/pages/issue-form/model/use-issue-categories.ts:36
 msgid "Требуется ремонт"
 msgstr "Repair needed"
@@ -687,8 +769,14 @@ msgstr "Needs clarification"
 msgid "У вас есть предложение или поиск, пишите сюда"
 msgstr "Have an offer or looking for something? Post it here"
 
+#: src/pages/posts/model/use-post-badges.ts:54
+msgid "Уведомления"
+msgstr "Notices"
+
 #: src/pages/issues/ui/issue-card-item.tsx:112
 #: src/pages/issues/ui/issue-delete-confirm.tsx:22
+#: src/pages/posts/ui/post-card-item.tsx:100
+#: src/pages/posts/ui/post-delete-confirm.tsx:22
 #: src/shared/media/media-field.tsx:24
 msgid "Удалить"
 msgstr "Delete"
@@ -697,9 +785,21 @@ msgstr "Delete"
 msgid "Удалить заявку?"
 msgstr "Delete the issue?"
 
+#: src/pages/posts/ui/post-delete-confirm.tsx:27
+msgid "Удалить объявление?"
+msgstr "Delete this post?"
+
+#: src/pages/posts/model/use-post-badges.ts:70
+msgid "Управляющая компания"
+msgstr "Management company"
+
 #: src/pages/issue-status/model/use-status-options.ts:23
 msgid "Управляющая компания решает заявку"
 msgstr "The management company is handling the issue"
+
+#: src/pages/posts/model/use-post-badges.ts:63
+msgid "Услуги"
+msgstr "Services"
 
 #: src/pages/issue-status/model/use-tag-options.ts:15
 msgid "Устранение по гарантии"
@@ -725,13 +825,25 @@ msgstr "Good news: nothing important happened while you were away."
 msgid "Хочу пожаловаться"
 msgstr "I want to complain"
 
+#: src/pages/posts/model/use-post-badges.ts:55
+msgid "Частные объявления"
+msgstr "Private ads"
+
 #: src/pages/home/ui/services-section.tsx:81
 msgid "Чат дома в WhatsApp"
 msgstr "Building chat on WhatsApp"
 
+#: src/pages/posts/ui/post-card-item.tsx:115
+msgid "Читать далее"
+msgstr "Read more"
+
 #: src/features/onboarding/ui/registration-form.tsx:251
 msgid "Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google"
 msgstr "This form is protected by reCAPTCHA; the Google Privacy Policy and Terms of Service apply"
+
+#: src/pages/posts/ui/post-delete-confirm.tsx:26
+msgid "Это действие нельзя отменить. Запись будет удалена безвозвратно."
+msgstr "This action cannot be undone. The post will be permanently deleted."
 
 #: src/pages/issues/ui/issue-delete-confirm.tsx:26
 msgid "Это действие нельзя отменить. Заявка будет удалена безвозвратно."

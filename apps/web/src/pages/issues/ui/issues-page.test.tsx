@@ -212,19 +212,19 @@ test('happy-path 12: a search narrows the list to the matching issue, clearing r
   ).toBeInTheDocument()
 })
 
-test('edge-cases 16: a query under three characters shows the full list, the third character narrows it', async () => {
+test('edge-cases 16: a query under two characters shows the full list, the second character narrows it', async () => {
   serveIssues()
   const { user } = renderApp('/issues?status=all')
   await screen.findByText('Протечка трубы в подвале')
 
-  await user.type(search(), 'ли')
+  await user.type(search(), 'л')
 
   await waitFor(() =>
     expect(screen.getByText('Протечка трубы в подвале')).toBeInTheDocument(),
   )
   expect(screen.queryByTestId('issue-empty')).not.toBeInTheDocument()
 
-  await user.type(search(), 'фта')
+  await user.type(search(), 'ифта')
 
   expect(
     await screen.findByText('Замена тросов лифта в первом блоке'),
