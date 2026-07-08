@@ -17,9 +17,20 @@ export const resolveBucketName = async (): Promise<string> => {
   return name
 }
 
-export const deleteIssueMedia = async (issueId: string): Promise<void> => {
+const deleteByPrefix = async (prefix: string): Promise<void> => {
   const name = await resolveBucketName()
-  await getStorage()
-    .bucket(name)
-    .deleteFiles({ prefix: `issues/${issueId}/` })
+  await getStorage().bucket(name).deleteFiles({ prefix })
 }
+
+export const deleteIssueMedia = (issueId: string): Promise<void> =>
+  deleteByPrefix(`issues/${issueId}/`)
+
+export const deletePostMedia = (postId: string): Promise<void> =>
+  deleteByPrefix(`posts/${postId}/`)
+
+export const deleteCommentMedia = (
+  parent: string,
+  parentId: string,
+  commentId: string,
+): Promise<void> =>
+  deleteByPrefix(`${parent}s/${parentId}/comments/${commentId}/`)

@@ -17,7 +17,7 @@ import {
   deleteIssue,
   getIssue,
   listIssues,
-  setReaction,
+  setIssueReaction,
   updateIssue,
 } from './issues-store'
 
@@ -49,7 +49,7 @@ export const issuesRouter = router({
         throw new TRPCError({ code: 'FORBIDDEN', message: 'reactionForbidden' })
       }
 
-      const updated = await setReaction(input.issueId, ctx.uid, input.kind)
+      const updated = await setIssueReaction(input.issueId, ctx.uid, input.kind)
       if (!updated) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'issueNotFound' })
       }

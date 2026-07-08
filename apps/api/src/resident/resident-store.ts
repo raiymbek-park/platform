@@ -46,6 +46,25 @@ export const getResident = async (uid: string): Promise<Resident | null> => {
 export const getRole = async (uid: string): Promise<PermissionRole> =>
   resolveRole((await getResident(uid))?.role)
 
+export type ResidentSnapshot = {
+  apartment: number
+  block: number
+  name: string
+  phone: string
+}
+
+export const residentSnapshot = (
+  resident: Resident | null,
+): ResidentSnapshot => {
+  const source = resident ?? { apartment: 0, block: 0, name: '', phone: '' }
+  return {
+    apartment: source.apartment,
+    block: source.block,
+    name: source.name,
+    phone: source.phone,
+  }
+}
+
 export const getLastVisit = async (uid: string): Promise<Timestamp | null> => {
   const snap = await docRef(uid).get()
   const value = snap.data()?.lastVisit
