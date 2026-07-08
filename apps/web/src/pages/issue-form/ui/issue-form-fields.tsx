@@ -7,8 +7,7 @@ import { Input, ScreenTitle, Textarea } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 
-import { inputState } from '@/shared/form'
-import { FormDock, IssueFormScreen } from '@/shared/issue'
+import { FormDock, FormScreen, inputState } from '@/shared/form'
 import { MediaField } from '@/shared/media'
 
 import { issueFormSchema } from '../lib/validators'
@@ -56,7 +55,7 @@ export const IssueFormFields = ({
   const goBack = () => navigate({ search: { status: 'new' }, to: '/issues' })
 
   return (
-    <IssueFormScreen
+    <FormScreen
       illustration={`${import.meta.env.BASE_URL}images/create-issue.png`}
       onSubmit={form.handleSubmit}
     >
@@ -129,6 +128,6 @@ export const IssueFormFields = ({
           />
         )}
       </form.Subscribe>
-    </IssueFormScreen>
+    </FormScreen>
   )
 }

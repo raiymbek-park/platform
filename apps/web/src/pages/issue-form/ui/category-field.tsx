@@ -3,7 +3,7 @@ import type { IssueCategory } from '@raiymbek-park/shared/validation-schemas'
 import { useLingui } from '@lingui/react/macro'
 import { SelectOption } from '@raiymbek-park/ui'
 
-import { SelectField } from '@/shared/issue'
+import { SelectField } from '@/shared/form'
 
 import { useIssueCategories } from '../model/use-issue-categories'
 
