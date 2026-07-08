@@ -60,7 +60,15 @@ export const IssueCardItem = ({
   const hasActions = canEdit || canChangeStatus || canDelete
 
   const contacts: IssueCardContact[] = [
-    { glyph: 'user-round', isEmphasis: true, text: issue.authorName },
+    ...(issue.authorName
+      ? [
+          {
+            glyph: 'user-round',
+            isEmphasis: true,
+            text: issue.authorName,
+          } satisfies IssueCardContact,
+        ]
+      : []),
     ...(issue.authorPhone
       ? [
           {

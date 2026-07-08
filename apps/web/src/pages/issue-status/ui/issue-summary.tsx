@@ -42,10 +42,12 @@ export const IssueSummary = ({ issue }: IssueSummaryProps) => {
             </span>
           </div>
         </header>
-        <div className={css.contact}>
-          <Icon className={css.contactIcon} glyph='user-round' size={16} />
-          <span className={css.name}>{issue.author.name}</span>
-        </div>
+        {issue.author.name && (
+          <div className={css.contact}>
+            <Icon className={css.contactIcon} glyph='user-round' size={16} />
+            <span className={css.name}>{issue.author.name}</span>
+          </div>
+        )}
       </div>
     </article>
   )
