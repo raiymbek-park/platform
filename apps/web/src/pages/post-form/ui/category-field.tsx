@@ -28,7 +28,6 @@ export const CategoryField = ({
   return (
     <SelectField
       error={error}
-      isSelected={value => category === value}
       label={t`Категория`}
       options={categories.map(option => ({
         glyph: option.icon,
@@ -37,6 +36,7 @@ export const CategoryField = ({
         tone: option.tone,
         value: option.value,
       }))}
+      isSelected={value => category === value}
       onSelect={onSelect}
     />
   )
