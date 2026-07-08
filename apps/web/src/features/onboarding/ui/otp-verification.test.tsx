@@ -202,9 +202,7 @@ test('error-states 5: a resend failure keeps the screen and lets the user retry'
   firebaseAuth.failSend()
   await user.click(resendButton())
 
-  expect(
-    await screen.findByText(/Не удалось проверить код/),
-  ).toBeInTheDocument()
+  expect(await screen.findByText(/Нет связи с сервером/)).toBeInTheDocument()
   expect(currentPath()).toBe('/onboarding/verification')
 })
 

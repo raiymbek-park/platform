@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: blockFloors[block]
-#: src/features/onboarding/ui/registration-form.tsx:178
+#: src/features/onboarding/ui/registration-form.tsx:176
 msgid "{0} жилых этажей"
 msgstr "{0} residential floors"
 
@@ -22,11 +22,11 @@ msgstr "{0} residential floors"
 msgid "Аварийные контакты"
 msgstr "Emergency contacts"
 
-#: src/features/onboarding/ui/registration-form.tsx:234
+#: src/features/onboarding/ui/registration-form.tsx:232
 msgid "Арендатор"
 msgstr "Tenant"
 
-#: src/features/onboarding/ui/registration-form.tsx:172
+#: src/features/onboarding/ui/registration-form.tsx:170
 msgid "Блок"
 msgstr "Block"
 
@@ -39,7 +39,7 @@ msgstr "Block"
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
 
-#: src/features/onboarding/ui/registration-form.tsx:181
+#: src/features/onboarding/ui/registration-form.tsx:179
 msgid "Блок {block}"
 msgstr "Block {block}"
 
@@ -49,15 +49,15 @@ msgstr "Block {block}"
 msgid "В работе"
 msgstr "In progress"
 
-#: src/features/onboarding/ui/otp-verification.tsx:116
+#: src/features/onboarding/ui/otp-verification.tsx:119
 msgid "Ваш код отправляется на проверку…"
 msgstr "Your code is being verified…"
 
-#: src/features/onboarding/ui/registration-form.tsx:159
+#: src/features/onboarding/ui/registration-form.tsx:157
 msgid "Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только администрация — для быстрой связи в экстренных случаях (затопление, пожар)."
 msgstr "Your personal data is hidden from other residents. Only the administration has access to it — for quick contact in emergencies (flooding, fire)."
 
-#: src/features/onboarding/ui/registration-form.tsx:125
+#: src/features/onboarding/ui/registration-form.tsx:123
 msgid "Введите ваше имя"
 msgstr "Enter your name"
 
@@ -69,7 +69,11 @@ msgstr "Enter the code from the SMS"
 msgid "Введите номер квартиры"
 msgstr "Enter the apartment number"
 
-#: src/features/onboarding/ui/registration-form.tsx:226
+#: src/features/onboarding/lib/auth-error.ts:22
+msgid "Введите номер телефона."
+msgstr "Enter your phone number."
+
+#: src/features/onboarding/ui/registration-form.tsx:224
 msgid "Владею жильём"
 msgstr "I own the property"
 
@@ -82,7 +86,7 @@ msgid "Вступить в общий чат жильцов"
 msgstr "Join the residents' group chat"
 
 #: src/features/onboarding/lib/validators.ts:30
-#: src/features/onboarding/ui/registration-form.tsx:167
+#: src/features/onboarding/ui/registration-form.tsx:165
 msgid "Выберите блок"
 msgstr "Select a block"
 
@@ -104,7 +108,7 @@ msgstr "Done"
 msgid "Главная"
 msgstr "Home"
 
-#: src/features/onboarding/ui/registration-form.tsx:277
+#: src/features/onboarding/ui/registration-form.tsx:275
 #: src/pages/onboarding/ui/language-page.tsx:84
 msgid "Далее"
 msgstr "Next"
@@ -117,11 +121,11 @@ msgstr "Add"
 msgid "Добавьте комментарий к смене статуса…"
 msgstr "Add a comment about the status change…"
 
-#: src/features/onboarding/ui/registration-form.tsx:108
+#: src/features/onboarding/ui/registration-form.tsx:106
 msgid "Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее."
 msgstr "Welcome to the personal space for residents and apartment owners of the Raiymbek Park complex. Everything important is gathered here: the latest announcements from the management company, a form to submit repair requests, contacts for on-duty services, and the history of your requests. We want every issue resolved quickly and clearly — so that living here is more comfortable and managing the building more transparent."
 
-#: src/features/onboarding/ui/registration-form.tsx:107
+#: src/features/onboarding/ui/registration-form.tsx:105
 msgid "Добро пожаловать!"
 msgstr "Welcome!"
 
@@ -129,7 +133,7 @@ msgstr "Welcome!"
 msgid "Дополнительная информация"
 msgstr "Additional information"
 
-#: src/features/onboarding/ui/account-locked.tsx:42
+#: src/features/onboarding/ui/account-locked.tsx:45
 msgid "Доступ заблокирован"
 msgstr "Access blocked"
 
@@ -270,7 +274,7 @@ msgstr "Changes saved. Files not uploaded: {count}"
 msgid "Измените заявку и сохраните изменения."
 msgstr "Edit the issue and save your changes."
 
-#: src/features/onboarding/ui/registration-form.tsx:124
+#: src/features/onboarding/ui/registration-form.tsx:122
 msgid "Имя"
 msgstr "Name"
 
@@ -282,7 +286,7 @@ msgstr "Category"
 msgid "Квартира вне диапазона выбранного блока"
 msgstr "Apartment is outside the selected block's range"
 
-#: src/features/onboarding/ui/otp-verification.tsx:104
+#: src/features/onboarding/ui/otp-verification.tsx:107
 msgid "Код подтверждения"
 msgstr "Verification code"
 
@@ -294,7 +298,7 @@ msgstr "Comment"
 msgid "Кратко опишите проблему"
 msgstr "Briefly describe the problem"
 
-#: src/features/onboarding/ui/registration-form.tsx:214
+#: src/features/onboarding/ui/registration-form.tsx:212
 msgid "Кто вы?"
 msgstr "Who are you?"
 
@@ -320,7 +324,7 @@ msgid "На рассмотрении жильцов"
 msgstr "Under resident review"
 
 #: src/features/onboarding/ui/otp-actions.tsx:32
-#: src/features/onboarding/ui/registration-form.tsx:262
+#: src/features/onboarding/ui/registration-form.tsx:260
 #: src/shared/issue/form-dock.tsx:31
 msgid "Назад"
 msgstr "Back"
@@ -347,7 +351,7 @@ msgstr "No issues found."
 msgid "Не нравится"
 msgstr "Dislike"
 
-#: src/features/onboarding/ui/otp-verification.tsx:37
+#: src/features/onboarding/ui/otp-verification.tsx:38
 msgid "Не удалось завершить регистрацию. Повторите попытку."
 msgstr "Couldn't complete registration. Please try again."
 
@@ -367,13 +371,22 @@ msgstr "Couldn't load contacts"
 msgid "Не удалось загрузить последние события"
 msgstr "Couldn't load recent events"
 
-#: src/features/onboarding/ui/registration-form.tsx:89
-msgid "Не удалось отправить код. Проверьте соединение и попробуйте снова."
-msgstr "Failed to send the code. Check your connection and try again."
+#: src/features/onboarding/lib/auth-error.ts:33
+msgid "Не удалось отправить код. Попробуйте снова."
+msgstr "Couldn't send the code. Please try again."
 
-#: src/features/onboarding/ui/otp-verification.tsx:36
+#: src/features/onboarding/ui/registration-form.tsx:89
+#~ msgid "Не удалось отправить код. Проверьте соединение и попробуйте снова."
+#~ msgstr "Failed to send the code. Check your connection and try again."
+
+#: src/features/onboarding/ui/otp-verification.tsx:37
 msgid "Не удалось проверить код. Проверьте соединение."
 msgstr "Couldn't verify the code. Check your connection."
+
+#: src/features/onboarding/lib/auth-error.ts:24
+#: src/features/onboarding/lib/auth-error.ts:25
+msgid "Не удалось пройти проверку безопасности. Обновите страницу и попробуйте снова."
+msgstr "Security check failed. Refresh the page and try again."
 
 #: src/pages/issue-status/model/use-change-status.ts:32
 msgid "Не удалось сменить статус. Попробуйте ещё раз."
@@ -391,13 +404,17 @@ msgstr "Could not save the changes. Please try again."
 msgid "Не удалось удалить заявку. Попробуйте ещё раз."
 msgstr "Could not delete the issue. Please try again."
 
-#: src/features/onboarding/ui/otp-verification.tsx:35
+#: src/features/onboarding/ui/otp-verification.tsx:36
 msgid "Неверный код. Попробуйте ещё раз."
 msgstr "Invalid code. Please try again."
 
 #: src/pages/issues/ui/issue-list.tsx:85
 msgid "Нет данных"
 msgstr "No data"
+
+#: src/features/onboarding/lib/auth-error.ts:23
+msgid "Нет связи с сервером. Проверьте интернет и попробуйте снова."
+msgstr "No connection to the server. Check your internet and try again."
 
 #: src/pages/issue-form/ui/create-issue-form.tsx:30
 #: src/pages/issues/model/use-issue-badges.ts:55
@@ -425,7 +442,7 @@ msgstr "New status"
 msgid "Новых событий пока нет."
 msgstr "No new events yet."
 
-#: src/features/onboarding/ui/registration-form.tsx:198
+#: src/features/onboarding/ui/registration-form.tsx:196
 msgid "Номер квартиры"
 msgstr "Apartment number"
 
@@ -487,13 +504,13 @@ msgstr "Clear search"
 msgid "По гарантии"
 msgstr "Under warranty"
 
-#: src/features/onboarding/ui/account-locked.tsx:58
+#: src/features/onboarding/ui/account-locked.tsx:61
 #: src/pages/issues/ui/issue-list.tsx:71
 #: src/shared/issue/issue-load-error.tsx:21
 msgid "Повторить"
 msgstr "Retry"
 
-#: src/features/onboarding/ui/otp-verification.tsx:127
+#: src/features/onboarding/ui/otp-verification.tsx:130
 msgid "Повторить попытку"
 msgstr "Try again"
 
@@ -525,7 +542,7 @@ msgstr "Search issues, 3+ characters"
 msgid "Пока вас не было, ничего не произошло."
 msgstr "Nothing happened while you were away."
 
-#: src/features/onboarding/ui/account-locked.tsx:29
+#: src/features/onboarding/ui/account-locked.tsx:31
 msgid "Пока не получается отправить код. Попробуйте чуть позже."
 msgstr "Can't send the code right now. Please try again a bit later."
 
@@ -536,6 +553,10 @@ msgstr "Hi, {name}! 👋"
 #: src/pages/home/ui/welcome-feed.tsx:20
 msgid "Привет! 👋"
 msgstr "Hi! 👋"
+
+#: src/features/onboarding/lib/auth-error.ts:21
+msgid "Проверьте правильность номера телефона."
+msgstr "Check that your phone number is correct."
 
 #: src/pages/issue-form/model/use-issue-categories.ts:35
 #: src/pages/issues/model/use-issue-badges.ts:75
@@ -567,7 +588,7 @@ msgstr "Repair"
 msgid "Решение приостановлено"
 msgstr "Resolution is on hold"
 
-#: src/features/onboarding/ui/registration-form.tsx:219
+#: src/features/onboarding/ui/registration-form.tsx:217
 msgid "Роль"
 msgstr "Role"
 
@@ -575,11 +596,15 @@ msgstr "Role"
 msgid "Свернуть"
 msgstr "Collapse"
 
+#: src/features/onboarding/lib/auth-error.ts:20
+msgid "Сервис отправки кодов временно перегружен. Попробуйте через несколько минут."
+msgstr "The code service is temporarily overloaded. Try again in a few minutes."
+
 #: src/pages/home/ui/services-section.tsx:34
 msgid "Сервисы"
 msgstr "Services"
 
-#: src/features/onboarding/ui/account-locked.tsx:45
+#: src/features/onboarding/ui/account-locked.tsx:48
 msgid "Слишком много попыток. Подождите немного и попробуйте снова."
 msgstr "Too many attempts. Wait a little and try again."
 
@@ -595,11 +620,11 @@ msgstr "Change status"
 msgid "Сначала выберите блок"
 msgstr "Select a block first"
 
-#: src/features/onboarding/ui/registration-form.tsx:235
+#: src/features/onboarding/ui/registration-form.tsx:233
 msgid "Снимаю жильё"
 msgstr "I rent the property"
 
-#: src/features/onboarding/ui/registration-form.tsx:225
+#: src/features/onboarding/ui/registration-form.tsx:223
 msgid "Собственник квартиры"
 msgstr "Property owner"
 
@@ -637,7 +662,7 @@ msgstr "Status updated. Files not uploaded: {count}"
 msgid "Страница не найдена"
 msgstr "Page not found"
 
-#: src/features/onboarding/ui/registration-form.tsx:142
+#: src/features/onboarding/ui/registration-form.tsx:140
 msgid "Телефон"
 msgstr "Phone"
 
@@ -704,7 +729,7 @@ msgstr "I want to complain"
 msgid "Чат дома в WhatsApp"
 msgstr "Building chat on WhatsApp"
 
-#: src/features/onboarding/ui/registration-form.tsx:253
+#: src/features/onboarding/ui/registration-form.tsx:251
 msgid "Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google"
 msgstr "This form is protected by reCAPTCHA; the Google Privacy Policy and Terms of Service apply"
 

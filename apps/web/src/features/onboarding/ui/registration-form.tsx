@@ -20,6 +20,7 @@ import { useRef } from 'react'
 import { inputState } from '@/shared/form'
 import { showToastMessage } from '@/shared/toast'
 
+import { sendCodeErrorText } from '../lib/auth-error'
 import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { normalizePhone } from '../lib/phone'
 import { registrationSchema } from '../lib/validators'
@@ -84,10 +85,7 @@ export const RegistrationForm = () => {
               navigate({ to: '/onboarding/locked' })
               return
             }
-            showToastMessage({
-              kind: 'error',
-              text: t`Не удалось отправить код. Проверьте соединение и попробуйте снова.`,
-            })
+            showToastMessage({ kind: 'error', text: sendCodeErrorText(error) })
           },
         },
       )

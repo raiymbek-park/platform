@@ -5,6 +5,7 @@ import { useRef } from 'react'
 
 import { showToastMessage } from '@/shared/toast'
 
+import { logAuthError, sendCodeErrorText } from '../lib/auth-error'
 import { formatOtp, otpMask } from '../lib/format-otp'
 import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { isWrongCode } from '../lib/is-wrong-code'
@@ -57,10 +58,12 @@ export const OtpVerification = () => {
           navigate({ to: '/onboarding/locked' })
           return
         }
-        showToastMessage({
-          kind: 'error',
-          text: isWrongCode(error) ? verifyError : networkError,
-        })
+        if (isWrongCode(error)) {
+          showToastMessage({ kind: 'error', text: verifyError })
+          return
+        }
+        logAuthError('confirm-code', error)
+        showToastMessage({ kind: 'error', text: networkError })
       },
     })
   }
@@ -85,7 +88,7 @@ export const OtpVerification = () => {
             navigate({ to: '/onboarding/locked' })
             return
           }
-          showToastMessage({ kind: 'error', text: networkError })
+          showToastMessage({ kind: 'error', text: sendCodeErrorText(error) })
         },
       },
     )

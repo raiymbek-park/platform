@@ -5,6 +5,7 @@ import { useRef } from 'react'
 
 import { showToastMessage } from '@/shared/toast'
 
+import { logAuthError } from '../lib/auth-error'
 import { useOnboardingStore } from '../model/use-onboarding-store'
 import { useSendVerification } from '../model/use-send-verification'
 import css from './account-locked.module.scss'
@@ -23,11 +24,13 @@ export const AccountLocked = () => {
       { container, phone },
       {
         onSuccess: () => navigate({ to: '/onboarding/verification' }),
-        onError: () =>
+        onError: error => {
+          logAuthError('resend-locked', error)
           showToastMessage({
             kind: 'error',
             text: t`Пока не получается отправить код. Попробуйте чуть позже.`,
-          }),
+          })
+        },
       },
     )
   }

@@ -367,9 +367,7 @@ test('error-states 1: a send failure keeps the welcome screen and re-enables "Д
 
   await user.click(next())
 
-  expect(
-    await screen.findByText(/Не удалось отправить код/),
-  ).toBeInTheDocument()
+  expect(await screen.findByText(/Нет связи с сервером/)).toBeInTheDocument()
   expect(currentPath()).toBe('/onboarding/welcome')
   await waitFor(() => expect(next()).toBeEnabled())
 })
