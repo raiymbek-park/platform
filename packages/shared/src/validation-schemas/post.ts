@@ -1,3 +1,5 @@
+import type { PermissionRole } from './issue'
+
 import { z } from 'zod'
 
 import { MEDIA_MAX_ITEMS, reactionKindSchema } from './issue'
@@ -7,6 +9,16 @@ export const postKinds = ['announcement', 'offer'] as const
 export type PostKind = (typeof postKinds)[number]
 
 export const postKindSchema = z.enum(postKinds)
+
+export const creatablePostKinds = (role: PermissionRole): PostKind[] => {
+  const canOffer =
+    role === 'resident' || role === 'owner' || role === 'administration'
+  const canAnnounce = role === 'manager' || role === 'administration'
+  return [
+    ...(canOffer ? (['offer'] as const) : []),
+    ...(canAnnounce ? (['announcement'] as const) : []),
+  ]
+}
 
 export const postTabs = ['all', 'announcements', 'offers'] as const
 

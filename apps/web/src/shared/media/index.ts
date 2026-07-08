@@ -1,5 +1,10 @@
 export { MediaField } from './media-field'
-export { uploadIssueMedia, uploadMediaItems } from './upload-issue-media'
+export {
+  uploadIssueMedia,
+  uploadMediaItems,
+  uploadPostMedia,
+  uploadPostMediaItems,
+} from './upload-issue-media'
 export {
   type MediaItem,
   type MediaPicker,
