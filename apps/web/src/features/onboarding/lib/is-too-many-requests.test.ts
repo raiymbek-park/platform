@@ -6,6 +6,10 @@ test('error-states 6 — auth/too-many-requests is a too-many-requests rejection
   expect(isTooManyRequests({ code: 'auth/too-many-requests' })).toBe(true)
 })
 
+test('error-states 6 — auth/error-code:-39 (503 abuse throttle) is a too-many-requests rejection', () => {
+  expect(isTooManyRequests({ code: 'auth/error-code:-39' })).toBe(true)
+})
+
 test('error-states 6 — a network/internal FirebaseError is not a too-many-requests rejection', () => {
   expect(isTooManyRequests({ code: 'auth/network-request-failed' })).toBe(false)
 })
