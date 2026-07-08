@@ -35,7 +35,7 @@ msgstr "Block"
 #. placeholder {1}: data.apartment
 #. placeholder {1}: issue.apartment
 #: src/pages/home/ui/building-hero.tsx:15
-#: src/pages/issues/ui/issue-card-item.tsx:76
+#: src/pages/issues/ui/issue-card-item.tsx:84
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
 
@@ -254,7 +254,7 @@ msgstr "Issue deleted."
 msgid "Заявки"
 msgstr "Requests"
 
-#: src/pages/home/ui/services-section.tsx:37
+#: src/pages/home/ui/services-section.tsx:33
 msgid "Заявки, объявления и связь с управляющей компанией"
 msgstr "Requests, announcements, and contact with the management company"
 
@@ -343,7 +343,7 @@ msgstr "Settings"
 msgid "Не найдено ни одной заявки."
 msgstr "No issues found."
 
-#: src/pages/issues/ui/issue-card-item.tsx:133
+#: src/pages/issues/ui/issue-card-item.tsx:141
 msgid "Не нравится"
 msgstr "Dislike"
 
@@ -405,7 +405,7 @@ msgstr "No data"
 msgid "Новая заявка"
 msgstr "New issue"
 
-#: src/pages/home/ui/services-section.tsx:43
+#: src/pages/home/ui/services-section.tsx:40
 msgid "Новости и уведомления от УК"
 msgstr "News and notifications from the management company"
 
@@ -429,7 +429,7 @@ msgstr "No new events yet."
 msgid "Номер квартиры"
 msgstr "Apartment number"
 
-#: src/pages/issues/ui/issue-card-item.tsx:125
+#: src/pages/issues/ui/issue-card-item.tsx:133
 msgid "Нравится"
 msgstr "Like"
 
@@ -446,7 +446,7 @@ msgid "Обращения жильцов в управляющую компан�
 msgstr "Resident issues to the management company and their statuses."
 
 #: src/app/routes/announcements.tsx:11
-#: src/pages/home/ui/services-section.tsx:45
+#: src/pages/home/ui/services-section.tsx:42
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:26
 msgid "Объявления"
 msgstr "Announcements"
@@ -474,7 +474,7 @@ msgstr "Cancel"
 msgid "Отправить"
 msgstr "Submit"
 
-#: src/pages/home/ui/services-section.tsx:62
+#: src/pages/home/ui/services-section.tsx:60
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Track the progress of your requests"
 
@@ -501,11 +501,11 @@ msgstr "Try again"
 msgid "Повторяет другую заявку"
 msgstr "Duplicates another issue"
 
-#: src/pages/home/ui/services-section.tsx:52
+#: src/pages/home/ui/services-section.tsx:50
 msgid "Подайте обращение в УК"
 msgstr "Submit a request to the management company"
 
-#: src/pages/issues/ui/issue-card-item.tsx:118
+#: src/pages/issues/ui/issue-card-item.tsx:126
 msgid "Подробнее"
 msgstr "Details"
 
@@ -550,7 +550,7 @@ msgstr "Work is planned for the future"
 msgid "Раздел в разработке"
 msgstr "Section under development"
 
-#: src/pages/issues/ui/issue-card-item.tsx:88
+#: src/pages/issues/ui/issue-card-item.tsx:96
 msgid "Редактировать"
 msgstr "Edit"
 
@@ -571,11 +571,11 @@ msgstr "Resolution is on hold"
 msgid "Роль"
 msgstr "Role"
 
-#: src/pages/issues/ui/issue-card-item.tsx:114
+#: src/pages/issues/ui/issue-card-item.tsx:122
 msgid "Свернуть"
 msgstr "Collapse"
 
-#: src/pages/home/ui/services-section.tsx:38
+#: src/pages/home/ui/services-section.tsx:34
 msgid "Сервисы"
 msgstr "Services"
 
@@ -587,7 +587,7 @@ msgstr "Too many attempts. Wait a little and try again."
 msgid "Смена статуса"
 msgstr "Change status"
 
-#: src/pages/issues/ui/issue-card-item.tsx:96
+#: src/pages/issues/ui/issue-card-item.tsx:104
 msgid "Сменить статус"
 msgstr "Change status"
 
@@ -603,11 +603,11 @@ msgstr "I rent the property"
 msgid "Собственник квартиры"
 msgstr "Property owner"
 
-#: src/pages/home/ui/services-section.tsx:54
+#: src/pages/home/ui/services-section.tsx:52
 msgid "Создать заявку"
 msgstr "Create a request"
 
-#: src/pages/home/ui/services-section.tsx:73
+#: src/pages/home/ui/services-section.tsx:72
 msgid "Создать объявление"
 msgstr "Create an announcement"
 
@@ -621,7 +621,7 @@ msgstr "Save"
 msgid "Срочно"
 msgstr "Urgent"
 
-#: src/pages/home/ui/services-section.tsx:64
+#: src/pages/home/ui/services-section.tsx:62
 msgid "Статус заявки"
 msgstr "Request status"
 
@@ -658,11 +658,11 @@ msgstr "Repair needed"
 msgid "Требуется уточнение"
 msgstr "Needs clarification"
 
-#: src/pages/home/ui/services-section.tsx:71
+#: src/pages/home/ui/services-section.tsx:70
 msgid "У вас есть предложение или поиск, пишите сюда"
 msgstr "Have an offer or looking for something? Post it here"
 
-#: src/pages/issues/ui/issue-card-item.tsx:104
+#: src/pages/issues/ui/issue-card-item.tsx:112
 #: src/pages/issues/ui/issue-delete-confirm.tsx:22
 #: src/shared/media/media-field.tsx:24
 msgid "Удалить"
