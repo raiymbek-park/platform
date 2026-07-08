@@ -11,7 +11,9 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@raiymbek-park/shared": "*"
+    "@raiymbek-park/shared": "*",
+    "react-markdown": "9.1.0",
+    "remark-gfm": "4.0.1"
   },
   "peerDependencies": {
     "react": "^19.0.0"
