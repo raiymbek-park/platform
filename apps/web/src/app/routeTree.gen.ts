@@ -10,24 +10,32 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as PostsRouteImport } from './routes/posts'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as IssuesRouteImport } from './routes/issues'
 import { Route as HomeRouteImport } from './routes/home'
-import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PostsIndexRouteImport } from './routes/posts.index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding.index'
 import { Route as IssuesIndexRouteImport } from './routes/issues.index'
+import { Route as PostsNewRouteImport } from './routes/posts.new'
 import { Route as OnboardingWelcomeRouteImport } from './routes/onboarding.welcome'
 import { Route as OnboardingVerificationRouteImport } from './routes/onboarding.verification'
 import { Route as OnboardingLockedRouteImport } from './routes/onboarding.locked'
 import { Route as OnboardingLanguageRouteImport } from './routes/onboarding.language'
 import { Route as IssuesNewRouteImport } from './routes/issues.new'
+import { Route as PostsEditPostIdRouteImport } from './routes/posts.edit.$postId'
 import { Route as IssuesStatusIssueIdRouteImport } from './routes/issues.status.$issueId'
 import { Route as IssuesEditIssueIdRouteImport } from './routes/issues.edit.$issueId'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostsRoute = PostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -45,15 +53,15 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AnnouncementsRoute = AnnouncementsRouteImport.update({
-  id: '/announcements',
-  path: '/announcements',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const PostsIndexRoute = PostsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PostsRoute,
 } as any)
 const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
   id: '/',
@@ -64,6 +72,11 @@ const IssuesIndexRoute = IssuesIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => IssuesRoute,
+} as any)
+const PostsNewRoute = PostsNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => PostsRoute,
 } as any)
 const OnboardingWelcomeRoute = OnboardingWelcomeRouteImport.update({
   id: '/welcome',
@@ -90,6 +103,11 @@ const IssuesNewRoute = IssuesNewRouteImport.update({
   path: '/new',
   getParentRoute: () => IssuesRoute,
 } as any)
+const PostsEditPostIdRoute = PostsEditPostIdRouteImport.update({
+  id: '/edit/$postId',
+  path: '/edit/$postId',
+  getParentRoute: () => PostsRoute,
+} as any)
 const IssuesStatusIssueIdRoute = IssuesStatusIssueIdRouteImport.update({
   id: '/status/$issueId',
   path: '/status/$issueId',
@@ -103,24 +121,26 @@ const IssuesEditIssueIdRoute = IssuesEditIssueIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/announcements': typeof AnnouncementsRoute
   '/home': typeof HomeRoute
   '/issues': typeof IssuesRouteWithChildren
   '/onboarding': typeof OnboardingRouteWithChildren
+  '/posts': typeof PostsRouteWithChildren
   '/settings': typeof SettingsRoute
   '/issues/new': typeof IssuesNewRoute
   '/onboarding/language': typeof OnboardingLanguageRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
+  '/posts/new': typeof PostsNewRoute
   '/issues/': typeof IssuesIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/posts/': typeof PostsIndexRoute
   '/issues/edit/$issueId': typeof IssuesEditIssueIdRoute
   '/issues/status/$issueId': typeof IssuesStatusIssueIdRoute
+  '/posts/edit/$postId': typeof PostsEditPostIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/announcements': typeof AnnouncementsRoute
   '/home': typeof HomeRoute
   '/settings': typeof SettingsRoute
   '/issues/new': typeof IssuesNewRoute
@@ -128,51 +148,59 @@ export interface FileRoutesByTo {
   '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
+  '/posts/new': typeof PostsNewRoute
   '/issues': typeof IssuesIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
+  '/posts': typeof PostsIndexRoute
   '/issues/edit/$issueId': typeof IssuesEditIssueIdRoute
   '/issues/status/$issueId': typeof IssuesStatusIssueIdRoute
+  '/posts/edit/$postId': typeof PostsEditPostIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/announcements': typeof AnnouncementsRoute
   '/home': typeof HomeRoute
   '/issues': typeof IssuesRouteWithChildren
   '/onboarding': typeof OnboardingRouteWithChildren
+  '/posts': typeof PostsRouteWithChildren
   '/settings': typeof SettingsRoute
   '/issues/new': typeof IssuesNewRoute
   '/onboarding/language': typeof OnboardingLanguageRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
+  '/posts/new': typeof PostsNewRoute
   '/issues/': typeof IssuesIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
+  '/posts/': typeof PostsIndexRoute
   '/issues/edit/$issueId': typeof IssuesEditIssueIdRoute
   '/issues/status/$issueId': typeof IssuesStatusIssueIdRoute
+  '/posts/edit/$postId': typeof PostsEditPostIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/announcements'
     | '/home'
     | '/issues'
     | '/onboarding'
+    | '/posts'
     | '/settings'
     | '/issues/new'
     | '/onboarding/language'
     | '/onboarding/locked'
     | '/onboarding/verification'
     | '/onboarding/welcome'
+    | '/posts/new'
     | '/issues/'
     | '/onboarding/'
+    | '/posts/'
     | '/issues/edit/$issueId'
     | '/issues/status/$issueId'
+    | '/posts/edit/$postId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/announcements'
     | '/home'
     | '/settings'
     | '/issues/new'
@@ -180,35 +208,41 @@ export interface FileRouteTypes {
     | '/onboarding/locked'
     | '/onboarding/verification'
     | '/onboarding/welcome'
+    | '/posts/new'
     | '/issues'
     | '/onboarding'
+    | '/posts'
     | '/issues/edit/$issueId'
     | '/issues/status/$issueId'
+    | '/posts/edit/$postId'
   id:
     | '__root__'
     | '/'
-    | '/announcements'
     | '/home'
     | '/issues'
     | '/onboarding'
+    | '/posts'
     | '/settings'
     | '/issues/new'
     | '/onboarding/language'
     | '/onboarding/locked'
     | '/onboarding/verification'
     | '/onboarding/welcome'
+    | '/posts/new'
     | '/issues/'
     | '/onboarding/'
+    | '/posts/'
     | '/issues/edit/$issueId'
     | '/issues/status/$issueId'
+    | '/posts/edit/$postId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AnnouncementsRoute: typeof AnnouncementsRoute
   HomeRoute: typeof HomeRoute
   IssuesRoute: typeof IssuesRouteWithChildren
   OnboardingRoute: typeof OnboardingRouteWithChildren
+  PostsRoute: typeof PostsRouteWithChildren
   SettingsRoute: typeof SettingsRoute
 }
 
@@ -219,6 +253,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/posts': {
+      id: '/posts'
+      path: '/posts'
+      fullPath: '/posts'
+      preLoaderRoute: typeof PostsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -242,19 +283,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/announcements': {
-      id: '/announcements'
-      path: '/announcements'
-      fullPath: '/announcements'
-      preLoaderRoute: typeof AnnouncementsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/posts/': {
+      id: '/posts/'
+      path: '/'
+      fullPath: '/posts/'
+      preLoaderRoute: typeof PostsIndexRouteImport
+      parentRoute: typeof PostsRoute
     }
     '/onboarding/': {
       id: '/onboarding/'
@@ -269,6 +310,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/issues/'
       preLoaderRoute: typeof IssuesIndexRouteImport
       parentRoute: typeof IssuesRoute
+    }
+    '/posts/new': {
+      id: '/posts/new'
+      path: '/new'
+      fullPath: '/posts/new'
+      preLoaderRoute: typeof PostsNewRouteImport
+      parentRoute: typeof PostsRoute
     }
     '/onboarding/welcome': {
       id: '/onboarding/welcome'
@@ -304,6 +352,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/issues/new'
       preLoaderRoute: typeof IssuesNewRouteImport
       parentRoute: typeof IssuesRoute
+    }
+    '/posts/edit/$postId': {
+      id: '/posts/edit/$postId'
+      path: '/edit/$postId'
+      fullPath: '/posts/edit/$postId'
+      preLoaderRoute: typeof PostsEditPostIdRouteImport
+      parentRoute: typeof PostsRoute
     }
     '/issues/status/$issueId': {
       id: '/issues/status/$issueId'
@@ -359,12 +414,26 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
   OnboardingRouteChildren,
 )
 
+interface PostsRouteChildren {
+  PostsNewRoute: typeof PostsNewRoute
+  PostsIndexRoute: typeof PostsIndexRoute
+  PostsEditPostIdRoute: typeof PostsEditPostIdRoute
+}
+
+const PostsRouteChildren: PostsRouteChildren = {
+  PostsNewRoute: PostsNewRoute,
+  PostsIndexRoute: PostsIndexRoute,
+  PostsEditPostIdRoute: PostsEditPostIdRoute,
+}
+
+const PostsRouteWithChildren = PostsRoute._addFileChildren(PostsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AnnouncementsRoute: AnnouncementsRoute,
   HomeRoute: HomeRoute,
   IssuesRoute: IssuesRouteWithChildren,
   OnboardingRoute: OnboardingRouteWithChildren,
+  PostsRoute: PostsRouteWithChildren,
   SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport

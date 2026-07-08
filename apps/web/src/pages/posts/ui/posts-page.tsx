@@ -11,15 +11,15 @@ import { useState } from 'react'
 import { useDebouncedCallback, useScrollDirection } from '@/shared/lib'
 import { BottomNav } from '@/widgets/bottom-nav'
 
-import { IssueFilterTabs } from './issue-filter-tabs'
-import { IssueList } from './issue-list'
-import { IssueSearch } from './issue-search'
+import { PostFilterTabs } from './post-filter-tabs'
+import { PostList } from './post-list'
+import { PostSearch } from './post-search'
 
-const route = getRouteApi('/issues/')
+const route = getRouteApi('/posts/')
 
-export const IssuesPage = () => {
+export const PostsPage = () => {
   const { t } = useLingui()
-  const { status } = route.useSearch()
+  const { tab } = route.useSearch()
   const [query, setQuery] = useState('')
   const [search, setSearch] = useState('')
   const isScrollingDown = useScrollDirection()
@@ -38,22 +38,22 @@ export const IssuesPage = () => {
       <ScreenHeader />
       <Content gap={16}>
         <ScreenTitle
-          subtitle={t`Обращения жильцов в управляющую компанию и их статусы.`}
-          title={t`Заявки`}
+          subtitle={t`Новостная лента и частные объявления от жильцов.`}
+          title={t`Объявления`}
         />
-        <IssueSearch value={query} onChange={handleSearch} />
-        <IssueFilterTabs />
-        <IssueList query={query} search={search} status={status} />
+        <PostSearch value={query} onChange={handleSearch} />
+        <PostFilterTabs />
+        <PostList query={query} search={search} tab={tab} />
       </Content>
       <Link
         aria-hidden={isScrollingDown || undefined}
-        aria-label={t`Новая заявка`}
+        aria-label={t`Новое объявление`}
         tabIndex={isScrollingDown ? -1 : undefined}
-        to='/issues/new'
+        to='/posts/new'
       >
         <CreateFab isHidden={isScrollingDown} />
       </Link>
-      <BottomNav active='/issues' />
+      <BottomNav active='/posts' />
     </>
   )
 }

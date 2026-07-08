@@ -1,6 +1,6 @@
-import type { Issue } from '@raiymbek-park/api'
+import type { Post } from '@raiymbek-park/api'
 import type {
-  IssueFilter,
+  PostTab,
   ReactionKind,
 } from '@raiymbek-park/shared/validation-schemas'
 
@@ -9,10 +9,10 @@ import { useInfiniteQuery } from '@tanstack/react-query'
 
 import { useTRPC } from '@/shared/api'
 
-import { useStoreDeletedIssues } from './use-store-deleted-issues'
+import { useStoreDeletedPosts } from './use-store-deleted-posts'
 import { useStoreReactions } from './use-store-reactions'
 
-export type IssueView = Omit<Issue, 'author'> & {
+export type PostView = Omit<Post, 'author'> & {
   apartment: number
   authorName: string
   authorPhone?: string
@@ -20,11 +20,11 @@ export type IssueView = Omit<Issue, 'author'> & {
 }
 
 const toView = (
-  { author, ...issue }: Issue,
+  { author, ...post }: Post,
   reaction: ReactionKind | null | undefined,
-): IssueView => {
+): PostView => {
   const view = {
-    ...issue,
+    ...post,
     apartment: author.apartment,
     authorName: author.name,
     authorPhone: author.phone,
@@ -35,59 +35,53 @@ const toView = (
     : {
         ...view,
         dislikeCount:
-          issue.dislikeCount +
+          post.dislikeCount +
           (reaction === 'dislike' ? 1 : 0) -
-          (issue.myReaction === 'dislike' ? 1 : 0),
+          (post.myReaction === 'dislike' ? 1 : 0),
         likeCount:
-          issue.likeCount +
+          post.likeCount +
           (reaction === 'like' ? 1 : 0) -
-          (issue.myReaction === 'like' ? 1 : 0),
+          (post.myReaction === 'like' ? 1 : 0),
         myReaction: reaction,
       }
 }
 
-const statusOf = (key: readonly unknown[]): string | undefined => {
+const tabOf = (key: readonly unknown[]): string | undefined => {
   const scan = (value: unknown): string | undefined => {
     if (typeof value !== 'object' || value === null) return undefined
-    if ('status' in value && typeof value.status === 'string')
-      return value.status
+    if ('tab' in value && typeof value.tab === 'string') return value.tab
     return Object.values(value).map(scan).find(Boolean)
   }
   return scan(key)
 }
 
-type UseIssuesDataInput = {
+type UsePostsDataInput = {
   query: string
   search: string
-  status: IssueFilter
+  tab: PostTab
 }
 
-export const useIssuesData = ({
-  query,
-  search,
-  status,
-}: UseIssuesDataInput) => {
+export const usePostsData = ({ query, search, tab }: UsePostsDataInput) => {
   const trpc = useTRPC()
   const reactions = useStoreReactions(store => store.reactions)
-  const deletedIds = useStoreDeletedIssues(store => store.deletedIds)
+  const deletedIds = useStoreDeletedPosts(store => store.deletedIds)
   const list = useInfiniteQuery(
-    trpc.issues.list.infiniteQueryOptions(
-      { search, status },
+    trpc.posts.list.infiniteQueryOptions(
+      { search, tab },
       {
         getNextPageParam: last => last.nextCursor ?? undefined,
         placeholderData: (previousData, previousQuery) =>
-          previousQuery && statusOf(previousQuery.queryKey) === status
+          previousQuery && tabOf(previousQuery.queryKey) === tab
             ? previousData
             : undefined,
       },
     ),
   )
 
-  const issues =
-    list.data?.pages
-      .flatMap(page => page.issues)
-      .filter(issue => !deletedIds.has(issue.id))
-      .map(issue => toView(issue, reactions[issue.id])) ?? []
+  const loaded = list.data?.pages.flatMap(page => page.posts) ?? []
+  const posts = [...new Map(loaded.map(post => [post.id, post])).values()]
+    .filter(post => !deletedIds.has(post.id))
+    .map(post => toView(post, reactions[post.id]))
   const isProjecting = query !== search || list.isPlaceholderData
 
   return {
@@ -97,9 +91,9 @@ export const useIssuesData = ({
     isFetching: list.isFetching,
     isFetchingNextPage: list.isFetchingNextPage,
     isPending: list.isPending,
-    issues: isProjecting
-      ? issues.filter(issue => matchKeywords(issue.keywords, query))
-      : issues,
+    posts: isProjecting
+      ? posts.filter(post => matchKeywords(post.keywords, query))
+      : posts,
     refetch: list.refetch,
   }
 }

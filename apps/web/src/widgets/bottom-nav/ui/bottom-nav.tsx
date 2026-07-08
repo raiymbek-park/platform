@@ -7,7 +7,7 @@ import { Link } from '@tanstack/react-router'
 
 import css from './bottom-nav.module.scss'
 
-export type NavTab = '/home' | '/announcements' | '/issues' | '/settings'
+export type NavTab = '/home' | '/posts' | '/issues' | '/settings'
 
 type Tab = {
   glyph: IconGlyph
@@ -23,7 +23,7 @@ export const BottomNav = ({ active }: BottomNavProps) => {
 
   const tabs: Tab[] = [
     { glyph: 'house', label: t`Главная`, to: '/home' },
-    { glyph: 'megaphone', label: t`Объявления`, to: '/announcements' },
+    { glyph: 'megaphone', label: t`Объявления`, to: '/posts' },
     {
       glyph: 'clipboard-list',
       label: t`Заявки`,
