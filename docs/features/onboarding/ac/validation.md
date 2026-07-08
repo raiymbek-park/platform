@@ -121,4 +121,3 @@
   Given: the user is on the verification screen
   When:  characters are typed into the code field
   Then:  only digits are kept (non-digits are ignored), capped at six
-</content>

@@ -418,6 +418,9 @@ test('error-states 1: a failed list shows an error, and retrying recovers it', a
   trpcServer.use(trpcQueriesError())
   const { user } = renderApp('/issues?status=all')
   await screen.findByTestId('issue-error', undefined, { timeout: 4000 })
+  expect(
+    await screen.findByText('Не удалось загрузить заявки'),
+  ).toBeInTheDocument()
 
   serveIssues()
   await user.click(screen.getByRole('button', { name: 'Повторить' }))

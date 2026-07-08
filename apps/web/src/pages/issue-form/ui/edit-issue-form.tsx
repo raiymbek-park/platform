@@ -1,9 +1,8 @@
 import type { Issue } from '@raiymbek-park/api'
 
 import { useLingui } from '@lingui/react/macro'
-import { ScreenHeader, Spinner } from '@raiymbek-park/ui'
 
-import { IssueLoadError, useIssueQuery } from '@/shared/issue'
+import { IssueLoader } from '@/shared/issue'
 import { useMediaPicker } from '@/shared/media'
 
 import { useUpdateIssue } from '../model/use-update-issue'
@@ -33,19 +32,8 @@ const EditIssueFormReady = ({ issue }: { issue: Issue }) => {
   )
 }
 
-export const EditIssueForm = ({ issueId }: { issueId: string }) => {
-  const { t } = useLingui()
-  const { isError, isLoading, issue, refetch } = useIssueQuery(issueId)
-
-  if (isLoading) {
-    return (
-      <>
-        <ScreenHeader />
-        <Spinner label={t`Загрузка…`} />
-      </>
-    )
-  }
-  if (isError) return <IssueLoadError onRetry={refetch} />
-  if (!issue) return null
-  return <EditIssueFormReady issue={issue} />
-}
+export const EditIssueForm = ({ issueId }: { issueId: string }) => (
+  <IssueLoader issueId={issueId}>
+    {issue => <EditIssueFormReady issue={issue} />}
+  </IssueLoader>
+)

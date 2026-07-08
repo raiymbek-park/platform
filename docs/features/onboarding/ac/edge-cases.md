@@ -38,53 +38,35 @@
   Then:  the field clears
          focus returns to the code field
 
-## Scenario 5: Paste action appears only with exactly 6 standalone digits in the clipboard
-
-  Given: the user is on the verification screen
-  When:  the clipboard holds exactly 6 standalone digits (alone or embedded in surrounding text)
-  Then:  the "Вставить код из буфера" action is shown
-
-  Given: the user is on the verification screen
-  When:  the clipboard is empty or does not contain exactly 6 standalone digits
-  Then:  the paste action is not shown and the resend control is shown instead
-
-## Scenario 6: Clipboard is re-read when the app regains focus
-
-  Given: the user is on the verification screen and the clipboard does not yet hold a 6-digit code
-  When:  the user copies the code elsewhere and returns to the app
-  Then:  the paste action appears without any further manual step
-
-## Scenario 7: Clipboard read is unavailable or denied
-
-  Given: the user is on the verification screen
-  When:  the clipboard cannot be read or the user has denied clipboard access
-  Then:  the paste action is not shown
-         no error is surfaced to the user
-
-## Scenario 8: Verification screen without a pending code request redirects to welcome
+## Scenario 5: Verification screen without a pending code request redirects to welcome
 
   Given: there is no pending code request (e.g. a direct visit or a relaunch)
   When:  the user navigates to the verification screen
   Then:  the app redirects to the welcome screen
 
-## Scenario 9: Unauthenticated direct navigation to home redirects to welcome
+## Scenario 6: Unauthenticated direct navigation to home redirects to welcome
 
   Given: the user is not signed in
   When:  the user navigates directly to the home screen
   Then:  the app redirects to the welcome screen
          the home screen content is not shown
 
-## Scenario 10: A signed-in resident is kept out of onboarding
+## Scenario 7: A signed-in resident is kept out of onboarding
 
   Given: the resident is signed in
   When:  the user navigates to any onboarding screen
   Then:  the app redirects to home
          the onboarding screens are not shown
 
-## Scenario 11: A returning user's registration details are pre-filled
+## Scenario 8: A returning user's registration details are pre-filled
 
   Given: the user previously entered registration details and returns to the welcome screen
   When:  the form loads
   Then:  the name, phone, block, apartment, and role are pre-filled with the previously entered
          values
-</content>
+
+## Scenario 9: The locked screen requires a phone number in the registration draft
+
+  Given: there is no phone number in the in-progress registration draft (e.g. a direct visit)
+  When:  the user navigates to the "Доступ заблокирован" (Access locked) screen
+  Then:  the app redirects to the welcome screen

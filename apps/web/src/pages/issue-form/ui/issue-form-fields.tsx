@@ -3,24 +3,17 @@ import type { MediaPicker } from '@/shared/media'
 import type { IssueFormSubmit, IssueFormValues } from '../lib/validators'
 
 import { useLingui } from '@lingui/react/macro'
-import {
-  Content,
-  Input,
-  ScreenHeader,
-  ScreenTitle,
-  Textarea,
-} from '@raiymbek-park/ui'
+import { Input, ScreenTitle, Textarea } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 
 import { inputState } from '@/shared/form'
-import { FormDock } from '@/shared/issue'
+import { FormDock, IssueFormScreen } from '@/shared/issue'
 import { MediaField } from '@/shared/media'
 
 import { issueFormSchema } from '../lib/validators'
 import { categoryTheme } from '../model/use-issue-categories'
 import { CategoryField } from './category-field'
-import css from './issue-form-fields.module.scss'
 
 export type IssueFormFieldsProps = {
   defaultValues: IssueFormValues
@@ -63,90 +56,79 @@ export const IssueFormFields = ({
   const goBack = () => navigate({ search: { status: 'new' }, to: '/issues' })
 
   return (
-    <form
-      className={css.form}
-      onSubmit={event => {
-        event.preventDefault()
-        form.handleSubmit()
-      }}
+    <IssueFormScreen
+      illustration={`${import.meta.env.BASE_URL}images/create-issue.png`}
+      onSubmit={form.handleSubmit}
     >
-      <ScreenHeader />
-      <img
-        alt=''
-        className={css.illustration}
-        src={`${import.meta.env.BASE_URL}images/create-issue.png`}
-      />
-      <Content gap={24}>
-        <ScreenTitle subtitle={subtitle} title={title} />
+      <ScreenTitle subtitle={subtitle} title={title} />
 
-        <form.Field name='category'>
-          {field => (
-            <form.Field name='urgent'>
-              {urgentField => (
-                <CategoryField
-                  category={field.state.value}
-                  urgent={urgentField.state.value}
-                  onSelect={field.handleChange}
-                  onToggleUrgent={() =>
-                    urgentField.handleChange(!urgentField.state.value)
-                  }
+      <form.Field name='category'>
+        {field => (
+          <form.Field name='urgent'>
+            {urgentField => (
+              <CategoryField
+                category={field.state.value}
+                urgent={urgentField.state.value}
+                onSelect={field.handleChange}
+                onToggleUrgent={() =>
+                  urgentField.handleChange(!urgentField.state.value)
+                }
+              />
+            )}
+          </form.Field>
+        )}
+      </form.Field>
+
+      <form.Subscribe selector={state => state.values.category}>
+        {category => {
+          const theme = categoryTheme(category)
+          return (
+            <form.Field name='title'>
+              {field => (
+                <Input
+                  icon={theme.glyph}
+                  label={t`Тема заявки`}
+                  maxLength={80}
+                  placeholder={t`Кратко опишите проблему`}
+                  state={inputState(field.state.meta)}
+                  tone={theme.tone}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={event => field.handleChange(event.target.value)}
                 />
               )}
             </form.Field>
-          )}
-        </form.Field>
+          )
+        }}
+      </form.Subscribe>
 
-        <form.Subscribe selector={state => state.values.category}>
-          {category => {
-            const theme = categoryTheme(category)
-            return (
-              <form.Field name='title'>
-                {field => (
-                  <Input
-                    icon={theme.glyph}
-                    label={t`Тема заявки`}
-                    maxLength={80}
-                    placeholder={t`Кратко опишите проблему`}
-                    state={inputState(field.state.meta)}
-                    tone={theme.tone}
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={event => field.handleChange(event.target.value)}
-                  />
-                )}
-              </form.Field>
-            )
-          }}
-        </form.Subscribe>
+      <form.Field name='description'>
+        {field => (
+          <Textarea
+            label={t`Описание`}
+            maxLength={1000}
+            placeholder={t`Подробно опишите, что случилось и где…`}
+            state={inputState(field.state.meta)}
+            value={field.state.value}
+            onBlur={field.handleBlur}
+            onChange={event => field.handleChange(event.target.value)}
+          />
+        )}
+      </form.Field>
 
-        <form.Field name='description'>
-          {field => (
-            <Textarea
-              label={t`Описание`}
-              maxLength={1000}
-              placeholder={t`Подробно опишите, что случилось и где…`}
-              state={inputState(field.state.meta)}
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={event => field.handleChange(event.target.value)}
-            />
-          )}
-        </form.Field>
+      <MediaField label={t`Фото`} media={media} />
 
-        <MediaField label={t`Фото`} media={media} />
-
-        <form.Subscribe selector={state => state.canSubmit}>
-          {canSubmit => (
-            <FormDock
-              canSubmit={canSubmit}
-              isPending={isPending}
-              submitIcon={submitIcon}
-              submitLabel={submitLabel}
-              onBack={goBack}
-            />
-          )}
-        </form.Subscribe>
-      </Content>
-    </form>
+      <form.Subscribe selector={state => state.canSubmit}>
+        {canSubmit => (
+          <FormDock
+            canSubmit={canSubmit}
+            isPending={isPending}
+            submitIcon={submitIcon}
+            submitLabel={submitLabel}
+            onBack={goBack}
+          />
+        )}
+      </form.Subscribe>
+    </IssueFormScreen>
   )
 }

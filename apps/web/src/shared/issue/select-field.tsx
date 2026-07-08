@@ -15,6 +15,8 @@ export type SelectFieldOption<T extends string> = {
 }
 
 export type SelectFieldProps<T extends string> = {
+  error?: string
+  footer?: ReactNode
   isCheckbox?: boolean
   label: string
   options: SelectFieldOption<T>[]
@@ -23,6 +25,8 @@ export type SelectFieldProps<T extends string> = {
 }
 
 export const SelectField = <T extends string>({
+  error,
+  footer,
   isCheckbox,
   label,
   options,
@@ -49,6 +53,13 @@ export const SelectField = <T extends string>({
           </Fragment>
         ))}
       </fieldset>
+      {footer && (
+        <>
+          <Divider />
+          {footer}
+        </>
+      )}
     </div>
+    {error && <span className={css.error}>{error}</span>}
   </div>
 )

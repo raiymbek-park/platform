@@ -534,6 +534,36 @@
                           "content": "Сантехник"
                         }
                       }
+                    },
+                    {
+                      "id": "w3gZoP",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider",
+                      "x": 16,
+                      "y": 291
+                    },
+                    {
+                      "id": "IEYmd",
+                      "type": "ref",
+                      "ref": "ds:ContactCard",
+                      "name": "Contact Участковый",
+                      "descendants": {
+                        "ds:contact-icon-wrap": {
+                          "fill": "$ds:accent-soft"
+                        },
+                        "ds:contact-icon": {
+                          "icon": "siren",
+                          "fill": "$ds:accent",
+                          "library": "lucide"
+                        },
+                        "ds:contact-name": {
+                          "content": "Участковый"
+                        },
+                        "ds:contact-role": {
+                          "content": "Полиция"
+                        }
+                      }
                     }
                   ]
                 }

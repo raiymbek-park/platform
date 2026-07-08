@@ -36,7 +36,7 @@
 .call {
   @include chip(40px, 180px);
 
-  background: var(--action);
+  background: var(--brand);
   box-shadow: 0 4px 20px var(--shadow);
   color: var(--surface);
   flex-shrink: 0;

@@ -10,13 +10,13 @@ const setNavigatorLanguage = (value: string | undefined) => {
 beforeEach(() => localStorage.clear())
 afterEach(() => localStorage.clear())
 
-test('happy-path S1 — detects and persists the browser language when none is stored', async () => {
+test('happy-path S1 — detects and activates the browser language without persisting when none is stored', async () => {
   setNavigatorLanguage('kk-KZ')
 
   const locale = await bootstrapLocale()
 
   expect(locale).toBe('kk')
-  expect(localStorage.getItem('locale')).toBe('kk')
+  expect(localStorage.getItem('locale')).toBeNull()
   expect(i18n.locale).toBe('kk')
 })
 
@@ -26,7 +26,7 @@ test('happy-path S2 — falls back to ru for an unsupported browser language', a
   const locale = await bootstrapLocale()
 
   expect(locale).toBe('ru')
-  expect(localStorage.getItem('locale')).toBe('ru')
+  expect(localStorage.getItem('locale')).toBeNull()
 })
 
 test('happy-path S3 — a persisted locale wins over the browser language', async () => {
@@ -46,5 +46,5 @@ test('validation S4 — an invalid stored value is ignored and the browser langu
   const locale = await bootstrapLocale()
 
   expect(locale).toBe('kk')
-  expect(localStorage.getItem('locale')).toBe('kk')
+  expect(localStorage.getItem('locale')).toBe('de')
 })

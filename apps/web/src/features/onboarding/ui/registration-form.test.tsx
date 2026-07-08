@@ -88,26 +88,71 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-test('happy-path 1: a partially filled form keeps "Далее" disabled until every field is valid', async () => {
-  const { user } = await renderWelcome()
+test('happy-path 1: an invalid field surfaces a toast and blocks navigation until fixed', async () => {
+  const { user, currentPath } = await renderWelcome()
 
   await fillName(user, 'А')
   await setPhone(user, '+77071234567')
   await pickBlock(user, /Блок 1/)
   await fillApartment(user, '42')
   await pickRole(user, /Собственник/)
-  expect(next()).toBeDisabled()
+
+  await user.click(next())
+  expect(
+    await screen.findByText('Имя должно быть не короче 2 символов'),
+  ).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/welcome')
 
   await user.clear(screen.getByLabelText('Имя'))
   await fillName(user, 'Алиса')
+  await user.click(next())
 
-  await waitFor(() => expect(next()).toBeEnabled())
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/verification'))
+})
+
+test('the "Далее" button stays enabled on an empty form', async () => {
+  await renderWelcome()
+
+  expect(next()).toBeEnabled()
 })
 
 test('happy-path 2: the phone field defaults to "+7"', async () => {
   renderWelcome()
 
   expect(await screen.findByLabelText('Телефон')).toHaveValue('+7')
+})
+
+test('the phone field shows a static private indicator', async () => {
+  await renderWelcome()
+
+  const phoneField = screen.getByLabelText('Телефон').closest('label')
+  expect(
+    phoneField?.querySelector('[data-glyph="eye-closed"]'),
+  ).toBeInTheDocument()
+})
+
+test("edge-cases 5: a returning user's registration details are pre-filled", async () => {
+  useOnboardingStore.getState().setDraft({
+    name: 'Борис',
+    phone: '+77051112233',
+    block: 2,
+    apartment: 71,
+    role: 'tenant',
+  })
+
+  await renderWelcome()
+
+  expect(screen.getByLabelText('Имя')).toHaveValue('Борис')
+  expect(screen.getByLabelText('Телефон')).toHaveValue('+77051112233')
+  expect(screen.getByLabelText('Номер квартиры')).toHaveValue('71')
+  expect(screen.getByRole('button', { name: /Блок 2/ })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  )
+  expect(screen.getByRole('button', { name: /Арендатор/ })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  )
 })
 
 test('happy-path 3: submitting sends a code and opens the verification screen', async () => {
@@ -122,56 +167,95 @@ test('happy-path 3: submitting sends a code and opens the verification screen', 
   expect(currentPath()).toBe('/onboarding/verification')
 })
 
-test('validation 1: a missing role keeps "Далее" disabled even when every other field is valid', async () => {
-  const { user } = await renderWelcome()
+test('validation 1: submitting without a role surfaces the role toast', async () => {
+  const { user, currentPath } = await renderWelcome()
   await fillName(user, 'Алиса')
   await setPhone(user, '+77071234567')
   await pickBlock(user, /Блок 1/)
   await fillApartment(user, '42')
 
-  expect(next()).toBeDisabled()
+  await user.click(next())
+
+  expect(await screen.findByText('Выберите роль')).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/welcome')
 })
 
-test('validation 3: a 1-character name keeps "Далее" disabled', async () => {
+test('validation: submitting without a block shows the block toast and does not send', async () => {
+  const { user, currentPath } = await renderWelcome()
+  await fillName(user, 'Алиса')
+  await setPhone(user, '+77071234567')
+  await fillApartment(user, '42')
+  await pickRole(user, /Собственник/)
+
+  await user.click(next())
+
+  expect(
+    await screen.findByText('Выберите блок', { selector: 'p' }),
+  ).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/welcome')
+  expect(screen.queryByText('Введите код из SMS')).not.toBeInTheDocument()
+})
+
+test('validation 3: a 1-character name surfaces the name-length toast', async () => {
   const { user } = await renderWelcome()
   await fillValidForm(user, { name: 'А' })
 
-  expect(next()).toBeDisabled()
+  await user.click(next())
+
+  expect(
+    await screen.findByText('Имя должно быть не короче 2 символов'),
+  ).toBeInTheDocument()
 })
 
 test('validation 3: a 2-character name does not block "Далее"', async () => {
-  const { user } = await renderWelcome()
+  const { user, currentPath } = await renderWelcome()
   await fillValidForm(user, { name: 'Аб' })
 
-  await waitFor(() => expect(next()).toBeEnabled())
+  await user.click(next())
+
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/verification'))
 })
 
-test('validation 4: a 61-character name keeps "Далее" disabled', async () => {
+test('validation 4: a 61-character name surfaces the name-length toast', async () => {
   const { user } = await renderWelcome()
   await fillValidForm(user, { name: 'А'.repeat(61) })
 
-  expect(next()).toBeDisabled()
+  await user.click(next())
+
+  expect(
+    await screen.findByText('Имя должно быть не длиннее 60 символов'),
+  ).toBeInTheDocument()
 })
 
 test('validation 4: a 60-character name does not block "Далее"', async () => {
-  const { user } = await renderWelcome()
+  const { user, currentPath } = await renderWelcome()
   await fillValidForm(user, { name: 'А'.repeat(60) })
 
-  await waitFor(() => expect(next()).toBeEnabled())
+  await user.click(next())
+
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/verification'))
 })
 
-test('validation 5: a whitespace-only name keeps "Далее" disabled', async () => {
+test('validation 5: a whitespace-only name surfaces the name-length toast', async () => {
   const { user } = await renderWelcome()
   await fillValidForm(user, { name: '   ' })
 
-  expect(next()).toBeDisabled()
+  await user.click(next())
+
+  expect(
+    await screen.findByText('Имя должно быть не короче 2 символов'),
+  ).toBeInTheDocument()
 })
 
-test('validation 7: an incomplete phone keeps "Далее" disabled', async () => {
+test('validation 7: an incomplete phone surfaces the phone toast', async () => {
   const { user } = await renderWelcome()
   await fillValidForm(user, { phone: '+770' })
 
-  expect(next()).toBeDisabled()
+  await user.click(next())
+
+  expect(
+    await screen.findByText('Введите корректный номер'),
+  ).toBeInTheDocument()
 })
 
 test('validation 6: a domestic 8XXXXXXXXXX phone normalizes to +7 on submit', () =>
@@ -180,21 +264,28 @@ test('validation 6: a domestic 8XXXXXXXXXX phone normalizes to +7 on submit', ()
 test('validation 8: an explicit international number is accepted as dialed', () =>
   expectPhoneNormalizedOnSubmit('+14155552671', '+14155552671'))
 
-test('validation 9: an apartment outside the block range keeps "Далее" disabled', async () => {
+test('validation 9: an apartment outside the block range surfaces the apartment toast', async () => {
   const { user } = await renderWelcome()
   await fillValidForm(user, { apartment: '99' })
 
-  expect(next()).toBeDisabled()
+  await user.click(next())
+
+  expect(
+    await screen.findByText('Квартира вне диапазона выбранного блока'),
+  ).toBeInTheDocument()
 })
 
 test('validation 12: switching block re-validates the apartment number', async () => {
-  const { user } = await renderWelcome()
+  const { user, currentPath } = await renderWelcome()
   await fillValidForm(user, { apartment: '70' })
-  await waitFor(() => expect(next()).toBeEnabled())
 
   await pickBlock(user, /Блок 2/)
+  await user.click(next())
 
-  await waitFor(() => expect(next()).toBeDisabled())
+  expect(
+    await screen.findByText('Квартира вне диапазона выбранного блока'),
+  ).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/welcome')
 })
 
 test('validation 10: the apartment field keeps digits only', async () => {
@@ -242,6 +333,32 @@ test('happy-path 10: "Далее" cannot be submitted twice while the send is in
   release()
 })
 
+test('inputs and block/role choices are disabled while the send is in flight', async () => {
+  let onStart: () => void = () => {}
+  let release: () => void = () => {}
+  const sendStarted = new Promise<void>(resolve => {
+    onStart = resolve
+  })
+  const sendHeld = new Promise<void>(resolve => {
+    release = resolve
+  })
+  firebaseAuth.holdSend(onStart, sendHeld)
+
+  const { user } = await renderWelcome()
+  await fillValidForm(user)
+  await waitFor(() => expect(next()).toBeEnabled())
+
+  await user.click(next())
+  await sendStarted
+
+  expect(screen.getByLabelText('Имя')).toBeDisabled()
+  expect(screen.getByLabelText('Телефон')).toBeDisabled()
+  expect(screen.getByLabelText('Номер квартиры')).toBeDisabled()
+  expect(screen.getByRole('button', { name: /Блок 2/ })).toBeDisabled()
+  expect(screen.getByRole('button', { name: /Арендатор/ })).toBeDisabled()
+  release()
+})
+
 test('error-states 1: a send failure keeps the welcome screen and re-enables "Далее"', async () => {
   firebaseAuth.failSend()
   const { user, currentPath } = await renderWelcome()
@@ -255,6 +372,18 @@ test('error-states 1: a send failure keeps the welcome screen and re-enables "Д
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/onboarding/welcome')
   await waitFor(() => expect(next()).toBeEnabled())
+})
+
+test('error-states 6: a too-many-requests send routes to the locked screen', async () => {
+  firebaseAuth.failSendTooManyRequests()
+  const { user, currentPath } = await renderWelcome()
+  await fillValidForm(user)
+  await waitFor(() => expect(next()).toBeEnabled())
+
+  await user.click(next())
+
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/locked'))
+  expect(await screen.findByText('Доступ заблокирован')).toBeInTheDocument()
 })
 
 test('happy-path: the submitted resident reaches the backend register call', async () => {

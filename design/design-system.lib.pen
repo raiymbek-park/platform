@@ -2508,6 +2508,9 @@
                       "width": "fill_container",
                       "fill": "$background",
                       "cornerRadius": 18,
+                      "stroke": "$border",
+                      "strokeWidth": 2,
+                      "strokeAlignment": "inner",
                       "gap": 12,
                       "padding": [
                         12,
@@ -2871,6 +2874,9 @@
                       "width": "fill_container",
                       "fill": "$background",
                       "cornerRadius": 18,
+                      "stroke": "$border",
+                      "strokeWidth": 2,
+                      "strokeAlignment": "inner",
                       "gap": 12,
                       "padding": [
                         12,
@@ -3232,6 +3238,9 @@
                       "width": "fill_container",
                       "fill": "$background",
                       "cornerRadius": 18,
+                      "stroke": "$border",
+                      "strokeWidth": 2,
+                      "strokeAlignment": "inner",
                       "gap": 12,
                       "padding": [
                         12,

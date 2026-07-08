@@ -38,10 +38,10 @@ export const Input = ({
     <span className={boxCss({ state })}>
       {icon && <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />}
       <input className={css.field} ref={ref} {...restProps} />
+      {trailing}
       {state && (
         <Icon className={css.status} glyph={statusGlyph[state]} size={18} />
       )}
-      {!state && trailing}
     </span>
   </label>
 )

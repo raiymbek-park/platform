@@ -9,8 +9,12 @@ type ConfirmOutcome =
   | { kind: 'success' }
   | { kind: 'wrong-code' }
   | { kind: 'network' }
+  | { kind: 'too-many-requests' }
 
-type SendOutcome = { kind: 'success' } | { kind: 'failure' }
+type SendOutcome =
+  | { kind: 'success' }
+  | { kind: 'failure' }
+  | { kind: 'too-many-requests' }
 
 const fakeUser: FakeUser = {
   uid: 'resident-uid',
@@ -30,6 +34,7 @@ const scenario = {
 const confirmError = {
   'wrong-code': { code: 'auth/invalid-verification-code' },
   network: { code: 'auth/network-request-failed' },
+  'too-many-requests': { code: 'auth/too-many-requests' },
 }
 
 const confirm = (_code: string) => {
@@ -41,13 +46,18 @@ const confirm = (_code: string) => {
   return Promise.reject(confirmError[outcome.kind])
 }
 
+const sendError = {
+  failure: { code: 'auth/network-request-failed' },
+  'too-many-requests': { code: 'auth/too-many-requests' },
+}
+
 const signInWithPhoneNumber = vi.fn(async () => {
   if (scenario.hold) {
     scenario.hold.onStart()
     await scenario.hold.release
   }
-  if (scenario.send.kind === 'failure') {
-    return Promise.reject({ code: 'auth/network-request-failed' })
+  if (scenario.send.kind !== 'success') {
+    return Promise.reject(sendError[scenario.send.kind])
   }
   return { confirm }
 })
@@ -93,6 +103,9 @@ export const firebaseAuth = {
   failSend: () => {
     scenario.send = { kind: 'failure' }
   },
+  failSendTooManyRequests: () => {
+    scenario.send = { kind: 'too-many-requests' }
+  },
   holdSend: (onStart: () => void, release: Promise<void>) => {
     scenario.hold = { onStart, release }
   },
@@ -101,6 +114,9 @@ export const firebaseAuth = {
   },
   rejectCodeWithNetworkError: () => {
     scenario.confirm = { kind: 'network' }
+  },
+  rejectCodeTooManyRequests: () => {
+    scenario.confirm = { kind: 'too-many-requests' }
   },
   reset: () => {
     authState.currentUser = null

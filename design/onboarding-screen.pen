@@ -202,31 +202,6 @@
               }
             },
             {
-              "type": "frame",
-              "id": "dt91W",
-              "name": "Resend",
-              "width": "fill_container",
-              "gap": 6,
-              "justifyContent": "center",
-              "alignItems": "center",
-              "children": [
-                {
-                  "id": "x5LWE",
-                  "type": "ref",
-                  "ref": "ds:TextCaption",
-                  "name": "Hint",
-                  "content": "Не получили код?"
-                },
-                {
-                  "id": "pd9QT",
-                  "type": "ref",
-                  "ref": "ds:TextLabel",
-                  "name": "Timer",
-                  "content": "Повторно через 0:59"
-                }
-              ]
-            },
-            {
               "id": "Liqiw",
               "type": "ref",
               "ref": "ds:Spacer",

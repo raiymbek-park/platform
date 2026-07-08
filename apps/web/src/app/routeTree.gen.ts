@@ -20,6 +20,7 @@ import { Route as IssuesIndexRouteImport } from './routes/issues.index'
 import { Route as OnboardingWelcomeRouteImport } from './routes/onboarding.welcome'
 import { Route as OnboardingVerificationRouteImport } from './routes/onboarding.verification'
 import { Route as OnboardingLockedRouteImport } from './routes/onboarding.locked'
+import { Route as OnboardingLanguageRouteImport } from './routes/onboarding.language'
 import { Route as IssuesNewRouteImport } from './routes/issues.new'
 import { Route as IssuesStatusIssueIdRouteImport } from './routes/issues.status.$issueId'
 import { Route as IssuesEditIssueIdRouteImport } from './routes/issues.edit.$issueId'
@@ -79,6 +80,11 @@ const OnboardingLockedRoute = OnboardingLockedRouteImport.update({
   path: '/locked',
   getParentRoute: () => OnboardingRoute,
 } as any)
+const OnboardingLanguageRoute = OnboardingLanguageRouteImport.update({
+  id: '/language',
+  path: '/language',
+  getParentRoute: () => OnboardingRoute,
+} as any)
 const IssuesNewRoute = IssuesNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRouteWithChildren
   '/settings': typeof SettingsRoute
   '/issues/new': typeof IssuesNewRoute
+  '/onboarding/language': typeof OnboardingLanguageRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/settings': typeof SettingsRoute
   '/issues/new': typeof IssuesNewRoute
+  '/onboarding/language': typeof OnboardingLanguageRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRouteWithChildren
   '/settings': typeof SettingsRoute
   '/issues/new': typeof IssuesNewRoute
+  '/onboarding/language': typeof OnboardingLanguageRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
   '/onboarding/welcome': typeof OnboardingWelcomeRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/settings'
     | '/issues/new'
+    | '/onboarding/language'
     | '/onboarding/locked'
     | '/onboarding/verification'
     | '/onboarding/welcome'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/settings'
     | '/issues/new'
+    | '/onboarding/language'
     | '/onboarding/locked'
     | '/onboarding/verification'
     | '/onboarding/welcome'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/settings'
     | '/issues/new'
+    | '/onboarding/language'
     | '/onboarding/locked'
     | '/onboarding/verification'
     | '/onboarding/welcome'
@@ -279,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingLockedRouteImport
       parentRoute: typeof OnboardingRoute
     }
+    '/onboarding/language': {
+      id: '/onboarding/language'
+      path: '/language'
+      fullPath: '/onboarding/language'
+      preLoaderRoute: typeof OnboardingLanguageRouteImport
+      parentRoute: typeof OnboardingRoute
+    }
     '/issues/new': {
       id: '/issues/new'
       path: '/new'
@@ -321,6 +340,7 @@ const IssuesRouteWithChildren =
   IssuesRoute._addFileChildren(IssuesRouteChildren)
 
 interface OnboardingRouteChildren {
+  OnboardingLanguageRoute: typeof OnboardingLanguageRoute
   OnboardingLockedRoute: typeof OnboardingLockedRoute
   OnboardingVerificationRoute: typeof OnboardingVerificationRoute
   OnboardingWelcomeRoute: typeof OnboardingWelcomeRoute
@@ -328,6 +348,7 @@ interface OnboardingRouteChildren {
 }
 
 const OnboardingRouteChildren: OnboardingRouteChildren = {
+  OnboardingLanguageRoute: OnboardingLanguageRoute,
   OnboardingLockedRoute: OnboardingLockedRoute,
   OnboardingVerificationRoute: OnboardingVerificationRoute,
   OnboardingWelcomeRoute: OnboardingWelcomeRoute,

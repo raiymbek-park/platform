@@ -21,3 +21,14 @@
   Given: any catalog (`ru`, `kk`, or `en`) has an empty or missing translation
   When:  the `compile --strict` check runs in CI
   Then:  the build fails
+
+## Scenario 5: navigator.language undefined pre-selects Russian on the selection screen
+  Given: no locale choice is stored in `localStorage`
+         `navigator.language` is `undefined` (rare webview)
+  When:  the app boots
+  Then:  the language-selection screen is shown with Russian pre-selected
+
+## Scenario 6: Reaching a later onboarding step with no language chosen routes back to the selection screen
+  Given: no locale choice is stored in `localStorage`
+  When:  the resident reaches a later onboarding step (e.g. the registration form) without having confirmed a language
+  Then:  the app routes to the language-selection screen instead of showing that step

@@ -59,4 +59,3 @@
   When:  the user taps "Повторить" but requesting a new code fails
   Then:  the app stays on the locked screen
          an error message is shown
-</content>

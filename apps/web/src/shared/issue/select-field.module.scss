@@ -26,3 +26,9 @@
   min-width: 0;
   padding: 0;
 }
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+}

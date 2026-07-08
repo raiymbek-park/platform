@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest'
 
 import { i18n } from '@lingui/core'
 import { cleanup } from '@testing-library/react'
-import { afterAll, afterEach, beforeAll, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest'
 
 import { queryClient } from '@/shared/api'
 import { firebaseStorage } from '@/shared/test/firebase-storage'
@@ -35,6 +35,8 @@ vi.stubGlobal('IntersectionObserver', TestIntersectionObserver)
 
 beforeAll(() => trpcServer.listen({ onUnhandledRequest: 'bypass' }))
 
+beforeEach(() => localStorage.setItem('locale', 'ru'))
+
 afterEach(() => {
   cleanup()
   trpcServer.resetHandlers()
@@ -42,6 +44,7 @@ afterEach(() => {
   intersectionObserver.reset()
   firebaseStorage.reset()
   useToastStore.setState({ toasts: [] })
+  localStorage.clear()
 })
 
 afterAll(() => trpcServer.close())
