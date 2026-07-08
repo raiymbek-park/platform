@@ -6,27 +6,23 @@ import { Link } from '@tanstack/react-router'
 
 import css from './services-section.module.scss'
 
-type ServiceLinkProps = {
+type ExternalLinkProps = {
   children: ReactNode
-  url: string
+  href: string
 }
 
-const ServiceLink = ({ children, url }: ServiceLinkProps) => {
-  const isExternal = url.startsWith('http')
-
-  return (
-    <li>
-      <a
-        className={css.link}
-        href={url}
-        rel={isExternal ? 'noopener noreferrer' : undefined}
-        target={isExternal ? '_blank' : undefined}
-      >
-        {children}
-      </a>
-    </li>
-  )
-}
+const ExternalLink = ({ children, href }: ExternalLinkProps) => (
+  <li>
+    <a
+      className={css.link}
+      href={href}
+      rel='noopener noreferrer'
+      target='_blank'
+    >
+      {children}
+    </a>
+  </li>
+)
 
 export const ServicesSection = () => {
   const { t } = useLingui()
@@ -38,14 +34,16 @@ export const ServicesSection = () => {
         title={t`Сервисы`}
       />
       <ul className={css.list}>
-        <ServiceLink url='/announcements'>
-          <ActionCard
-            description={t`Новости и уведомления от УК`}
-            glyph='megaphone'
-            title={t`Объявления`}
-            tone='accent'
-          />
-        </ServiceLink>
+        <li>
+          <Link className={css.link} to='/announcements'>
+            <ActionCard
+              description={t`Новости и уведомления от УК`}
+              glyph='megaphone'
+              title={t`Объявления`}
+              tone='accent'
+            />
+          </Link>
+        </li>
         <li>
           <Link className={css.link} to='/issues/new'>
             <ActionCard
@@ -66,22 +64,24 @@ export const ServicesSection = () => {
             />
           </Link>
         </li>
-        <ServiceLink url='/announcements'>
-          <ActionCard
-            description={t`У вас есть предложение или поиск, пишите сюда`}
-            glyph='shopping-bag'
-            title={t`Создать объявление`}
-            tone='info'
-          />
-        </ServiceLink>
-        <ServiceLink url='https://chat.whatsapp.com/C9lxfazl3TH73LW7QtE2HI'>
+        <li>
+          <Link className={css.link} to='/announcements'>
+            <ActionCard
+              description={t`У вас есть предложение или поиск, пишите сюда`}
+              glyph='shopping-bag'
+              title={t`Создать объявление`}
+              tone='info'
+            />
+          </Link>
+        </li>
+        <ExternalLink href='https://chat.whatsapp.com/C9lxfazl3TH73LW7QtE2HI'>
           <ActionCard
             description={t`Вступить в общий чат жильцов`}
             glyph='message-circle'
             title={t`Чат дома в WhatsApp`}
             tone='brand'
           />
-        </ServiceLink>
+        </ExternalLink>
       </ul>
     </section>
   )
