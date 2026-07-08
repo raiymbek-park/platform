@@ -63,4 +63,16 @@ Input rules and permission gating. Field limits reuse the issues conventions.
   Given: a request to write, edit, or delete a comment
   When:  a Viewer writes; a non-author, non-Administration member edits/deletes another's comment
   Then:  the server rejects it
+
+## Scenario 11: Save is disabled while a post mutation is in flight
+  Given: a create or edit post form has been submitted
+  When:  the mutation is still in flight
+  Then:  the save action is disabled until the request settles
+         a second tap does not send a duplicate request
+
+## Scenario 12: Canceling the delete confirmation preserves the post
+  Given: the bottom-drawer delete confirmation is open for a post
+  When:  the member cancels instead of confirming
+  Then:  no delete request is sent
+         the post remains in the feed
 </content>

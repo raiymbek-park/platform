@@ -73,11 +73,15 @@ Scenarios are grouped by the three task slices. Task 1 unblocks the others.
   Then:  the announcement is created with kind `announcement`
          it appears in the feed and under **Уведомления** with its source label
 
-## Scenario 10: Author edits their post
+## Scenario 10: Opening edit pre-fills the kind-specific form
   Given: the author expands their own post
-  When:  they open edit, change fields (not the kind), and save
-  Then:  the same kind-specific form is pre-filled
-         the updated post reflects the change in the feed
+  When:  they open edit
+  Then:  the same kind-specific form opens, pre-filled with the post's current field values
+
+## Scenario 10a: Author saves an edited post
+  Given: the author is on the pre-filled edit form for their post
+  When:  they change fields (not the kind) and save
+  Then:  the updated post reflects the change in the feed
 
 ## Scenario 11: Author deletes their post
   Given: the author expands their own post

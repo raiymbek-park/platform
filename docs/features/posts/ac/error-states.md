@@ -44,4 +44,10 @@ External failures: network, API, storage.
   When:  the server request fails
   Then:  the failure is surfaced
          the comment count is not left inconsistent after settle
+
+## Scenario 8: Post creation failure preserves entered input
+  Given: a create post request
+  When:  the server request fails
+  Then:  the failure is surfaced
+         the entered title, description, category, and attached media selection remain in the form for retry
 </content>
