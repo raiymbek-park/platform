@@ -29,6 +29,7 @@
 
   &:has(:disabled) {
     background: var(--background);
+    border-color: var(--border);
     box-shadow: none;
     cursor: not-allowed;
   }

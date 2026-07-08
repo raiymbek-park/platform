@@ -1,13 +1,12 @@
 import type { UserEvent } from '@testing-library/user-event'
 
-import { act, fireEvent, screen, waitFor } from '@testing-library/react'
+import { act, screen, waitFor } from '@testing-library/react'
 import { delay, HttpResponse, http } from 'msw'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import {
   firebaseAuth,
   renderApp,
-  stubClipboard,
   trpcMutation,
   trpcMutationError,
   trpcServer,
@@ -46,14 +45,8 @@ const arriveAtVerification = async () => {
   return app
 }
 
-const revealClipboardCode = (code: string) => {
-  stubClipboard(code)
-  fireEvent(window, new Event('focus'))
-}
-
 beforeEach(() => {
   firebaseAuth.reset()
-  stubClipboard(null)
   useOnboardingStore.getState().reset()
   useConfirmationStore.getState().clear()
   sessionStorage.clear()
@@ -63,11 +56,14 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-test('happy-path 4: the verification screen shows the number and an empty code field', async () => {
+test('happy-path 4: the verification screen shows the number, an empty field, and a resend on cooldown', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
   await arriveAtVerification()
 
   expect(screen.getByText('+7 707 123 45 67')).toBeInTheDocument()
   expect(codeInput()).toHaveValue('')
+  expect(resendButton()).toBeDisabled()
+  expect(resendButton()).toHaveTextContent('1:00')
 })
 
 test('happy-path 5: the code field masks the digits as "xxx - xxx"', async () => {
@@ -131,19 +127,17 @@ test('checking: a progress callout shows and the actions are disabled while the 
   expect(
     await screen.findByText(/Ваш код отправляется на проверку/),
   ).toBeInTheDocument()
+  expect(codeInput()).toBeDisabled()
   expect(screen.getByRole('button', { name: 'Назад' })).toBeDisabled()
+  expect(resendButton()).toBeDisabled()
 })
 
-test('happy-path 9: pasting a clipboard code fills the field, confirms, and lands on home', async () => {
-  const { user, currentPath } = await arriveAtVerification()
-  revealClipboardCode('432109')
+test('the clipboard-paste affordance no longer exists', async () => {
+  await arriveAtVerification()
 
-  await user.click(
-    await screen.findByRole('button', { name: /Вставить код из буфера/ }),
-  )
-
-  await waitFor(() => expect(currentPath()).toBe('/home'))
-  expect(await screen.findByText(/Привет/)).toBeInTheDocument()
+  expect(
+    screen.queryByRole('button', { name: /Вставить/ }),
+  ).not.toBeInTheDocument()
 })
 
 test('error-states 2: a wrong code shows the wrong-code error and clears the field', async () => {
@@ -206,13 +200,46 @@ test('error-states 5: a resend failure keeps the screen and lets the user retry'
 
   await act(() => vi.advanceTimersByTimeAsync(60_000))
   firebaseAuth.failSend()
-
   await user.click(resendButton())
 
   expect(
     await screen.findByText(/Не удалось проверить код/),
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/onboarding/verification')
+})
+
+test('error-states 6: a too-many-requests resend routes to the locked screen', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  const { user, currentPath } = await arriveAtVerification()
+
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  firebaseAuth.failSendTooManyRequests()
+  await user.click(resendButton())
+
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/locked'))
+  expect(await screen.findByText('Доступ заблокирован')).toBeInTheDocument()
+})
+
+test('error-states 6: a too-many-requests code check routes to the locked screen', async () => {
+  firebaseAuth.rejectCodeTooManyRequests()
+  const { user, currentPath } = await arriveAtVerification()
+
+  await typeCode(user, '999999')
+
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/locked'))
+  expect(await screen.findByText('Доступ заблокирован')).toBeInTheDocument()
+})
+
+test('edge-cases 1: a successful resend clears the entered code and returns focus', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  const { user } = await arriveAtVerification()
+
+  await user.type(codeInput(), '12')
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  await user.click(resendButton())
+
+  await waitFor(() => expect(codeInput()).toHaveValue(''))
+  await waitFor(() => expect(codeInput()).toHaveFocus())
 })
 
 test('edge-cases 2: the resend control is disabled during the cooldown and enables at 0:00', async () => {
@@ -244,39 +271,14 @@ test('edge-cases 3: the resend cooldown escalates 60 → 120 across resends', as
   expect(resendButton()).toBeEnabled()
 })
 
-test('edge-cases 4: a successful resend clears the entered code', async () => {
-  vi.useFakeTimers({ shouldAdvanceTime: true })
-  const { user } = await arriveAtVerification()
-
-  await user.type(codeInput(), '12')
-
-  await act(() => vi.advanceTimersByTimeAsync(60_000))
-  await user.click(resendButton())
-  await act(() => vi.advanceTimersByTimeAsync(0))
-
-  expect(codeInput()).toHaveValue('')
-})
-
-test('edge-cases 5: a detected clipboard code replaces the resend control with the paste action', async () => {
-  await arriveAtVerification()
-  revealClipboardCode('246802')
-
-  expect(
-    await screen.findByRole('button', { name: /Вставить код из буфера/ }),
-  ).toBeInTheDocument()
-  expect(
-    screen.queryByRole('button', { name: /Запросить код повторно/ }),
-  ).not.toBeInTheDocument()
-})
-
-test('edge-cases 8: visiting verification without a pending code redirects to welcome', async () => {
+test('edge-cases 2: visiting verification without a pending code redirects to welcome', async () => {
   const { currentPath } = renderApp('/onboarding/verification')
 
   await screen.findByLabelText('Имя')
   expect(currentPath()).toBe('/onboarding/welcome')
 })
 
-test('edge-cases 10: a signed-in resident visiting onboarding lands on home', async () => {
+test('edge-cases 4: a signed-in resident visiting onboarding lands on home', async () => {
   firebaseAuth.signIn()
   const { currentPath } = renderApp('/onboarding/welcome')
 
@@ -284,7 +286,7 @@ test('edge-cases 10: a signed-in resident visiting onboarding lands on home', as
   expect(await screen.findByText(/Привет/)).toBeInTheDocument()
 })
 
-test('edge-cases 9: unauthenticated direct navigation to home redirects to welcome', async () => {
+test('edge-cases 3: unauthenticated direct navigation to home redirects to welcome', async () => {
   const { currentPath } = renderApp('/home')
 
   await screen.findByLabelText('Имя')

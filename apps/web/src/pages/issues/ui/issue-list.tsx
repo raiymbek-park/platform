@@ -1,12 +1,10 @@
 import type { IssueFilter } from '@raiymbek-park/shared/validation-schemas'
 
 import { useLingui } from '@lingui/react/macro'
-import {
-  Button,
-  EmptyState,
-  InfoCallout,
-  SkeletonCard,
-} from '@raiymbek-park/ui'
+import { Button, EmptyState, SkeletonCard } from '@raiymbek-park/ui'
+import { useEffect } from 'react'
+
+import { showToastMessage } from '@/shared/toast'
 
 import { useIntersectionObserver } from '../model/use-intersection-observer'
 import { useIssueActionsAccess } from '../model/use-issue-actions-access'
@@ -51,6 +49,11 @@ export const IssueList = ({ query, search, status }: IssueListProps) => {
     },
   })
 
+  useEffect(() => {
+    if (isError)
+      showToastMessage({ kind: 'error', text: t`Не удалось загрузить заявки` })
+  }, [isError, t])
+
   const skeletons = (
     <div className={css.list} data-testid='issue-skeletons'>
       {SKELETON_KEYS.map(key => (
@@ -64,9 +67,6 @@ export const IssueList = ({ query, search, status }: IssueListProps) => {
   if (isError) {
     return (
       <div className={css.state} data-testid='issue-error'>
-        <InfoCallout icon='circle-alert' variant='danger'>
-          {t`Не удалось загрузить заявки`}
-        </InfoCallout>
         <Button icon='refresh-cw' variant='secondary' onClick={() => refetch()}>
           {t`Повторить`}
         </Button>

@@ -1,13 +1,16 @@
-import { Trans } from '@lingui/react/macro'
-import { Button, HeroImage, InfoCallout } from '@raiymbek-park/ui'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { Button, HeroImage } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
+
+import { showToastMessage } from '@/shared/toast'
 
 import { useOnboardingStore } from '../model/use-onboarding-store'
 import { useSendVerification } from '../model/use-send-verification'
 import css from './account-locked.module.scss'
 
 export const AccountLocked = () => {
+  const { t } = useLingui()
   const navigate = useNavigate()
   const phone = useOnboardingStore(state => state.draft.phone)
   const sendVerification = useSendVerification()
@@ -18,7 +21,14 @@ export const AccountLocked = () => {
     if (phone === '' || container === null) return
     sendVerification.mutate(
       { container, phone },
-      { onSuccess: () => navigate({ to: '/onboarding/verification' }) },
+      {
+        onSuccess: () => navigate({ to: '/onboarding/verification' }),
+        onError: () =>
+          showToastMessage({
+            kind: 'error',
+            text: t`Пока не получается отправить код. Попробуйте чуть позже.`,
+          }),
+      },
     )
   }
 
@@ -39,14 +49,6 @@ export const AccountLocked = () => {
       </header>
 
       <div className={css.spacer} />
-
-      {sendVerification.isError && (
-        <InfoCallout icon='circle-alert' variant='danger'>
-          <Trans>
-            Пока не получается отправить код. Попробуйте чуть позже.
-          </Trans>
-        </InfoCallout>
-      )}
 
       <Button
         icon='refresh-cw'

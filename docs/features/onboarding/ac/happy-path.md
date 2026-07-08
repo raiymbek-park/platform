@@ -41,7 +41,7 @@
   Then:  the field groups them as "xxx - xxx" (e.g. "12345" shows as "123 - 45")
          non-digit characters are ignored
 
-## Scenario 7: The correct code registers and signs the resident in
+## Scenario 6: The correct code registers and signs the resident in
 
   Given: 5 of the 6 digits are entered on the verification screen
   When:  the user enters the sixth digit, forming the correct code
@@ -56,33 +56,22 @@
   When:  the save succeeds
   Then:  the app moves to home
 
-## Scenario 8: A returning signed-in resident lands on home
+## Scenario 7: A returning signed-in resident lands on home
 
   Given: the resident is already signed in and opens an onboarding entry
   When:  the app starts
   Then:  the app opens home, skipping onboarding
 
-## Scenario 9: Pasting the code from the clipboard triggers the check
-
-  Given: the user is on the verification screen and the clipboard holds a 6-digit code
-  When:  the user taps the "Вставить код из буфера" action
-  Then:  the field fills with the digits from the clipboard
-
-  Given: the field was filled by pasting a valid 6-digit clipboard value forming the correct code
-  When:  all six digits are present
-  Then:  the code is checked automatically and the app moves to home
-
-## Scenario 10: "Next" cannot be submitted twice while the request is in flight
+## Scenario 8: "Next" cannot be submitted twice while the request is in flight
 
   Given: the form on the welcome screen is fully valid and the user taps "Далее"
   When:  the send request is still in flight
   Then:  "Далее" is disabled and shows a loading state for the duration of the request
          the form cannot be submitted a second time
 
-## Scenario 11: The field and actions are disabled while the check is in flight
+## Scenario 9: The field and actions are disabled while the check is in flight
 
   Given: 6 digits have been entered on the verification screen and the check is in flight
   When:  the response has not yet arrived
   Then:  a progress notice ("Ваш код отправляется на проверку…") is shown
-         the code field, the back control, and the resend/paste control are disabled
-</content>
+         the code field, the back control, and the resend control are disabled

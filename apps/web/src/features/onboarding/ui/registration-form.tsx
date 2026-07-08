@@ -7,6 +7,7 @@ import {
   Button,
   Divider,
   HeroCard,
+  Icon,
   InfoCallout,
   Input,
   SectionHeader,
@@ -17,6 +18,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
 
 import { inputState } from '@/shared/form'
+import { showToastMessage } from '@/shared/toast'
 
 import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { normalizePhone } from '../lib/phone'
@@ -32,6 +34,17 @@ const blockTones: Record<BlockId, 'brand' | 'danger' | 'accent' | 'info'> = {
   4: 'info',
 }
 
+const fieldOrder = ['name', 'phone', 'block', 'apartment', 'role'] as const
+
+const toMessage = (error: unknown): string | undefined => {
+  if (typeof error === 'string') return error
+  if (typeof error === 'object' && error !== null && 'message' in error) {
+    const { message } = error
+    return typeof message === 'string' ? message : undefined
+  }
+  return undefined
+}
+
 export const RegistrationForm = () => {
   const { t } = useLingui()
   const navigate = useNavigate()
@@ -43,6 +56,13 @@ export const RegistrationForm = () => {
   const form = useForm({
     defaultValues: { ...draft, phone: draft.phone || '+7' },
     validators: { onChange: registrationSchema },
+    onSubmitInvalid: ({ formApi }) => {
+      const text = fieldOrder
+        .flatMap(name => formApi.getFieldMeta(name)?.errors ?? [])
+        .map(toMessage)
+        .find(message => Boolean(message))
+      if (text) showToastMessage({ kind: 'error', text })
+    },
     onSubmit: ({ value }) => {
       const container = recaptchaRef.current
       if (container === null) return
@@ -60,12 +80,21 @@ export const RegistrationForm = () => {
         {
           onSuccess: () => navigate({ to: '/onboarding/verification' }),
           onError: error => {
-            if (isTooManyRequests(error)) navigate({ to: '/onboarding/locked' })
+            if (isTooManyRequests(error)) {
+              navigate({ to: '/onboarding/locked' })
+              return
+            }
+            showToastMessage({
+              kind: 'error',
+              text: t`Не удалось отправить код. Проверьте соединение и попробуйте снова.`,
+            })
           },
         },
       )
     },
   })
+
+  const isPending = sendVerification.isPending
 
   return (
     <form
@@ -89,6 +118,7 @@ export const RegistrationForm = () => {
       <form.Field name='name'>
         {field => (
           <Input
+            disabled={isPending}
             icon='user'
             inputMode='text'
             label={t`Имя`}
@@ -102,18 +132,27 @@ export const RegistrationForm = () => {
       </form.Field>
 
       <form.Field name='phone'>
-        {field => (
-          <Input
-            icon='phone'
-            inputMode='tel'
-            label={t`Телефон`}
-            placeholder='+7 7xxx xxx xxxx'
-            state={inputState(field.state.meta)}
-            value={field.state.value}
-            onBlur={field.handleBlur}
-            onChange={event => field.handleChange(event.target.value)}
-          />
-        )}
+        {field => {
+          const state = inputState(field.state.meta)
+          return (
+            <Input
+              disabled={isPending}
+              icon='phone'
+              inputMode='tel'
+              label={t`Телефон`}
+              placeholder='+7 7xxx xxx xxxx'
+              state={state}
+              trailing={
+                state ? undefined : (
+                  <Icon className={css.eye} glyph='eye-closed' size={20} />
+                )
+              }
+              value={field.state.value}
+              onBlur={field.handleBlur}
+              onChange={event => field.handleChange(event.target.value)}
+            />
+          )
+        }}
       </form.Field>
 
       <InfoCallout icon='shield-check'>
@@ -128,7 +167,7 @@ export const RegistrationForm = () => {
         <SectionHeader title={t`Выберите блок`} />
         <form.Field name='block'>
           {field => (
-            <fieldset className={css.group}>
+            <fieldset className={css.group} disabled={isPending}>
               <legend className='sr-only'>
                 <Trans>Блок</Trans>
               </legend>
@@ -153,6 +192,7 @@ export const RegistrationForm = () => {
       <form.Field name='apartment'>
         {field => (
           <Input
+            disabled={isPending}
             icon='door-closed'
             inputMode='numeric'
             label={t`Номер квартиры`}
@@ -174,7 +214,7 @@ export const RegistrationForm = () => {
         <SectionHeader title={t`Кто вы?`} />
         <form.Field name='role'>
           {field => (
-            <fieldset className={css.group}>
+            <fieldset className={css.group} disabled={isPending}>
               <legend className='sr-only'>
                 <Trans>Роль</Trans>
               </legend>
@@ -217,28 +257,26 @@ export const RegistrationForm = () => {
         </a>
       </InfoCallout>
 
-      {sendVerification.isError && (
-        <InfoCallout icon='circle-alert' variant='danger'>
-          <Trans>
-            Не удалось отправить код. Проверьте соединение и попробуйте снова.
-          </Trans>
-        </InfoCallout>
-      )}
-
-      <form.Subscribe selector={state => state.canSubmit}>
-        {canSubmit => (
-          <Button
-            className={css.submit}
-            disabled={!canSubmit || sendVerification.isPending}
-            icon='arrow-right'
-            iconPosition='right'
-            isLoading={sendVerification.isPending}
-            type='submit'
-          >
-            <Trans>Далее</Trans>
-          </Button>
-        )}
-      </form.Subscribe>
+      <div className={css.actions}>
+        <Button
+          aria-label={t`Назад`}
+          disabled={isPending}
+          icon='arrow-left'
+          type='button'
+          variant='icon'
+          onClick={() => navigate({ to: '/onboarding/language' })}
+        />
+        <Button
+          className={css.fill}
+          disabled={isPending}
+          icon='arrow-right'
+          iconPosition='right'
+          isLoading={isPending}
+          type='submit'
+        >
+          <Trans>Далее</Trans>
+        </Button>
+      </div>
     </form>
   )
 }

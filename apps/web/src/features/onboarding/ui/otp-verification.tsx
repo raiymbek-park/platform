@@ -3,6 +3,8 @@ import { Button, HeroImage, InfoCallout, Input } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
 
+import { showToastMessage } from '@/shared/toast'
+
 import { formatOtp, otpMask } from '../lib/format-otp'
 import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { isWrongCode } from '../lib/is-wrong-code'
@@ -30,12 +32,19 @@ export const OtpVerification = () => {
 
   const isChecking = confirmCode.isPending || registerResident.isPending
 
+  const verifyError = t`Неверный код. Попробуйте ещё раз.`
+  const networkError = t`Не удалось проверить код. Проверьте соединение.`
+  const registerError = t`Не удалось завершить регистрацию. Повторите попытку.`
+
   const register = () => {
     const { block, role } = draft
     if (block === null || role === null) return
     registerResident.mutate(
       { ...draft, block, role },
-      { onSuccess: () => navigate({ to: '/home' }) },
+      {
+        onSuccess: () => navigate({ to: '/home' }),
+        onError: () => showToastMessage({ kind: 'error', text: registerError }),
+      },
     )
   }
 
@@ -44,7 +53,14 @@ export const OtpVerification = () => {
       onSuccess: register,
       onError: error => {
         clear()
-        if (isTooManyRequests(error)) navigate({ to: '/onboarding/locked' })
+        if (isTooManyRequests(error)) {
+          navigate({ to: '/onboarding/locked' })
+          return
+        }
+        showToastMessage({
+          kind: 'error',
+          text: isWrongCode(error) ? verifyError : networkError,
+        })
       },
     })
   }
@@ -65,25 +81,15 @@ export const OtpVerification = () => {
           cooldown.restart()
         },
         onError: error => {
-          if (isTooManyRequests(error)) navigate({ to: '/onboarding/locked' })
+          if (isTooManyRequests(error)) {
+            navigate({ to: '/onboarding/locked' })
+            return
+          }
+          showToastMessage({ kind: 'error', text: networkError })
         },
       },
     )
   }
-
-  const verifyError = t`Неверный код. Попробуйте ещё раз.`
-  const networkError = t`Не удалось проверить код. Проверьте соединение.`
-  const registerError = t`Не удалось завершить регистрацию. Повторите попытку.`
-
-  const resolveError = () => {
-    if (confirmCode.isError) {
-      return isWrongCode(confirmCode.error) ? verifyError : networkError
-    }
-    if (registerResident.isError) return registerError
-    if (resend.isError) return networkError
-    return null
-  }
-  const errorMessage = resolveError()
 
   return (
     <>
@@ -101,16 +107,9 @@ export const OtpVerification = () => {
         disabled={isChecking}
         inputMode='numeric'
         placeholder={otpMask}
-        state={errorMessage !== null ? 'error' : undefined}
         value={formatOtp(otp.code)}
         onChange={event => otp.setValue(event.target.value)}
       />
-
-      {errorMessage !== null && (
-        <InfoCallout icon='circle-alert' variant='danger'>
-          {errorMessage}
-        </InfoCallout>
-      )}
 
       {isChecking && (
         <InfoCallout icon='loader-circle' variant='progress'>
@@ -133,7 +132,6 @@ export const OtpVerification = () => {
         isChecking={isChecking}
         isResendPending={resend.isPending}
         resendCooldown={cooldown.secondsLeft}
-        onPaste={code => otp.setValue(code)}
         onResend={handleResend}
       />
     </>
