@@ -10,6 +10,7 @@ import { postUpdateInputSchema } from '@raiymbek-park/shared/validation-schemas'
 import { trpcClient } from '@/shared/api'
 import { uploadPostMediaItems } from '@/shared/media'
 
+import { tabForKind } from '../lib/tab-for-kind'
 import { usePostMutation } from './use-post-mutation'
 
 type UpdatePostVariables = {
@@ -39,7 +40,7 @@ export const useUpdatePost = (postId: string) => {
       partial: count => t`Изменения сохранены. Файлов не загрузилось: ${count}`,
       success: t`Изменения сохранены.`,
     },
-    ({ kind }) => (kind === 'offer' ? 'offers' : 'announcements'),
+    ({ kind }) => tabForKind(kind),
   )
 
   return { isPending, updatePost: submit }

@@ -12,6 +12,7 @@ import { useNavigate } from '@tanstack/react-router'
 import { FormDock, FormScreen, inputState } from '@/shared/form'
 import { MediaField } from '@/shared/media'
 
+import { tabForKind } from '../lib/tab-for-kind'
 import { postFormSchema } from '../lib/validators'
 import { categoryTheme } from '../model/use-post-categories'
 import { CategoryField } from './category-field'
@@ -30,9 +31,6 @@ export type PostFormFieldsProps = {
   title: string
   onSubmit: (values: PostFormSubmit) => void
 }
-
-const tabForKind = (kind: PostKind) =>
-  kind === 'offer' ? 'offers' : 'announcements'
 
 export const PostFormFields = ({
   defaultValues,

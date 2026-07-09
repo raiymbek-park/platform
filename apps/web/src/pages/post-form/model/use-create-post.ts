@@ -10,6 +10,7 @@ import { postCreatePayloadSchema } from '@raiymbek-park/shared/validation-schema
 import { trpcClient } from '@/shared/api'
 import { uploadPostMedia } from '@/shared/media'
 
+import { tabForKind } from '../lib/tab-for-kind'
 import { usePostMutation } from './use-post-mutation'
 
 type CreatePostVariables = {
@@ -41,7 +42,7 @@ export const useCreatePost = () => {
         t`Объявление опубликовано. Файлов не загрузилось: ${count}`,
       success: t`Объявление опубликовано.`,
     },
-    ({ kind }) => (kind === 'offer' ? 'offers' : 'announcements'),
+    ({ kind }) => tabForKind(kind),
   )
 
   return { createPost: submit, isPending }
