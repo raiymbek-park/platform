@@ -32,6 +32,12 @@
     flex-direction: row-reverse;
   }
 
+  &-is-icon-only {
+    flex-shrink: 0;
+    padding: 0;
+    width: 58px;
+  }
+
   &-is-loading {
     opacity: 0.7;
   }

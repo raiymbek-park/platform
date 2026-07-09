@@ -108,11 +108,15 @@ Scenarios are grouped by the three task slices. Task 1 unblocks the others.
   Then:  the comment appears at the end of the thread, its text rendered as Markdown (safe GFM subset)
          the post's (or issue's) comment count increases by one
 
-## Scenario 15: Edit own comment
+## Scenario 15: Opening edit loads the message into the input bar
   Given: the author is on a thread with their own message
-  When:  they open the message actions, choose edit, change the text, and save
-  Then:  the input bar enters edit mode
-         the message updates in place
+  When:  they open the message actions and choose edit
+  Then:  the input bar enters edit mode, pre-filled with the message's current text
+
+## Scenario 15a: Author saves an edited comment
+  Given: the author is on the input bar in edit mode for their message
+  When:  they change the text and save
+  Then:  the message updates in place
 
 ## Scenario 16: Delete own comment
   Given: the author is on a thread with their own message

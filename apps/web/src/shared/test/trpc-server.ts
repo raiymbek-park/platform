@@ -37,6 +37,24 @@ const trpcQuery = (procedure: string, data: unknown): HttpHandler =>
 const unwrap = (entry: unknown): unknown =>
   entry && typeof entry === 'object' && 'json' in entry ? entry.json : entry
 
+const resolveEntry = async (
+  resolvers: Record<string, (input: unknown) => unknown>,
+  procedure: string,
+  input: unknown,
+) => {
+  try {
+    return { result: { data: await resolvers[procedure]?.(input) } }
+  } catch {
+    return {
+      error: {
+        message: 'INTERNAL_SERVER_ERROR',
+        code: -32603,
+        data: { code: 'INTERNAL_SERVER_ERROR', httpStatus: 500 },
+      },
+    }
+  }
+}
+
 export const trpcQueries = (
   resolvers: Record<string, (input: unknown) => unknown>,
 ): HttpHandler =>
@@ -46,11 +64,9 @@ export const trpcQueries = (
       new URL(request.url).searchParams.get('input') ?? '{}',
     )
     const results = await Promise.all(
-      procedures.map(async (procedure, index) => ({
-        result: {
-          data: await resolvers[procedure]?.(unwrap(raw[String(index)])),
-        },
-      })),
+      procedures.map((procedure, index) =>
+        resolveEntry(resolvers, procedure, unwrap(raw[String(index)])),
+      ),
     )
     return HttpResponse.json(results)
   })

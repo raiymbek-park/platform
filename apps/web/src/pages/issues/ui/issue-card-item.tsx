@@ -57,6 +57,9 @@ export const IssueCardItem = ({
   const changeStatus = () =>
     navigate({ params: { issueId: issue.id }, to: '/issues/status/$issueId' })
 
+  const openComments = () =>
+    navigate({ params: { issueId: issue.id }, to: '/issues/$issueId/comments' })
+
   const hasActions = canEdit || canChangeStatus || canDelete
 
   const contacts: IssueCardContact[] = [
@@ -145,7 +148,11 @@ export const IssueCardItem = ({
             kind='dislike'
             onClick={() => onReact(issue.id, 'dislike', issue.myReaction)}
           />
-          <CommentCount count={issue.commentCount} />
+          <CommentCount
+            aria-label={t`Комментарии: ${issue.commentCount}`}
+            count={issue.commentCount}
+            onClick={openComments}
+          />
         </>
       }
       tags={cardTags(issue)}

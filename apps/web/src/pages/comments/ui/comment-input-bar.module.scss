@@ -1,0 +1,60 @@
+.bar {
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.cancel {
+  background: transparent;
+  border: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preview {
+  border-radius: 12px;
+  height: 56px;
+  overflow: hidden;
+  position: relative;
+  width: 56px;
+}
+
+.thumb {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+
+.remove {
+  align-items: center;
+  background: var(--scrim);
+  border: 0;
+  border-radius: 180px;
+  color: var(--surface);
+  cursor: pointer;
+  display: inline-flex;
+  height: 20px;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  width: 20px;
+}

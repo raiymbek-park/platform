@@ -11,10 +11,29 @@
   align-items: center;
   display: flex;
   gap: 8px;
+  min-width: 0;
+}
+
+.back {
+  align-items: center;
+  background: var(--surface);
+  border: 0;
+  border-radius: 13px;
+  color: var(--foreground);
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 40px;
+  justify-content: center;
+  padding: 0;
+  width: 40px;
 }
 
 .brand {
   color: var(--foreground);
   font-size: 17px;
   font-weight: var(--weight-extrabold);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

@@ -10,10 +10,12 @@ import css from './input.module.scss'
 
 export type InputProps = ComponentProps<'input'> & {
   icon?: IconGlyph
+  iconButtonLabel?: string
   label?: ReactNode
   state?: 'error' | 'success'
   tone?: IconChipTone
   trailing?: ReactNode
+  onIconClick?: () => void
 }
 
 const boxCss = pickCss(css, css.box)
@@ -26,17 +28,31 @@ const statusGlyph: Record<NonNullable<InputProps['state']>, IconGlyph> = {
 export const Input = ({
   className,
   icon,
+  iconButtonLabel,
   label,
   ref,
   state,
   tone,
   trailing,
+  onIconClick,
   ...restProps
 }: InputProps) => (
   <label className={joinCss(css.input, className)}>
     {label && <span className={css.label}>{label}</span>}
     <span className={boxCss({ state })}>
-      {icon && <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />}
+      {icon &&
+        (onIconClick ? (
+          <button
+            aria-label={iconButtonLabel}
+            className={css.iconButton}
+            type='button'
+            onClick={onIconClick}
+          >
+            <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />
+          </button>
+        ) : (
+          <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />
+        ))}
       <input className={css.field} ref={ref} {...restProps} />
       {trailing}
       {state && (

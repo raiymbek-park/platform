@@ -55,6 +55,15 @@
   flex-shrink: 0;
 }
 
+.iconButton {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 0;
+}
+
 .field {
   background: transparent;
   border: 0;
