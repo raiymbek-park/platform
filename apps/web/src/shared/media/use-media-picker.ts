@@ -95,6 +95,21 @@ export const useMediaPicker = ({ initialUrls }: UseMediaPickerInput = {}) => {
     setActiveIndex(index => Math.max(0, Math.min(index, next.length - 1)))
   }
 
+  const remove = (id: string) => {
+    const target = items.find(item => item.id === id)
+    if (!target) return
+    revoke(target)
+    const next = items.filter(item => item.id !== id)
+    setItems(next)
+    setActiveIndex(index => Math.max(0, Math.min(index, next.length - 1)))
+  }
+
+  const reset = () => {
+    items.forEach(revoke)
+    setItems([])
+    setActiveIndex(0)
+  }
+
   const photos: ImageFormItem[] = items.map(({ id, isVideo, url }) => ({
     id,
     isVideo,
@@ -107,7 +122,9 @@ export const useMediaPicker = ({ initialUrls }: UseMediaPickerInput = {}) => {
     files: items.flatMap(item => (item.file ? [item.file] : [])),
     items,
     photos,
+    remove,
     removeCurrent,
+    reset,
     select: setActiveIndex,
   }
 }
