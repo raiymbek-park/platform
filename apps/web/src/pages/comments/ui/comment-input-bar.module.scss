@@ -12,6 +12,11 @@
   gap: 10px;
 }
 
+.compose {
+  flex: 1;
+  min-width: 0;
+}
+
 .cancel {
   background: transparent;
   border: 0;

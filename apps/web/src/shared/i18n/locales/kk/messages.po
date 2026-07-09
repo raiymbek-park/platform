@@ -155,8 +155,8 @@ msgstr "Хабарламамен әрекеттер"
 msgid "Добавить"
 msgstr "Қосу"
 
-#: src/pages/comments/ui/comment-input-bar.tsx:127
-#: src/pages/comments/ui/comment-input-bar.tsx:158
+#: src/pages/comments/ui/comment-input-bar.tsx:128
+#: src/pages/comments/ui/comment-input-bar.tsx:159
 msgid "Добавить файл"
 msgstr "Файл қосу"
 
@@ -413,7 +413,7 @@ msgstr "Тұрғындардың қарауына"
 msgid "На рассмотрении жильцов"
 msgstr "Тұрғындар қарауында"
 
-#: src/pages/comments/ui/comment-input-bar.tsx:129
+#: src/pages/comments/ui/comment-input-bar.tsx:130
 msgid "Наберите текст"
 msgstr "Мәтін теріңіз"
 
@@ -656,14 +656,14 @@ msgstr "Қабылданбады"
 
 #: src/pages/comments/ui/comment-actions-sheet.tsx:35
 #: src/pages/comments/ui/comment-delete-confirm.tsx:21
-#: src/pages/comments/ui/comment-input-bar.tsx:133
+#: src/pages/comments/ui/comment-input-bar.tsx:134
 #: src/pages/issue-status/ui/status-form.tsx:103
 #: src/pages/issues/ui/issue-delete-confirm.tsx:21
 #: src/pages/posts/ui/post-delete-confirm.tsx:21
 msgid "Отмена"
 msgstr "Бас тарту"
 
-#: src/pages/comments/ui/comment-input-bar.tsx:147
+#: src/pages/comments/ui/comment-input-bar.tsx:148
 #: src/pages/issue-form/ui/create-issue-form.tsx:28
 msgid "Отправить"
 msgstr "Жіберу"
@@ -898,7 +898,7 @@ msgstr "Хабарлама жіберілді. Жүктелмеген файлд
 msgid "Сообщение удалено."
 msgstr "Хабарлама жойылды."
 
-#: src/pages/comments/ui/comment-input-bar.tsx:147
+#: src/pages/comments/ui/comment-input-bar.tsx:148
 #: src/pages/issue-form/ui/edit-issue-form.tsx:27
 #: src/pages/issue-status/ui/status-form.tsx:107
 #: src/pages/post-form/ui/edit-post-form.tsx:31
