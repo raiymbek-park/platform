@@ -586,8 +586,8 @@ msgid "Поиск по заявкам"
 msgstr "Поиск по заявкам"
 
 #: src/pages/issues/ui/issue-search.tsx:19
-msgid "Поиск по заявкам, от 3 символов"
-msgstr "Поиск по заявкам, от 3 символов"
+msgid "Поиск по заявкам, от 2 символов"
+msgstr "Поиск по заявкам, от 2 символов"
 
 #: src/pages/posts/ui/post-search.tsx:17
 msgid "Поиск по объявлениям"
