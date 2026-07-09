@@ -155,7 +155,8 @@ msgstr "Message actions"
 msgid "Добавить"
 msgstr "Add"
 
-#: src/pages/comments/ui/comment-input-bar.tsx:157
+#: src/pages/comments/ui/comment-input-bar.tsx:127
+#: src/pages/comments/ui/comment-input-bar.tsx:158
 msgid "Добавить файл"
 msgstr "Attach a file"
 
@@ -365,10 +366,15 @@ msgid "Код подтверждения"
 msgstr "Verification code"
 
 #: src/pages/comments/ui/comments-page.tsx:72
-#: src/pages/issues/ui/issue-card-item.tsx:152
-#: src/pages/posts/ui/post-card-item.tsx:142
 msgid "Комментарии"
 msgstr "Comments"
+
+#. placeholder {0}: issue.commentCount
+#. placeholder {0}: post.commentCount
+#: src/pages/issues/ui/issue-card-item.tsx:152
+#: src/pages/posts/ui/post-card-item.tsx:142
+msgid "Комментарии: {0}"
+msgstr "Comments: {0}"
 
 #: src/pages/issue-status/ui/status-form.tsx:95
 msgid "Комментарий"
@@ -407,7 +413,7 @@ msgstr "Under resident review"
 msgid "На рассмотрении жильцов"
 msgstr "Under resident review"
 
-#: src/pages/comments/ui/comment-input-bar.tsx:128
+#: src/pages/comments/ui/comment-input-bar.tsx:129
 msgid "Наберите текст"
 msgstr "Type a message"
 
@@ -650,14 +656,14 @@ msgstr "Rejected"
 
 #: src/pages/comments/ui/comment-actions-sheet.tsx:35
 #: src/pages/comments/ui/comment-delete-confirm.tsx:21
-#: src/pages/comments/ui/comment-input-bar.tsx:132
+#: src/pages/comments/ui/comment-input-bar.tsx:133
 #: src/pages/issue-status/ui/status-form.tsx:103
 #: src/pages/issues/ui/issue-delete-confirm.tsx:21
 #: src/pages/posts/ui/post-delete-confirm.tsx:21
 msgid "Отмена"
 msgstr "Cancel"
 
-#: src/pages/comments/ui/comment-input-bar.tsx:146
+#: src/pages/comments/ui/comment-input-bar.tsx:147
 #: src/pages/issue-form/ui/create-issue-form.tsx:28
 msgid "Отправить"
 msgstr "Submit"
@@ -892,7 +898,7 @@ msgstr "Message sent. Files not uploaded: {failedCount}"
 msgid "Сообщение удалено."
 msgstr "Message deleted."
 
-#: src/pages/comments/ui/comment-input-bar.tsx:146
+#: src/pages/comments/ui/comment-input-bar.tsx:147
 #: src/pages/issue-form/ui/edit-issue-form.tsx:27
 #: src/pages/issue-status/ui/status-form.tsx:107
 #: src/pages/post-form/ui/edit-post-form.tsx:31

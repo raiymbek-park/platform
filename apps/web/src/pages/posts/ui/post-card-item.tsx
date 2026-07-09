@@ -139,7 +139,7 @@ export const PostCardItem = ({
             onClick={() => onReact(post.id, 'dislike', post.myReaction)}
           />
           <CommentCount
-            aria-label={t`Комментарии`}
+            aria-label={t`Комментарии: ${post.commentCount}`}
             count={post.commentCount}
             onClick={openComments}
           />

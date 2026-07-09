@@ -149,7 +149,7 @@ export const IssueCardItem = ({
             onClick={() => onReact(issue.id, 'dislike', issue.myReaction)}
           />
           <CommentCount
-            aria-label={t`Комментарии`}
+            aria-label={t`Комментарии: ${issue.commentCount}`}
             count={issue.commentCount}
             onClick={openComments}
           />

@@ -131,7 +131,7 @@ const serve = (role: PermissionRole = 'resident') =>
     }),
   )
 
-const commentButton = () => screen.getByRole('button', { name: 'Комментарии' })
+const commentButton = () => screen.getByRole('button', { name: /Комментарии/ })
 
 const commentField = () => screen.getByPlaceholderText('Наберите текст')
 
@@ -196,7 +196,7 @@ test('edge-cases 7: writing a comment on an issue appends it and increments the 
   const { currentPath, user } = renderApp('/issues?status=all')
   await screen.findByText('Не работает домофон')
   const issueCommentButton = () =>
-    screen.getByRole('button', { name: 'Комментарии' })
+    screen.getByRole('button', { name: /Комментарии/ })
   expect(within(issueCommentButton()).getByText('0')).toBeInTheDocument()
 
   await user.click(issueCommentButton())
