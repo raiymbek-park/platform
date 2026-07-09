@@ -3,11 +3,16 @@ import type { MediaPicker } from '@/shared/media'
 import type { IssueFormSubmit, IssueFormValues } from '../lib/validators'
 
 import { useLingui } from '@lingui/react/macro'
-import { Input, ScreenTitle, Textarea } from '@raiymbek-park/ui'
+import { Input, ScreenTitle } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 
-import { FormDock, FormScreen, inputState } from '@/shared/form'
+import {
+  FormScreen,
+  inputState,
+  SubmitDock,
+  TextareaField,
+} from '@/shared/form'
 import { MediaField } from '@/shared/media'
 
 import { issueFormSchema } from '../lib/validators'
@@ -103,31 +108,24 @@ export const IssueFormFields = ({
 
       <form.Field name='description'>
         {field => (
-          <Textarea
+          <TextareaField
+            field={field}
             label={t`Описание`}
             maxLength={1000}
             placeholder={t`Подробно опишите, что случилось и где…`}
-            state={inputState(field.state.meta)}
-            value={field.state.value}
-            onBlur={field.handleBlur}
-            onChange={event => field.handleChange(event.target.value)}
           />
         )}
       </form.Field>
 
       <MediaField label={t`Фото`} media={media} />
 
-      <form.Subscribe selector={state => state.canSubmit}>
-        {canSubmit => (
-          <FormDock
-            canSubmit={canSubmit}
-            isPending={isPending}
-            submitIcon={submitIcon}
-            submitLabel={submitLabel}
-            onBack={goBack}
-          />
-        )}
-      </form.Subscribe>
+      <SubmitDock
+        form={form}
+        isPending={isPending}
+        submitIcon={submitIcon}
+        submitLabel={submitLabel}
+        onBack={goBack}
+      />
     </FormScreen>
   )
 }

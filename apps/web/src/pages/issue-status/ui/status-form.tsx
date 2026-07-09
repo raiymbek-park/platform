@@ -3,11 +3,11 @@ import type { ClassificationTag } from '@raiymbek-park/shared/validation-schemas
 import type { StatusFormValues } from '../lib/validators'
 
 import { useLingui } from '@lingui/react/macro'
-import { ScreenTitle, Textarea } from '@raiymbek-park/ui'
+import { ScreenTitle } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 
-import { FormDock, FormScreen, inputState } from '@/shared/form'
+import { FormScreen, SubmitDock, TextareaField } from '@/shared/form'
 import { MediaField, useMediaPicker } from '@/shared/media'
 
 import { statusFormSchema } from '../lib/validators'
@@ -90,30 +90,23 @@ export const StatusForm = ({ issue }: StatusFormProps) => {
 
       <form.Field name='comment'>
         {field => (
-          <Textarea
+          <TextareaField
+            field={field}
             label={t`Комментарий`}
             maxLength={1000}
             placeholder={t`Добавьте комментарий к смене статуса…`}
-            state={inputState(field.state.meta)}
-            value={field.state.value}
-            onBlur={field.handleBlur}
-            onChange={event => field.handleChange(event.target.value)}
           />
         )}
       </form.Field>
 
-      <form.Subscribe selector={state => state.canSubmit}>
-        {canSubmit => (
-          <FormDock
-            backLabel={t`Отмена`}
-            canSubmit={canSubmit}
-            isPending={isPending}
-            submitIcon='check'
-            submitLabel={t`Сохранить`}
-            onBack={goBack}
-          />
-        )}
-      </form.Subscribe>
+      <SubmitDock
+        backLabel={t`Отмена`}
+        form={form}
+        isPending={isPending}
+        submitIcon='check'
+        submitLabel={t`Сохранить`}
+        onBack={goBack}
+      />
     </FormScreen>
   )
 }
