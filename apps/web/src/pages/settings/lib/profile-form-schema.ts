@@ -12,12 +12,11 @@ import {
   isApartmentInBlock,
   nameSchema,
   normalizePlate,
+  PLATE_MAX,
+  PLATE_MIN,
   roles,
 } from '@raiymbek-park/shared/validation-schemas'
 import { z } from 'zod'
-
-const PLATE_MIN = 5
-const PLATE_MAX = 10
 
 export type ProfileFormValues = {
   apartment: number

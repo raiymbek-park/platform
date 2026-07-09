@@ -91,16 +91,24 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
     },
     onSubmit: ({ value }) => {
       if (value.block === null) return
-      updateProfile.mutate({
-        apartment: value.apartment,
-        avatarFile,
-        avatarUrl,
-        block: value.block,
-        cars: value.cars.map(plate => plate.trim()).filter(Boolean),
-        isPhoneVisible: value.isPhoneVisible,
-        name: value.name.trim(),
-        role: value.role,
-      })
+      updateProfile.mutate(
+        {
+          apartment: value.apartment,
+          avatarFile,
+          avatarUrl,
+          block: value.block,
+          cars: value.cars.map(plate => plate.trim()).filter(Boolean),
+          isPhoneVisible: value.isPhoneVisible,
+          name: value.name.trim(),
+          role: value.role,
+        },
+        {
+          onSuccess: savedUrl => {
+            setAvatarFile(null)
+            setAvatarUrl(savedUrl)
+          },
+        },
+      )
     },
   })
 

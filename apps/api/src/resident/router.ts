@@ -5,6 +5,7 @@ import {
   profileUpdateSchema,
   registerInputSchema,
   resolveRole,
+  roles,
 } from '@raiymbek-park/shared/validation-schemas'
 import { TRPCError } from '@trpc/server'
 
@@ -71,7 +72,13 @@ export const residentRouter = router({
         })
       }
 
-      await updateResident(ctx.uid, input)
+      const current = await getResident(ctx.uid)
+      const hasResidencyRole =
+        !current || roles.some(role => role === current.role)
+      await updateResident(ctx.uid, {
+        ...input,
+        role: hasResidencyRole ? input.role : current.role,
+      })
       return { ok: true }
     }),
   markVisit: publicProcedure.mutation(async ({ ctx }) => {

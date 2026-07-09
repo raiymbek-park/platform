@@ -48,6 +48,7 @@ export const useUpdateProfile = () => {
         ...profile,
         avatarUrl: resolvedUrl,
       })
+      return resolvedUrl
     },
     onError: () =>
       showToastMessage({

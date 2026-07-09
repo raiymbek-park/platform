@@ -39,8 +39,8 @@ const NAME_MAX = 60
 
 export const CARS_MAX = 3
 
-const PLATE_MIN = 5
-const PLATE_MAX = 10
+export const PLATE_MIN = 5
+export const PLATE_MAX = 10
 
 export const normalizePlate = (value: string) =>
   value.replace(/\s/g, '').toUpperCase()
