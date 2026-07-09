@@ -8,6 +8,7 @@ import { Markdown } from '../markdown/markdown'
 import css from './message-bubble.module.scss'
 
 export type MessageBubbleProps = ComponentProps<'div'> & {
+  actionsLabel?: string
   authorName: string
   editedLabel?: ReactNode
   isEdited?: boolean
@@ -22,6 +23,7 @@ const rowCss = pickCss(css, css.row)
 const bubbleCss = pickCss(css, css.bubble)
 
 export const MessageBubble = ({
+  actionsLabel,
   authorName,
   className,
   editedLabel,
@@ -56,6 +58,7 @@ export const MessageBubble = ({
       {!isOwn && <Avatar name={authorName} />}
       {onActions ? (
         <button
+          aria-label={actionsLabel}
           className={bubbleCss({ isOwn })}
           type='button'
           onClick={onActions}

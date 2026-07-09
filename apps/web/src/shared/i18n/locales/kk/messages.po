@@ -147,9 +147,17 @@ msgstr "Келесі"
 msgid "Даром"
 msgstr "Тегін"
 
+#: src/pages/comments/ui/comment-thread.tsx:92
+msgid "Действия с сообщением"
+msgstr "Хабарламамен әрекеттер"
+
 #: src/shared/media/media-field.tsx:22
 msgid "Добавить"
 msgstr "Қосу"
+
+#: src/pages/comments/ui/comment-input-bar.tsx:157
+msgid "Добавить файл"
+msgstr "Файл қосу"
 
 #: src/pages/issue-status/ui/status-form.tsx:97
 msgid "Добавьте комментарий к смене статуса…"

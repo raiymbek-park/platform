@@ -89,6 +89,7 @@ export const CommentThread = ({
       {comments.map(comment => (
         <MessageBubble
           key={comment.id}
+          actionsLabel={t`Действия с сообщением`}
           authorName={comment.author.name}
           editedLabel={t`изменено`}
           isEdited={comment.editedAt !== null}

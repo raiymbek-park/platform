@@ -154,6 +154,7 @@ export const CommentInputBar = ({
       <input
         ref={fileRef}
         accept='image/*,video/*'
+        aria-label={t`Добавить файл`}
         hidden
         multiple
         type='file'

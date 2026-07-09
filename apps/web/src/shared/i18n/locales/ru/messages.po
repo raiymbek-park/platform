@@ -147,9 +147,17 @@ msgstr "Далее"
 msgid "Даром"
 msgstr "Даром"
 
+#: src/pages/comments/ui/comment-thread.tsx:92
+msgid "Действия с сообщением"
+msgstr "Действия с сообщением"
+
 #: src/shared/media/media-field.tsx:22
 msgid "Добавить"
 msgstr "Добавить"
+
+#: src/pages/comments/ui/comment-input-bar.tsx:157
+msgid "Добавить файл"
+msgstr "Добавить файл"
 
 #: src/pages/issue-status/ui/status-form.tsx:97
 msgid "Добавьте комментарий к смене статуса…"
