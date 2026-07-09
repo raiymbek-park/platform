@@ -52,8 +52,8 @@ category names refer to the values fixed in `prd.md`.
   When:  they select the status Planned, add the tag "Under warranty" and a comment, and save
   Then:  the issue's status becomes Planned
          the tag "Under warranty" is applied and the comment is recorded
-         the comment appears as a message in the issue's comment thread and the comment count
-         on the issue card increments
+         the comment appears as a message in the issue's comment thread
+         the comment count on the issue card increments
          a Resident viewing the same issue sees the status Planned
 
 ## Scenario 7: Change status in any direction
