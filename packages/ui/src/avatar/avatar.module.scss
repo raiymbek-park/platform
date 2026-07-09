@@ -1,0 +1,23 @@
+.avatar {
+  align-items: center;
+  background: var(--brand-soft);
+  border-radius: 180px;
+  color: var(--brand-text);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: var(--size, 40px);
+  justify-content: center;
+  overflow: hidden;
+  width: var(--size, 40px);
+}
+
+.initials {
+  font-size: 12px;
+  font-weight: var(--weight-bold);
+}
+
+.photo {
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}

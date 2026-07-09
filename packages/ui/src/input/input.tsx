@@ -14,6 +14,7 @@ export type InputProps = ComponentProps<'input'> & {
   state?: 'error' | 'success'
   tone?: IconChipTone
   trailing?: ReactNode
+  onIconClick?: () => void
 }
 
 const boxCss = pickCss(css, css.box)
@@ -31,12 +32,24 @@ export const Input = ({
   state,
   tone,
   trailing,
+  onIconClick,
   ...restProps
 }: InputProps) => (
   <label className={joinCss(css.input, className)}>
     {label && <span className={css.label}>{label}</span>}
     <span className={boxCss({ state })}>
-      {icon && <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />}
+      {icon &&
+        (onIconClick ? (
+          <button
+            className={css.iconButton}
+            type='button'
+            onClick={onIconClick}
+          >
+            <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />
+          </button>
+        ) : (
+          <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />
+        ))}
       <input className={css.field} ref={ref} {...restProps} />
       {trailing}
       {state && (
