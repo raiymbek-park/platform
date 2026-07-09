@@ -10,8 +10,8 @@
   font-weight: var(--weight-semibold);
   gap: 6px;
   justify-content: center;
-  min-width: 0;
   padding: 8px 16px;
+  white-space: nowrap;
 
   &-tone-info {
     background: var(--info-soft);

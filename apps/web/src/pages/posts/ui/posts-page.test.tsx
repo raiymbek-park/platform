@@ -1,5 +1,6 @@
 import type { Post } from '@raiymbek-park/api'
 import type {
+  PermissionRole,
   PostKind,
   PostTab,
   ReactionKind,
@@ -169,7 +170,7 @@ const listPage = (input: {
   }
 }
 
-const servePosts = (gate?: Promise<void>) =>
+const servePosts = (gate?: Promise<void>, role: PermissionRole = 'resident') =>
   trpcServer.use(
     trpcQueries({
       'posts.list': async (raw: unknown) => {
@@ -181,7 +182,7 @@ const servePosts = (gate?: Promise<void>) =>
         apartment: 42,
         block: 1,
         name: 'Алиса',
-        role: 'resident',
+        role,
       }),
     }),
     trpcMutation('posts.react', raw => {
@@ -385,4 +386,24 @@ test('error-states 1: a failed feed shows an error, and retrying recovers it', a
   await user.click(screen.getByRole('button', { name: 'Повторить' }))
 
   expect(await screen.findByText('Продам горный велосипед')).toBeInTheDocument()
+})
+
+test('validation 8: a Viewer sees no create entry on the feed', async () => {
+  servePosts(undefined, 'viewer')
+  renderApp('/posts?tab=all')
+  await screen.findByText('Продам горный велосипед')
+
+  expect(
+    screen.queryByRole('link', { name: 'Новое объявление' }),
+  ).not.toBeInTheDocument()
+})
+
+test('validation 8: a Resident sees the create entry on the feed', async () => {
+  servePosts()
+  renderApp('/posts?tab=all')
+  await screen.findByText('Продам горный велосипед')
+
+  expect(
+    screen.getByRole('link', { name: 'Новое объявление' }),
+  ).toBeInTheDocument()
 })

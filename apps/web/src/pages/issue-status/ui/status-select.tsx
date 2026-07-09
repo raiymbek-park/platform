@@ -2,7 +2,7 @@ import type { IssueStatus } from '@raiymbek-park/shared/validation-schemas'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { SelectField } from '@/shared/issue'
+import { SelectField } from '@/shared/form'
 
 import { useStatusOptions } from '../model/use-status-options'
 

@@ -7,8 +7,7 @@ import { ScreenTitle, Textarea } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 
-import { inputState } from '@/shared/form'
-import { FormDock, IssueFormScreen } from '@/shared/issue'
+import { FormDock, FormScreen, inputState } from '@/shared/form'
 import { MediaField, useMediaPicker } from '@/shared/media'
 
 import { statusFormSchema } from '../lib/validators'
@@ -60,7 +59,7 @@ export const StatusForm = ({ issue }: StatusFormProps) => {
   const goBack = () => navigate({ search: { status: 'new' }, to: '/issues' })
 
   return (
-    <IssueFormScreen onSubmit={form.handleSubmit}>
+    <FormScreen onSubmit={form.handleSubmit}>
       <ScreenTitle
         subtitle={t`Заявка №${issue.number} · ${currentLabel}`}
         title={t`Смена статуса`}
@@ -115,6 +114,6 @@ export const StatusForm = ({ issue }: StatusFormProps) => {
           />
         )}
       </form.Subscribe>
-    </IssueFormScreen>
+    </FormScreen>
   )
 }

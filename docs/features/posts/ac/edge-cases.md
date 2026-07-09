@@ -60,4 +60,22 @@ Boundary conditions.
   Given: the shared Markdown renderer
   When:  it renders a post body, a comment (post or issue), and an issue description
   Then:  all render the same safe GFM subset with identical behaviour; only the source text differs
+
+## Scenario 12: Title at the exact length boundary is accepted
+  Given: the create/edit form (either kind)
+  When:  the trimmed title is exactly 3 characters, or exactly 80 characters
+  Then:  the form allows submission
+         the title is not flagged
+
+## Scenario 13: Description at the exact length boundary is accepted
+  Given: the create/edit form (either kind)
+  When:  the trimmed description is exactly 10 characters, or exactly 1000 characters
+  Then:  the form allows submission
+         the description is not flagged
+
+## Scenario 14: Media at the exact count and size boundary is accepted
+  Given: the create/edit form
+  When:  the member attaches exactly 10 media items whose combined size is exactly 200 MB
+  Then:  the form allows submission
+         no limit is surfaced
 </content>

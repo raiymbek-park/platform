@@ -1,10 +1,10 @@
 import type { ClassificationTag } from '@raiymbek-park/shared/validation-schemas'
 import type { IconChipTone, IconGlyph } from '@raiymbek-park/ui'
-import type { SelectFieldOption } from '@/shared/issue'
+import type { SelectFieldOption } from '@/shared/form'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { SelectField } from '@/shared/issue'
+import { SelectField } from '@/shared/form'
 
 import { useTagOptions } from '../model/use-tag-options'
 

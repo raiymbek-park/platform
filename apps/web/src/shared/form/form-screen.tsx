@@ -2,19 +2,19 @@ import type { ReactNode } from 'react'
 
 import { Content, ScreenHeader } from '@raiymbek-park/ui'
 
-import css from './issue-form-screen.module.scss'
+import css from './form-screen.module.scss'
 
-type IssueFormScreenProps = {
+type FormScreenProps = {
   children: ReactNode
   illustration?: string
   onSubmit: () => void
 }
 
-export const IssueFormScreen = ({
+export const FormScreen = ({
   children,
   illustration,
   onSubmit,
-}: IssueFormScreenProps) => (
+}: FormScreenProps) => (
   <form
     className={css.form}
     onSubmit={event => {

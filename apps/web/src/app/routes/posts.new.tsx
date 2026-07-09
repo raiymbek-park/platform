@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { PlaceholderPage } from '@/pages/placeholder'
+import { PostFormPage } from '@/pages/post-form'
 
 export const Route = createFileRoute('/posts/new')({
-  component: () => <PlaceholderPage active='/posts' title='Новое объявление' />,
+  component: PostFormPage,
 })
