@@ -25,8 +25,10 @@ import { Route as OnboardingLockedRouteImport } from './routes/onboarding.locked
 import { Route as OnboardingLanguageRouteImport } from './routes/onboarding.language'
 import { Route as IssuesNewRouteImport } from './routes/issues.new'
 import { Route as PostsEditPostIdRouteImport } from './routes/posts.edit.$postId'
+import { Route as PostsPostIdCommentsRouteImport } from './routes/posts.$postId.comments'
 import { Route as IssuesStatusIssueIdRouteImport } from './routes/issues.status.$issueId'
 import { Route as IssuesEditIssueIdRouteImport } from './routes/issues.edit.$issueId'
+import { Route as IssuesIssueIdCommentsRouteImport } from './routes/issues.$issueId.comments'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
@@ -108,6 +110,11 @@ const PostsEditPostIdRoute = PostsEditPostIdRouteImport.update({
   path: '/edit/$postId',
   getParentRoute: () => PostsRoute,
 } as any)
+const PostsPostIdCommentsRoute = PostsPostIdCommentsRouteImport.update({
+  id: '/$postId/comments',
+  path: '/$postId/comments',
+  getParentRoute: () => PostsRoute,
+} as any)
 const IssuesStatusIssueIdRoute = IssuesStatusIssueIdRouteImport.update({
   id: '/status/$issueId',
   path: '/status/$issueId',
@@ -116,6 +123,11 @@ const IssuesStatusIssueIdRoute = IssuesStatusIssueIdRouteImport.update({
 const IssuesEditIssueIdRoute = IssuesEditIssueIdRouteImport.update({
   id: '/edit/$issueId',
   path: '/edit/$issueId',
+  getParentRoute: () => IssuesRoute,
+} as any)
+const IssuesIssueIdCommentsRoute = IssuesIssueIdCommentsRouteImport.update({
+  id: '/$issueId/comments',
+  path: '/$issueId/comments',
   getParentRoute: () => IssuesRoute,
 } as any)
 
@@ -135,8 +147,10 @@ export interface FileRoutesByFullPath {
   '/issues/': typeof IssuesIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/posts/': typeof PostsIndexRoute
+  '/issues/$issueId/comments': typeof IssuesIssueIdCommentsRoute
   '/issues/edit/$issueId': typeof IssuesEditIssueIdRoute
   '/issues/status/$issueId': typeof IssuesStatusIssueIdRoute
+  '/posts/$postId/comments': typeof PostsPostIdCommentsRoute
   '/posts/edit/$postId': typeof PostsEditPostIdRoute
 }
 export interface FileRoutesByTo {
@@ -152,8 +166,10 @@ export interface FileRoutesByTo {
   '/issues': typeof IssuesIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
   '/posts': typeof PostsIndexRoute
+  '/issues/$issueId/comments': typeof IssuesIssueIdCommentsRoute
   '/issues/edit/$issueId': typeof IssuesEditIssueIdRoute
   '/issues/status/$issueId': typeof IssuesStatusIssueIdRoute
+  '/posts/$postId/comments': typeof PostsPostIdCommentsRoute
   '/posts/edit/$postId': typeof PostsEditPostIdRoute
 }
 export interface FileRoutesById {
@@ -173,8 +189,10 @@ export interface FileRoutesById {
   '/issues/': typeof IssuesIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/posts/': typeof PostsIndexRoute
+  '/issues/$issueId/comments': typeof IssuesIssueIdCommentsRoute
   '/issues/edit/$issueId': typeof IssuesEditIssueIdRoute
   '/issues/status/$issueId': typeof IssuesStatusIssueIdRoute
+  '/posts/$postId/comments': typeof PostsPostIdCommentsRoute
   '/posts/edit/$postId': typeof PostsEditPostIdRoute
 }
 export interface FileRouteTypes {
@@ -195,8 +213,10 @@ export interface FileRouteTypes {
     | '/issues/'
     | '/onboarding/'
     | '/posts/'
+    | '/issues/$issueId/comments'
     | '/issues/edit/$issueId'
     | '/issues/status/$issueId'
+    | '/posts/$postId/comments'
     | '/posts/edit/$postId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -212,8 +232,10 @@ export interface FileRouteTypes {
     | '/issues'
     | '/onboarding'
     | '/posts'
+    | '/issues/$issueId/comments'
     | '/issues/edit/$issueId'
     | '/issues/status/$issueId'
+    | '/posts/$postId/comments'
     | '/posts/edit/$postId'
   id:
     | '__root__'
@@ -232,8 +254,10 @@ export interface FileRouteTypes {
     | '/issues/'
     | '/onboarding/'
     | '/posts/'
+    | '/issues/$issueId/comments'
     | '/issues/edit/$issueId'
     | '/issues/status/$issueId'
+    | '/posts/$postId/comments'
     | '/posts/edit/$postId'
   fileRoutesById: FileRoutesById
 }
@@ -360,6 +384,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsEditPostIdRouteImport
       parentRoute: typeof PostsRoute
     }
+    '/posts/$postId/comments': {
+      id: '/posts/$postId/comments'
+      path: '/$postId/comments'
+      fullPath: '/posts/$postId/comments'
+      preLoaderRoute: typeof PostsPostIdCommentsRouteImport
+      parentRoute: typeof PostsRoute
+    }
     '/issues/status/$issueId': {
       id: '/issues/status/$issueId'
       path: '/status/$issueId'
@@ -374,12 +405,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IssuesEditIssueIdRouteImport
       parentRoute: typeof IssuesRoute
     }
+    '/issues/$issueId/comments': {
+      id: '/issues/$issueId/comments'
+      path: '/$issueId/comments'
+      fullPath: '/issues/$issueId/comments'
+      preLoaderRoute: typeof IssuesIssueIdCommentsRouteImport
+      parentRoute: typeof IssuesRoute
+    }
   }
 }
 
 interface IssuesRouteChildren {
   IssuesNewRoute: typeof IssuesNewRoute
   IssuesIndexRoute: typeof IssuesIndexRoute
+  IssuesIssueIdCommentsRoute: typeof IssuesIssueIdCommentsRoute
   IssuesEditIssueIdRoute: typeof IssuesEditIssueIdRoute
   IssuesStatusIssueIdRoute: typeof IssuesStatusIssueIdRoute
 }
@@ -387,6 +426,7 @@ interface IssuesRouteChildren {
 const IssuesRouteChildren: IssuesRouteChildren = {
   IssuesNewRoute: IssuesNewRoute,
   IssuesIndexRoute: IssuesIndexRoute,
+  IssuesIssueIdCommentsRoute: IssuesIssueIdCommentsRoute,
   IssuesEditIssueIdRoute: IssuesEditIssueIdRoute,
   IssuesStatusIssueIdRoute: IssuesStatusIssueIdRoute,
 }
@@ -417,12 +457,14 @@ const OnboardingRouteWithChildren = OnboardingRoute._addFileChildren(
 interface PostsRouteChildren {
   PostsNewRoute: typeof PostsNewRoute
   PostsIndexRoute: typeof PostsIndexRoute
+  PostsPostIdCommentsRoute: typeof PostsPostIdCommentsRoute
   PostsEditPostIdRoute: typeof PostsEditPostIdRoute
 }
 
 const PostsRouteChildren: PostsRouteChildren = {
   PostsNewRoute: PostsNewRoute,
   PostsIndexRoute: PostsIndexRoute,
+  PostsPostIdCommentsRoute: PostsPostIdCommentsRoute,
   PostsEditPostIdRoute: PostsEditPostIdRoute,
 }
 

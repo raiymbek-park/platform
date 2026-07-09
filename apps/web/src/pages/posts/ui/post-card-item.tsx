@@ -51,6 +51,9 @@ export const PostCardItem = ({
   const editPost = () =>
     navigate({ params: { postId: post.id }, to: '/posts/edit/$postId' })
 
+  const openComments = () =>
+    navigate({ params: { postId: post.id }, to: '/posts/$postId/comments' })
+
   const hasActions = canEdit || canDelete
 
   const contacts: PostCardContact[] =
@@ -135,7 +138,11 @@ export const PostCardItem = ({
             kind='dislike'
             onClick={() => onReact(post.id, 'dislike', post.myReaction)}
           />
-          <CommentCount count={post.commentCount} />
+          <CommentCount
+            aria-label={t`Комментарии`}
+            count={post.commentCount}
+            onClick={openComments}
+          />
         </>
       }
       tags={cardTags(post)}
