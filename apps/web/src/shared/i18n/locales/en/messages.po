@@ -37,14 +37,18 @@ msgstr "Block"
 #. placeholder {1}: issue.apartment
 #. placeholder {1}: post.apartment
 #: src/pages/home/ui/building-hero.tsx:15
-#: src/pages/issues/ui/issue-card-item.tsx:84
-#: src/pages/posts/ui/post-card-item.tsx:79
+#: src/pages/issues/ui/issue-card-item.tsx:87
+#: src/pages/posts/ui/post-card-item.tsx:82
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
 
 #: src/features/onboarding/ui/registration-form.tsx:179
 msgid "Блок {block}"
 msgstr "Block {block}"
+
+#: src/pages/comments/ui/comment-thread.tsx:81
+msgid "Будьте первым, кто оставит комментарий."
+msgstr "Be the first to leave a comment."
 
 #: src/pages/issue-status/model/use-status-options.ts:22
 #: src/pages/issues/model/use-issue-badges.ts:46
@@ -210,6 +214,7 @@ msgstr "Title"
 msgid "Загрузка последних событий…"
 msgstr "Loading recent events…"
 
+#: src/pages/comments/ui/comment-thread.tsx:63
 #: src/pages/home/ui/contacts-section.tsx:17
 #: src/pages/post-form/ui/query-screens.tsx:11
 #: src/shared/issue/issue-loader.tsx:23
@@ -314,6 +319,10 @@ msgstr "Changes saved."
 msgid "Изменения сохранены. Файлов не загрузилось: {count}"
 msgstr "Changes saved. Files not uploaded: {count}"
 
+#: src/pages/comments/ui/comment-thread.tsx:94
+msgid "изменено"
+msgstr "edited"
+
 #: src/pages/issue-form/ui/edit-issue-form.tsx:28
 msgid "Измените заявку и сохраните изменения."
 msgstr "Edit the issue and save your changes."
@@ -346,6 +355,12 @@ msgstr "Apartment is outside the selected block's range"
 #: src/features/onboarding/ui/otp-verification.tsx:107
 msgid "Код подтверждения"
 msgstr "Verification code"
+
+#: src/pages/comments/ui/comments-page.tsx:71
+#: src/pages/issues/ui/issue-card-item.tsx:152
+#: src/pages/posts/ui/post-card-item.tsx:142
+msgid "Комментарии"
+msgstr "Comments"
 
 #: src/pages/issue-status/ui/status-form.tsx:95
 msgid "Комментарий"
@@ -384,8 +399,13 @@ msgstr "Under resident review"
 msgid "На рассмотрении жильцов"
 msgstr "Under resident review"
 
+#: src/pages/comments/ui/comment-input-bar.tsx:128
+msgid "Наберите текст"
+msgstr "Type a message"
+
 #: src/features/onboarding/ui/otp-actions.tsx:32
 #: src/features/onboarding/ui/registration-form.tsx:260
+#: src/pages/comments/ui/comments-header.tsx:19
 #: src/shared/form/form-dock.tsx:31
 msgid "Назад"
 msgstr "Back"
@@ -408,8 +428,8 @@ msgstr "Settings"
 msgid "Не найдено ни одной заявки."
 msgstr "No issues found."
 
-#: src/pages/issues/ui/issue-card-item.tsx:141
-#: src/pages/posts/ui/post-card-item.tsx:131
+#: src/pages/issues/ui/issue-card-item.tsx:144
+#: src/pages/posts/ui/post-card-item.tsx:134
 msgid "Не нравится"
 msgstr "Dislike"
 
@@ -453,6 +473,10 @@ msgstr "Couldn't send the code. Please try again."
 #~ msgid "Не удалось отправить код. Проверьте соединение и попробуйте снова."
 #~ msgstr "Failed to send the code. Check your connection and try again."
 
+#: src/pages/comments/ui/comment-input-bar.tsx:56
+msgid "Не удалось отправить сообщение. Попробуйте ещё раз."
+msgstr "Failed to send the message. Please try again."
+
 #: src/features/onboarding/ui/otp-verification.tsx:37
 msgid "Не удалось проверить код. Проверьте соединение."
 msgstr "Couldn't verify the code. Check your connection."
@@ -470,6 +494,7 @@ msgstr "Could not change the status. Please try again."
 msgid "Не удалось сохранить заявку. Попробуйте ещё раз."
 msgstr "Could not save the issue. Please try again."
 
+#: src/pages/comments/ui/comment-input-bar.tsx:80
 #: src/pages/issue-form/model/use-update-issue.ts:31
 #: src/pages/post-form/model/use-update-post.ts:38
 msgid "Не удалось сохранить изменения. Попробуйте ещё раз."
@@ -482,6 +507,10 @@ msgstr "Could not delete the issue. Please try again."
 #: src/pages/posts/model/use-post-deletion.ts:21
 msgid "Не удалось удалить объявление. Попробуйте ещё раз."
 msgstr "Failed to delete the post. Please try again."
+
+#: src/pages/comments/ui/comments-page.tsx:58
+msgid "Не удалось удалить сообщение. Попробуйте ещё раз."
+msgstr "Failed to delete the message. Please try again."
 
 #: src/features/onboarding/ui/otp-verification.tsx:36
 msgid "Неверный код. Попробуйте ещё раз."
@@ -543,8 +572,8 @@ msgstr "No new events yet."
 msgid "Номер квартиры"
 msgstr "Apartment number"
 
-#: src/pages/issues/ui/issue-card-item.tsx:133
-#: src/pages/posts/ui/post-card-item.tsx:123
+#: src/pages/issues/ui/issue-card-item.tsx:136
+#: src/pages/posts/ui/post-card-item.tsx:126
 msgid "Нравится"
 msgstr "Like"
 
@@ -611,12 +640,16 @@ msgstr "Giving away for free"
 msgid "Отклонено"
 msgstr "Rejected"
 
+#: src/pages/comments/ui/comment-actions-sheet.tsx:35
+#: src/pages/comments/ui/comment-delete-confirm.tsx:21
+#: src/pages/comments/ui/comment-input-bar.tsx:133
 #: src/pages/issue-status/ui/status-form.tsx:103
 #: src/pages/issues/ui/issue-delete-confirm.tsx:21
 #: src/pages/posts/ui/post-delete-confirm.tsx:21
 msgid "Отмена"
 msgstr "Cancel"
 
+#: src/pages/comments/ui/comment-input-bar.tsx:140
 #: src/pages/issue-form/ui/create-issue-form.tsx:28
 msgid "Отправить"
 msgstr "Submit"
@@ -636,6 +669,7 @@ msgid "По гарантии"
 msgstr "Under warranty"
 
 #: src/features/onboarding/ui/account-locked.tsx:61
+#: src/pages/comments/ui/comment-thread.tsx:71
 #: src/pages/issues/ui/issue-list.tsx:71
 #: src/pages/post-form/ui/query-screens.tsx:27
 #: src/pages/posts/ui/post-list.tsx:71
@@ -659,8 +693,8 @@ msgstr "Submit a request to the management company"
 msgid "Поддерживается разметка Markdown."
 msgstr "Markdown formatting is supported."
 
-#: src/pages/issues/ui/issue-card-item.tsx:126
-#: src/pages/posts/ui/post-card-item.tsx:115
+#: src/pages/issues/ui/issue-card-item.tsx:129
+#: src/pages/posts/ui/post-card-item.tsx:118
 msgid "Подробнее"
 msgstr "Details"
 
@@ -691,6 +725,10 @@ msgstr "Nothing happened while you were away."
 #: src/features/onboarding/ui/account-locked.tsx:31
 msgid "Пока не получается отправить код. Попробуйте чуть позже."
 msgstr "Can't send the code right now. Please try again a bit later."
+
+#: src/pages/comments/ui/comment-thread.tsx:82
+msgid "Пока нет комментариев"
+msgstr "No comments yet"
 
 #: src/pages/posts/ui/post-list.tsx:84
 msgid "Пока нет ни одного объявления."
@@ -745,8 +783,9 @@ msgstr "Post a private ad for the residents of our complex."
 msgid "Расскажите подробнее о вашем объявлении…"
 msgstr "Tell us more about your post…"
 
-#: src/pages/issues/ui/issue-card-item.tsx:96
-#: src/pages/posts/ui/post-card-item.tsx:92
+#: src/pages/comments/ui/comment-actions-sheet.tsx:31
+#: src/pages/issues/ui/issue-card-item.tsx:99
+#: src/pages/posts/ui/post-card-item.tsx:95
 msgid "Редактировать"
 msgstr "Edit"
 
@@ -775,8 +814,8 @@ msgstr "Resolution is on hold"
 msgid "Роль"
 msgstr "Role"
 
-#: src/pages/issues/ui/issue-card-item.tsx:122
-#: src/pages/posts/ui/post-card-item.tsx:110
+#: src/pages/issues/ui/issue-card-item.tsx:125
+#: src/pages/posts/ui/post-card-item.tsx:113
 msgid "Свернуть"
 msgstr "Collapse"
 
@@ -813,7 +852,7 @@ msgstr "Too many attempts. Wait a little and try again."
 msgid "Смена статуса"
 msgstr "Change status"
 
-#: src/pages/issues/ui/issue-card-item.tsx:104
+#: src/pages/issues/ui/issue-card-item.tsx:107
 msgid "Сменить статус"
 msgstr "Change status"
 
@@ -837,6 +876,15 @@ msgstr "Create a request"
 msgid "Создать объявление"
 msgstr "Create an announcement"
 
+#: src/pages/comments/ui/comment-input-bar.tsx:64
+msgid "Сообщение отправлено. Файлов не загрузилось: {failedCount}"
+msgstr "Message sent. Files not uploaded: {failedCount}"
+
+#: src/pages/comments/ui/comments-page.tsx:63
+msgid "Сообщение удалено."
+msgstr "Message deleted."
+
+#: src/pages/comments/ui/comment-input-bar.tsx:140
 #: src/pages/issue-form/ui/edit-issue-form.tsx:27
 #: src/pages/issue-status/ui/status-form.tsx:107
 #: src/pages/post-form/ui/edit-post-form.tsx:31
@@ -906,9 +954,11 @@ msgstr "Notice"
 msgid "Уведомления"
 msgstr "Notices"
 
-#: src/pages/issues/ui/issue-card-item.tsx:112
+#: src/pages/comments/ui/comment-delete-confirm.tsx:22
+#: src/pages/comments/ui/comment-input-bar.tsx:112
+#: src/pages/issues/ui/issue-card-item.tsx:115
 #: src/pages/issues/ui/issue-delete-confirm.tsx:22
-#: src/pages/posts/ui/post-card-item.tsx:100
+#: src/pages/posts/ui/post-card-item.tsx:103
 #: src/pages/posts/ui/post-delete-confirm.tsx:22
 #: src/shared/media/media-field.tsx:24
 msgid "Удалить"
@@ -921,6 +971,14 @@ msgstr "Delete the issue?"
 #: src/pages/posts/ui/post-delete-confirm.tsx:27
 msgid "Удалить объявление?"
 msgstr "Delete this post?"
+
+#: src/pages/comments/ui/comment-actions-sheet.tsx:27
+msgid "Удалить сообщение"
+msgstr "Delete message"
+
+#: src/pages/comments/ui/comment-delete-confirm.tsx:27
+msgid "Удалить сообщение?"
+msgstr "Delete message?"
 
 #: src/pages/post-form/model/use-post-categories.ts:76
 #: src/pages/posts/model/use-post-badges.ts:70
@@ -973,7 +1031,7 @@ msgstr "Private ads"
 msgid "Чат дома в WhatsApp"
 msgstr "Building chat on WhatsApp"
 
-#: src/pages/posts/ui/post-card-item.tsx:115
+#: src/pages/posts/ui/post-card-item.tsx:118
 msgid "Читать далее"
 msgstr "Read more"
 
@@ -988,6 +1046,10 @@ msgstr "This action cannot be undone. The post will be permanently deleted."
 #: src/pages/issues/ui/issue-delete-confirm.tsx:26
 msgid "Это действие нельзя отменить. Заявка будет удалена безвозвратно."
 msgstr "This action cannot be undone. The issue will be permanently deleted."
+
+#: src/pages/comments/ui/comment-delete-confirm.tsx:26
+msgid "Это действие нельзя отменить. Сообщение будет удалено безвозвратно."
+msgstr "This action cannot be undone. The message will be permanently deleted."
 
 #: src/pages/onboarding/ui/language-page.tsx:60
 msgid "Язык"
