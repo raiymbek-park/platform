@@ -1,3 +1,4 @@
+export { formatPhoneDisplay } from './lib/format-phone-display'
 export { useConfirmationStore } from './model/use-confirmation-store'
 export { useOnboardingStore } from './model/use-onboarding-store'
 export { AccountLocked } from './ui/account-locked'
