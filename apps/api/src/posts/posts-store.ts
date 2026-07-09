@@ -7,14 +7,9 @@ import type {
   PostUpdateInput,
   ReactionKind,
 } from '@raiymbek-park/shared/validation-schemas'
-import type {
-  DocumentData,
-  DocumentReference,
-  Transaction,
-} from 'firebase-admin/firestore'
+import type { DocumentData } from 'firebase-admin/firestore'
 import type { WriteOutcome } from '../store-helpers'
 
-import { searchTerms } from '@raiymbek-park/shared'
 import {
   announcementCategories,
   offerCategories,
@@ -26,6 +21,8 @@ import { FieldValue, getDb, Timestamp } from '../firestore'
 import { getResident, residentSnapshot } from '../resident/resident-store'
 import { deletePostMedia } from '../storage'
 import {
+  modifyWithOutcome,
+  searchedPage,
   toggleReaction,
   toMillis,
   toNumber,
@@ -34,8 +31,6 @@ import {
   toText,
 } from '../store-helpers'
 import { buildPostKeywords } from './keywords'
-
-const SEARCH_TERM_LIMIT = 30
 
 export type PostAuthor = {
   apartment: number
@@ -152,15 +147,7 @@ export const listPosts = async ({
 }: ListPostsInput): Promise<ListPostsResult> => {
   const kind = kindForTab(tab)
   const scoped = kind ? collection().where('kind', '==', kind) : collection()
-  const terms = searchTerms(search ?? '').slice(0, SEARCH_TERM_LIMIT)
-  const searched = terms.length
-    ? scoped.where('keywords', 'array-contains-any', terms)
-    : scoped
-  const ordered = searched.orderBy('createdAt', 'desc')
-  const paged =
-    cursor === undefined
-      ? ordered
-      : ordered.startAfter(Timestamp.fromMillis(cursor))
+  const { paged, terms } = searchedPage(scoped, search, cursor)
   const isFirstPlainPage = cursor === undefined && terms.length === 0
   const [pinned, snap] = await Promise.all([
     isFirstPlainPage ? listPinned(kind, uid) : Promise.resolve([]),
@@ -219,35 +206,26 @@ const canModifyPost = (
   role: PermissionRole,
 ): boolean => toText(data.authorId) === uid || role === 'administration'
 
-const modifyPost = (
-  ref: DocumentReference,
-  uid: string,
-  role: PermissionRole,
-  write: (transaction: Transaction, data: DocumentData) => void,
-): Promise<WriteOutcome> =>
-  getDb().runTransaction<WriteOutcome>(async transaction => {
-    const snap = await transaction.get(ref)
-    if (!snap.exists) return 'not-found'
-    const data = snap.data() ?? {}
-    if (!canModifyPost(data, uid, role)) return 'forbidden'
-    write(transaction, data)
-    return 'ok'
-  })
-
 export const updatePost = (
   uid: string,
   role: PermissionRole,
   input: PostUpdateInput,
 ): Promise<WriteOutcome> => {
   const ref = collection().doc(input.id)
-  return modifyPost(ref, uid, role, transaction => {
-    transaction.update(ref, {
-      category: input.category,
-      description: input.description,
-      keywords: buildPostKeywords(input.title),
-      media: input.media,
-      title: input.title,
-    })
+  return modifyWithOutcome({
+    canModify: canModifyPost,
+    ref,
+    role,
+    uid,
+    write: transaction => {
+      transaction.update(ref, {
+        category: input.category,
+        description: input.description,
+        keywords: buildPostKeywords(input.title),
+        media: input.media,
+        title: input.title,
+      })
+    },
   })
 }
 
@@ -257,9 +235,13 @@ export const deletePost = async (
   postId: string,
 ): Promise<WriteOutcome> => {
   const ref = collection().doc(postId)
-  const outcome = await modifyPost(ref, uid, role, transaction =>
-    transaction.delete(ref),
-  )
+  const outcome = await modifyWithOutcome({
+    canModify: canModifyPost,
+    ref,
+    role,
+    uid,
+    write: transaction => transaction.delete(ref),
+  })
   if (outcome === 'ok') await deletePostMedia(postId).catch(() => undefined)
   return outcome
 }

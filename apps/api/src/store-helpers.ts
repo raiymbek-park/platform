@@ -1,6 +1,15 @@
-import type { ReactionKind } from '@raiymbek-park/shared/validation-schemas'
-import type { DocumentReference } from 'firebase-admin/firestore'
+import type {
+  PermissionRole,
+  ReactionKind,
+} from '@raiymbek-park/shared/validation-schemas'
+import type {
+  DocumentData,
+  DocumentReference,
+  Query,
+  Transaction,
+} from 'firebase-admin/firestore'
 
+import { searchTerms } from '@raiymbek-park/shared'
 import { reactionKinds } from '@raiymbek-park/shared/validation-schemas'
 
 import { getDb, Timestamp } from './firestore'
@@ -48,4 +57,47 @@ export const toggleReaction = (
         : { ...reactions, [uid]: kind }
     transaction.update(ref, { reactions: next })
     return true
+  })
+
+const SEARCH_TERM_LIMIT = 30
+
+export const searchedPage = (
+  scoped: Query,
+  search: string | undefined,
+  cursor: number | undefined,
+): { paged: Query; terms: string[] } => {
+  const terms = searchTerms(search ?? '').slice(0, SEARCH_TERM_LIMIT)
+  const searched = terms.length
+    ? scoped.where('keywords', 'array-contains-any', terms)
+    : scoped
+  const ordered = searched.orderBy('createdAt', 'desc')
+  const paged =
+    cursor === undefined
+      ? ordered
+      : ordered.startAfter(Timestamp.fromMillis(cursor))
+  return { paged, terms }
+}
+
+type ModifyOptions = {
+  canModify: (data: DocumentData, uid: string, role: PermissionRole) => boolean
+  ref: DocumentReference
+  role: PermissionRole
+  uid: string
+  write: (transaction: Transaction, data: DocumentData) => void
+}
+
+export const modifyWithOutcome = ({
+  canModify,
+  ref,
+  role,
+  uid,
+  write,
+}: ModifyOptions): Promise<WriteOutcome> =>
+  getDb().runTransaction<WriteOutcome>(async transaction => {
+    const snap = await transaction.get(ref)
+    if (!snap.exists) return 'not-found'
+    const data = snap.data() ?? {}
+    if (!canModify(data, uid, role)) return 'forbidden'
+    write(transaction, data)
+    return 'ok'
   })
