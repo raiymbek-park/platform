@@ -122,6 +122,7 @@ export const CommentInputBar = ({
       )}
       <div className={css.row}>
         <Input
+          className={css.compose}
           disabled={isPending}
           icon={isEditing ? 'pen-line' : 'image-plus'}
           iconButtonLabel={t`Добавить файл`}

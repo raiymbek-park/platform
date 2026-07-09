@@ -41,7 +41,11 @@
   flex-direction: column;
   gap: 6px;
   min-width: 0;
-  padding: 10px 16px 16px;
+  overflow: hidden;
+
+  > :last-child:not(.gallery) {
+    padding-bottom: 16px;
+  }
 
   &-is-own {
     background: var(--brand-subtle);
@@ -61,6 +65,7 @@
   display: flex;
   gap: 8px;
   justify-content: space-between;
+  padding: 10px 16px 0;
 }
 
 .name {
@@ -77,16 +82,17 @@
 }
 
 .gallery {
-  border-radius: 12px;
   height: 245px;
   overflow: hidden;
 }
 
 .text {
   font-size: 15px;
+  padding: 0 16px;
 }
 
 .edited {
   color: var(--text-muted);
   font-size: 13px;
+  padding: 0 16px;
 }
