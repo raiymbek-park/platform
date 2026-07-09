@@ -10,6 +10,7 @@ vi.mock('./resident-store', () => ({
   createResident: vi.fn(),
   getResident: vi.fn(),
   markVisit: vi.fn(),
+  updateResident: vi.fn(),
 }))
 
 const mockGetResident = vi.mocked(getResident)
@@ -55,17 +56,24 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
     })
     await expect(caller.me()).resolves.toEqual({
       apartment: 0,
+      avatarUrl: null,
       block: 0,
+      cars: [],
       id: null,
+      isPhoneVisible: false,
       name: '',
+      phone: '',
       role: 'resident',
     })
   })
 
-  it('returns the profile without the phone for an existing resident', async () => {
+  it('returns the own profile including the phone for an existing resident', async () => {
     mockGetResident.mockResolvedValueOnce({
       apartment: 42,
+      avatarUrl: null,
       block: 1,
+      cars: [],
+      isPhoneVisible: false,
       name: 'Иван Петров',
       phone: '+77071234567',
       role: 'owner',
@@ -77,9 +85,13 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
     })
     await expect(caller.me()).resolves.toEqual({
       apartment: 42,
+      avatarUrl: null,
       block: 1,
+      cars: [],
       id: 'uid-1',
+      isPhoneVisible: false,
       name: 'Иван Петров',
+      phone: '+77071234567',
       role: 'owner',
     })
   })

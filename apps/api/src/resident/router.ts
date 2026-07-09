@@ -2,27 +2,41 @@ import type { PermissionRole } from '@raiymbek-park/shared/validation-schemas'
 
 import {
   DEFAULT_PERMISSION_ROLE,
+  profileUpdateSchema,
   registerInputSchema,
   resolveRole,
 } from '@raiymbek-park/shared/validation-schemas'
 import { TRPCError } from '@trpc/server'
 
 import { publicProcedure, router } from '../trpc'
-import { createResident, getResident, markVisit } from './resident-store'
+import {
+  createResident,
+  getResident,
+  markVisit,
+  updateResident,
+} from './resident-store'
 
 export type ResidentProfile = {
   apartment: number
+  avatarUrl: string | null
   block: number
+  cars: string[]
   id: string | null
+  isPhoneVisible: boolean
   name: string
+  phone: string
   role: PermissionRole
 }
 
 const emptyProfile: ResidentProfile = {
   apartment: 0,
+  avatarUrl: null,
   block: 0,
+  cars: [],
   id: null,
+  isPhoneVisible: false,
   name: '',
+  phone: '',
   role: DEFAULT_PERMISSION_ROLE,
 }
 
@@ -37,9 +51,28 @@ export const residentRouter = router({
         })
       }
 
-      const stored = { ...resident, phone: ctx.phone ?? resident.phone }
+      const stored = {
+        ...resident,
+        avatarUrl: null,
+        cars: [],
+        isPhoneVisible: false,
+        phone: ctx.phone ?? resident.phone,
+      }
       await createResident(ctx.uid, stored)
       return { resident: stored }
+    }),
+  update: publicProcedure
+    .input(profileUpdateSchema)
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.uid) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'phoneNotVerified',
+        })
+      }
+
+      await updateResident(ctx.uid, input)
+      return { ok: true }
     }),
   markVisit: publicProcedure.mutation(async ({ ctx }) => {
     if (!ctx.uid) {
@@ -58,9 +91,13 @@ export const residentRouter = router({
     if (!resident) return { ...emptyProfile, id: ctx.uid }
     return {
       apartment: resident.apartment,
+      avatarUrl: resident.avatarUrl,
       block: resident.block,
+      cars: resident.cars,
       id: ctx.uid,
+      isPhoneVisible: resident.isPhoneVisible,
       name: resident.name,
+      phone: resident.phone,
       role: resolveRole(resident.role),
     }
   }),
