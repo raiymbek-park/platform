@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-import { CommentsPage } from '@/pages/comments'
+import { CommentsScreen } from '@/features/comments'
 
 const RouteComponent = () => {
   const { issueId } = Route.useParams()
-  return <CommentsPage parent='issue' parentId={issueId} />
+  return <CommentsScreen parent='issue' parentId={issueId} />
 }
 
 export const Route = createFileRoute('/issues/$issueId/comments')({

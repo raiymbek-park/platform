@@ -15,14 +15,14 @@ import { CommentActionsSheet } from './comment-actions-sheet'
 import { CommentDeleteConfirm } from './comment-delete-confirm'
 import { CommentInputBar } from './comment-input-bar'
 import { CommentThread } from './comment-thread'
-import css from './comments-page.module.scss'
+import css from './comments-screen.module.scss'
 
-export type CommentsPageProps = {
+export type CommentsScreenProps = {
   parent: CommentParent
   parentId: string
 }
 
-export const CommentsPage = ({ parent, parentId }: CommentsPageProps) => {
+export const CommentsScreen = ({ parent, parentId }: CommentsScreenProps) => {
   const { t } = useLingui()
   const router = useRouter()
   const target = { parent, parentId }
