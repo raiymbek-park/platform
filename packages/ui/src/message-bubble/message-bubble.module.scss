@@ -29,6 +29,8 @@
   &-is-own {
     background: var(--brand-subtle);
     border-radius: 16px 0 16px 16px;
+    flex: 0 1 auto;
+    min-width: 183px;
   }
 }
 

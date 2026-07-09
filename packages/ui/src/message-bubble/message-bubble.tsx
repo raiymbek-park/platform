@@ -53,7 +53,7 @@ export const MessageBubble = ({
 
   return (
     <div className={joinCss(rowCss({ isOwn }), className)} {...restProps}>
-      <Avatar name={authorName} />
+      {!isOwn && <Avatar name={authorName} />}
       {onActions ? (
         <button
           className={bubbleCss({ isOwn })}

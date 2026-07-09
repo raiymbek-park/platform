@@ -2,6 +2,7 @@ import type { Comment } from '@raiymbek-park/api'
 import type { CommentParent } from '@raiymbek-park/shared/validation-schemas'
 
 import { useLingui } from '@lingui/react/macro'
+import { ScreenHeader } from '@raiymbek-park/ui'
 import { useRouter } from '@tanstack/react-router'
 import { useState } from 'react'
 
@@ -14,7 +15,6 @@ import { CommentActionsSheet } from './comment-actions-sheet'
 import { CommentDeleteConfirm } from './comment-delete-confirm'
 import { CommentInputBar } from './comment-input-bar'
 import { CommentThread } from './comment-thread'
-import { CommentsHeader } from './comments-header'
 import css from './comments-page.module.scss'
 
 export type CommentsPageProps = {
@@ -67,7 +67,8 @@ export const CommentsPage = ({ parent, parentId }: CommentsPageProps) => {
 
   return (
     <section className={css.screen}>
-      <CommentsHeader
+      <ScreenHeader
+        backLabel={t`Назад`}
         title={title ?? t`Комментарии`}
         onBack={() => router.history.back()}
       />

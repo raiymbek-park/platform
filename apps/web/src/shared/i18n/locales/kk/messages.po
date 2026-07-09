@@ -356,7 +356,7 @@ msgstr "Пәтер таңдалған блоктың ауқымынан тыс"
 msgid "Код подтверждения"
 msgstr "Растау коды"
 
-#: src/pages/comments/ui/comments-page.tsx:71
+#: src/pages/comments/ui/comments-page.tsx:72
 #: src/pages/issues/ui/issue-card-item.tsx:152
 #: src/pages/posts/ui/post-card-item.tsx:142
 msgid "Комментарии"
@@ -405,7 +405,7 @@ msgstr "Мәтін теріңіз"
 
 #: src/features/onboarding/ui/otp-actions.tsx:32
 #: src/features/onboarding/ui/registration-form.tsx:260
-#: src/pages/comments/ui/comments-header.tsx:19
+#: src/pages/comments/ui/comments-page.tsx:71
 #: src/shared/form/form-dock.tsx:31
 msgid "Назад"
 msgstr "Артқа"
@@ -642,14 +642,14 @@ msgstr "Қабылданбады"
 
 #: src/pages/comments/ui/comment-actions-sheet.tsx:35
 #: src/pages/comments/ui/comment-delete-confirm.tsx:21
-#: src/pages/comments/ui/comment-input-bar.tsx:133
+#: src/pages/comments/ui/comment-input-bar.tsx:132
 #: src/pages/issue-status/ui/status-form.tsx:103
 #: src/pages/issues/ui/issue-delete-confirm.tsx:21
 #: src/pages/posts/ui/post-delete-confirm.tsx:21
 msgid "Отмена"
 msgstr "Бас тарту"
 
-#: src/pages/comments/ui/comment-input-bar.tsx:140
+#: src/pages/comments/ui/comment-input-bar.tsx:146
 #: src/pages/issue-form/ui/create-issue-form.tsx:28
 msgid "Отправить"
 msgstr "Жіберу"
@@ -884,7 +884,7 @@ msgstr "Хабарлама жіберілді. Жүктелмеген файлд
 msgid "Сообщение удалено."
 msgstr "Хабарлама жойылды."
 
-#: src/pages/comments/ui/comment-input-bar.tsx:140
+#: src/pages/comments/ui/comment-input-bar.tsx:146
 #: src/pages/issue-form/ui/edit-issue-form.tsx:27
 #: src/pages/issue-status/ui/status-form.tsx:107
 #: src/pages/post-form/ui/edit-post-form.tsx:31

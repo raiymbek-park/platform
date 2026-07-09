@@ -7,14 +7,19 @@
 }
 
 .row {
-  display: flex;
-}
-
-.actions {
   align-items: center;
   display: flex;
+  gap: 10px;
+}
+
+.cancel {
+  background: transparent;
+  border: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: inline-flex;
   flex-shrink: 0;
-  gap: 4px;
+  padding: 0;
 }
 
 .previews {

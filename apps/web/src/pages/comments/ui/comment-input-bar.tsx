@@ -127,28 +127,28 @@ export const CommentInputBar = ({
           maxLength={COMMENT_TEXT_MAX}
           placeholder={t`Наберите текст`}
           trailing={
-            <div className={css.actions}>
-              {isEditing && (
-                <Button
-                  aria-label={t`Отмена`}
-                  icon='x'
-                  variant='icon'
-                  onClick={onDoneEditing}
-                />
-              )}
-              <Button
-                aria-label={isEditing ? t`Сохранить` : t`Отправить`}
-                disabled={!canSend}
-                icon={isEditing ? 'save' : 'send-horizontal'}
-                isLoading={isPending}
-                type='submit'
-                variant='icon'
-              />
-            </div>
+            isEditing ? (
+              <button
+                aria-label={t`Отмена`}
+                className={css.cancel}
+                type='button'
+                onClick={onDoneEditing}
+              >
+                <Icon glyph='x' size={18} />
+              </button>
+            ) : undefined
           }
           value={text}
           onChange={event => setText(event.target.value)}
           onIconClick={isEditing ? undefined : () => fileRef.current?.click()}
+        />
+        <Button
+          aria-label={isEditing ? t`Сохранить` : t`Отправить`}
+          disabled={!canSend}
+          icon={isEditing ? 'save' : 'send-horizontal'}
+          isIconOnly
+          isLoading={isPending}
+          type='submit'
         />
       </div>
       <input

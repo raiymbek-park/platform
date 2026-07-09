@@ -9,6 +9,7 @@ import css from './button.module.scss'
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon?: IconGlyph
   iconPosition?: 'left' | 'right'
+  isIconOnly?: boolean
   isLoading?: boolean
   variant?: 'action' | 'danger' | 'icon' | 'secondary'
 }
@@ -21,6 +22,7 @@ export const Button = ({
   disabled,
   icon,
   iconPosition = 'left',
+  isIconOnly,
   isLoading,
   type = 'button',
   variant = 'action',
@@ -30,7 +32,10 @@ export const Button = ({
 
   return (
     <button
-      className={buttonCss({ iconPosition, isLoading, variant }, className)}
+      className={buttonCss(
+        { iconPosition, isIconOnly, isLoading, variant },
+        className,
+      )}
       disabled={disabled || isLoading}
       type={type}
       {...restProps}
