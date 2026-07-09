@@ -556,7 +556,7 @@ msgstr "Could not save the issue. Please try again."
 msgid "Не удалось сохранить изменения. Попробуйте ещё раз."
 msgstr "Could not save the changes. Please try again."
 
-#: src/pages/settings/model/use-update-profile.ts:56
+#: src/pages/settings/model/use-update-profile.ts:68
 msgid "Не удалось сохранить профиль. Попробуйте ещё раз."
 msgstr "Failed to save your profile. Please try again."
 
@@ -850,7 +850,7 @@ msgstr "Selling items"
 msgid "Продам"
 msgstr "For sale"
 
-#: src/pages/settings/model/use-update-profile.ts:59
+#: src/pages/settings/model/use-update-profile.ts:71
 msgid "Профиль сохранён."
 msgstr "Profile saved."
 
