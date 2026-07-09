@@ -5,11 +5,16 @@ import type { MediaPicker } from '@/shared/media'
 import type { PostFormSubmit, PostFormValues } from '../lib/validators'
 
 import { useLingui } from '@lingui/react/macro'
-import { InfoCallout, Input, ScreenTitle, Textarea } from '@raiymbek-park/ui'
+import { InfoCallout, Input, ScreenTitle } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 
-import { FormDock, FormScreen, inputState } from '@/shared/form'
+import {
+  FormScreen,
+  inputState,
+  SubmitDock,
+  TextareaField,
+} from '@/shared/form'
 import { MediaField } from '@/shared/media'
 
 import { tabForKind } from '../lib/tab-for-kind'
@@ -106,14 +111,11 @@ export const PostFormFields = ({
       <form.Field name='description'>
         {field => (
           <div className={css.description}>
-            <Textarea
+            <TextareaField
+              field={field}
               label={t`Описание`}
               maxLength={1000}
               placeholder={t`Расскажите подробнее о вашем объявлении…`}
-              state={inputState(field.state.meta)}
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={event => field.handleChange(event.target.value)}
             />
             <p className={css.hint}>{t`Поддерживается разметка Markdown.`}</p>
           </div>
@@ -128,17 +130,13 @@ export const PostFormFields = ({
         </InfoCallout>
       )}
 
-      <form.Subscribe selector={state => state.canSubmit}>
-        {canSubmit => (
-          <FormDock
-            canSubmit={canSubmit}
-            isPending={isPending}
-            submitIcon={submitIcon}
-            submitLabel={submitLabel}
-            onBack={goBack}
-          />
-        )}
-      </form.Subscribe>
+      <SubmitDock
+        form={form}
+        isPending={isPending}
+        submitIcon={submitIcon}
+        submitLabel={submitLabel}
+        onBack={goBack}
+      />
     </FormScreen>
   )
 }

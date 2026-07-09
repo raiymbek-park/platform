@@ -1,15 +1,12 @@
-import { useLingui } from '@lingui/react/macro'
-import { Button, ScreenHeader, Spinner } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 
 import { usePostCreateAccess } from '../model/use-post-create-access'
 import { CreatePostForm } from './create-post-form'
 import { EditPostForm } from './edit-post-form'
-import css from './post-loader.module.scss'
+import { PendingScreen, RetryScreen } from './query-screens'
 
 const CreatePostGuard = () => {
-  const { t } = useLingui()
   const navigate = useNavigate()
   const { isError, isPending, kinds, refetch } = usePostCreateAccess()
 
@@ -19,31 +16,8 @@ const CreatePostGuard = () => {
     }
   }, [isError, isPending, kinds.length, navigate])
 
-  if (isPending) {
-    return (
-      <>
-        <ScreenHeader />
-        <Spinner label={t`Загрузка…`} />
-      </>
-    )
-  }
-
-  if (isError) {
-    return (
-      <>
-        <ScreenHeader />
-        <div className={css.state}>
-          <Button
-            icon='refresh-cw'
-            variant='secondary'
-            onClick={() => refetch()}
-          >
-            {t`Повторить`}
-          </Button>
-        </div>
-      </>
-    )
-  }
+  if (isPending) return <PendingScreen />
+  if (isError) return <RetryScreen onRetry={() => refetch()} />
 
   const initialKind = kinds[0]
   if (!initialKind) return null

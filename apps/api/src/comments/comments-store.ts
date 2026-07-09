@@ -16,7 +16,13 @@ import { COMMENT_PAGE_SIZE } from '@raiymbek-park/shared/validation-schemas'
 import { FieldValue, getDb, Timestamp } from '../firestore'
 import { getResident } from '../resident/resident-store'
 import { deleteCommentMedia } from '../storage'
-import { toMillis, toNumber, toStringArray, toText } from '../store-helpers'
+import {
+  modifyWithOutcome,
+  toMillis,
+  toNumber,
+  toStringArray,
+  toText,
+} from '../store-helpers'
 
 export type CommentAuthor = {
   apartment: number
@@ -139,16 +145,17 @@ export const updateComment = (
   input: CommentUpdateInput,
 ): Promise<WriteOutcome> => {
   const ref = commentsCollection(input.parent, input.parentId).doc(input.id)
-  return getDb().runTransaction<WriteOutcome>(async transaction => {
-    const snap = await transaction.get(ref)
-    if (!snap.exists) return 'not-found'
-    if (!canModify(snap.data() ?? {}, uid, role)) return 'forbidden'
-    transaction.update(ref, {
-      editedAt: FieldValue.serverTimestamp(),
-      media: input.media,
-      text: input.text,
-    })
-    return 'ok'
+  return modifyWithOutcome({
+    canModify,
+    ref,
+    role,
+    uid,
+    write: transaction =>
+      transaction.update(ref, {
+        editedAt: FieldValue.serverTimestamp(),
+        media: input.media,
+        text: input.text,
+      }),
   })
 }
 
@@ -159,16 +166,16 @@ export const deleteComment = async (
 ): Promise<WriteOutcome> => {
   const parent = parentRef(input.parent, input.parentId)
   const ref = parent.collection('comments').doc(input.id)
-  const outcome = await getDb().runTransaction<WriteOutcome>(
-    async transaction => {
-      const snap = await transaction.get(ref)
-      if (!snap.exists) return 'not-found'
-      if (!canModify(snap.data() ?? {}, uid, role)) return 'forbidden'
+  const outcome = await modifyWithOutcome({
+    canModify,
+    ref,
+    role,
+    uid,
+    write: transaction => {
       transaction.delete(ref)
       transaction.update(parent, { commentCount: FieldValue.increment(-1) })
-      return 'ok'
     },
-  )
+  })
   if (outcome === 'ok') {
     await deleteCommentMedia(input.parent, input.parentId, input.id).catch(
       () => undefined,

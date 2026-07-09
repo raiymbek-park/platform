@@ -56,7 +56,7 @@ msgstr "In progress"
 msgid "Ваш код отправляется на проверку…"
 msgstr "Your code is being verified…"
 
-#: src/pages/post-form/ui/post-form-fields.tsx:127
+#: src/pages/post-form/ui/post-form-fields.tsx:129
 msgid "Ваш номер телефона будет виден всем пользователям."
 msgstr "Your phone number will be visible to everyone."
 
@@ -147,7 +147,7 @@ msgstr "Free"
 msgid "Добавить"
 msgstr "Add"
 
-#: src/pages/issue-status/ui/status-form.tsx:96
+#: src/pages/issue-status/ui/status-form.tsx:97
 msgid "Добавьте комментарий к смене статуса…"
 msgstr "Add a comment about the status change…"
 
@@ -202,7 +202,7 @@ msgstr "Changes appeared while you were away:"
 msgid "Заблокировано"
 msgstr "Blocked"
 
-#: src/pages/post-form/ui/post-form-fields.tsx:91
+#: src/pages/post-form/ui/post-form-fields.tsx:96
 msgid "Заголовок"
 msgstr "Title"
 
@@ -211,8 +211,7 @@ msgid "Загрузка последних событий…"
 msgstr "Loading recent events…"
 
 #: src/pages/home/ui/contacts-section.tsx:17
-#: src/pages/post-form/ui/post-form-page.tsx:26
-#: src/pages/post-form/ui/post-loader.tsx:35
+#: src/pages/post-form/ui/query-screens.tsx:11
 #: src/shared/issue/issue-loader.tsx:23
 msgid "Загрузка…"
 msgstr "Loading…"
@@ -296,7 +295,7 @@ msgstr "The issue has just arrived"
 msgid "Заявка удалена."
 msgstr "Issue deleted."
 
-#: src/pages/issues/ui/issues-page.tsx:42
+#: src/pages/issues/ui/issues-page.tsx:31
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:29
 msgid "Заявки"
 msgstr "Requests"
@@ -348,15 +347,15 @@ msgstr "Apartment is outside the selected block's range"
 msgid "Код подтверждения"
 msgstr "Verification code"
 
-#: src/pages/issue-status/ui/status-form.tsx:94
+#: src/pages/issue-status/ui/status-form.tsx:95
 msgid "Комментарий"
 msgstr "Comment"
 
-#: src/pages/post-form/ui/post-form-fields.tsx:93
+#: src/pages/post-form/ui/post-form-fields.tsx:98
 msgid "Кратко о вашем объявлении"
 msgstr "Briefly describe your post"
 
-#: src/pages/issue-form/ui/issue-form-fields.tsx:91
+#: src/pages/issue-form/ui/issue-form-fields.tsx:96
 msgid "Кратко опишите проблему"
 msgstr "Briefly describe the problem"
 
@@ -434,7 +433,7 @@ msgstr "Couldn't load contacts"
 msgid "Не удалось загрузить ленту"
 msgstr "Failed to load the feed"
 
-#: src/pages/post-form/ui/post-loader.tsx:26
+#: src/pages/post-form/ui/post-loader.tsx:25
 msgid "Не удалось загрузить объявление"
 msgstr "Could not load the post"
 
@@ -499,12 +498,12 @@ msgstr "No connection to the server. Check your internet and try again."
 
 #: src/pages/issue-form/ui/create-issue-form.tsx:30
 #: src/pages/issues/model/use-issue-badges.ts:55
-#: src/pages/issues/ui/issues-page.tsx:50
+#: src/pages/issues/ui/issues-page.tsx:39
 msgid "Новая заявка"
 msgstr "New issue"
 
 #: src/pages/post-form/ui/create-post-form.tsx:54
-#: src/pages/posts/ui/posts-page.tsx:53
+#: src/pages/posts/ui/posts-page.tsx:42
 msgid "Новое объявление"
 msgstr "New post"
 
@@ -520,7 +519,7 @@ msgstr "New notice"
 msgid "Новости, уведомления и частные предложения"
 msgstr "News, notices, and private offers"
 
-#: src/pages/posts/ui/posts-page.tsx:43
+#: src/pages/posts/ui/posts-page.tsx:32
 msgid "Новостная лента и частные объявления от жильцов."
 msgstr "News feed and private ads from residents."
 
@@ -557,7 +556,7 @@ msgstr "Residents' decision required"
 msgid "Нужны дополнительные детали"
 msgstr "Additional details required"
 
-#: src/pages/issues/ui/issues-page.tsx:41
+#: src/pages/issues/ui/issues-page.tsx:30
 msgid "Обращения жильцов в управляющую компанию и их статусы."
 msgstr "Resident issues to the management company and their statuses."
 
@@ -580,13 +579,13 @@ msgid "Объявление удалено."
 msgstr "Post deleted."
 
 #: src/pages/home/ui/services-section.tsx:42
-#: src/pages/posts/ui/posts-page.tsx:44
+#: src/pages/posts/ui/posts-page.tsx:33
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:26
 msgid "Объявления"
 msgstr "Announcements"
 
-#: src/pages/issue-form/ui/issue-form-fields.tsx:107
-#: src/pages/post-form/ui/post-form-fields.tsx:110
+#: src/pages/issue-form/ui/issue-form-fields.tsx:113
+#: src/pages/post-form/ui/post-form-fields.tsx:116
 msgid "Описание"
 msgstr "Description"
 
@@ -612,7 +611,7 @@ msgstr "Giving away for free"
 msgid "Отклонено"
 msgstr "Rejected"
 
-#: src/pages/issue-status/ui/status-form.tsx:108
+#: src/pages/issue-status/ui/status-form.tsx:103
 #: src/pages/issues/ui/issue-delete-confirm.tsx:21
 #: src/pages/posts/ui/post-delete-confirm.tsx:21
 msgid "Отмена"
@@ -626,8 +625,8 @@ msgstr "Submit"
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Track the progress of your requests"
 
-#: src/pages/issues/ui/issue-search.tsx:23
-#: src/pages/posts/ui/post-search.tsx:23
+#: src/pages/issues/ui/issue-search.tsx:15
+#: src/pages/posts/ui/post-search.tsx:15
 msgid "Очистить поиск"
 msgstr "Clear search"
 
@@ -638,8 +637,7 @@ msgstr "Under warranty"
 
 #: src/features/onboarding/ui/account-locked.tsx:61
 #: src/pages/issues/ui/issue-list.tsx:71
-#: src/pages/post-form/ui/post-form-page.tsx:41
-#: src/pages/post-form/ui/post-loader.tsx:49
+#: src/pages/post-form/ui/query-screens.tsx:27
 #: src/pages/posts/ui/post-list.tsx:71
 #: src/shared/issue/issue-load-error.tsx:21
 msgid "Повторить"
@@ -657,7 +655,7 @@ msgstr "Duplicates another issue"
 msgid "Подайте обращение в УК"
 msgstr "Submit a request to the management company"
 
-#: src/pages/post-form/ui/post-form-fields.tsx:118
+#: src/pages/post-form/ui/post-form-fields.tsx:120
 msgid "Поддерживается разметка Markdown."
 msgstr "Markdown formatting is supported."
 
@@ -666,23 +664,23 @@ msgstr "Markdown formatting is supported."
 msgid "Подробнее"
 msgstr "Details"
 
-#: src/pages/issue-form/ui/issue-form-fields.tsx:109
+#: src/pages/issue-form/ui/issue-form-fields.tsx:115
 msgid "Подробно опишите, что случилось и где…"
 msgstr "Describe in detail what happened and where…"
 
-#: src/pages/issues/ui/issue-search.tsx:17
+#: src/pages/issues/ui/issue-search.tsx:14
 msgid "Поиск по заявкам"
 msgstr "Search issues"
 
-#: src/pages/issues/ui/issue-search.tsx:19
+#: src/pages/issues/ui/issue-search.tsx:17
 msgid "Поиск по заявкам, от 2 символов"
 msgstr "Search issues, 2+ characters"
 
-#: src/pages/posts/ui/post-search.tsx:17
+#: src/pages/posts/ui/post-search.tsx:14
 msgid "Поиск по объявлениям"
 msgstr "Search posts"
 
-#: src/pages/posts/ui/post-search.tsx:19
+#: src/pages/posts/ui/post-search.tsx:17
 msgid "Поиск по объявлениям, от 2 символов"
 msgstr "Search posts, 2+ characters"
 
@@ -743,7 +741,7 @@ msgstr "Section under development"
 msgid "Разместите частное объявление для жителей нашего ЖК."
 msgstr "Post a private ad for the residents of our complex."
 
-#: src/pages/post-form/ui/post-form-fields.tsx:112
+#: src/pages/post-form/ui/post-form-fields.tsx:118
 msgid "Расскажите подробнее о вашем объявлении…"
 msgstr "Tell us more about your post…"
 
@@ -840,7 +838,7 @@ msgid "Создать объявление"
 msgstr "Create an announcement"
 
 #: src/pages/issue-form/ui/edit-issue-form.tsx:27
-#: src/pages/issue-status/ui/status-form.tsx:112
+#: src/pages/issue-status/ui/status-form.tsx:107
 #: src/pages/post-form/ui/edit-post-form.tsx:31
 msgid "Сохранить"
 msgstr "Save"
@@ -870,7 +868,7 @@ msgstr "Page not found"
 msgid "Телефон"
 msgstr "Phone"
 
-#: src/pages/issue-form/ui/issue-form-fields.tsx:89
+#: src/pages/issue-form/ui/issue-form-fields.tsx:94
 msgid "Тема заявки"
 msgstr "Issue title"
 
@@ -946,8 +944,8 @@ msgstr "Covered under warranty"
 msgid "Файл слишком большой: суммарный размер вложений не должен превышать {MEDIA_MAX_MB} МБ"
 msgstr "File too large: the total size of attachments must not exceed {MEDIA_MAX_MB} MB"
 
-#: src/pages/issue-form/ui/issue-form-fields.tsx:118
-#: src/pages/post-form/ui/post-form-fields.tsx:123
+#: src/pages/issue-form/ui/issue-form-fields.tsx:120
+#: src/pages/post-form/ui/post-form-fields.tsx:125
 msgid "Фото"
 msgstr "Photos"
 

@@ -19,6 +19,42 @@ import css from './content-card.module.scss'
 export type PostCardBadge = ContentCardBadge
 export type PostCardContact = ContentCardContact
 
+type PostCardMediaProps = {
+  isExpanded?: boolean
+  media?: string[]
+}
+
+const PostCardMedia = ({ isExpanded, media }: PostCardMediaProps) => {
+  if (!media?.length) return null
+  return <CardMedia isExpanded={isExpanded} media={media} />
+}
+
+const PostCardTags = ({ tags }: { tags?: PostCardBadge[] }) => {
+  if (!tags?.length) return null
+  return <CardTags tags={tags} />
+}
+
+type PostCardDetailsProps = {
+  actions?: ReactNode
+  contacts: PostCardContact[]
+  isExpanded?: boolean
+}
+
+const PostCardDetails = ({
+  actions,
+  contacts,
+  isExpanded,
+}: PostCardDetailsProps) => {
+  if (contacts.length === 0 && !actions) return null
+  return (
+    <CardDetails isExpanded={isExpanded}>
+      <Divider />
+      {contacts.length > 0 && <CardContacts contacts={contacts} />}
+      {actions && <div className={css.actions}>{actions}</div>}
+    </CardDetails>
+  )
+}
+
 export type PostCardProps = ComponentProps<'article'> & {
   actions?: ReactNode
   badgeGlyph: IconGlyph
@@ -55,25 +91,21 @@ export const PostCard = ({
   ...restProps
 }: PostCardProps) => (
   <article className={joinCss(css.card, className)} {...restProps}>
-    {media && media.length > 0 && (
-      <CardMedia isExpanded={isExpanded} media={media} />
-    )}
+    <PostCardMedia isExpanded={isExpanded} media={media} />
     <div className={css.content}>
       <CardHeader
-        glyph={media && media.length > 0 ? undefined : badgeGlyph}
+        glyph={media?.length ? undefined : badgeGlyph}
         meta={meta}
         title={title}
         tone={badgeTone}
       />
       <CardBody description={description} isExpanded={isExpanded} />
-      {tags && tags.length > 0 && <CardTags tags={tags} />}
-      {(contacts.length > 0 || actions) && (
-        <CardDetails isExpanded={isExpanded}>
-          <Divider />
-          {contacts.length > 0 && <CardContacts contacts={contacts} />}
-          {actions && <div className={css.actions}>{actions}</div>}
-        </CardDetails>
-      )}
+      <PostCardTags tags={tags} />
+      <PostCardDetails
+        actions={actions}
+        contacts={contacts}
+        isExpanded={isExpanded}
+      />
       <CardFooter
         collapseLabel={collapseLabel}
         expandLabel={expandLabel}
