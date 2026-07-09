@@ -6,9 +6,8 @@ import {
   ScreenTitle,
 } from '@raiymbek-park/ui'
 import { getRouteApi, Link } from '@tanstack/react-router'
-import { useState } from 'react'
 
-import { useDebouncedCallback, useScrollDirection } from '@/shared/lib'
+import { useDebouncedSearch, useScrollDirection } from '@/shared/lib'
 import { BottomNav } from '@/widgets/bottom-nav'
 
 import { IssueFilterTabs } from './issue-filter-tabs'
@@ -20,18 +19,8 @@ const route = getRouteApi('/issues/')
 export const IssuesPage = () => {
   const { t } = useLingui()
   const { status } = route.useSearch()
-  const [query, setQuery] = useState('')
-  const [search, setSearch] = useState('')
+  const { handleSearch, query, search } = useDebouncedSearch()
   const isScrollingDown = useScrollDirection()
-  const debouncedSearch = useDebouncedCallback({
-    callback: setSearch,
-    delay: 300,
-  })
-
-  const handleSearch = (value: string) => {
-    setQuery(value)
-    debouncedSearch(value)
-  }
 
   return (
     <>
