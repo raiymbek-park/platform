@@ -86,7 +86,6 @@ export const CommentThread = ({
 
   return (
     <div className={css.thread}>
-      <div ref={sentinelRef} />
       {comments.map(comment => (
         <MessageBubble
           key={comment.id}
@@ -100,6 +99,7 @@ export const CommentThread = ({
           onActions={canAct(comment) ? () => onActions(comment) : undefined}
         />
       ))}
+      <div ref={sentinelRef} />
       <div ref={bottomRef} />
     </div>
   )
