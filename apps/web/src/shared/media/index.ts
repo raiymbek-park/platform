@@ -1,5 +1,5 @@
 export { MediaField } from './media-field'
-export { uploadAvatar } from './upload-avatar'
+export { deleteAvatar, uploadAvatar } from './upload-avatar'
 export { uploadCommentMedia } from './upload-comment-media'
 export {
   uploadIssueMedia,

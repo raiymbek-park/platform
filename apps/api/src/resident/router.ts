@@ -5,7 +5,6 @@ import {
   profileUpdateSchema,
   registerInputSchema,
   resolveRole,
-  roles,
 } from '@raiymbek-park/shared/validation-schemas'
 import { TRPCError } from '@trpc/server'
 
@@ -16,6 +15,8 @@ import {
   markVisit,
   updateResident,
 } from './resident-store'
+
+const elevatedRoles = ['manager', 'administration']
 
 export type ResidentProfile = {
   apartment: number
@@ -73,11 +74,11 @@ export const residentRouter = router({
       }
 
       const current = await getResident(ctx.uid)
-      const hasResidencyRole =
-        !current || roles.some(role => role === current.role)
+      const isElevated =
+        current && elevatedRoles.some(role => role === current.role)
       await updateResident(ctx.uid, {
         ...input,
-        role: hasResidencyRole ? input.role : current.role,
+        role: isElevated ? current.role : input.role,
       })
       return { ok: true }
     }),

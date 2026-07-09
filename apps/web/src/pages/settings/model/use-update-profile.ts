@@ -1,3 +1,4 @@
+import type { ResidentProfile } from '@raiymbek-park/api'
 import type { Role } from '@raiymbek-park/shared/validation-schemas'
 
 import { useLingui } from '@lingui/react/macro'
@@ -5,7 +6,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { trpcClient, useTRPC } from '@/shared/api'
 import { auth } from '@/shared/firebase'
-import { uploadAvatar } from '@/shared/media'
+import { deleteAvatar, uploadAvatar } from '@/shared/media'
 import { showToastMessage } from '@/shared/toast'
 
 type UpdateProfileVariables = {
@@ -43,11 +44,22 @@ export const useUpdateProfile = () => {
       avatarUrl,
       ...profile
     }: UpdateProfileVariables) => {
+      const previousUrl =
+        queryClient.getQueryData<ResidentProfile>(trpc.resident.me.queryKey())
+          ?.avatarUrl ?? null
       const resolvedUrl = await resolveAvatarUrl(avatarFile, avatarUrl)
-      await trpcClient.resident.update.mutate({
-        ...profile,
-        avatarUrl: resolvedUrl,
-      })
+      try {
+        await trpcClient.resident.update.mutate({
+          ...profile,
+          avatarUrl: resolvedUrl,
+        })
+      } catch (error) {
+        if (avatarFile && resolvedUrl) await deleteAvatar(resolvedUrl)
+        throw error
+      }
+      if (previousUrl && previousUrl !== resolvedUrl) {
+        await deleteAvatar(previousUrl)
+      }
       return resolvedUrl
     },
     onError: () =>

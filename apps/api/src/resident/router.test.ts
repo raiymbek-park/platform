@@ -99,7 +99,27 @@ describe('residentRouter.update — profile update', () => {
     )
   })
 
-  it('preserves a stored non-residency role (manager) instead of the submitted role', async () => {
+  it('writes the submitted role when the stored role is a legacy value', async () => {
+    mockGetResident.mockResolvedValueOnce({
+      apartment: 1,
+      avatarUrl: null,
+      block: 1,
+      cars: [],
+      isPhoneVisible: false,
+      name: 'Иван Петров',
+      phone: '+77071234567',
+      role: '',
+    })
+
+    await caller.update({ ...validUpdate, role: 'owner' })
+
+    expect(mockUpdateResident).toHaveBeenCalledWith(
+      'uid-1',
+      expect.objectContaining({ role: 'owner' }),
+    )
+  })
+
+  it('preserves a stored elevated role (manager) instead of the submitted role', async () => {
     mockGetResident.mockResolvedValueOnce({
       apartment: 1,
       avatarUrl: null,
@@ -119,7 +139,7 @@ describe('residentRouter.update — profile update', () => {
     )
   })
 
-  it('preserves a stored non-residency role (administration) instead of the submitted role', async () => {
+  it('preserves a stored elevated role (administration) instead of the submitted role', async () => {
     mockGetResident.mockResolvedValueOnce({
       apartment: 1,
       avatarUrl: null,
