@@ -1,22 +1,16 @@
-import type { BlockId } from '@raiymbek-park/shared/validation-schemas'
-
 import { Trans, useLingui } from '@lingui/react/macro'
-import { blockFloors, blockIds } from '@raiymbek-park/shared/validation-schemas'
-import {
-  BlockCard,
-  Button,
-  Divider,
-  HeroCard,
-  Icon,
-  InfoCallout,
-  Input,
-  SectionHeader,
-  SelectOption,
-} from '@raiymbek-park/ui'
+import { Button, HeroCard, InfoCallout, SectionHeader } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 import { useRef } from 'react'
 
+import {
+  ApartmentField,
+  BlockPicker,
+  NameField,
+  PhoneField,
+  RolePicker,
+} from '@/entities/resident'
 import { inputState } from '@/shared/form'
 import { showToastMessage } from '@/shared/toast'
 
@@ -27,13 +21,6 @@ import { registrationSchema } from '../lib/validators'
 import { useOnboardingStore } from '../model/use-onboarding-store'
 import { useSendVerification } from '../model/use-send-verification'
 import css from './registration-form.module.scss'
-
-const blockTones: Record<BlockId, 'brand' | 'danger' | 'accent' | 'info'> = {
-  1: 'danger',
-  2: 'brand',
-  3: 'accent',
-  4: 'info',
-}
 
 const fieldOrder = ['name', 'phone', 'block', 'apartment', 'role'] as const
 
@@ -115,10 +102,8 @@ export const RegistrationForm = () => {
 
       <form.Field name='name'>
         {field => (
-          <Input
+          <NameField
             disabled={isPending}
-            icon='user'
-            inputMode='text'
             label={t`Имя`}
             placeholder={t`Введите ваше имя`}
             state={inputState(field.state.meta)}
@@ -130,27 +115,17 @@ export const RegistrationForm = () => {
       </form.Field>
 
       <form.Field name='phone'>
-        {field => {
-          const state = inputState(field.state.meta)
-          return (
-            <Input
-              disabled={isPending}
-              icon='phone'
-              inputMode='tel'
-              label={t`Телефон`}
-              placeholder='+7 7xxx xxx xxxx'
-              state={state}
-              trailing={
-                state ? undefined : (
-                  <Icon className={css.eye} glyph='eye-closed' size={20} />
-                )
-              }
-              value={field.state.value}
-              onBlur={field.handleBlur}
-              onChange={event => field.handleChange(event.target.value)}
-            />
-          )
-        }}
+        {field => (
+          <PhoneField
+            disabled={isPending}
+            label={t`Телефон`}
+            placeholder='+7 7xxx xxx xxxx'
+            state={inputState(field.state.meta)}
+            value={field.state.value}
+            onBlur={field.handleBlur}
+            onChange={event => field.handleChange(event.target.value)}
+          />
+        )}
       </form.Field>
 
       <InfoCallout icon='shield-check'>
@@ -165,45 +140,25 @@ export const RegistrationForm = () => {
         <SectionHeader title={t`Выберите блок`} />
         <form.Field name='block'>
           {field => (
-            <fieldset className={css.group} disabled={isPending}>
-              <legend className='sr-only'>
-                <Trans>Блок</Trans>
-              </legend>
-              <div className={css.blocks}>
-                {blockIds.map(block => (
-                  <BlockCard
-                    key={block}
-                    description={t`${blockFloors[block]} жилых этажей`}
-                    icon='building-2'
-                    isSelected={field.state.value === block}
-                    title={t`Блок ${block}`}
-                    tone={blockTones[block]}
-                    onClick={() => field.handleChange(block)}
-                  />
-                ))}
-              </div>
-            </fieldset>
+            <BlockPicker
+              disabled={isPending}
+              value={field.state.value}
+              onChange={block => field.handleChange(block)}
+            />
           )}
         </form.Field>
       </div>
 
       <form.Field name='apartment'>
         {field => (
-          <Input
+          <ApartmentField
             disabled={isPending}
-            icon='door-closed'
-            inputMode='numeric'
             label={t`Номер квартиры`}
             placeholder='142'
             state={inputState(field.state.meta)}
-            value={
-              Number.isNaN(field.state.value) ? '' : String(field.state.value)
-            }
+            value={field.state.value}
             onBlur={field.handleBlur}
-            onChange={event => {
-              const digits = event.target.value.replace(/\D/g, '')
-              field.handleChange(digits === '' ? Number.NaN : Number(digits))
-            }}
+            onChange={value => field.handleChange(value)}
           />
         )}
       </form.Field>
@@ -212,30 +167,11 @@ export const RegistrationForm = () => {
         <SectionHeader title={t`Кто вы?`} />
         <form.Field name='role'>
           {field => (
-            <fieldset className={css.group} disabled={isPending}>
-              <legend className='sr-only'>
-                <Trans>Роль</Trans>
-              </legend>
-              <div className={css.roleCard}>
-                <SelectOption
-                  icon='house'
-                  isSelected={field.state.value === 'owner'}
-                  label={t`Собственник квартиры`}
-                  subtitle={t`Владею жильём`}
-                  tone='brand'
-                  onClick={() => field.handleChange('owner')}
-                />
-                <Divider />
-                <SelectOption
-                  icon='key-round'
-                  isSelected={field.state.value === 'tenant'}
-                  label={t`Арендатор`}
-                  subtitle={t`Снимаю жильё`}
-                  tone='danger'
-                  onClick={() => field.handleChange('tenant')}
-                />
-              </div>
-            </fieldset>
+            <RolePicker
+              disabled={isPending}
+              value={field.state.value}
+              onChange={role => field.handleChange(role)}
+            />
           )}
         </form.Field>
       </div>
