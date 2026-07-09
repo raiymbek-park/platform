@@ -14,7 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. placeholder {0}: blockFloors[block]
-#: src/features/onboarding/ui/registration-form.tsx:176
+#: src/entities/resident/ui/block-picker.tsx:39
 msgid "{0} жилых этажей"
 msgstr "{0} residential floors"
 
@@ -22,11 +22,11 @@ msgstr "{0} residential floors"
 msgid "Аварийные контакты"
 msgstr "Emergency contacts"
 
-#: src/features/onboarding/ui/registration-form.tsx:232
+#: src/entities/resident/ui/role-picker.tsx:35
 msgid "Арендатор"
 msgstr "Tenant"
 
-#: src/features/onboarding/ui/registration-form.tsx:170
+#: src/entities/resident/ui/block-picker.tsx:33
 msgid "Блок"
 msgstr "Block"
 
@@ -42,7 +42,7 @@ msgstr "Block"
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
 
-#: src/features/onboarding/ui/registration-form.tsx:179
+#: src/entities/resident/ui/block-picker.tsx:42
 msgid "Блок {block}"
 msgstr "Block {block}"
 
@@ -60,15 +60,24 @@ msgstr "In progress"
 msgid "Ваш код отправляется на проверку…"
 msgstr "Your code is being verified…"
 
+#: src/pages/settings/ui/profile-form.tsx:159
+msgid "Ваш контактный номер виден для других жильцов."
+msgstr "Your contact number is visible to other residents."
+
+#: src/pages/settings/ui/profile-form.tsx:168
+msgid "Ваш контактный номер скрыт от других жильцов."
+msgstr "Your contact number is hidden from other residents."
+
 #: src/pages/post-form/ui/post-form-fields.tsx:129
 msgid "Ваш номер телефона будет виден всем пользователям."
 msgstr "Your phone number will be visible to everyone."
 
-#: src/features/onboarding/ui/registration-form.tsx:157
+#: src/features/onboarding/ui/registration-form.tsx:132
 msgid "Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только администрация — для быстрой связи в экстренных случаях (затопление, пожар)."
 msgstr "Your personal data is hidden from other residents. Only the administration has access to it — for quick contact in emergencies (flooding, fire)."
 
-#: src/features/onboarding/ui/registration-form.tsx:123
+#: src/features/onboarding/ui/registration-form.tsx:108
+#: src/pages/settings/ui/profile-form.tsx:132
 msgid "Введите ваше имя"
 msgstr "Enter your name"
 
@@ -77,6 +86,7 @@ msgid "Введите код из SMS"
 msgstr "Enter the code from the SMS"
 
 #: src/features/onboarding/lib/validators.ts:16
+#: src/pages/settings/lib/profile-form-schema.ts:48
 msgid "Введите номер квартиры"
 msgstr "Enter the apartment number"
 
@@ -84,7 +94,12 @@ msgstr "Enter the apartment number"
 msgid "Введите номер телефона."
 msgstr "Enter your phone number."
 
-#: src/features/onboarding/ui/registration-form.tsx:224
+#: src/pages/settings/ui/profile-form.tsx:148
+#: src/pages/settings/ui/profile-form.tsx:153
+msgid "Видимость номера"
+msgstr "Number visibility"
+
+#: src/entities/resident/ui/role-picker.tsx:27
 msgid "Владею жильём"
 msgstr "I own the property"
 
@@ -106,7 +121,9 @@ msgid "Вчера"
 msgstr "Yesterday"
 
 #: src/features/onboarding/lib/validators.ts:30
-#: src/features/onboarding/ui/registration-form.tsx:165
+#: src/features/onboarding/ui/registration-form.tsx:140
+#: src/pages/settings/lib/profile-form-schema.ts:74
+#: src/pages/settings/ui/profile-form.tsx:178
 msgid "Выберите блок"
 msgstr "Select a block"
 
@@ -114,7 +131,8 @@ msgstr "Select a block"
 msgid "Выберите роль"
 msgstr "Select a role"
 
-#: src/pages/onboarding/ui/language-page.tsx:57
+#: src/pages/onboarding/ui/language-page.tsx:41
+#: src/pages/settings/ui/profile-form.tsx:252
 msgid "Выберите язык"
 msgstr "Select a language"
 
@@ -137,8 +155,8 @@ msgstr "City services"
 msgid "Городское управление"
 msgstr "City administration"
 
-#: src/features/onboarding/ui/registration-form.tsx:275
-#: src/pages/onboarding/ui/language-page.tsx:84
+#: src/features/onboarding/ui/registration-form.tsx:211
+#: src/pages/onboarding/ui/language-page.tsx:51
 msgid "Далее"
 msgstr "Next"
 
@@ -155,20 +173,32 @@ msgstr "Message actions"
 msgid "Добавить"
 msgstr "Add"
 
+#: src/pages/settings/ui/plates-fieldset.tsx:64
+msgid "Добавить ещё один номер машины"
+msgstr "Add another car plate"
+
 #: src/features/comments/ui/comment-input-bar.tsx:128
 #: src/features/comments/ui/comment-input-bar.tsx:159
 msgid "Добавить файл"
 msgstr "Attach a file"
 
+#: src/pages/settings/ui/avatar-upload.tsx:65
+msgid "Добавить фото"
+msgstr "Add photo"
+
 #: src/pages/issue-status/ui/status-form.tsx:97
 msgid "Добавьте комментарий к смене статуса…"
 msgstr "Add a comment about the status change…"
 
-#: src/features/onboarding/ui/registration-form.tsx:106
+#: src/pages/settings/ui/plates-fieldset.tsx:35
+msgid "Добавьте номер автомобиля, чтобы соседи могли связаться с вами в случае перекрытия проезда. Для этого включите отображение номера телефона."
+msgstr "Add a car plate so neighbors can reach you if a vehicle blocks the driveway. To allow this, turn on phone number visibility."
+
+#: src/features/onboarding/ui/registration-form.tsx:93
 msgid "Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее."
 msgstr "Welcome to the personal space for residents and apartment owners of the Raiymbek Park complex. Everything important is gathered here: the latest announcements from the management company, a form to submit repair requests, contacts for on-duty services, and the history of your requests. We want every issue resolved quickly and clearly — so that living here is more comfortable and managing the building more transparent."
 
-#: src/features/onboarding/ui/registration-form.tsx:105
+#: src/features/onboarding/ui/registration-form.tsx:92
 msgid "Добро пожаловать!"
 msgstr "Welcome!"
 
@@ -344,7 +374,8 @@ msgstr "Edit the post and save your changes."
 msgid "Измените уведомление и сохраните изменения."
 msgstr "Edit the notice and save your changes."
 
-#: src/features/onboarding/ui/registration-form.tsx:122
+#: src/features/onboarding/ui/registration-form.tsx:107
+#: src/pages/settings/ui/profile-form.tsx:127
 msgid "Имя"
 msgstr "Name"
 
@@ -358,6 +389,7 @@ msgid "Категория"
 msgstr "Category"
 
 #: src/features/onboarding/lib/validators.ts:18
+#: src/pages/settings/lib/profile-form-schema.ts:50
 msgid "Квартира вне диапазона выбранного блока"
 msgstr "Apartment is outside the selected block's range"
 
@@ -388,9 +420,14 @@ msgstr "Briefly describe your post"
 msgid "Кратко опишите проблему"
 msgstr "Briefly describe the problem"
 
-#: src/features/onboarding/ui/registration-form.tsx:212
+#: src/features/onboarding/ui/registration-form.tsx:167
+#: src/pages/settings/ui/profile-form.tsx:207
 msgid "Кто вы?"
 msgstr "Who are you?"
+
+#: src/pages/settings/lib/profile-form-schema.ts:100
+msgid "Можно добавить не более 3 номеров"
+msgstr "You can add up to 3 plates"
 
 #: src/shared/media/use-media-picker.ts:70
 msgid "Можно прикрепить не более {MEDIA_MAX_ITEMS} файлов"
@@ -419,7 +456,7 @@ msgstr "Type a message"
 
 #: src/features/comments/ui/comments-screen.tsx:71
 #: src/features/onboarding/ui/otp-actions.tsx:32
-#: src/features/onboarding/ui/registration-form.tsx:260
+#: src/features/onboarding/ui/registration-form.tsx:196
 #: src/shared/form/form-dock.tsx:31
 msgid "Назад"
 msgstr "Back"
@@ -433,7 +470,6 @@ msgstr "Violation"
 msgid "Нарушение правил"
 msgstr "Rule violation"
 
-#: src/app/routes/settings.tsx:11
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:33
 msgid "Настройки"
 msgstr "Settings"
@@ -475,6 +511,10 @@ msgstr "Could not load the post"
 msgid "Не удалось загрузить последние события"
 msgstr "Couldn't load recent events"
 
+#: src/pages/settings/ui/settings-page.tsx:22
+msgid "Не удалось загрузить профиль. Попробуйте позже."
+msgstr "Failed to load your profile. Please try again later."
+
 #: src/pages/post-form/model/use-create-post.ts:39
 msgid "Не удалось опубликовать объявление. Попробуйте ещё раз."
 msgstr "Could not publish the post. Please try again."
@@ -513,6 +553,10 @@ msgstr "Could not save the issue. Please try again."
 #: src/pages/post-form/model/use-update-post.ts:38
 msgid "Не удалось сохранить изменения. Попробуйте ещё раз."
 msgstr "Could not save the changes. Please try again."
+
+#: src/pages/settings/model/use-update-profile.ts:55
+msgid "Не удалось сохранить профиль. Попробуйте ещё раз."
+msgstr "Failed to save your profile. Please try again."
 
 #: src/pages/issues/model/use-issue-deletion.ts:23
 msgid "Не удалось удалить заявку. Попробуйте ещё раз."
@@ -582,9 +626,35 @@ msgstr "New status"
 msgid "Новых событий пока нет."
 msgstr "No new events yet."
 
-#: src/features/onboarding/ui/registration-form.tsx:196
+#: src/pages/settings/lib/profile-form-schema.ts:58
+msgid "Номер должен содержать от 5 до 10 символов"
+msgstr "The plate must be 5 to 10 characters long"
+
+#: src/pages/settings/lib/profile-form-schema.ts:63
+msgid "Номер должен содержать хотя бы одну букву"
+msgstr "The plate must contain at least one letter"
+
+#: src/pages/settings/lib/profile-form-schema.ts:64
+msgid "Номер должен содержать хотя бы одну цифру"
+msgstr "The plate must contain at least one digit"
+
+#: src/features/onboarding/ui/registration-form.tsx:156
+#: src/pages/settings/ui/profile-form.tsx:191
 msgid "Номер квартиры"
 msgstr "Apartment number"
+
+#: src/pages/settings/lib/profile-form-schema.ts:61
+msgid "Номер может содержать только латинские буквы и цифры"
+msgstr "The plate may contain only Latin letters and digits"
+
+#: src/pages/settings/ui/plates-fieldset.tsx:32
+#: src/pages/settings/ui/profile-form.tsx:220
+msgid "Номера машин"
+msgstr "Car plates"
+
+#: src/pages/settings/lib/profile-form-schema.ts:107
+msgid "Номера машин не должны повторяться"
+msgstr "Car plates must not repeat"
 
 #: src/pages/issues/ui/issue-card-item.tsx:136
 #: src/pages/posts/ui/post-card-item.tsx:126
@@ -653,6 +723,10 @@ msgstr "Giving away for free"
 #: src/pages/issues/model/use-issue-badges.ts:61
 msgid "Отклонено"
 msgstr "Rejected"
+
+#: src/pages/settings/ui/profile-form.tsx:158
+msgid "Открыть"
+msgstr "Show"
 
 #: src/features/comments/ui/comment-actions-sheet.tsx:35
 #: src/features/comments/ui/comment-delete-confirm.tsx:21
@@ -773,6 +847,10 @@ msgstr "Selling items"
 msgid "Продам"
 msgstr "For sale"
 
+#: src/pages/settings/model/use-update-profile.ts:58
+msgid "Профиль сохранён."
+msgstr "Profile saved."
+
 #: src/pages/issue-form/model/use-issue-categories.ts:35
 #: src/pages/issues/model/use-issue-badges.ts:75
 #: src/pages/post-form/model/use-post-categories.ts:60
@@ -824,7 +902,7 @@ msgstr "Repair"
 msgid "Решение приостановлено"
 msgstr "Resolution is on hold"
 
-#: src/features/onboarding/ui/registration-form.tsx:217
+#: src/entities/resident/ui/role-picker.tsx:20
 msgid "Роль"
 msgstr "Role"
 
@@ -858,6 +936,10 @@ msgstr "The code service is temporarily overloaded. Try again in a few minutes."
 msgid "Сервисы"
 msgstr "Services"
 
+#: src/pages/settings/ui/profile-form.tsx:167
+msgid "Скрыть"
+msgstr "Hide"
+
 #: src/features/onboarding/ui/account-locked.tsx:48
 msgid "Слишком много попыток. Подождите немного и попробуйте снова."
 msgstr "Too many attempts. Wait a little and try again."
@@ -871,14 +953,15 @@ msgid "Сменить статус"
 msgstr "Change status"
 
 #: src/features/onboarding/lib/validators.ts:15
+#: src/pages/settings/lib/profile-form-schema.ts:47
 msgid "Сначала выберите блок"
 msgstr "Select a block first"
 
-#: src/features/onboarding/ui/registration-form.tsx:233
+#: src/entities/resident/ui/role-picker.tsx:36
 msgid "Снимаю жильё"
 msgstr "I rent the property"
 
-#: src/features/onboarding/ui/registration-form.tsx:223
+#: src/entities/resident/ui/role-picker.tsx:26
 msgid "Собственник квартиры"
 msgstr "Property owner"
 
@@ -902,6 +985,7 @@ msgstr "Message deleted."
 #: src/pages/issue-form/ui/edit-issue-form.tsx:27
 #: src/pages/issue-status/ui/status-form.tsx:107
 #: src/pages/post-form/ui/edit-post-form.tsx:31
+#: src/pages/settings/ui/profile-form.tsx:262
 msgid "Сохранить"
 msgstr "Save"
 
@@ -926,7 +1010,8 @@ msgstr "Status updated. Files not uploaded: {count}"
 msgid "Страница не найдена"
 msgstr "Page not found"
 
-#: src/features/onboarding/ui/registration-form.tsx:140
+#: src/features/onboarding/ui/registration-form.tsx:121
+#: src/pages/settings/ui/profile-form.tsx:143
 msgid "Телефон"
 msgstr "Phone"
 
@@ -982,6 +1067,10 @@ msgstr "Delete"
 msgid "Удалить заявку?"
 msgstr "Delete the issue?"
 
+#: src/pages/settings/ui/plates-fieldset.tsx:49
+msgid "Удалить номер"
+msgstr "Remove plate"
+
 #: src/pages/posts/ui/post-delete-confirm.tsx:27
 msgid "Удалить объявление?"
 msgstr "Delete this post?"
@@ -993,6 +1082,10 @@ msgstr "Delete message"
 #: src/features/comments/ui/comment-delete-confirm.tsx:27
 msgid "Удалить сообщение?"
 msgstr "Delete message?"
+
+#: src/pages/settings/ui/avatar-upload.tsx:57
+msgid "Удалить фото"
+msgstr "Remove photo"
 
 #: src/pages/post-form/model/use-post-categories.ts:76
 #: src/pages/posts/model/use-post-badges.ts:70
@@ -1049,7 +1142,11 @@ msgstr "Building chat on WhatsApp"
 msgid "Читать далее"
 msgstr "Read more"
 
-#: src/features/onboarding/ui/registration-form.tsx:251
+#: src/pages/settings/ui/settings-page.tsx:23
+msgid "Что-то пошло не так"
+msgstr "Something went wrong"
+
+#: src/features/onboarding/ui/registration-form.tsx:187
 msgid "Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google"
 msgstr "This form is protected by reCAPTCHA; the Google Privacy Policy and Terms of Service apply"
 
@@ -1065,6 +1162,6 @@ msgstr "This action cannot be undone. The issue will be permanently deleted."
 msgid "Это действие нельзя отменить. Сообщение будет удалено безвозвратно."
 msgstr "This action cannot be undone. The message will be permanently deleted."
 
-#: src/pages/onboarding/ui/language-page.tsx:60
+#: src/features/locale-select/ui/locale-select.tsx:28
 msgid "Язык"
 msgstr "Language"
