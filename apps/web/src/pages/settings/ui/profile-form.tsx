@@ -42,6 +42,18 @@ const toMessage = (error: unknown): string | undefined => {
   return undefined
 }
 
+const firstInvalidMessage = (
+  fields: Record<string, { errors: unknown[] }>,
+): string | undefined =>
+  fieldOrder
+    .flatMap(name =>
+      Object.entries(fields)
+        .filter(([key]) => key === name || key.startsWith(`${name}[`))
+        .flatMap(([, field]) => field.errors),
+    )
+    .map(toMessage)
+    .find(message => Boolean(message))
+
 export type ProfileFormProps = {
   profile: ResidentProfile
 }
@@ -83,10 +95,7 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
     defaultValues: toFormValues(profile),
     validators: { onChange: profileFormSchema },
     onSubmitInvalid: ({ formApi }) => {
-      const text = fieldOrder
-        .flatMap(name => formApi.getFieldMeta(name)?.errors ?? [])
-        .map(toMessage)
-        .find(message => Boolean(message))
+      const text = firstInvalidMessage(formApi.getAllErrors().fields)
       if (text) showToastMessage({ kind: 'error', text })
     },
     onSubmit: ({ value }) => {
@@ -137,6 +146,7 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
           {field => (
             <NameField
               disabled={isPending}
+              label={<span className='sr-only'>{t`Имя`}</span>}
               placeholder={t`Введите ваше имя`}
               state={inputState(field.state.meta)}
               value={field.state.value}
@@ -149,7 +159,11 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
 
       <section className={css.section}>
         <SectionHeader title={t`Телефон`} />
-        <PhoneField readOnly value={formatPhoneDisplay(profile.phone)} />
+        <PhoneField
+          readOnly
+          label={<span className='sr-only'>{t`Телефон`}</span>}
+          value={formatPhoneDisplay(profile.phone)}
+        />
       </section>
 
       <section className={css.section}>
@@ -201,6 +215,7 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
           {field => (
             <ApartmentField
               disabled={isPending}
+              label={<span className='sr-only'>{t`Номер квартиры`}</span>}
               placeholder='142'
               state={inputState(field.state.meta)}
               value={field.state.value}

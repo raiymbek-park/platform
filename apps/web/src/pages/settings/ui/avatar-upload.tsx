@@ -45,6 +45,7 @@ export const AvatarUpload = ({
       <input
         ref={inputRef}
         accept='image/*'
+        aria-label={t`Добавить фото`}
         className={css.file}
         disabled={disabled}
         type='file'
