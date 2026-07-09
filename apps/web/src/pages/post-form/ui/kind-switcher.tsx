@@ -18,7 +18,7 @@ export const KindSwitcher = ({ kind, onChange }: KindSwitcherProps) => {
       <legend className='sr-only'>{t`Тип объявления`}</legend>
       <FilterTab
         isActive={kind === 'offer'}
-        label={t`Объявление`}
+        label={t`Частное объявление`}
         onClick={() => onChange('offer')}
       />
       <FilterTab
