@@ -78,4 +78,22 @@ Boundary conditions.
   When:  the member attaches exactly 10 media items whose combined size is exactly 200 MB
   Then:  the form allows submission
          no limit is surfaced
+
+## Scenario 15: Comment text at the exact length boundary is accepted
+  Given: a comment input bar
+  When:  the trimmed text is exactly 1000 characters
+  Then:  the send is not blocked
+         the text is not flagged
+
+## Scenario 16: Comment media at the exact count and size boundary is accepted
+  Given: a comment input bar
+  When:  the member attaches exactly 10 media items whose combined size is exactly 200 MB
+  Then:  the send is not blocked
+         no limit is surfaced
+
+## Scenario 17: Member sees own-comment actions only
+  Given: a thread holds comments by different authors
+  When:  a non-Administration member opens the message actions menu
+  Then:  edit and delete appear only on their own messages
+         Administration sees delete on every message
 </content>

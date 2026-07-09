@@ -50,4 +50,11 @@ External failures: network, API, storage.
   When:  the server request fails
   Then:  the failure is surfaced
          the entered title, description, category, and attached media selection remain in the form for retry
+
+## Scenario 9: Comment mutation failure preserves content and state
+  Given: a send, edit, or delete comment request
+  When:  the server request fails
+  Then:  a failed send preserves the entered text and media selection in the input bar for retry
+         a failed edit preserves the edited text in edit mode for retry
+         a failed delete leaves the message visible in the thread
 </content>

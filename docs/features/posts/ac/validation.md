@@ -26,7 +26,11 @@ Input rules and permission gating. Field limits reuse the issues conventions.
   Given: a comment input bar
   When:  the member sends with empty text and no media
   Then:  the send is blocked
-  And:   when text is present it is trimmed to at most 1000 characters
+
+## Scenario 5a: Comment text length
+  Given: a comment input bar
+  When:  the trimmed text is longer than 1000 characters
+  Then:  the send is blocked and the excess is flagged
 
 ## Scenario 6: Search minimum characters
   Given: the feed search field
@@ -75,4 +79,21 @@ Input rules and permission gating. Field limits reuse the issues conventions.
   When:  the member cancels instead of confirming
   Then:  no delete request is sent
          the post remains in the feed
+
+## Scenario 13: Comment media limits
+  Given: a comment input bar
+  When:  the member attaches more than 10 items, or the combined size exceeds 200 MB
+  Then:  the excess is rejected and the limit is surfaced
+
+## Scenario 14: Send is disabled while a comment mutation is in flight
+  Given: a send, edit, or delete comment request has been submitted
+  When:  the mutation is still in flight
+  Then:  the action is disabled until the request settles
+         a second tap does not send a duplicate request
+
+## Scenario 15: Canceling the delete confirmation preserves the comment
+  Given: the delete confirmation is open for a comment
+  When:  the member cancels instead of confirming
+  Then:  no delete request is sent
+         the message remains in the thread
 </content>
