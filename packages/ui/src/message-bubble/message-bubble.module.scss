@@ -2,6 +2,7 @@
   display: flex;
   gap: 10px;
   padding-right: 32px;
+  position: relative;
 
   &-is-own {
     flex-direction: row-reverse;
@@ -10,21 +11,37 @@
   }
 }
 
+.actions {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 32px;
+  position: absolute;
+  right: 0;
+  top: 4px;
+
+  &-is-own {
+    left: 0;
+    right: auto;
+  }
+}
+
 .bubble {
   background: var(--surface);
-  border: 0;
   border-radius: 0 16px 16px 16px;
   box-shadow: 0 4px 20px var(--shadow);
   color: var(--text-secondary);
-  cursor: pointer;
   display: flex;
   flex: 1;
   flex-direction: column;
-  font-family: inherit;
   gap: 6px;
   min-width: 0;
   padding: 10px 16px 16px;
-  text-align: left;
 
   &-is-own {
     background: var(--brand-subtle);

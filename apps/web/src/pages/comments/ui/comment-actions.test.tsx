@@ -117,17 +117,28 @@ const serve = (role: PermissionRole = 'resident') =>
     }),
   )
 
-const commentButton = () => screen.getByRole('button', { name: 'Комментарии' })
+const commentButton = () => screen.getByRole('button', { name: /Комментарии/ })
 
 const commentField = () => screen.getByPlaceholderText('Наберите текст')
+
+const messageRow = (text: string) => {
+  const row = screen.getByText(text).parentElement?.parentElement?.parentElement
+  if (!row) throw new Error(`row for "${text}" not found`)
+  return row
+}
+
+const messageActions = (text: string) =>
+  within(messageRow(text)).queryByRole('button', {
+    name: 'Действия с сообщением',
+  })
 
 const openActions = async (
   user: ReturnType<typeof renderApp>['user'],
   text: string,
 ) => {
-  const bubble = screen.getByText(text).closest('button')
-  if (!bubble) throw new Error(`message "${text}" is not actionable`)
-  await user.click(bubble)
+  const trigger = messageActions(text)
+  if (!trigger) throw new Error(`message "${text}" is not actionable`)
+  await user.click(trigger)
   return screen.findByRole('dialog')
 }
 
@@ -285,8 +296,8 @@ test('edge-cases 17: a member sees actions only on their own comment', async () 
   renderApp('/posts/post-1/comments')
   await screen.findByText('Моё сообщение')
 
-  expect(screen.getByText('Моё сообщение').closest('button')).not.toBeNull()
-  expect(screen.getByText('Чужое сообщение').closest('button')).toBeNull()
+  expect(messageActions('Моё сообщение')).not.toBeNull()
+  expect(messageActions('Чужое сообщение')).toBeNull()
 })
 
 test('edge-cases 17: Administration sees the delete action on every comment', async () => {
@@ -376,7 +387,7 @@ test('edge-cases 7: deleting a comment on an issue decrements the issue’s comm
   const { currentPath, user } = renderApp('/issues?status=all')
   await screen.findByText('Не работает домофон')
   const issueCommentButton = () =>
-    screen.getByRole('button', { name: 'Комментарии' })
+    screen.getByRole('button', { name: /Комментарии/ })
   expect(within(issueCommentButton()).getByText('1')).toBeInTheDocument()
 
   await user.click(issueCommentButton())

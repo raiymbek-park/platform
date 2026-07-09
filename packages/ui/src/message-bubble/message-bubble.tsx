@@ -4,6 +4,7 @@ import { joinCss, pickCss } from '@raiymbek-park/shared'
 
 import { Avatar } from '../avatar/avatar'
 import { Carousel } from '../carousel/carousel'
+import { Icon } from '../icon'
 import { Markdown } from '../markdown/markdown'
 import css from './message-bubble.module.scss'
 
@@ -21,6 +22,7 @@ export type MessageBubbleProps = ComponentProps<'div'> & {
 
 const rowCss = pickCss(css, css.row)
 const bubbleCss = pickCss(css, css.bubble)
+const actionsCss = pickCss(css, css.actions)
 
 export const MessageBubble = ({
   actionsLabel,
@@ -34,9 +36,10 @@ export const MessageBubble = ({
   time,
   onActions,
   ...restProps
-}: MessageBubbleProps) => {
-  const body = (
-    <>
+}: MessageBubbleProps) => (
+  <div className={joinCss(rowCss({ isOwn }), className)} {...restProps}>
+    {!isOwn && <Avatar name={authorName} />}
+    <div className={bubbleCss({ isOwn })}>
       <header className={css.head}>
         <span className={css.name}>{authorName}</span>
         <time className={css.time}>{time}</time>
@@ -50,24 +53,16 @@ export const MessageBubble = ({
       {isEdited && editedLabel && (
         <span className={css.edited}>{editedLabel}</span>
       )}
-    </>
-  )
-
-  return (
-    <div className={joinCss(rowCss({ isOwn }), className)} {...restProps}>
-      {!isOwn && <Avatar name={authorName} />}
-      {onActions ? (
-        <button
-          aria-label={actionsLabel}
-          className={bubbleCss({ isOwn })}
-          type='button'
-          onClick={onActions}
-        >
-          {body}
-        </button>
-      ) : (
-        <div className={bubbleCss({ isOwn })}>{body}</div>
-      )}
     </div>
-  )
-}
+    {onActions && (
+      <button
+        aria-label={actionsLabel}
+        className={actionsCss({ isOwn })}
+        type='button'
+        onClick={onActions}
+      >
+        <Icon glyph='ellipsis' size={18} />
+      </button>
+    )}
+  </div>
+)
