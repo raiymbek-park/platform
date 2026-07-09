@@ -211,7 +211,7 @@ msgid "Загрузка последних событий…"
 msgstr "Соңғы оқиғалар жүктелуде…"
 
 #: src/pages/home/ui/contacts-section.tsx:17
-#: src/pages/post-form/ui/post-form-page.tsx:25
+#: src/pages/post-form/ui/post-form-page.tsx:26
 #: src/pages/post-form/ui/post-loader.tsx:35
 #: src/shared/issue/issue-loader.tsx:23
 msgid "Загрузка…"
@@ -638,6 +638,7 @@ msgstr "Кепілдік бойынша"
 
 #: src/features/onboarding/ui/account-locked.tsx:61
 #: src/pages/issues/ui/issue-list.tsx:71
+#: src/pages/post-form/ui/post-form-page.tsx:41
 #: src/pages/post-form/ui/post-loader.tsx:49
 #: src/pages/posts/ui/post-list.tsx:71
 #: src/shared/issue/issue-load-error.tsx:21
