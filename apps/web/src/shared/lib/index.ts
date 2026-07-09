@@ -1,5 +1,6 @@
 export { createDeletedIdsStore } from './create-deleted-ids-store'
 export { createReactionsStore } from './create-reactions-store'
+export { dateParts } from './date-parts'
 export { useDebouncedCallback } from './use-debounced-callback'
 export { useIntersectionObserver } from './use-intersection-observer'
 export { useScrollDirection } from './use-scroll-direction'

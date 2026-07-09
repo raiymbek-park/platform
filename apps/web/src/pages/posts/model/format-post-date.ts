@@ -1,3 +1,5 @@
+import { dateParts } from '@/shared/lib'
+
 const DAY_MS = 24 * 60 * 60 * 1000
 
 const startOfDay = (ms: number): number => {
@@ -20,11 +22,6 @@ export const formatPostDate = (
   if (days <= 0) return labels.today
   if (days === 1) return labels.yesterday
 
-  const parts = new Intl.DateTimeFormat(locale, {
-    day: 'numeric',
-    month: 'long',
-  }).formatToParts(new Date(ms))
-  const value = (type: Intl.DateTimeFormatPartTypes) =>
-    parts.find(part => part.type === type)?.value ?? ''
+  const value = dateParts(ms, locale, { day: 'numeric', month: 'long' })
   return `${value('day')} ${value('month')}`
 }
