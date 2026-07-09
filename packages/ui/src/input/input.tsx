@@ -10,6 +10,7 @@ import css from './input.module.scss'
 
 export type InputProps = ComponentProps<'input'> & {
   icon?: IconGlyph
+  iconButtonLabel?: string
   label?: ReactNode
   state?: 'error' | 'success'
   tone?: IconChipTone
@@ -27,6 +28,7 @@ const statusGlyph: Record<NonNullable<InputProps['state']>, IconGlyph> = {
 export const Input = ({
   className,
   icon,
+  iconButtonLabel,
   label,
   ref,
   state,
@@ -41,6 +43,7 @@ export const Input = ({
       {icon &&
         (onIconClick ? (
           <button
+            aria-label={iconButtonLabel}
             className={css.iconButton}
             type='button'
             onClick={onIconClick}

@@ -124,6 +124,7 @@ export const CommentInputBar = ({
         <Input
           disabled={isPending}
           icon={isEditing ? 'pen-line' : 'image-plus'}
+          iconButtonLabel={t`Добавить файл`}
           maxLength={COMMENT_TEXT_MAX}
           placeholder={t`Наберите текст`}
           trailing={

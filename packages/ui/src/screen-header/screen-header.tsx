@@ -6,11 +6,14 @@ import { Icon } from '../icon'
 import { IconChip } from '../icon-chip/icon-chip'
 import css from './screen-header.module.scss'
 
-export type ScreenHeaderProps = ComponentProps<'header'> & {
-  backLabel?: string
-  title?: ReactNode
-  onBack?: () => void
-}
+type BackControl =
+  | { backLabel: string; onBack: () => void }
+  | { backLabel?: never; onBack?: never }
+
+export type ScreenHeaderProps = ComponentProps<'header'> &
+  BackControl & {
+    title?: ReactNode
+  }
 
 export const ScreenHeader = ({
   backLabel,
