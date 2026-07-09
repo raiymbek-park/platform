@@ -33,6 +33,8 @@ vi.mock(
 
 vi.stubGlobal('IntersectionObserver', TestIntersectionObserver)
 
+Element.prototype.scrollIntoView = () => {}
+
 beforeAll(() => trpcServer.listen({ onUnhandledRequest: 'bypass' }))
 
 beforeEach(() => localStorage.setItem('locale', 'ru'))
