@@ -56,7 +56,10 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
 
       const input = {
         apartment: 42,
+        avatarUrl: null,
         block: 1,
+        cars: [],
+        isPhoneVisible: false,
         name: 'Иван Петров',
         phone: '+77071234567',
         role: 'owner',
@@ -77,7 +80,10 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
 
       const input = {
         apartment: 10,
+        avatarUrl: null,
         block: 2,
+        cars: [],
+        isPhoneVisible: false,
         name: 'Айгерим Сатыбалды',
         phone: '+77011112233',
         role: 'tenant',
@@ -208,7 +214,10 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       const uid = 'firebase-uid-visit'
       await createResident(uid, {
         apartment: 1,
+        avatarUrl: null,
         block: 1,
+        cars: [],
+        isPhoneVisible: false,
         name: 'Visitor',
         phone: '+77000000000',
         role: 'owner',

@@ -1,10 +1,14 @@
 import { describe, expect, test } from 'vitest'
 
 import {
+  CARS_MAX,
   isApartmentInBlock,
   nameSchema,
   normalizePhone,
+  normalizePlate,
   phoneSchema,
+  plateSchema,
+  profileUpdateSchema,
   registerInputSchema,
 } from './resident'
 
@@ -13,6 +17,16 @@ const validResident = {
   block: 1,
   name: 'Иван Петров',
   phone: '+77071234567',
+  role: 'owner',
+}
+
+const validProfileUpdate = {
+  apartment: 42,
+  avatarUrl: null,
+  block: 1,
+  cars: ['A123BC01'],
+  isPhoneVisible: false,
+  name: 'Иван Петров',
   role: 'owner',
 }
 
@@ -224,5 +238,115 @@ describe('registerInputSchema — input validation', () => {
       registerInputSchema.safeParse({ ...validResident, apartment: -1 })
         .success,
     ).toBe(false)
+  })
+})
+
+describe('normalizePlate — uppercase and space-stripped canonical form', () => {
+  test('lowercase letters are uppercased', () => {
+    expect(normalizePlate('a123bc01')).toBe('A123BC01')
+  })
+
+  test('internal and surrounding spaces are stripped', () => {
+    expect(normalizePlate(' A 123 BC 01 ')).toBe('A123BC01')
+  })
+})
+
+describe('plateSchema — validation 5,6,7 / edge-cases 8,9: KZ plate format', () => {
+  test('a plate whose stripped value is 5 characters (lower boundary) is valid', () => {
+    expect(plateSchema.safeParse('A1234').success).toBe(true)
+  })
+
+  test('a plate whose stripped value is 10 characters (upper boundary) is valid', () => {
+    expect(plateSchema.safeParse('A123456789').success).toBe(true)
+  })
+
+  test('a plate whose stripped value is 4 characters is invalid', () => {
+    expect(plateSchema.safeParse('A 123').success).toBe(false)
+  })
+
+  test('a plate whose stripped value is 11 characters is invalid', () => {
+    expect(plateSchema.safeParse('A1234567890').success).toBe(false)
+  })
+
+  test('a plate with only digits (no letter) is invalid', () => {
+    expect(plateSchema.safeParse('12345').success).toBe(false)
+  })
+
+  test('a plate with only letters (no digit) is invalid', () => {
+    expect(plateSchema.safeParse('ABCDE').success).toBe(false)
+  })
+
+  test('a KZ-formatted plate with spaces normalizes and validates', () => {
+    const result = plateSchema.safeParse('A 123 BC 01')
+    expect(result.success).toBe(true)
+    expect(result.data).toBe('A123BC01')
+  })
+
+  test('a lowercase plate normalizes to uppercase on parse', () => {
+    expect(plateSchema.parse('a123bc01')).toBe('A123BC01')
+  })
+})
+
+describe('profileUpdateSchema — input validation', () => {
+  test('a fully valid profile update is accepted', () => {
+    expect(profileUpdateSchema.safeParse(validProfileUpdate).success).toBe(true)
+  })
+
+  test('an apartment outside the selected block range is invalid', () => {
+    expect(
+      profileUpdateSchema.safeParse({
+        ...validProfileUpdate,
+        apartment: 71,
+        block: 1,
+      }).success,
+    ).toBe(false)
+  })
+
+  test('a null avatarUrl is accepted', () => {
+    expect(
+      profileUpdateSchema.safeParse({ ...validProfileUpdate, avatarUrl: null })
+        .success,
+    ).toBe(true)
+  })
+
+  test(`more than ${CARS_MAX} plates is invalid`, () => {
+    expect(
+      profileUpdateSchema.safeParse({
+        ...validProfileUpdate,
+        cars: ['A123BC01', 'B123CD02', 'C123DE03', 'D123EF04'],
+      }).success,
+    ).toBe(false)
+  })
+
+  test(`exactly ${CARS_MAX} plates is valid`, () => {
+    expect(
+      profileUpdateSchema.safeParse({
+        ...validProfileUpdate,
+        cars: ['A123BC01', 'B123CD02', 'C123DE03'],
+      }).success,
+    ).toBe(true)
+  })
+
+  test('duplicate plates that only differ by case and spacing are invalid', () => {
+    expect(
+      profileUpdateSchema.safeParse({
+        ...validProfileUpdate,
+        cars: ['A123BC01', 'a 123 bc 01'],
+      }).success,
+    ).toBe(false)
+  })
+
+  test('an invalid plate fails the whole update', () => {
+    expect(
+      profileUpdateSchema.safeParse({ ...validProfileUpdate, cars: ['12345'] })
+        .success,
+    ).toBe(false)
+  })
+
+  test('an empty cars list is valid (all plates optional)', () => {
+    expect(
+      profileUpdateSchema.safeParse({ ...validProfileUpdate, cars: [] })
+        .success,
+    ).toBe(true)
   })
 })

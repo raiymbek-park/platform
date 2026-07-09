@@ -1,0 +1,26 @@
+.group {
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+
+.hint {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  margin: 0;
+}
+
+.remove {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--danger);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  padding: 0;
+}
