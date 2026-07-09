@@ -180,6 +180,9 @@ A **comment** is one message in a post's threaded conversation. The same thread 
   the input bar enters edit mode and saves the change.
 - **Deleting a comment** — the author deletes their own message behind a confirmation; Administration
   may delete any message as moderation. The comment count reflects the removal.
+- **Status-change reasons on issues** — when a Manager or Administration changes an issue's status
+  and leaves a comment, that comment is a regular message in the issue's thread: residents read it
+  there and reply in the same conversation. The comment count includes it.
 - A Viewer reads the thread but cannot write, edit, or delete.
 
 ## Content Formatting

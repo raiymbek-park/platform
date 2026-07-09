@@ -101,7 +101,8 @@ these are built here.*
   resident review, Done, Rejected. A Manager or Administration may move an issue to any status at any
   time — there is no fixed transition order.
 - **Reactions** — like and dislike counts.
-- **Comment count** — the number of comments left on the issue.
+- **Comment count** — the number of comments left on the issue, including comments left with a
+  status change: a status-change comment lands in the issue's comment thread as a regular message.
 - **Number** (Issue #NNN, assigned in order of creation) and a **creation timestamp**.
 
 ## Search and Loading
