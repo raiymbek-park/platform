@@ -247,10 +247,11 @@ export const changeStatus = async (
   input: StatusChangeInput,
 ): Promise<boolean> => {
   const ref = collection().doc(input.issueId)
+  const comment = input.comment ?? ''
+  const resident = comment ? await getResident(uid) : null
   return getDb().runTransaction(async transaction => {
     const snap = await transaction.get(ref)
     if (!snap.exists) return false
-    const comment = input.comment ?? ''
     transaction.update(ref, {
       status: input.status,
       tags: input.tags,
@@ -264,6 +265,19 @@ export const changeStatus = async (
       status: input.status,
       tags: input.tags,
     })
+    if (comment) {
+      transaction.set(ref.collection('comments').doc(), {
+        author: {
+          apartment: resident?.apartment ?? 0,
+          block: resident?.block ?? 0,
+          name: resident?.name ?? '',
+        },
+        authorId: uid,
+        createdAt: FieldValue.serverTimestamp(),
+        media: input.media,
+        text: comment,
+      })
+    }
     return true
   })
 }
