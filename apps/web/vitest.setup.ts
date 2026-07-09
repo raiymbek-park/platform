@@ -33,7 +33,8 @@ vi.mock(
 
 vi.stubGlobal('IntersectionObserver', TestIntersectionObserver)
 
-Element.prototype.scrollIntoView = () => {}
+if (!Element.prototype.scrollIntoView)
+  Element.prototype.scrollIntoView = () => {}
 
 beforeAll(() => trpcServer.listen({ onUnhandledRequest: 'bypass' }))
 
