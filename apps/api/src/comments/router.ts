@@ -2,6 +2,7 @@ import {
   commentCreateInputSchema,
   commentDeleteInputSchema,
   commentListInputSchema,
+  commentTranslateInputSchema,
   commentUpdateInputSchema,
 } from '@raiymbek-park/shared/validation-schemas'
 import { TRPCError } from '@trpc/server'
@@ -12,6 +13,7 @@ import {
   createComment,
   deleteComment,
   listComments,
+  translateComment,
   updateComment,
 } from './comments-store'
 
@@ -33,6 +35,7 @@ export const commentsRouter = router({
   list: publicProcedure.input(commentListInputSchema).query(({ ctx, input }) =>
     listComments({
       cursor: input.cursor,
+      locale: ctx.locale,
       parent: input.parent,
       parentId: input.parentId,
       uid: ctx.uid,
@@ -49,9 +52,25 @@ export const commentsRouter = router({
           message: 'commentCreateForbidden',
         })
       }
-      const outcome = await createComment(uid, input)
+      const outcome = await createComment(uid, ctx.locale, input)
       if (outcome !== 'ok') raise(outcome, 'commentCreateForbidden')
       return { ok: true }
+    }),
+  translate: publicProcedure
+    .input(commentTranslateInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      requireUid(ctx.uid)
+      const result = await translateComment(ctx.locale, input)
+      if (result === 'not-found') {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'commentNotFound' })
+      }
+      if (result === 'failed') {
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'commentTranslateFailed',
+        })
+      }
+      return result
     }),
   update: publicProcedure
     .input(commentUpdateInputSchema)

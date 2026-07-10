@@ -56,3 +56,9 @@ export const commentDeleteInputSchema = commentTargetSchema.extend({
 })
 
 export type CommentDeleteInput = z.infer<typeof commentDeleteInputSchema>
+
+export const commentTranslateInputSchema = commentTargetSchema.extend({
+  id: z.string().min(1),
+})
+
+export type CommentTranslateInput = z.infer<typeof commentTranslateInputSchema>
