@@ -463,3 +463,62 @@ test('error-states 9: a slow list keeps skeletons and shows no error before it r
     await screen.findByText('Протечка трубы в подвале'),
   ).toBeInTheDocument()
 })
+
+const translatedIssue = (overrides: Partial<Issue> = {}): Issue => ({
+  ...toIssue({
+    createdAt: 2000,
+    number: 200,
+    status: 'new',
+    title: 'Домофон жұмыс істемейді',
+  }),
+  description: 'Кіреберістегі домофон кілтпен есікті ашпайды',
+  id: 'issue-translated',
+  isTranslated: true,
+  original: {
+    description: 'Домофон у подъезда не открывает дверь по ключу',
+    title: 'Не работает домофон',
+  },
+  originalLang: 'ru',
+  ...overrides,
+})
+
+const firstIssueCard = async () => {
+  const [card] = await screen.findAllByTestId('issue-card')
+  if (!card) throw new Error('no card rendered')
+  return card
+}
+
+const serveTranslatedIssue = (issue: Issue) =>
+  trpcServer.use(
+    trpcQueries({
+      'issues.list': () => ({ issues: [issue], nextCursor: null }),
+      'resident.me': () => ({
+        apartment: 42,
+        block: 1,
+        name: 'Алиса',
+        role: 'resident',
+      }),
+    }),
+  )
+
+test('happy-path 4: the list shows the translated title, and the expanded detail shows the indicator with a working toggle', async () => {
+  serveTranslatedIssue(translatedIssue())
+  const { user } = renderApp('/issues?status=all')
+  const card = await firstIssueCard()
+
+  await within(card).findByText('Домофон жұмыс істемейді')
+
+  await user.click(within(card).getByRole('button', { name: /Подробнее/ }))
+
+  expect(within(card).getByText('Переведено с русского')).toBeInTheDocument()
+
+  await user.click(
+    within(card).getByRole('button', { name: 'Показать оригинал' }),
+  )
+  expect(within(card).getByText('Не работает домофон')).toBeInTheDocument()
+
+  await user.click(
+    within(card).getByRole('button', { name: 'Показать перевод' }),
+  )
+  expect(within(card).getByText('Домофон жұмыс істемейді')).toBeInTheDocument()
+})
