@@ -165,7 +165,7 @@ msgstr "Келесі"
 msgid "Даром"
 msgstr "Тегін"
 
-#: src/features/comments/ui/comment-message.tsx:65
+#: src/features/comments/ui/comment-message.tsx:69
 msgid "Действия с сообщением"
 msgstr "Хабарламамен әрекеттер"
 
@@ -359,7 +359,7 @@ msgstr "Өзгерістер сақталды."
 msgid "Изменения сохранены. Файлов не загрузилось: {count}"
 msgstr "Өзгерістер сақталды. Жүктелмеген файлдар: {count}"
 
-#: src/features/comments/ui/comment-message.tsx:67
+#: src/features/comments/ui/comment-message.tsx:71
 msgid "изменено"
 msgstr "өзгертілді"
 

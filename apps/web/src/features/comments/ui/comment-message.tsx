@@ -60,6 +60,10 @@ export const CommentMessage = ({
     return t`Перевести`
   }
 
+  const translateProps = isTranslatable
+    ? { translateLabel: translateLabel(), onTranslate: toggleTranslation }
+    : {}
+
   return (
     <MessageBubble
       actionsLabel={t`Действия с сообщением`}
@@ -75,9 +79,8 @@ export const CommentMessage = ({
           : comment.text
       }
       time={formatCommentTime(comment.createdAt, i18n.locale)}
-      translateLabel={translateLabel()}
       onActions={onActions}
-      onTranslate={isTranslatable ? toggleTranslation : undefined}
+      {...translateProps}
     />
   )
 }

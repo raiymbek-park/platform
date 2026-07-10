@@ -165,7 +165,7 @@ msgstr "Далее"
 msgid "Даром"
 msgstr "Даром"
 
-#: src/features/comments/ui/comment-message.tsx:65
+#: src/features/comments/ui/comment-message.tsx:69
 msgid "Действия с сообщением"
 msgstr "Действия с сообщением"
 
@@ -359,7 +359,7 @@ msgstr "Изменения сохранены."
 msgid "Изменения сохранены. Файлов не загрузилось: {count}"
 msgstr "Изменения сохранены. Файлов не загрузилось: {count}"
 
-#: src/features/comments/ui/comment-message.tsx:67
+#: src/features/comments/ui/comment-message.tsx:71
 msgid "изменено"
 msgstr "изменено"
 

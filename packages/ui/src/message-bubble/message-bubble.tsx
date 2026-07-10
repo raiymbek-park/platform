@@ -8,20 +8,23 @@ import { Icon } from '../icon'
 import { Markdown } from '../markdown/markdown'
 import css from './message-bubble.module.scss'
 
-export type MessageBubbleProps = ComponentProps<'div'> & {
-  actionsLabel?: string
-  authorName: string
-  editedLabel?: ReactNode
-  isEdited?: boolean
-  isOwn?: boolean
-  isTranslating?: boolean
-  media?: string[]
-  text?: string
-  time: ReactNode
-  translateLabel?: ReactNode
-  onActions?: () => void
-  onTranslate?: () => void
-}
+type MessageBubbleTranslateProps =
+  | { translateLabel: ReactNode; onTranslate: () => void }
+  | { translateLabel?: undefined; onTranslate?: undefined }
+
+export type MessageBubbleProps = ComponentProps<'div'> &
+  MessageBubbleTranslateProps & {
+    actionsLabel?: string
+    authorName: string
+    editedLabel?: ReactNode
+    isEdited?: boolean
+    isOwn?: boolean
+    isTranslating?: boolean
+    media?: string[]
+    text?: string
+    time: ReactNode
+    onActions?: () => void
+  }
 
 const rowCss = pickCss(css, css.row)
 const bubbleCss = pickCss(css, css.bubble)
@@ -30,7 +33,7 @@ const translateCss = pickCss(css, css.translate)
 
 type TranslateButtonProps = {
   isTranslating?: boolean
-  label?: ReactNode
+  label: ReactNode
   onTranslate: () => void
 }
 
