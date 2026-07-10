@@ -89,8 +89,9 @@ const systemPrompt = (
   subject: string,
 ) => `You translate resident-generated content for a residential-complex community app in Kazakhstan.
 Supported languages: Russian (ru), Kazakh (kk), English (en).
-Detect the source language of the content, then translate ${subject} into the two other supported languages, keyed by locale under "translations". Do not include the detected source language under "translations".
-The author's app locale is "${sourceLocaleHint}" — a hint only; detect the actual language from the text itself.
+First detect the actual source language of the content from the text itself and return it as "detectedLang".
+Then translate ${subject} into every supported language except the detected one, keyed by locale under "translations". The target languages always follow the detected language; never include the detected source language under "translations".
+The author's app locale is "${sourceLocaleHint}" — a hint only, it may be wrong. When the text's language differs from the hint, trust the text: for example, if the hint is "ru" but the text is Kazakh, return "kk" as detectedLang with translations for "ru" and "en".
 Preserve the tone and register of the original; keep numbers, addresses, prices, emoji, and line breaks intact; do not add or omit information.
 Use this domain glossary (ru | kk | en):
 ${GLOSSARY}`

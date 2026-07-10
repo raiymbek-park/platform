@@ -69,6 +69,56 @@ test('error-states 1 / error-states 3: a response missing one target locale is n
   expect(result).toBeNull()
 })
 
+const kazakhTexts = {
+  description: 'Кіреберісте жарық өшіп қалды',
+  title: 'Жарық',
+}
+
+const detectedKkTranslations = {
+  en: { description: 'The light went out in the entrance', title: 'Light' },
+  ru: { description: 'В подъезде погас свет', title: 'Свет' },
+}
+
+test('edge-cases 3: a detected language that differs from the hint is valid when both other locales are translated', async () => {
+  parseMock.mockResolvedValueOnce({
+    parsed_output: {
+      detectedLang: 'kk',
+      translations: detectedKkTranslations,
+    },
+  })
+
+  const result = await translateDocument({
+    apiKey: 'test-key',
+    sourceLocaleHint: 'ru',
+    texts: kazakhTexts,
+  })
+
+  expect(result).toEqual({
+    lang: 'kk',
+    translations: detectedKkTranslations,
+  })
+})
+
+test('edge-cases 3 / error-states 3: a target pair relative to the hint instead of the detected language is rejected', async () => {
+  parseMock.mockResolvedValueOnce({
+    parsed_output: {
+      detectedLang: 'kk',
+      translations: {
+        en: detectedKkTranslations.en,
+        kk: { description: 'Кіреберісте жарық жоқ', title: 'Жарық' },
+      },
+    },
+  })
+
+  const result = await translateDocument({
+    apiKey: 'test-key',
+    sourceLocaleHint: 'ru',
+    texts: kazakhTexts,
+  })
+
+  expect(result).toBeNull()
+})
+
 test('happy-path 5: translateText returns the detected source language and both target-locale text translations', async () => {
   parseMock.mockResolvedValueOnce({
     parsed_output: {
@@ -93,6 +143,50 @@ test('happy-path 5: translateText returns the detected source language and both 
       kk: { text: 'Тамаша ұсыныс' },
     },
   })
+})
+
+test('edge-cases 3 / error-states 3: translateText rejects a target pair relative to the hint when detection differs', async () => {
+  parseMock.mockResolvedValueOnce({
+    parsed_output: {
+      detectedLang: 'kk',
+      translations: {
+        en: { text: 'The light went out' },
+        kk: { text: 'Жарық өшті' },
+      },
+    },
+  })
+
+  const result = await translateText({
+    apiKey: 'test-key',
+    sourceLocaleHint: 'ru',
+    text: 'Жарық өшті',
+  })
+
+  expect(result).toBeNull()
+})
+
+test('edge-cases 3 / edge-cases 6: parseDocumentTranslation accepts a batch result whose detected language differs from the hint', () => {
+  const raw = JSON.stringify({
+    detectedLang: 'kk',
+    translations: detectedKkTranslations,
+  })
+
+  expect(parseDocumentTranslation(raw)).toEqual({
+    lang: 'kk',
+    translations: detectedKkTranslations,
+  })
+})
+
+test('error-states 3: parseDocumentTranslation rejects a target pair relative to the hint, never a partial map', () => {
+  const raw = JSON.stringify({
+    detectedLang: 'kk',
+    translations: {
+      en: detectedKkTranslations.en,
+      kk: { description: 'Кіреберісте жарық жоқ', title: 'Жарық' },
+    },
+  })
+
+  expect(parseDocumentTranslation(raw)).toBeNull()
 })
 
 test('edge-cases 6: parseDocumentTranslation recovers a valid batch result for the backfill script', () => {
