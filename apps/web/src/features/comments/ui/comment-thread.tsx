@@ -1,15 +1,14 @@
 import type { Comment } from '@raiymbek-park/api'
 import type { CommentTarget } from '@raiymbek-park/shared/validation-schemas'
 
-import { i18n } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
-import { Button, EmptyState, MessageBubble, Spinner } from '@raiymbek-park/ui'
+import { Button, EmptyState, Spinner } from '@raiymbek-park/ui'
 import { useEffect, useRef } from 'react'
 
 import { useIntersectionObserver } from '@/shared/lib'
 
-import { formatCommentTime } from '../model/format-comment-time'
 import { useCommentsData } from '../model/use-comments-data'
+import { CommentMessage } from './comment-message'
 import css from './comment-thread.module.scss'
 
 const emptyImage = `${import.meta.env.BASE_URL}images/no-data.png`
@@ -87,16 +86,10 @@ export const CommentThread = ({
   return (
     <div className={css.thread}>
       {comments.map(comment => (
-        <MessageBubble
+        <CommentMessage
           key={comment.id}
-          actionsLabel={t`Действия с сообщением`}
-          authorName={comment.author.name}
-          editedLabel={t`изменено`}
-          isEdited={comment.editedAt !== null}
-          isOwn={comment.isMine}
-          media={comment.media}
-          text={comment.text}
-          time={formatCommentTime(comment.createdAt, i18n.locale)}
+          comment={comment}
+          target={target}
           onActions={canAct(comment) ? () => onActions(comment) : undefined}
         />
       ))}

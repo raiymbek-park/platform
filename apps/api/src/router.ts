@@ -6,7 +6,11 @@ import { residentRouter } from './resident/router'
 import { serviceContactsRouter } from './service-contacts/router'
 import { publicProcedure, router } from './trpc'
 
-export type { Comment, CommentAuthor } from './comments/comments-store'
+export type {
+  Comment,
+  CommentAuthor,
+  CommentTranslation,
+} from './comments/comments-store'
 export type { Context } from './context'
 export type { Event } from './events/events-store'
 export type { Locale } from './i18n'
