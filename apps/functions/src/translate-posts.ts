@@ -4,10 +4,9 @@ import {
   translateDocumentFields,
 } from '@raiymbek-park/api'
 import { logger } from 'firebase-functions'
-import { defineSecret } from 'firebase-functions/params'
 import { onDocumentWritten } from 'firebase-functions/v2/firestore'
 
-const anthropicApiKey = defineSecret('ANTHROPIC_API_KEY')
+import { anthropicApiKey } from './anthropic-key'
 
 export const translatePosts = onDocumentWritten(
   {
