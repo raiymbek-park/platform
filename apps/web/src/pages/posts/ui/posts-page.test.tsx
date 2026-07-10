@@ -105,11 +105,14 @@ const toPost = ({
   id: `post-${createdAt}`,
   isMine: false,
   isPinned: isPinned ?? false,
+  isTranslated: false,
   keywords: keywordsOf(title),
   kind,
   likeCount: 0,
   media: media ?? [],
   myReaction: null,
+  original: null,
+  originalLang: 'ru',
   title,
 })
 

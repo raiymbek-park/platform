@@ -38,11 +38,14 @@ const seedPost: Post = {
   id: 'post-1',
   isMine: true,
   isPinned: false,
+  isTranslated: false,
   keywords: [],
   kind: 'offer',
   likeCount: 0,
   media: [],
   myReaction: null,
+  original: null,
+  originalLang: 'ru',
   title: 'Продам горный велосипед',
 }
 

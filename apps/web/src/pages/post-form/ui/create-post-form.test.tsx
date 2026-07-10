@@ -53,11 +53,14 @@ const toPost = (payload: PostCreatePayload): Post => ({
   id: payload.id,
   isMine: true,
   isPinned: false,
+  isTranslated: false,
   keywords: [],
   kind: payload.kind,
   likeCount: 0,
   media: payload.media,
   myReaction: null,
+  original: null,
+  originalLang: 'ru',
   title: payload.title,
 })
 
