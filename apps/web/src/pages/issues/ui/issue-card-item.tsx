@@ -8,6 +8,7 @@ import type { IssueView } from '../model/use-issues-data'
 import { i18n } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
 import {
+  CardTranslation,
   CommentCount,
   InlineButton,
   IssueCard,
@@ -15,6 +16,8 @@ import {
 } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+
+import { useTranslationLabels } from '@/shared/i18n'
 
 import { formatIssueDate } from '../model/format-issue-date'
 import { useIssueBadges } from '../model/use-issue-badges'
@@ -46,7 +49,17 @@ export const IssueCardItem = ({
   const navigate = useNavigate()
   const { cardStatusLabel, cardTags, statusGlyph, statusTone } =
     useIssueBadges()
+  const { showOriginalLabel, showTranslationLabel, translatedFrom } =
+    useTranslationLabels()
   const [isExpanded, setExpanded] = useState(false)
+  const [isShowingOriginal, setShowingOriginal] = useState(false)
+
+  const original = isShowingOriginal ? issue.original : null
+
+  const toggleExpand = () => {
+    if (isExpanded) setShowingOriginal(false)
+    setExpanded(expanded => !expanded)
+  }
 
   const status: IssueStatus = issue.status
   const meta = t`Заявка №${issue.number} · ${cardStatusLabel(status)}`
@@ -125,7 +138,7 @@ export const IssueCardItem = ({
       collapseLabel={t`Свернуть`}
       contacts={contacts}
       data-testid='issue-card'
-      description={issue.description}
+      description={original?.description ?? issue.description}
       expandLabel={t`Подробнее`}
       isExpanded={isExpanded}
       media={issue.media}
@@ -156,8 +169,19 @@ export const IssueCardItem = ({
         </>
       }
       tags={cardTags(issue)}
-      title={issue.title}
-      onToggleExpand={() => setExpanded(expanded => !expanded)}
+      title={original?.title ?? issue.title}
+      translation={
+        issue.original && (
+          <CardTranslation
+            label={translatedFrom(issue.originalLang)}
+            toggleLabel={
+              isShowingOriginal ? showTranslationLabel : showOriginalLabel
+            }
+            onToggle={() => setShowingOriginal(showing => !showing)}
+          />
+        )
+      }
+      onToggleExpand={toggleExpand}
     />
   )
 }

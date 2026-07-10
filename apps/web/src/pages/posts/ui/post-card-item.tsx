@@ -5,6 +5,7 @@ import type { PostView } from '../model/use-posts-data'
 import { i18n } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
 import {
+  CardTranslation,
   CommentCount,
   InlineButton,
   PostCard,
@@ -12,6 +13,8 @@ import {
 } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
+
+import { useTranslationLabels } from '@/shared/i18n'
 
 import { formatPostDate } from '../model/format-post-date'
 import { usePostBadges } from '../model/use-post-badges'
@@ -40,7 +43,17 @@ export const PostCardItem = ({
   const { t } = useLingui()
   const navigate = useNavigate()
   const { authorLabel, cardTags, categoryGlyph, categoryTone } = usePostBadges()
+  const { showOriginalLabel, showTranslationLabel, translatedFrom } =
+    useTranslationLabels()
   const [isExpanded, setExpanded] = useState(false)
+  const [isShowingOriginal, setShowingOriginal] = useState(false)
+
+  const original = isShowingOriginal ? post.original : null
+
+  const toggleExpand = () => {
+    if (isExpanded) setShowingOriginal(false)
+    setExpanded(expanded => !expanded)
+  }
 
   const dateLabel = formatPostDate(post.createdAt, i18n.locale, {
     today: t`Сегодня`,
@@ -113,7 +126,7 @@ export const PostCardItem = ({
       collapseLabel={t`Свернуть`}
       contacts={contacts}
       data-testid='post-card'
-      description={post.description}
+      description={original?.description ?? post.description}
       expandLabel={
         post.kind === 'announcement' ? t`Читать далее` : t`Подробнее`
       }
@@ -146,8 +159,19 @@ export const PostCardItem = ({
         </>
       }
       tags={cardTags(post)}
-      title={post.title}
-      onToggleExpand={() => setExpanded(expanded => !expanded)}
+      title={original?.title ?? post.title}
+      translation={
+        post.original && (
+          <CardTranslation
+            label={translatedFrom(post.originalLang)}
+            toggleLabel={
+              isShowingOriginal ? showTranslationLabel : showOriginalLabel
+            }
+            onToggle={() => setShowingOriginal(showing => !showing)}
+          />
+        )
+      }
+      onToggleExpand={toggleExpand}
     />
   )
 }
