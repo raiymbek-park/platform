@@ -165,10 +165,10 @@ test('edge-cases 3 / error-states 3: translateText rejects a target pair relativ
   expect(result).toBeNull()
 })
 
-test('edge-cases 3 / edge-cases 6: parseDocumentTranslation accepts a batch result with detectedLang plus both other locales', () => {
+test('edge-cases 3 / edge-cases 6: parseDocumentTranslation accepts a full batch result and drops the source-language echo', () => {
   const raw = JSON.stringify({
     detectedLang: 'kk',
-    translations: detectedKkTranslations,
+    translations: { ...detectedKkTranslations, kk: kazakhTexts },
   })
 
   expect(parseDocumentTranslation(raw)).toEqual({
@@ -190,7 +190,13 @@ test('error-states 3: parseDocumentTranslation rejects an output missing a requi
 })
 
 test('edge-cases 6: parseDocumentTranslation recovers a valid batch result for the backfill script', () => {
-  const raw = JSON.stringify(documentTranslation)
+  const raw = JSON.stringify({
+    detectedLang: documentTranslation.detectedLang,
+    translations: {
+      ...documentTranslation.translations,
+      ru: { description: 'Плановое отключение воды', title: 'Отключение воды' },
+    },
+  })
 
   expect(parseDocumentTranslation(raw)).toEqual({
     lang: 'ru',
