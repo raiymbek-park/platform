@@ -165,7 +165,7 @@ test('edge-cases 3 / error-states 3: translateText rejects a target pair relativ
   expect(result).toBeNull()
 })
 
-test('edge-cases 3 / edge-cases 6: parseDocumentTranslation accepts a batch result whose detected language differs from the hint', () => {
+test('edge-cases 3 / edge-cases 6: parseDocumentTranslation accepts a batch result with detectedLang plus both other locales', () => {
   const raw = JSON.stringify({
     detectedLang: 'kk',
     translations: detectedKkTranslations,
@@ -177,7 +177,7 @@ test('edge-cases 3 / edge-cases 6: parseDocumentTranslation accepts a batch resu
   })
 })
 
-test('error-states 3: parseDocumentTranslation rejects a target pair relative to the hint, never a partial map', () => {
+test('error-states 3: parseDocumentTranslation rejects an output missing a required target locale (detectedLang included instead)', () => {
   const raw = JSON.stringify({
     detectedLang: 'kk',
     translations: {
