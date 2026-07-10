@@ -24,7 +24,7 @@ The goal is a multilingual application supporting **Russian**, **Kazakh**, and *
 ### What's NOT included
 
 - **Changing the language after the first-launch choice** — an in-app / profile language switcher is deferred; the language is chosen once on first launch.
-- **Translation of server-supplied content** (events, announcements, contacts) — it stays in its stored language; only the backend's awareness of the session language is established now, enabling content localization later.
+- **Translation of server-supplied content** (events, announcements, contacts) — this feature only establishes the backend's awareness of the session language; content translation is specified separately in `docs/features/content-translation/prd.md`.
 - **Remembering the language on the resident's account** — it is remembered per device only.
 - **Right-to-left layouts** — all three languages are left-to-right.
 
