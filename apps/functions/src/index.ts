@@ -2,6 +2,7 @@ import { appRouter, createContext } from '@raiymbek-park/api'
 import { createHTTPHandler } from '@trpc/server/adapters/standalone'
 import { onRequest } from 'firebase-functions/v2/https'
 
+export { translateIssues } from './translate-issues'
 export { translatePosts } from './translate-posts'
 
 const pagesOrigin = 'https://raiymbek-park.github.io'

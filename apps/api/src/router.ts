@@ -16,6 +16,7 @@ export type { ResidentProfile } from './resident/router'
 export type { ServiceContact } from './service-contacts/service-contacts-store'
 
 export { createContext } from './context'
+export { buildKeywords as buildIssueKeywords } from './issues/keywords'
 export { buildPostKeywords } from './posts/keywords'
 export { translateDocumentFields } from './translation/translate-document-fields'
 export { translateDocument } from './translation/translation-client'
