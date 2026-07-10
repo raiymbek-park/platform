@@ -15,6 +15,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "0.110.0",
     "@raiymbek-park/shared": "*",
     "@trpc/server": "11.18.0",
     "firebase-admin": "13.10.0",
