@@ -37,8 +37,8 @@ msgstr "Block"
 #. placeholder {1}: issue.apartment
 #. placeholder {1}: post.apartment
 #: src/pages/home/ui/building-hero.tsx:15
-#: src/pages/issues/ui/issue-card-item.tsx:87
-#: src/pages/posts/ui/post-card-item.tsx:82
+#: src/pages/issues/ui/issue-card-item.tsx:97
+#: src/pages/posts/ui/post-card-item.tsx:92
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
 
@@ -46,7 +46,7 @@ msgstr "Block {0} · Apartment {1}"
 msgid "Блок {block}"
 msgstr "Block {block}"
 
-#: src/features/comments/ui/comment-thread.tsx:81
+#: src/features/comments/ui/comment-thread.tsx:80
 msgid "Будьте первым, кто оставит комментарий."
 msgstr "Be the first to leave a comment."
 
@@ -116,7 +116,7 @@ msgstr "All"
 msgid "Вступить в общий чат жильцов"
 msgstr "Join the residents' group chat"
 
-#: src/pages/posts/ui/post-card-item.tsx:47
+#: src/pages/posts/ui/post-card-item.tsx:57
 msgid "Вчера"
 msgstr "Yesterday"
 
@@ -165,7 +165,7 @@ msgstr "Next"
 msgid "Даром"
 msgstr "Free"
 
-#: src/features/comments/ui/comment-thread.tsx:92
+#: src/features/comments/ui/comment-message.tsx:69
 msgid "Действия с сообщением"
 msgstr "Message actions"
 
@@ -254,7 +254,7 @@ msgstr "Title"
 msgid "Загрузка последних событий…"
 msgstr "Loading recent events…"
 
-#: src/features/comments/ui/comment-thread.tsx:63
+#: src/features/comments/ui/comment-thread.tsx:62
 #: src/pages/home/ui/contacts-section.tsx:17
 #: src/pages/post-form/ui/query-screens.tsx:11
 #: src/shared/issue/issue-loader.tsx:23
@@ -295,7 +295,7 @@ msgstr "Resend code in {0}"
 
 #. placeholder {0}: issue.number
 #. placeholder {1}: cardStatusLabel(status)
-#: src/pages/issues/ui/issue-card-item.tsx:52
+#: src/pages/issues/ui/issue-card-item.tsx:62
 msgid "Заявка №{0} · {1}"
 msgstr "Issue №{0} · {1}"
 
@@ -359,7 +359,7 @@ msgstr "Changes saved."
 msgid "Изменения сохранены. Файлов не загрузилось: {count}"
 msgstr "Changes saved. Files not uploaded: {count}"
 
-#: src/features/comments/ui/comment-thread.tsx:94
+#: src/features/comments/ui/comment-message.tsx:71
 msgid "изменено"
 msgstr "edited"
 
@@ -405,8 +405,8 @@ msgstr "Comments"
 
 #. placeholder {0}: issue.commentCount
 #. placeholder {0}: post.commentCount
-#: src/pages/issues/ui/issue-card-item.tsx:152
-#: src/pages/posts/ui/post-card-item.tsx:142
+#: src/pages/issues/ui/issue-card-item.tsx:162
+#: src/pages/posts/ui/post-card-item.tsx:152
 msgid "Комментарии: {0}"
 msgstr "Comments: {0}"
 
@@ -480,8 +480,8 @@ msgstr "Settings"
 msgid "Не найдено ни одной заявки."
 msgstr "No issues found."
 
-#: src/pages/issues/ui/issue-card-item.tsx:144
-#: src/pages/posts/ui/post-card-item.tsx:134
+#: src/pages/issues/ui/issue-card-item.tsx:154
+#: src/pages/posts/ui/post-card-item.tsx:144
 msgid "Не нравится"
 msgstr "Dislike"
 
@@ -532,6 +532,10 @@ msgstr "Couldn't send the code. Please try again."
 #: src/features/comments/ui/comment-input-bar.tsx:56
 msgid "Не удалось отправить сообщение. Попробуйте ещё раз."
 msgstr "Failed to send the message. Please try again."
+
+#: src/features/comments/ui/comment-message.tsx:42
+msgid "Не удалось перевести сообщение. Попробуйте ещё раз."
+msgstr "Couldn't translate the message. Please try again."
 
 #: src/features/onboarding/ui/otp-verification.tsx:37
 msgid "Не удалось проверить код. Проверьте соединение."
@@ -659,8 +663,8 @@ msgstr "Car plates"
 msgid "Номера машин не должны повторяться"
 msgstr "Car plates must not repeat"
 
-#: src/pages/issues/ui/issue-card-item.tsx:136
-#: src/pages/posts/ui/post-card-item.tsx:126
+#: src/pages/issues/ui/issue-card-item.tsx:146
+#: src/pages/posts/ui/post-card-item.tsx:136
 msgid "Нравится"
 msgstr "Like"
 
@@ -754,12 +758,32 @@ msgstr "Track the progress of your requests"
 msgid "Очистить поиск"
 msgstr "Clear search"
 
+#: src/shared/i18n/translation-note.tsx:20
+msgid "Переведено с английского"
+msgstr "Translated from English"
+
+#: src/shared/i18n/translation-note.tsx:21
+msgid "Переведено с казахского"
+msgstr "Translated from Kazakh"
+
+#: src/shared/i18n/translation-note.tsx:22
+msgid "Переведено с русского"
+msgstr "Translated from Russian"
+
+#: src/features/comments/ui/comment-message.tsx:60
+msgid "Перевести"
+msgstr "Translate"
+
+#: src/features/comments/ui/comment-message.tsx:58
+msgid "Переводим…"
+msgstr "Translating…"
+
 #: src/pages/issue-status/model/use-tag-options.ts:15
 #: src/pages/issues/model/use-issue-badges.ts:65
 msgid "По гарантии"
 msgstr "Under warranty"
 
-#: src/features/comments/ui/comment-thread.tsx:71
+#: src/features/comments/ui/comment-thread.tsx:70
 #: src/features/onboarding/ui/account-locked.tsx:61
 #: src/pages/issues/ui/issue-list.tsx:71
 #: src/pages/post-form/ui/query-screens.tsx:27
@@ -784,8 +808,8 @@ msgstr "Submit a request to the management company"
 msgid "Поддерживается разметка Markdown."
 msgstr "Markdown formatting is supported."
 
-#: src/pages/issues/ui/issue-card-item.tsx:129
-#: src/pages/posts/ui/post-card-item.tsx:118
+#: src/pages/issues/ui/issue-card-item.tsx:139
+#: src/pages/posts/ui/post-card-item.tsx:128
 msgid "Подробнее"
 msgstr "Details"
 
@@ -817,13 +841,22 @@ msgstr "Nothing happened while you were away."
 msgid "Пока не получается отправить код. Попробуйте чуть позже."
 msgstr "Can't send the code right now. Please try again a bit later."
 
-#: src/features/comments/ui/comment-thread.tsx:82
+#: src/features/comments/ui/comment-thread.tsx:81
 msgid "Пока нет комментариев"
 msgstr "No comments yet"
 
 #: src/pages/posts/ui/post-list.tsx:84
 msgid "Пока нет ни одного объявления."
 msgstr "No posts yet."
+
+#: src/features/comments/ui/comment-message.tsx:59
+#: src/shared/i18n/translation-note.tsx:29
+msgid "Показать оригинал"
+msgstr "Show original"
+
+#: src/shared/i18n/translation-note.tsx:29
+msgid "Показать перевод"
+msgstr "Show translation"
 
 #: src/pages/post-form/model/use-post-categories.ts:63
 msgid "Предлагаю услуги"
@@ -879,8 +912,8 @@ msgid "Расскажите подробнее о вашем объявлени�
 msgstr "Tell us more about your post…"
 
 #: src/features/comments/ui/comment-actions-sheet.tsx:31
-#: src/pages/issues/ui/issue-card-item.tsx:99
-#: src/pages/posts/ui/post-card-item.tsx:95
+#: src/pages/issues/ui/issue-card-item.tsx:109
+#: src/pages/posts/ui/post-card-item.tsx:105
 msgid "Редактировать"
 msgstr "Edit"
 
@@ -909,8 +942,8 @@ msgstr "Resolution is on hold"
 msgid "Роль"
 msgstr "Role"
 
-#: src/pages/issues/ui/issue-card-item.tsx:125
-#: src/pages/posts/ui/post-card-item.tsx:113
+#: src/pages/issues/ui/issue-card-item.tsx:135
+#: src/pages/posts/ui/post-card-item.tsx:123
 msgid "Свернуть"
 msgstr "Collapse"
 
@@ -923,7 +956,7 @@ msgstr "For rent"
 msgid "Сдам в аренду"
 msgstr "Renting out"
 
-#: src/pages/posts/ui/post-card-item.tsx:46
+#: src/pages/posts/ui/post-card-item.tsx:56
 msgid "Сегодня"
 msgstr "Today"
 
@@ -951,7 +984,7 @@ msgstr "Too many attempts. Wait a little and try again."
 msgid "Смена статуса"
 msgstr "Change status"
 
-#: src/pages/issues/ui/issue-card-item.tsx:107
+#: src/pages/issues/ui/issue-card-item.tsx:117
 msgid "Сменить статус"
 msgstr "Change status"
 
@@ -1059,9 +1092,9 @@ msgstr "Notices"
 
 #: src/features/comments/ui/comment-delete-confirm.tsx:22
 #: src/features/comments/ui/comment-input-bar.tsx:112
-#: src/pages/issues/ui/issue-card-item.tsx:115
+#: src/pages/issues/ui/issue-card-item.tsx:125
 #: src/pages/issues/ui/issue-delete-confirm.tsx:22
-#: src/pages/posts/ui/post-card-item.tsx:103
+#: src/pages/posts/ui/post-card-item.tsx:113
 #: src/pages/posts/ui/post-delete-confirm.tsx:22
 #: src/shared/media/media-field.tsx:24
 msgid "Удалить"
@@ -1142,7 +1175,7 @@ msgstr "Private ads"
 msgid "Чат дома в WhatsApp"
 msgstr "Building chat on WhatsApp"
 
-#: src/pages/posts/ui/post-card-item.tsx:118
+#: src/pages/posts/ui/post-card-item.tsx:128
 msgid "Читать далее"
 msgstr "Read more"
 

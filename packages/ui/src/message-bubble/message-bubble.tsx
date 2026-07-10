@@ -8,21 +8,54 @@ import { Icon } from '../icon'
 import { Markdown } from '../markdown/markdown'
 import css from './message-bubble.module.scss'
 
-export type MessageBubbleProps = ComponentProps<'div'> & {
-  actionsLabel?: string
-  authorName: string
-  editedLabel?: ReactNode
-  isEdited?: boolean
-  isOwn?: boolean
-  media?: string[]
-  text?: string
-  time: ReactNode
-  onActions?: () => void
-}
+type MessageBubbleTranslateProps =
+  | { translateLabel: ReactNode; onTranslate: () => void }
+  | { translateLabel?: undefined; onTranslate?: undefined }
+
+export type MessageBubbleProps = ComponentProps<'div'> &
+  MessageBubbleTranslateProps & {
+    actionsLabel?: string
+    authorName: string
+    editedLabel?: ReactNode
+    isEdited?: boolean
+    isOwn?: boolean
+    isTranslating?: boolean
+    media?: string[]
+    text?: string
+    time: ReactNode
+    onActions?: () => void
+  }
 
 const rowCss = pickCss(css, css.row)
 const bubbleCss = pickCss(css, css.bubble)
 const actionsCss = pickCss(css, css.actions)
+const translateCss = pickCss(css, css.translate)
+
+type TranslateButtonProps = {
+  isTranslating?: boolean
+  label: ReactNode
+  onTranslate: () => void
+}
+
+const TranslateButton = ({
+  isTranslating,
+  label,
+  onTranslate,
+}: TranslateButtonProps) => (
+  <button
+    className={translateCss({ isTranslating })}
+    disabled={isTranslating}
+    type='button'
+    onClick={onTranslate}
+  >
+    <Icon
+      className={isTranslating ? css.loader : undefined}
+      glyph={isTranslating ? 'loader-circle' : 'languages'}
+      size={14}
+    />
+    {label}
+  </button>
+)
 
 export const MessageBubble = ({
   actionsLabel,
@@ -31,10 +64,13 @@ export const MessageBubble = ({
   editedLabel,
   isEdited,
   isOwn,
+  isTranslating,
   media,
   text,
   time,
+  translateLabel,
   onActions,
+  onTranslate,
   ...restProps
 }: MessageBubbleProps) => (
   <div className={joinCss(rowCss({ isOwn }), className)} {...restProps}>
@@ -52,6 +88,13 @@ export const MessageBubble = ({
       {text && <Markdown className={css.text} content={text} />}
       {isEdited && editedLabel && (
         <span className={css.edited}>{editedLabel}</span>
+      )}
+      {onTranslate && (
+        <TranslateButton
+          isTranslating={isTranslating}
+          label={translateLabel}
+          onTranslate={onTranslate}
+        />
       )}
     </div>
     {onActions && (

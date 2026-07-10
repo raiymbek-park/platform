@@ -10,6 +10,7 @@ import type {
   StatusChangeInput,
 } from '@raiymbek-park/shared/validation-schemas'
 import type { DocumentData } from 'firebase-admin/firestore'
+import type { Locale } from '../i18n'
 import type { WriteOutcome } from '../store-helpers'
 
 import {
@@ -19,18 +20,20 @@ import {
   issueStatuses,
 } from '@raiymbek-park/shared/validation-schemas'
 
-import { FieldValue, getDb, Timestamp } from '../firestore'
+import { FieldValue, getDb } from '../firestore'
 import { getResident, residentSnapshot } from '../resident/resident-store'
 import { deleteIssueMedia } from '../storage'
 import {
   modifyWithOutcome,
   searchedPage,
   toggleReaction,
+  toMillis,
   toNumber,
   toReactions,
   toStringArray,
   toText,
 } from '../store-helpers'
+import { localizedFields } from '../translation/localized-fields'
 import { buildKeywords } from './keywords'
 
 export type IssueAuthor = {
@@ -49,11 +52,14 @@ export type Issue = {
   dislikeCount: number
   id: string
   isMine: boolean
+  isTranslated: boolean
   keywords: string[]
   likeCount: number
   media: string[]
   myReaction: ReactionKind | null
   number: number
+  original: { description: string; title: string } | null
+  originalLang: Locale
   status: IssueStatus
   tags: ClassificationTag[]
   title: string
@@ -94,20 +100,19 @@ const parseIssue = (
   data: DocumentData,
   uid: string | null,
   role: PermissionRole | null,
+  locale: Locale,
 ): Issue => {
   const reactions = toReactions(data.reactions)
   const kinds = Object.values(reactions)
-  const createdAt =
-    data.createdAt instanceof Timestamp ? data.createdAt.toMillis() : 0
   const author =
     typeof data.author === 'object' && data.author !== null ? data.author : {}
   const authorId = toText(data.authorId)
   return {
+    ...localizedFields(data, locale),
     author: toAuthor(author, canSeePhone(role, uid, authorId)),
     category: toCategory(data.category),
     commentCount: toNumber(data.commentCount),
-    createdAt,
-    description: toText(data.description),
+    createdAt: toMillis(data.createdAt),
     dislikeCount: kinds.filter(kind => kind === 'dislike').length,
     id,
     isMine: uid !== null && authorId !== '' && authorId === uid,
@@ -118,13 +123,13 @@ const parseIssue = (
     number: toNumber(data.number),
     status: toStatus(data.status),
     tags: toTags(data.tags),
-    title: toText(data.title),
     urgent: data.urgent === true,
   }
 }
 
 type ListIssuesInput = {
   cursor?: number
+  locale: Locale
   role: PermissionRole | null
   search?: string
   status: IssueFilter
@@ -138,6 +143,7 @@ type ListIssuesResult = {
 
 export const listIssues = async ({
   cursor,
+  locale,
   role,
   search,
   status,
@@ -147,7 +153,9 @@ export const listIssues = async ({
     status === 'all' ? collection() : collection().where('status', '==', status)
   const { paged } = searchedPage(scoped, search, cursor)
   const snap = await paged.limit(ISSUE_PAGE_SIZE).get()
-  const issues = snap.docs.map(doc => parseIssue(doc.id, doc.data(), uid, role))
+  const issues = snap.docs.map(doc =>
+    parseIssue(doc.id, doc.data(), uid, role, locale),
+  )
   const last = issues.at(-1)
   const nextCursor =
     last && issues.length === ISSUE_PAGE_SIZE ? last.createdAt : null
@@ -166,6 +174,7 @@ const nextNumber = (value: unknown): number => toNumber(value) + 1
 
 export const createIssue = async (
   uid: string,
+  locale: Locale,
   input: IssueCreatePayload,
 ): Promise<{ id: string; number: number }> => {
   const author = residentSnapshot(await getResident(uid))
@@ -183,6 +192,7 @@ export const createIssue = async (
       createdAt: FieldValue.serverTimestamp(),
       description: input.description,
       keywords: buildKeywords({ number, titles: [input.title] }),
+      lang: locale,
       media: input.media,
       number,
       reactions: {},
@@ -208,11 +218,12 @@ const canModifyIssue = (
 export const getIssue = async (
   uid: string | null,
   role: PermissionRole | null,
+  locale: Locale,
   issueId: string,
 ): Promise<Issue | null> => {
   const snap = await collection().doc(issueId).get()
   if (!snap.exists) return null
-  return parseIssue(snap.id, snap.data() ?? {}, uid, role)
+  return parseIssue(snap.id, snap.data() ?? {}, uid, role, locale)
 }
 
 export const updateIssue = (

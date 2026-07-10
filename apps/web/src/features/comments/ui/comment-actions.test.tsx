@@ -28,8 +28,10 @@ const seedComment = (overrides: Partial<Comment> = {}): Comment => ({
   editedAt: null,
   id: 'comment-1',
   isMine: false,
+  lang: 'ru',
   media: [],
   text: 'Отличное предложение',
+  translation: null,
   ...overrides,
 })
 

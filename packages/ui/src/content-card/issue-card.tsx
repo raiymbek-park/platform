@@ -33,6 +33,7 @@ export type IssueCardProps = ComponentProps<'article'> & {
   reactions?: ReactNode
   tags?: IssueCardBadge[]
   title: ReactNode
+  translation?: ReactNode
   onToggleExpand?: () => void
 }
 
@@ -51,6 +52,7 @@ export const IssueCard = ({
   reactions,
   tags,
   title,
+  translation,
   onToggleExpand,
   ...restProps
 }: IssueCardProps) => (
@@ -68,6 +70,7 @@ export const IssueCard = ({
       <CardBody description={description} isExpanded={isExpanded} />
       {tags && tags.length > 0 && <CardTags tags={tags} />}
       <CardDetails isExpanded={isExpanded}>
+        {translation}
         <Divider />
         <CardContacts contacts={contacts} />
         {actions && <div className={css.actions}>{actions}</div>}

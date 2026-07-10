@@ -13,6 +13,8 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
+import { TranslationNote } from '@/shared/i18n'
+
 import { formatPostDate } from '../model/format-post-date'
 import { usePostBadges } from '../model/use-post-badges'
 
@@ -41,6 +43,14 @@ export const PostCardItem = ({
   const navigate = useNavigate()
   const { authorLabel, cardTags, categoryGlyph, categoryTone } = usePostBadges()
   const [isExpanded, setExpanded] = useState(false)
+  const [isShowingOriginal, setShowingOriginal] = useState(false)
+
+  const original = isShowingOriginal ? post.original : null
+
+  const toggleExpand = () => {
+    setShowingOriginal(false)
+    setExpanded(expanded => !expanded)
+  }
 
   const dateLabel = formatPostDate(post.createdAt, i18n.locale, {
     today: t`Сегодня`,
@@ -113,7 +123,7 @@ export const PostCardItem = ({
       collapseLabel={t`Свернуть`}
       contacts={contacts}
       data-testid='post-card'
-      description={post.description}
+      description={original?.description ?? post.description}
       expandLabel={
         post.kind === 'announcement' ? t`Читать далее` : t`Подробнее`
       }
@@ -146,8 +156,17 @@ export const PostCardItem = ({
         </>
       }
       tags={cardTags(post)}
-      title={post.title}
-      onToggleExpand={() => setExpanded(expanded => !expanded)}
+      title={original?.title ?? post.title}
+      translation={
+        post.original && (
+          <TranslationNote
+            isShowingOriginal={isShowingOriginal}
+            lang={post.originalLang}
+            onToggle={() => setShowingOriginal(showing => !showing)}
+          />
+        )
+      }
+      onToggleExpand={toggleExpand}
     />
   )
 }

@@ -21,3 +21,11 @@
   When:  any resident fetches the affected post or issue
   Then:  the document renders its original text normally
          reactions, comments, and search by the original title keep working
+
+## Scenario 4: Comment translation stays stable while the response is in flight
+  Given: a comment eligible for translation
+         the "Translate" tap has been sent and the response has not yet arrived
+  When:  the viewer looks at the comment before the response arrives
+  Then:  the "Translate" action shows a loading state instead of its default label
+  When:  the response arrives within the 10-second response budget
+  Then:  the loading state is replaced by the translated text and a show-original toggle

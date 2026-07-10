@@ -130,6 +130,37 @@
   margin: 0;
 }
 
+.translation {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.translationIcon {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.translationLabel {
+  color: var(--text-muted);
+  flex: 1;
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+}
+
+.translationToggle {
+  background: transparent;
+  border: 0;
+  color: var(--action);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: var(--weight-bold);
+  min-height: 32px;
+  padding: 0;
+}
+
 .footer {
   align-items: center;
   display: flex;

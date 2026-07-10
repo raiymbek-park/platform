@@ -1,4 +1,4 @@
-const LOCALES = ['ru', 'kk', 'en'] as const
+export const LOCALES = ['ru', 'kk', 'en'] as const
 
 export type Locale = (typeof LOCALES)[number]
 
@@ -47,6 +47,11 @@ const messages = {
     ru: 'Недостаточно прав для смены статуса',
     kk: 'Мәртебені өзгертуге құқық жеткіліксіз',
     en: 'Not allowed to change the status',
+  },
+  commentTranslateFailed: {
+    ru: 'Не удалось перевести комментарий',
+    kk: 'Пікірді аудару мүмкін болмады',
+    en: 'Could not translate the comment',
   },
 } satisfies Record<string, Record<Locale, string>>
 

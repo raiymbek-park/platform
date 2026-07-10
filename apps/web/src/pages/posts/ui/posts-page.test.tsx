@@ -105,11 +105,14 @@ const toPost = ({
   id: `post-${createdAt}`,
   isMine: false,
   isPinned: isPinned ?? false,
+  isTranslated: false,
   keywords: keywordsOf(title),
   kind,
   likeCount: 0,
   media: media ?? [],
   myReaction: null,
+  original: null,
+  originalLang: 'ru',
   title,
 })
 
@@ -406,4 +409,98 @@ test('validation 8: a Resident sees the create entry on the feed', async () => {
   expect(
     screen.getByRole('link', { name: 'Новое объявление' }),
   ).toBeInTheDocument()
+})
+
+const translatedPost = (overrides: Partial<Post> = {}): Post => ({
+  ...toPost({
+    category: 'city',
+    createdAt: 2000,
+    kind: 'announcement',
+    title: 'Суды өшіру',
+  }),
+  description: 'Жоспарлы сумен өшіру 10:00-ден',
+  id: 'post-translated',
+  isTranslated: true,
+  original: {
+    description: 'Плановое отключение с 10:00',
+    title: 'Отключение воды',
+  },
+  originalLang: 'ru',
+  ...overrides,
+})
+
+let listCallCount = 0
+
+const serveTranslated = (post: Post) => {
+  listCallCount = 0
+  trpcServer.use(
+    trpcQueries({
+      'posts.list': () => {
+        listCallCount += 1
+        return { nextCursor: null, posts: [post] }
+      },
+      'resident.me': () => ({
+        apartment: 42,
+        block: 1,
+        name: 'Алиса',
+        role: 'resident',
+      }),
+    }),
+  )
+}
+
+test('happy-path 1 / edge-cases 6: the feed shows the translated title for a Kazakh-locale viewer', async () => {
+  serveTranslated(translatedPost())
+  renderApp('/posts?tab=all')
+
+  expect(await screen.findByText('Суды өшіру')).toBeInTheDocument()
+})
+
+test('happy-path 2: the expanded card shows the indicator, toggles to the original and back with no extra request', async () => {
+  serveTranslated(translatedPost())
+  const { user } = renderApp('/posts?tab=all')
+  const card = await firstCard()
+
+  await user.click(within(card).getByRole('button', { name: /Читать далее/ }))
+
+  expect(within(card).getByText('Переведено с русского')).toBeInTheDocument()
+  expect(within(card).getByText('Суды өшіру')).toBeInTheDocument()
+
+  await user.click(
+    within(card).getByRole('button', { name: 'Показать оригинал' }),
+  )
+  expect(within(card).getByText('Отключение воды')).toBeInTheDocument()
+
+  await user.click(
+    within(card).getByRole('button', { name: 'Показать перевод' }),
+  )
+  expect(within(card).getByText('Суды өшіру')).toBeInTheDocument()
+  expect(listCallCount).toBe(1)
+})
+
+test('happy-path 3: a same-locale post shows the original with no translation indicator', async () => {
+  serveTranslated(
+    translatedPost({
+      description: 'Описание для проверки ленты.',
+      isTranslated: false,
+      original: null,
+      originalLang: 'ru',
+      title: 'Отключение воды',
+    }),
+  )
+  renderApp('/posts?tab=all')
+  const card = await firstCard()
+
+  await within(card).findByText('Отключение воды')
+  expect(screen.queryByText(/Переведено с/)).not.toBeInTheDocument()
+})
+
+test('edge-cases 3: a Russian-locale viewer sees a Kazakh-authored post with a "translated from Kazakh" indicator', async () => {
+  serveTranslated(translatedPost({ originalLang: 'kk' }))
+  const { user } = renderApp('/posts?tab=all')
+  const card = await firstCard()
+
+  await user.click(within(card).getByRole('button', { name: /Читать далее/ }))
+
+  expect(within(card).getByText('Переведено с казахского')).toBeInTheDocument()
 })

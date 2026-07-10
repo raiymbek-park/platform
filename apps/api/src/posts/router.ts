@@ -29,6 +29,7 @@ export const postsRouter = router({
   list: publicProcedure.input(postListInputSchema).query(({ ctx, input }) =>
     listPosts({
       cursor: input.cursor,
+      locale: ctx.locale,
       search: input.search,
       tab: input.tab,
       uid: ctx.uid,
@@ -37,7 +38,7 @@ export const postsRouter = router({
   get: publicProcedure
     .input(postRefInputSchema)
     .query(async ({ ctx, input }) => {
-      const post = await getPost(ctx.uid, input.postId)
+      const post = await getPost(ctx.uid, ctx.locale, input.postId)
       if (!post) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'postNotFound' })
       }
@@ -75,7 +76,7 @@ export const postsRouter = router({
           message: 'postCreateForbidden',
         })
       }
-      return createPost(uid, input)
+      return createPost(uid, ctx.locale, input)
     }),
   update: publicProcedure
     .input(postUpdateInputSchema)

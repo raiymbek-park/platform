@@ -8,6 +8,7 @@ import type {
   ReactionKind,
 } from '@raiymbek-park/shared/validation-schemas'
 import type { DocumentData } from 'firebase-admin/firestore'
+import type { Locale } from '../i18n'
 import type { WriteOutcome } from '../store-helpers'
 
 import {
@@ -30,6 +31,7 @@ import {
   toStringArray,
   toText,
 } from '../store-helpers'
+import { localizedFields } from '../translation/localized-fields'
 import { buildPostKeywords } from './keywords'
 
 export type PostAuthor = {
@@ -49,11 +51,14 @@ export type Post = {
   id: string
   isMine: boolean
   isPinned: boolean
+  isTranslated: boolean
   keywords: string[]
   kind: PostKind
   likeCount: number
   media: string[]
   myReaction: ReactionKind | null
+  original: { description: string; title: string } | null
+  originalLang: Locale
   title: string
 }
 
@@ -78,6 +83,7 @@ const parsePost = (
   id: string,
   data: DocumentData,
   uid: string | null,
+  locale: Locale,
 ): Post => {
   const reactions = toReactions(data.reactions)
   const kinds = Object.values(reactions)
@@ -86,11 +92,11 @@ const parsePost = (
   const authorId = toText(data.authorId)
   const kind = toKind(data.kind)
   return {
+    ...localizedFields(data, locale),
     author: toAuthor(author, kind === 'offer' && uid !== null),
     category: toCategory(data.category),
     commentCount: toNumber(data.commentCount),
     createdAt: toMillis(data.createdAt),
-    description: toText(data.description),
     dislikeCount: kinds.filter(reaction => reaction === 'dislike').length,
     id,
     isMine: uid !== null && authorId !== '' && authorId === uid,
@@ -102,12 +108,12 @@ const parsePost = (
     likeCount: kinds.filter(reaction => reaction === 'like').length,
     media: toStringArray(data.media),
     myReaction: uid ? (reactions[uid] ?? null) : null,
-    title: toText(data.title),
   }
 }
 
 type ListPostsInput = {
   cursor?: number
+  locale: Locale
   search?: string
   tab: PostTab
   uid: string | null
@@ -129,6 +135,7 @@ const PINNED_LIMIT = 10
 const listPinned = async (
   kind: PostKind | null,
   uid: string | null,
+  locale: Locale,
 ): Promise<Post[]> => {
   const scoped = kind ? collection().where('kind', '==', kind) : collection()
   const snap = await scoped
@@ -136,11 +143,12 @@ const listPinned = async (
     .orderBy('pinnedUntil', 'desc')
     .limit(PINNED_LIMIT)
     .get()
-  return snap.docs.map(doc => parsePost(doc.id, doc.data(), uid))
+  return snap.docs.map(doc => parsePost(doc.id, doc.data(), uid, locale))
 }
 
 export const listPosts = async ({
   cursor,
+  locale,
   search,
   tab,
   uid,
@@ -150,11 +158,11 @@ export const listPosts = async ({
   const { paged, terms } = searchedPage(scoped, search, cursor)
   const isFirstPlainPage = cursor === undefined && terms.length === 0
   const [pinned, snap] = await Promise.all([
-    isFirstPlainPage ? listPinned(kind, uid) : Promise.resolve([]),
+    isFirstPlainPage ? listPinned(kind, uid, locale) : Promise.resolve([]),
     paged.limit(POST_PAGE_SIZE).get(),
   ])
   const pinnedIds = new Set(pinned.map(post => post.id))
-  const page = snap.docs.map(doc => parsePost(doc.id, doc.data(), uid))
+  const page = snap.docs.map(doc => parsePost(doc.id, doc.data(), uid, locale))
   const last = page.at(-1)
   const nextCursor =
     last && page.length === POST_PAGE_SIZE ? last.createdAt : null
@@ -170,6 +178,7 @@ export const setPostReaction = (
 
 export const createPost = async (
   uid: string,
+  locale: Locale,
   input: PostCreatePayload,
 ): Promise<{ id: string }> => {
   const author = residentSnapshot(await getResident(uid))
@@ -182,8 +191,9 @@ export const createPost = async (
       commentCount: 0,
       createdAt: FieldValue.serverTimestamp(),
       description: input.description,
-      keywords: buildPostKeywords(input.title),
+      keywords: buildPostKeywords([input.title]),
       kind: input.kind,
+      lang: locale,
       media: input.media,
       reactions: {},
       title: input.title,
@@ -193,11 +203,12 @@ export const createPost = async (
 
 export const getPost = async (
   uid: string | null,
+  locale: Locale,
   postId: string,
 ): Promise<Post | null> => {
   const snap = await collection().doc(postId).get()
   if (!snap.exists) return null
-  return parsePost(snap.id, snap.data() ?? {}, uid)
+  return parsePost(snap.id, snap.data() ?? {}, uid, locale)
 }
 
 const canModifyPost = (
@@ -221,7 +232,7 @@ export const updatePost = (
       transaction.update(ref, {
         category: input.category,
         description: input.description,
-        keywords: buildPostKeywords(input.title),
+        keywords: buildPostKeywords([input.title]),
         media: input.media,
         title: input.title,
       })

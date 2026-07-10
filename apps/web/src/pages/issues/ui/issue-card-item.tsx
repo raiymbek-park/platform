@@ -16,6 +16,8 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
+import { TranslationNote } from '@/shared/i18n'
+
 import { formatIssueDate } from '../model/format-issue-date'
 import { useIssueBadges } from '../model/use-issue-badges'
 
@@ -47,6 +49,14 @@ export const IssueCardItem = ({
   const { cardStatusLabel, cardTags, statusGlyph, statusTone } =
     useIssueBadges()
   const [isExpanded, setExpanded] = useState(false)
+  const [isShowingOriginal, setShowingOriginal] = useState(false)
+
+  const original = isShowingOriginal ? issue.original : null
+
+  const toggleExpand = () => {
+    setShowingOriginal(false)
+    setExpanded(expanded => !expanded)
+  }
 
   const status: IssueStatus = issue.status
   const meta = t`Заявка №${issue.number} · ${cardStatusLabel(status)}`
@@ -125,7 +135,7 @@ export const IssueCardItem = ({
       collapseLabel={t`Свернуть`}
       contacts={contacts}
       data-testid='issue-card'
-      description={issue.description}
+      description={original?.description ?? issue.description}
       expandLabel={t`Подробнее`}
       isExpanded={isExpanded}
       media={issue.media}
@@ -156,8 +166,17 @@ export const IssueCardItem = ({
         </>
       }
       tags={cardTags(issue)}
-      title={issue.title}
-      onToggleExpand={() => setExpanded(expanded => !expanded)}
+      title={original?.title ?? issue.title}
+      translation={
+        issue.original && (
+          <TranslationNote
+            isShowingOriginal={isShowingOriginal}
+            lang={issue.originalLang}
+            onToggle={() => setShowingOriginal(showing => !showing)}
+          />
+        )
+      }
+      onToggleExpand={toggleExpand}
     />
   )
 }

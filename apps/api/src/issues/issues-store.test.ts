@@ -42,7 +42,12 @@ const doc = {
 }
 
 const phoneFor = async (role: PermissionRole | null, uid: string | null) => {
-  const { issues } = await listIssues({ role, status: 'all', uid })
+  const { issues } = await listIssues({
+    locale: 'ru',
+    role,
+    status: 'all',
+    uid,
+  })
   const [issue] = issues
   expect(issue).toBeDefined()
   return issue?.author.phone

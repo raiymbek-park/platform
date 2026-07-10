@@ -10,6 +10,7 @@ export type { ContactCardProps } from './contact-card/contact-card'
 export type { ContentProps } from './content/content'
 export type { ContentCardContact } from './content-card/card-contacts'
 export type { ContentCardBadge } from './content-card/card-tags'
+export type { CardTranslationProps } from './content-card/card-translation'
 export type {
   IssueCardBadge,
   IssueCardContact,
@@ -68,6 +69,7 @@ export { CommentCount } from './comment-count/comment-count'
 export { ConfirmPopup } from './confirm-popup/confirm-popup'
 export { ContactCard } from './contact-card/contact-card'
 export { Content } from './content/content'
+export { CardTranslation } from './content-card/card-translation'
 export { IssueCard } from './content-card/issue-card'
 export { PostCard } from './content-card/post-card'
 export { CreateFab } from './create-fab/create-fab'

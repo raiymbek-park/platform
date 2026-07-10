@@ -28,6 +28,7 @@ export const issuesRouter = router({
       const role = ctx.uid ? await getRole(ctx.uid) : null
       return listIssues({
         cursor: input.cursor,
+        locale: ctx.locale,
         role,
         search: input.search,
         status: input.status,
@@ -66,7 +67,7 @@ export const issuesRouter = router({
       }
 
       const role = await getRole(ctx.uid)
-      const issue = await getIssue(ctx.uid, role, input.issueId)
+      const issue = await getIssue(ctx.uid, role, ctx.locale, input.issueId)
       if (!issue) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'issueNotFound' })
       }
@@ -90,7 +91,7 @@ export const issuesRouter = router({
         })
       }
 
-      return createIssue(ctx.uid, input)
+      return createIssue(ctx.uid, ctx.locale, input)
     }),
   update: publicProcedure
     .input(issueUpdateInputSchema)

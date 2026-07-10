@@ -25,3 +25,15 @@ test('error-states S1 — a known error key is localized to the session locale',
 test('error-states S4 — an unknown message key passes through unchanged', () => {
   expect(translate('kk', 'Some ad-hoc message')).toBe('Some ad-hoc message')
 })
+
+test('error-states 2: commentTranslateFailed is localized to the viewer’s locale', () => {
+  expect(translate('ru', 'commentTranslateFailed')).toBe(
+    'Не удалось перевести комментарий',
+  )
+  expect(translate('kk', 'commentTranslateFailed')).toBe(
+    'Пікірді аудару мүмкін болмады',
+  )
+  expect(translate('en', 'commentTranslateFailed')).toBe(
+    'Could not translate the comment',
+  )
+})
