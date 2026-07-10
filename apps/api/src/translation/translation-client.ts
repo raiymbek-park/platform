@@ -1,3 +1,4 @@
+import type { MessageCreateParamsNonStreaming } from '@anthropic-ai/sdk/resources/messages'
 import type { Locale } from '../i18n'
 
 import Anthropic from '@anthropic-ai/sdk'
@@ -53,6 +54,36 @@ const textFieldsSchema = z.object({
   text: z.string().min(1),
 })
 
+const DOCUMENT_SUBJECT = 'its title and description'
+
+const outputSchemaFor = <Fields>(fieldsSchema: z.ZodType<Fields>) =>
+  z.object({
+    detectedLang: z.enum(LOCALES),
+    translations: z.object({
+      en: fieldsSchema.optional(),
+      kk: fieldsSchema.optional(),
+      ru: fieldsSchema.optional(),
+    }),
+  })
+
+const documentOutputSchema = outputSchemaFor(documentFieldsSchema)
+
+const resolveTranslations = <Fields>({
+  detectedLang,
+  translations,
+}: {
+  detectedLang: Locale
+  translations: Partial<Record<Locale, Fields>>
+}): { lang: Locale; translations: Partial<Record<Locale, Fields>> } | null => {
+  const targets = LOCALES.filter(locale => locale !== detectedLang)
+  const entries = targets.flatMap(locale => {
+    const fields = translations[locale]
+    return fields ? [[locale, fields] as const] : []
+  })
+  if (entries.length !== targets.length) return null
+  return { lang: detectedLang, translations: Object.fromEntries(entries) }
+}
+
 const systemPrompt = (
   sourceLocaleHint: Locale,
   subject: string,
@@ -82,35 +113,18 @@ const requestTranslation = async <Fields>({
   lang: Locale
   translations: Partial<Record<Locale, Fields>>
 } | null> => {
-  const outputSchema = z.object({
-    detectedLang: z.enum(LOCALES),
-    translations: z.object({
-      en: fieldsSchema.optional(),
-      kk: fieldsSchema.optional(),
-      ru: fieldsSchema.optional(),
-    }),
-  })
   const client = new Anthropic({ apiKey })
   const message = await client.messages.parse({
     max_tokens: MAX_TOKENS,
     messages: [{ content: JSON.stringify(texts), role: 'user' }],
     model: MODEL,
-    output_config: { format: zodOutputFormat(outputSchema) },
+    output_config: { format: zodOutputFormat(outputSchemaFor(fieldsSchema)) },
     system: systemPrompt(sourceLocaleHint, subject),
     temperature: 0,
   })
   const parsed = message.parsed_output
   if (!parsed) return null
-  const targets = LOCALES.filter(locale => locale !== parsed.detectedLang)
-  const entries = targets.flatMap(locale => {
-    const fields = parsed.translations[locale]
-    return fields ? [[locale, fields] as const] : []
-  })
-  if (entries.length !== targets.length) return null
-  return {
-    lang: parsed.detectedLang,
-    translations: Object.fromEntries(entries),
-  }
+  return resolveTranslations(parsed)
 }
 
 export const translateDocument = ({
@@ -122,9 +136,38 @@ export const translateDocument = ({
     apiKey,
     fieldsSchema: documentFieldsSchema,
     sourceLocaleHint,
-    subject: 'its title and description',
+    subject: DOCUMENT_SUBJECT,
     texts,
   })
+
+export type DocumentTranslationRequest = Omit<TranslateDocumentInput, 'apiKey'>
+
+export const documentTranslationParams = ({
+  sourceLocaleHint,
+  texts,
+}: DocumentTranslationRequest): MessageCreateParamsNonStreaming => ({
+  max_tokens: MAX_TOKENS,
+  messages: [{ content: JSON.stringify(texts), role: 'user' }],
+  model: MODEL,
+  output_config: { format: zodOutputFormat(documentOutputSchema) },
+  system: systemPrompt(sourceLocaleHint, DOCUMENT_SUBJECT),
+  temperature: 0,
+})
+
+const parseJson = (raw: string): unknown => {
+  try {
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}
+
+export const parseDocumentTranslation = (
+  raw: string,
+): DocumentTranslation | null => {
+  const parsed = documentOutputSchema.safeParse(parseJson(raw))
+  return parsed.success ? resolveTranslations(parsed.data) : null
+}
 
 export type TextTranslation = {
   lang: Locale
