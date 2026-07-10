@@ -34,3 +34,16 @@ test('deduplicates prefixes shared across titles that differ only by case', () =
   expect(keywords.length).toBe(new Set(keywords).size)
   expect(keywords).toEqual(expect.arrayContaining(['лиф', 'лифт']))
 })
+
+test('edge-cases 9: the issue number stays searchable once cross-language titles are added to the same keyword set', () => {
+  const keywords = buildKeywords({
+    number: 118,
+    titles: [
+      'Не работает домофон',
+      'Домофон жұмыс істемейді',
+      'Intercom broken',
+    ],
+  })
+
+  expect(keywords).toContain('118')
+})
