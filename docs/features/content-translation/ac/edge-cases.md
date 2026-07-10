@@ -41,3 +41,24 @@
   When:  the backfill script has run and a Kazakh-locale resident opens the feed
   Then:  the post shows the Kazakh title and description
          its detail view shows the "translated from Russian" indicator
+
+## Scenario 7: A target-locale search finds nothing until translation completes
+  Given: a post authored in Russian whose Kazakh translation title contains a word not present
+         in the Russian original
+         the translation has not yet completed
+  When:  a resident searches the feed in Kazakh for that word
+  Then:  the post does not appear in the results
+  When:  translation completes and the resident searches again for the same word
+  Then:  the post appears in the results
+
+## Scenario 8: A second edit during retranslation is not lost
+  Given: a post's retranslation from a first edit is still in progress
+  When:  the author edits the title or description again before that retranslation completes
+  Then:  once translation completes, it reflects only the latest edited text
+         a Kazakh-locale viewer never sees a translation of the superseded intermediate text
+
+## Scenario 9: Issue-number search is unaffected by cross-language title search
+  Given: an issue whose source language differs from the searcher's locale and whose title is
+         now searchable in every supported locale because of this feature
+  When:  a resident searches by the issue's number
+  Then:  the issue appears in the results exactly as it did before this feature
