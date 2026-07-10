@@ -8,7 +8,6 @@ import type { IssueView } from '../model/use-issues-data'
 import { i18n } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
 import {
-  CardTranslation,
   CommentCount,
   InlineButton,
   IssueCard,
@@ -17,7 +16,7 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
-import { useTranslationLabels } from '@/shared/i18n'
+import { TranslationNote } from '@/shared/i18n'
 
 import { formatIssueDate } from '../model/format-issue-date'
 import { useIssueBadges } from '../model/use-issue-badges'
@@ -49,15 +48,13 @@ export const IssueCardItem = ({
   const navigate = useNavigate()
   const { cardStatusLabel, cardTags, statusGlyph, statusTone } =
     useIssueBadges()
-  const { showOriginalLabel, showTranslationLabel, translatedFrom } =
-    useTranslationLabels()
   const [isExpanded, setExpanded] = useState(false)
   const [isShowingOriginal, setShowingOriginal] = useState(false)
 
   const original = isShowingOriginal ? issue.original : null
 
   const toggleExpand = () => {
-    if (isExpanded) setShowingOriginal(false)
+    setShowingOriginal(false)
     setExpanded(expanded => !expanded)
   }
 
@@ -172,11 +169,9 @@ export const IssueCardItem = ({
       title={original?.title ?? issue.title}
       translation={
         issue.original && (
-          <CardTranslation
-            label={translatedFrom(issue.originalLang)}
-            toggleLabel={
-              isShowingOriginal ? showTranslationLabel : showOriginalLabel
-            }
+          <TranslationNote
+            isShowingOriginal={isShowingOriginal}
+            lang={issue.originalLang}
             onToggle={() => setShowingOriginal(showing => !showing)}
           />
         )

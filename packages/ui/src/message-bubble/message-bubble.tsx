@@ -28,6 +28,32 @@ const bubbleCss = pickCss(css, css.bubble)
 const actionsCss = pickCss(css, css.actions)
 const translateCss = pickCss(css, css.translate)
 
+type TranslateButtonProps = {
+  isTranslating?: boolean
+  label?: ReactNode
+  onTranslate: () => void
+}
+
+const TranslateButton = ({
+  isTranslating,
+  label,
+  onTranslate,
+}: TranslateButtonProps) => (
+  <button
+    className={translateCss({ isTranslating })}
+    disabled={isTranslating}
+    type='button'
+    onClick={onTranslate}
+  >
+    <Icon
+      className={isTranslating ? css.loader : undefined}
+      glyph={isTranslating ? 'loader-circle' : 'languages'}
+      size={14}
+    />
+    {label}
+  </button>
+)
+
 export const MessageBubble = ({
   actionsLabel,
   authorName,
@@ -61,19 +87,11 @@ export const MessageBubble = ({
         <span className={css.edited}>{editedLabel}</span>
       )}
       {onTranslate && (
-        <button
-          className={translateCss({ isTranslating })}
-          disabled={isTranslating}
-          type='button'
-          onClick={onTranslate}
-        >
-          <Icon
-            className={isTranslating ? css.loader : undefined}
-            glyph={isTranslating ? 'loader-circle' : 'languages'}
-            size={14}
-          />
-          {translateLabel}
-        </button>
+        <TranslateButton
+          isTranslating={isTranslating}
+          label={translateLabel}
+          onTranslate={onTranslate}
+        />
       )}
     </div>
     {onActions && (

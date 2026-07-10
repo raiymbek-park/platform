@@ -5,7 +5,6 @@ import type { PostView } from '../model/use-posts-data'
 import { i18n } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
 import {
-  CardTranslation,
   CommentCount,
   InlineButton,
   PostCard,
@@ -14,7 +13,7 @@ import {
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
-import { useTranslationLabels } from '@/shared/i18n'
+import { TranslationNote } from '@/shared/i18n'
 
 import { formatPostDate } from '../model/format-post-date'
 import { usePostBadges } from '../model/use-post-badges'
@@ -43,15 +42,13 @@ export const PostCardItem = ({
   const { t } = useLingui()
   const navigate = useNavigate()
   const { authorLabel, cardTags, categoryGlyph, categoryTone } = usePostBadges()
-  const { showOriginalLabel, showTranslationLabel, translatedFrom } =
-    useTranslationLabels()
   const [isExpanded, setExpanded] = useState(false)
   const [isShowingOriginal, setShowingOriginal] = useState(false)
 
   const original = isShowingOriginal ? post.original : null
 
   const toggleExpand = () => {
-    if (isExpanded) setShowingOriginal(false)
+    setShowingOriginal(false)
     setExpanded(expanded => !expanded)
   }
 
@@ -162,11 +159,9 @@ export const PostCardItem = ({
       title={original?.title ?? post.title}
       translation={
         post.original && (
-          <CardTranslation
-            label={translatedFrom(post.originalLang)}
-            toggleLabel={
-              isShowingOriginal ? showTranslationLabel : showOriginalLabel
-            }
+          <TranslationNote
+            isShowingOriginal={isShowingOriginal}
+            lang={post.originalLang}
             onToggle={() => setShowingOriginal(showing => !showing)}
           />
         )

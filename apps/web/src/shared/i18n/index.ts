@@ -7,5 +7,5 @@ export { bootstrapLocale } from './bootstrap-locale'
 export { localeNames } from './config'
 export { hasLocaleChoice, persistLocale } from './locale-storage'
 export { resolveLocale } from './resolve-locale'
-export { useTranslationLabels } from './use-translation-labels'
+export { TranslationNote } from './translation-note'
 export { i18n }
