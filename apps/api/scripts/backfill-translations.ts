@@ -56,7 +56,7 @@ const scanCollection = async (
 }
 
 const toBatchRequest = ({ collection, data, ref }: PendingDoc) => ({
-  custom_id: `${collection}/${ref.id}`,
+  custom_id: `${collection}_${ref.id}`,
   params: documentTranslationParams({
     sourceLocaleHint: resolveLocale(toText(data.lang)),
     texts: {
@@ -151,7 +151,7 @@ const run = async (): Promise<void> => {
     pending.map(doc =>
       applyTranslation(
         doc,
-        results.get(`${doc.collection}/${doc.ref.id}`) ?? null,
+        results.get(`${doc.collection}_${doc.ref.id}`) ?? null,
       ),
     ),
   )
