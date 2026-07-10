@@ -44,42 +44,59 @@ const GLOSSARY = `жилой комплекс (ЖК) | тұрғын үй кеш�
 детская площадка | балалар алаңы | playground
 заявка | өтінім | issue`
 
-const fieldsSchema = z.object({
+const documentFieldsSchema = z.object({
   description: z.string().min(1),
   title: z.string().min(1),
 })
 
-const outputSchema = z.object({
-  detectedLang: z.enum(LOCALES),
-  translations: z.object({
-    en: fieldsSchema.optional(),
-    kk: fieldsSchema.optional(),
-    ru: fieldsSchema.optional(),
-  }),
+const textFieldsSchema = z.object({
+  text: z.string().min(1),
 })
 
 const systemPrompt = (
   sourceLocaleHint: Locale,
+  subject: string,
 ) => `You translate resident-generated content for a residential-complex community app in Kazakhstan.
 Supported languages: Russian (ru), Kazakh (kk), English (en).
-Detect the source language of the content, then translate its title and description into the two other supported languages, keyed by locale under "translations". Do not include the detected source language under "translations".
+Detect the source language of the content, then translate ${subject} into the two other supported languages, keyed by locale under "translations". Do not include the detected source language under "translations".
 The author's app locale is "${sourceLocaleHint}" — a hint only; detect the actual language from the text itself.
 Preserve the tone and register of the original; keep numbers, addresses, prices, emoji, and line breaks intact; do not add or omit information.
 Use this domain glossary (ru | kk | en):
 ${GLOSSARY}`
 
-export const translateDocument = async ({
+type RequestTranslationInput<Fields> = {
+  apiKey: string
+  fieldsSchema: z.ZodType<Fields>
+  sourceLocaleHint: Locale
+  subject: string
+  texts: Fields
+}
+
+const requestTranslation = async <Fields>({
   apiKey,
+  fieldsSchema,
   sourceLocaleHint,
+  subject,
   texts,
-}: TranslateDocumentInput): Promise<DocumentTranslation | null> => {
+}: RequestTranslationInput<Fields>): Promise<{
+  lang: Locale
+  translations: Partial<Record<Locale, Fields>>
+} | null> => {
+  const outputSchema = z.object({
+    detectedLang: z.enum(LOCALES),
+    translations: z.object({
+      en: fieldsSchema.optional(),
+      kk: fieldsSchema.optional(),
+      ru: fieldsSchema.optional(),
+    }),
+  })
   const client = new Anthropic({ apiKey })
   const message = await client.messages.parse({
     max_tokens: MAX_TOKENS,
     messages: [{ content: JSON.stringify(texts), role: 'user' }],
     model: MODEL,
     output_config: { format: zodOutputFormat(outputSchema) },
-    system: systemPrompt(sourceLocaleHint),
+    system: systemPrompt(sourceLocaleHint, subject),
     temperature: 0,
   })
   const parsed = message.parsed_output
@@ -95,3 +112,40 @@ export const translateDocument = async ({
     translations: Object.fromEntries(entries),
   }
 }
+
+export const translateDocument = ({
+  apiKey,
+  sourceLocaleHint,
+  texts,
+}: TranslateDocumentInput): Promise<DocumentTranslation | null> =>
+  requestTranslation({
+    apiKey,
+    fieldsSchema: documentFieldsSchema,
+    sourceLocaleHint,
+    subject: 'its title and description',
+    texts,
+  })
+
+export type TextTranslation = {
+  lang: Locale
+  translations: Partial<Record<Locale, { text: string }>>
+}
+
+export type TranslateTextInput = {
+  apiKey: string
+  sourceLocaleHint: Locale
+  text: string
+}
+
+export const translateText = ({
+  apiKey,
+  sourceLocaleHint,
+  text,
+}: TranslateTextInput): Promise<TextTranslation | null> =>
+  requestTranslation({
+    apiKey,
+    fieldsSchema: textFieldsSchema,
+    sourceLocaleHint,
+    subject: 'its text',
+    texts: { text },
+  })
