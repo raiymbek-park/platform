@@ -60,9 +60,9 @@ const outputSchemaFor = <Fields>(fieldsSchema: z.ZodType<Fields>) =>
   z.object({
     detectedLang: z.enum(LOCALES),
     translations: z.object({
-      en: fieldsSchema.optional(),
-      kk: fieldsSchema.optional(),
-      ru: fieldsSchema.optional(),
+      en: fieldsSchema,
+      kk: fieldsSchema,
+      ru: fieldsSchema,
     }),
   })
 
@@ -90,7 +90,7 @@ const systemPrompt = (
 ) => `You translate resident-generated content for a residential-complex community app in Kazakhstan.
 Supported languages: Russian (ru), Kazakh (kk), English (en).
 First detect the actual source language of the content from the text itself and return it as "detectedLang".
-Then translate ${subject} into every supported language except the detected one, keyed by locale under "translations". The target languages always follow the detected language; never include the detected source language under "translations".
+Then return ${subject} in all three supported languages, keyed by locale under "translations": translate into the two languages other than the detected one, and for the detected source language repeat the original text unchanged.
 The author's app locale is "${sourceLocaleHint}" — a hint only, it may be wrong. When the text's language differs from the hint, trust the text: for example, if the hint is "ru" but the text is Kazakh, return "kk" as detectedLang with translations for "ru" and "en".
 Preserve the tone and register of the original; keep numbers, addresses, prices, emoji, and line breaks intact; do not add or omit information.
 Use this domain glossary (ru | kk | en):
