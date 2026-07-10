@@ -14,15 +14,19 @@ export type MessageBubbleProps = ComponentProps<'div'> & {
   editedLabel?: ReactNode
   isEdited?: boolean
   isOwn?: boolean
+  isTranslating?: boolean
   media?: string[]
   text?: string
   time: ReactNode
+  translateLabel?: ReactNode
   onActions?: () => void
+  onTranslate?: () => void
 }
 
 const rowCss = pickCss(css, css.row)
 const bubbleCss = pickCss(css, css.bubble)
 const actionsCss = pickCss(css, css.actions)
+const translateCss = pickCss(css, css.translate)
 
 export const MessageBubble = ({
   actionsLabel,
@@ -31,10 +35,13 @@ export const MessageBubble = ({
   editedLabel,
   isEdited,
   isOwn,
+  isTranslating,
   media,
   text,
   time,
+  translateLabel,
   onActions,
+  onTranslate,
   ...restProps
 }: MessageBubbleProps) => (
   <div className={joinCss(rowCss({ isOwn }), className)} {...restProps}>
@@ -52,6 +59,21 @@ export const MessageBubble = ({
       {text && <Markdown className={css.text} content={text} />}
       {isEdited && editedLabel && (
         <span className={css.edited}>{editedLabel}</span>
+      )}
+      {onTranslate && (
+        <button
+          className={translateCss({ isTranslating })}
+          disabled={isTranslating}
+          type='button'
+          onClick={onTranslate}
+        >
+          <Icon
+            className={isTranslating ? css.loader : undefined}
+            glyph={isTranslating ? 'loader-circle' : 'languages'}
+            size={14}
+          />
+          {translateLabel}
+        </button>
       )}
     </div>
     {onActions && (

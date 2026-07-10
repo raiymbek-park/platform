@@ -38,17 +38,21 @@ type PostCardDetailsProps = {
   actions?: ReactNode
   contacts: PostCardContact[]
   isExpanded?: boolean
+  translation?: ReactNode
 }
 
 const PostCardDetails = ({
   actions,
   contacts,
   isExpanded,
+  translation,
 }: PostCardDetailsProps) => {
-  if (contacts.length === 0 && !actions) return null
+  const hasInfo = contacts.length > 0 || Boolean(actions)
+  if (!hasInfo && !translation) return null
   return (
     <CardDetails isExpanded={isExpanded}>
-      <Divider />
+      {translation}
+      {hasInfo && <Divider />}
       {contacts.length > 0 && <CardContacts contacts={contacts} />}
       {actions && <div className={css.actions}>{actions}</div>}
     </CardDetails>
@@ -69,6 +73,7 @@ export type PostCardProps = ComponentProps<'article'> & {
   reactions?: ReactNode
   tags?: PostCardBadge[]
   title: ReactNode
+  translation?: ReactNode
   onToggleExpand?: () => void
 }
 
@@ -87,6 +92,7 @@ export const PostCard = ({
   reactions,
   tags,
   title,
+  translation,
   onToggleExpand,
   ...restProps
 }: PostCardProps) => (
@@ -105,6 +111,7 @@ export const PostCard = ({
         actions={actions}
         contacts={contacts}
         isExpanded={isExpanded}
+        translation={translation}
       />
       <CardFooter
         collapseLabel={collapseLabel}
