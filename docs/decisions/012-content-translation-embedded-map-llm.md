@@ -51,13 +51,13 @@ and **which provider translates**.
 #### Option 3 (chosen): Embedded `translations` map + `lang` + `translatedRev`
 
 ```ts
+type Locale = 'ru' | 'kk' | 'en'
+
 type Post = {
   title: string                    // original as authored
   description: string
-  lang: 'ru' | 'kk' | 'en'         // source language (detected)
-  translations?: {
-    [locale]: { title: string; description: string }
-  }
+  lang: Locale                     // source language (detected)
+  translations?: Partial<Record<Locale, { title: string; description: string }>>
   translatedRev?: string           // hash of the source text the translations were made from
 }
 ```
