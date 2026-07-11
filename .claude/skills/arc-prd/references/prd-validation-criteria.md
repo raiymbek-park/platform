@@ -1,10 +1,10 @@
 # PRD Validation Criteria
 
-Reference material for `/arc:prd` validation. Six criteria for the PRD as a whole, applied between drafting the PRD and writing AC.
+Reference material for `/arc:prd` validation. Seven criteria for the PRD as a whole, applied between drafting the PRD and writing AC.
 
-## Six Quality Criteria
+## Seven Quality Criteria
 
-A PRD must pass ALL six criteria before any AC scenario is written. Failures cascade — a vague PRD produces interpretive AC.
+A PRD must pass ALL seven criteria before any AC scenario is written. Failures cascade — a vague PRD produces interpretive AC.
 
 ### Criterion 1: Source-of-truth boundary
 
@@ -72,8 +72,17 @@ This applies to the whole document body — Problem and Goal, Scope, User Journe
 
 Keep `Problem and Goal` framed as the problem + the required outcome, not as a before/after diff. If a section reads like release notes, rewrite it as a specification.
 
+### Criterion 7: Versions and implementation wiring live outside the PRD
+
+> The PRD names *what and why*. Version numbers and technical wiring belong to the lockfile and the ADR.
+
+The PRD never carries version numbers — "Lingui v6", "React 19", "Vite 8", "tRPC 11" age instantly and are owned by `package.json` / the lockfile (the same holds for an ADR). When a decision has its own ADR, the PRD stays *what and why* and defers the *how* to it: library names, package/plugin wiring, transport specifics (header names), file paths, and framework internals live in the ADR, and the PRD points to it. Naming technical specifics in the PRD is acceptable only when the PRD is the sole home for the decision — no dedicated ADR exists.
+
+- **FAIL:** PRD body names `httpBatchLink`, `x-locale`, `createContext`, or "Lingui v6"
+- **PASS:** PRD states the requirement and points to the ADR for transport/library detail
+
 ## How to Apply
 
 Run after the PRD draft is approved by the developer (informally) and before writing any AC. Walk every paragraph and bullet and mark each with a criterion result. Any FAIL → rewrite that section, do not write AC yet.
 
-A PRD that passes all six criteria can support falsifiable, traceable AC. A PRD that fails any one of them will produce AC with the same defect.
+A PRD that passes all seven criteria can support falsifiable, traceable AC. A PRD that fails any one of them will produce AC with the same defect.

@@ -36,9 +36,9 @@ Wait for approval. Revise as needed. Loop until developer confirms.
 
 ### Step 3.5: Validate PRD
 
-Run validation against the six criteria. Read [validate.md](validate.md) Steps 2–3 and apply them to the just-drafted PRD as an in-line check (no separate report file needed at this stage — the goal is gate-keeping, not auditing).
+Run validation against the seven criteria. Read [validate.md](validate.md) Steps 2–3 and apply them to the just-drafted PRD as an in-line check (no separate report file needed at this stage — the goal is gate-keeping, not auditing).
 
-Any FAIL → return to Step 3 and rewrite. Do not proceed to AC until all six criteria pass. This gate exists because a vague PRD produces interpretive AC; fixing AC is harder than fixing the PRD.
+Any FAIL → return to Step 3 and rewrite. Do not proceed to AC until all seven criteria pass. This gate exists because a vague PRD produces interpretive AC; fixing AC is harder than fixing the PRD.
 
 The criteria themselves live in [references/prd-validation-criteria.md](references/prd-validation-criteria.md). The validator that consumes them is [validate.md](validate.md) — single source of truth for both this gate and the standalone `/arc:prd validate {feature-name}` command.
 

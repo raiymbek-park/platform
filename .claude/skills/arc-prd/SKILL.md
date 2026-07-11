@@ -25,7 +25,7 @@ Create, validate, and update Product Requirements Documents with Acceptance Crit
 
 ```
 /arc:prd create checkout           Interactive PRD creation for "checkout" feature
-/arc:prd validate checkout         Validate PRD quality against the six criteria
+/arc:prd validate checkout         Validate PRD quality against the seven criteria
 /arc:prd validate checkout -y      Validate, skip confirmations
 /arc:prd update checkout           Cascade update when requirements change
 /arc:prd update checkout -y        Update, skip confirmations
@@ -60,7 +60,7 @@ Read the corresponding sub-instruction file and follow all steps:
 
 **Project context:** `.arcana/project-context.md` — read first for project structure, conventions, and external skill configuration (tracker, git).
 
-**PRD and AC structure** (actual paths from project-context). See [references/prd-structure.md](references/prd-structure.md) for templates and conventions, and [references/prd-validation-criteria.md](references/prd-validation-criteria.md) for the six quality criteria the PRD must pass before AC is written:
+**PRD and AC structure** (actual paths from project-context). See [references/prd-structure.md](references/prd-structure.md) for templates and conventions, and [references/prd-validation-criteria.md](references/prd-validation-criteria.md) for the seven quality criteria the PRD must pass before AC is written:
 ```
 {features-directory}/{feature}/
   prd.md                ← PRD (permanent, in git)

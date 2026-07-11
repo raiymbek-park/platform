@@ -14,7 +14,7 @@ PRD validation runs at the feature level, not the ticket level — a PRD is a si
 
 ### Step 2: Apply Validation Criteria
 
-For the PRD as a whole, apply the six quality criteria from [references/prd-validation-criteria.md](references/prd-validation-criteria.md):
+For the PRD as a whole, apply the seven quality criteria from [references/prd-validation-criteria.md](references/prd-validation-criteria.md):
 
 1. **Source-of-truth boundary** — PRD says what/why; AC says how to verify. User Journey and Scope stay high-level; concrete behavioral assertions belong in AC.
 2. **Implementation-free at PRD level** — no "no white flash", "no layout shift", "fades smoothly" — animation outcomes belong in NFR-as-measurable or AC.
@@ -22,12 +22,13 @@ For the PRD as a whole, apply the six quality criteria from [references/prd-vali
 4. **Open Questions are blockers** — anything in `## Open Questions` cannot be referenced from AC.
 5. **Scope and Unknowns are separate** — `What's NOT included` ≠ `Open Questions`.
 6. **Current-state, not narrative-in-time** — describe the target state in present tense; no "previously X, now Y" / "until now it was…" / before-after framing. Change history lives in `git log`, not the PRD body.
+7. **Versions and implementation wiring live outside the PRD** — no "Lingui v6"/"React 19"/version numbers (owned by `package.json`/the lockfile); when a decision has its own ADR, keep library/wiring/transport/path detail in the ADR and have the PRD point to it.
 
 Walk every section (Problem and Goal, Users, Definitions, Scope, Validation Contract, etc., User Journey, Success Metrics, NFR, Dependencies, Open Questions) and mark each criterion result.
 
 For Criterion 4, also scan AC files (if they exist) for any text matching `documented in plan.md`, `(see PRD)` referencing an unresolved item, `TBD`, or scenarios whose required behavior depends on a section listed under `## Open Questions`. Each match is a failure.
 
-For Criterion 7-style traceability between PRD numeric values and AC numeric values, use `/arc:ac validate` separately — that lives in arc:ac. PRD validate only checks the PRD itself.
+For traceability between PRD numeric values and AC numeric values (a separate concern), use `/arc:ac validate` — that lives in arc:ac. PRD validate only checks the PRD itself.
 
 ### Step 3: Write Report
 
