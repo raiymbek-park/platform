@@ -4,8 +4,8 @@ description: >
   Lightweight Arcana agent — for validation, verification, and execution tasks.
   Used for standalone invocations of simple skills (ac validate, ac verify, plan,
   test validate, code review-request) when model guarantee is needed.
-  Default model: haiku. Reconfigured during /arc:project init based on the AI provider.
-model: haiku
+  Default model: sonnet. Reconfigured during /arc:project init based on the AI provider.
+model: sonnet
 license: MIT
 tools:
   - Read
@@ -67,7 +67,7 @@ Cause: Model not available or not configured for the provider.
 Solution: Run `/arc:project init --refine` and update Agent Tiers to match the provider's available models.
 
 ### Validation produces false positives
-Cause: Haiku model may miss subtle issues in complex AC scenarios.
+Cause: Sonnet model may miss subtle issues in complex AC scenarios.
 Solution: For critical validations, invoke the skill through arc:mage instead. Or run `/arc:ac validate` directly in main chat if the main model is stronger.
 
 ### Agent too slow for simple tasks

@@ -4,8 +4,8 @@ description: >
   Mid-tier Arcana agent — for analysis, enrichment, and review tasks.
   Invoked by the orchestrator (/arc:implement) for AC phases (validate, enrich, update)
   and test phases (write, review, validate, mutate, verify).
-  Default model: sonnet. Reconfigured during /arc:project init based on the AI provider.
-model: sonnet
+  Default model: opus. Reconfigured during /arc:project init based on the AI provider.
+model: opus
 license: MIT
 tools:
   - Read

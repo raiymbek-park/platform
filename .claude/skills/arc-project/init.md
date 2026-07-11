@@ -131,8 +131,8 @@ Ask the developer about model preferences:
 
 > Arcana uses three agent tiers with different model assignments:
 >
-> **arc:apprentice (Haiku):** ac validate, ac verify, test validate, code review-request
-> **arc:mage (Sonnet):** ac enrich, ac update, plan, test write, test review, test mutate, skill-up
+> **arc:apprentice (Sonnet):** ac validate, ac verify, test validate, code review-request
+> **arc:mage (Opus):** ac enrich, ac update, plan, test write, test review, test mutate, skill-up
 > **arc:archmage (Opus):** prd create, code, code review-resolve
 >
 > Default models are for Claude. For other providers, map to equivalent tiers:
@@ -210,8 +210,8 @@ Tool-enforced (mechanically applied, not the human-readable source of truth):
 | Tier | Model | Skills |
 |------|-------|--------|
 | arc:archmage | {opus} | prd create, code, code review-resolve |
-| arc:mage | {sonnet} | ac enrich, ac update, plan, test write, test review, test mutate, skill-up |
-| arc:apprentice | {haiku} | ac validate, ac verify, test validate, code review-request |
+| arc:mage | {opus} | ac enrich, ac update, plan, test write, test review, test mutate, skill-up |
+| arc:apprentice | {sonnet} | ac validate, ac verify, test validate, code review-request |
 ```
 
 Also create `.arcana/.gitignore` if it doesn't exist:

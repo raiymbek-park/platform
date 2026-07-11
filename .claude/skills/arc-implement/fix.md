@@ -4,8 +4,8 @@ Short implementation cycle for bug fixes. Groups related skills into tiered agen
 
 **Agent tiers:**
 - `arc:archmage` — deep reasoning, code generation (opus)
-- `arc:mage` — analysis, enrichment, tests (sonnet)
-- `arc:apprentice` — validation, checks, execution (haiku)
+- `arc:mage` — analysis, enrichment, tests (opus)
+- `arc:apprentice` — validation, checks, execution (sonnet)
 
 ## Pipeline
 

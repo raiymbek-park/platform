@@ -4,8 +4,8 @@ description: >
   Highest-tier Arcana agent — for tasks requiring deep reasoning and code generation.
   Invoked by the orchestrator (/arc:implement) for code writing, code review resolution,
   and full-cycle ticket execution in multi-ticket pipelines.
-  Default model: opus. Reconfigured during /arc:project init based on the AI provider.
-model: opus
+  Default model: fable. Reconfigured during /arc:project init based on the AI provider.
+model: fable
 license: MIT
 tools:
   - Read
