@@ -108,16 +108,12 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         name: 'Plumber',
         phone: '+77001112233',
         role: 'plumber',
-        glyph: 'droplets',
-        tone: 'info',
         order: 2,
       })
       await db.collection('service-contacts').doc('first').set({
         name: 'Manager',
         phone: '+77001234567',
         role: 'manager',
-        glyph: 'shield',
-        tone: 'brand',
         order: 1,
       })
 
@@ -127,6 +123,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       const contacts = await getServiceContacts()
       expect(contacts.map(c => c.id)).toEqual(['first', 'second'])
       expect(contacts[0]?.order).toBe(1)
+      expect(contacts[0]?.role).toBe('manager')
       expect(contacts[1]?.order).toBe(2)
     })
 
@@ -385,19 +382,11 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
     })
   })
 
-  describe('events and service-contacts — unknown glyph/tone fallback', () => {
+  describe('events — unknown glyph/tone fallback', () => {
     it('items with unknown glyph fall back to megaphone and unknown tone falls back to brand', async () => {
       const db = getDb()
       const { Timestamp } = await import('./firestore')
 
-      await db.collection('service-contacts').doc('unknown-icons').set({
-        name: 'Test Contact',
-        phone: '+77001234567',
-        role: 'other',
-        glyph: 'nonexistent-icon',
-        tone: 'nonexistent-tone',
-        order: 1,
-      })
       await db
         .collection('events')
         .doc('unknown-icons')
@@ -410,15 +399,9 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
           createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
         })
 
-      const { getServiceContacts } = await import(
-        './service-contacts/service-contacts-store'
-      )
       const { getEvents } = await import('./events/events-store')
-      const contacts = await getServiceContacts()
       const events = await getEvents(null)
 
-      expect(contacts[0]?.glyph).toBe('megaphone')
-      expect(contacts[0]?.tone).toBe('brand')
       expect(events[0]?.glyph).toBe('megaphone')
       expect(events[0]?.tone).toBe('brand')
     })

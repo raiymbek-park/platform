@@ -18,6 +18,10 @@ msgstr ""
 msgid "{0} жилых этажей"
 msgstr "{0} residential floors"
 
+#: src/pages/home/model/contact-roles.ts:29
+msgid "Аварийная сантехника"
+msgstr "Emergency plumbing"
+
 #: src/pages/home/ui/contacts-section.tsx:14
 msgid "Аварийные контакты"
 msgstr "Emergency contacts"
@@ -525,10 +529,6 @@ msgstr "Could not publish the post. Please try again."
 msgid "Не удалось отправить код. Попробуйте снова."
 msgstr "Couldn't send the code. Please try again."
 
-#: src/features/onboarding/ui/registration-form.tsx:89
-#~ msgid "Не удалось отправить код. Проверьте соединение и попробуйте снова."
-#~ msgstr "Failed to send the code. Check your connection and try again."
-
 #: src/features/comments/ui/comment-input-bar.tsx:56
 msgid "Не удалось отправить сообщение. Попробуйте ещё раз."
 msgstr "Failed to send the message. Please try again."
@@ -603,10 +603,6 @@ msgstr "New post"
 #: src/pages/post-form/ui/create-post-form.tsx:54
 msgid "Новое уведомление"
 msgstr "New notice"
-
-#: src/pages/home/ui/services-section.tsx:40
-#~ msgid "Новости и уведомления от УК"
-#~ msgstr "News and notifications from the management company"
 
 #: src/pages/home/ui/services-section.tsx:40
 msgid "Новости, уведомления и частные предложения"
@@ -753,6 +749,10 @@ msgstr "Submit"
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Track the progress of your requests"
 
+#: src/pages/home/model/contact-roles.ts:31
+msgid "Охрана"
+msgstr "Security"
+
 #: src/pages/issues/ui/issue-search.tsx:15
 #: src/pages/posts/ui/post-search.tsx:15
 msgid "Очистить поиск"
@@ -858,6 +858,10 @@ msgstr "Show original"
 msgid "Показать перевод"
 msgstr "Show translation"
 
+#: src/pages/home/model/contact-roles.ts:30
+msgid "Полиция"
+msgstr "Police"
+
 #: src/pages/post-form/model/use-post-categories.ts:63
 msgid "Предлагаю услуги"
 msgstr "Offering services"
@@ -898,10 +902,6 @@ msgstr "Other"
 #: src/pages/issue-status/model/use-status-options.ts:27
 msgid "Работы запланированы на будущее"
 msgstr "Work is planned for the future"
-
-#: src/pages/placeholder/ui/placeholder-page.tsx:20
-#~ msgid "Раздел в разработке"
-#~ msgstr "Section under development"
 
 #: src/pages/post-form/ui/create-post-form.tsx:51
 msgid "Разместите частное объявление для жителей нашего ЖК."
@@ -1124,6 +1124,7 @@ msgstr "Delete message?"
 msgid "Удалить фото"
 msgstr "Remove photo"
 
+#: src/pages/home/model/contact-roles.ts:28
 #: src/pages/post-form/model/use-post-categories.ts:76
 #: src/pages/posts/model/use-post-badges.ts:70
 msgid "Управляющая компания"
@@ -1182,6 +1183,10 @@ msgstr "Read more"
 #: src/pages/settings/ui/settings-page.tsx:23
 msgid "Что-то пошло не так"
 msgstr "Something went wrong"
+
+#: src/pages/home/model/contact-roles.ts:27
+msgid "Электрослужба"
+msgstr "Electrical service"
 
 #: src/features/onboarding/ui/registration-form.tsx:187
 msgid "Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google"
