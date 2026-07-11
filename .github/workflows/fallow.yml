@@ -167,7 +167,16 @@ jobs:
 
       - name: Deploy function, Firestore & Storage rules
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_REFRESH_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
-          test -n "$FIREBASE_TOKEN" || { echo "::error::Set the FIREBASE_TOKEN secret — generate it with 'firebase login:ci' (Settings → Secrets and variables → Actions)"; exit 1; }
+          test -n "$FIREBASE_REFRESH_TOKEN" || { echo "::error::Set the FIREBASE_TOKEN secret — generate it with 'firebase login:ci' (Settings → Secrets and variables → Actions)"; exit 1; }
+          adc="$RUNNER_TEMP/firebase-adc.json"
+          umask 077
+          jq -n --arg token "$FIREBASE_REFRESH_TOKEN" '{
+            type: "authorized_user",
+            client_id: "563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com",
+            client_secret: "j9iVZfS8kkCEFUPaAeJV0sAi",
+            refresh_token: $token
+          }' > "$adc"
+          export GOOGLE_APPLICATION_CREDENTIALS="$adc"
           npx -y firebase-tools@15 deploy --only functions,firestore,storage --project raiymbek-park-sa99 --non-interactive

@@ -81,9 +81,12 @@ them.
   `apps/web` with `VITE_BASE=/platform/` and the `VITE_API_URL` repository variable and
   publishes it to GitHub Pages through the official `actions/deploy-pages` artifact flow (Pages
   source is "GitHub Actions"). `deploy-firebase` runs `firebase deploy --only
-  functions,firestore,storage` against `raiymbek-park-sa99`, authenticated by the
-  `FIREBASE_TOKEN` secret (a `firebase login:ci` token). Each target deploys atomically, so a
-  failure in one leaves the previously published version live. The web build emits `404.html`
+  functions,firestore,storage` against `raiymbek-park-sa99`. It authenticates keylessly, the
+  same way local dev does: the `FIREBASE_TOKEN` secret (a `firebase login:ci` token) is used as
+  the refresh token in an `authorized_user` ADC file — built in-step with the well-known
+  firebase-tools OAuth client id/secret and pointed at by `GOOGLE_APPLICATION_CREDENTIALS` —
+  rather than the deprecated `--token`/`FIREBASE_TOKEN` auth path. Each target deploys
+  atomically, so a failure in one leaves the previously published version live. The web build emits `404.html`
   (a copy of `index.html`) so SPA deep links resolve on Pages.
 
 ### What's NOT included
