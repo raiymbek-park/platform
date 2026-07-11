@@ -14,15 +14,10 @@ import {
   PhoneField,
   RolePicker,
 } from '@/entities/resident'
-import { LocaleSelect } from '@/features/locale-select'
+import { LocaleSelect, useSwitchLocale } from '@/features/locale-select'
 import { formatPhoneDisplay } from '@/features/onboarding'
 import { inputState } from '@/shared/form'
-import {
-  activateLocale,
-  i18n,
-  persistLocale,
-  resolveLocale,
-} from '@/shared/i18n'
+import { i18n, resolveLocale } from '@/shared/i18n'
 import { showToastMessage } from '@/shared/toast'
 
 import { profileFormSchema, toFormValues } from '../lib/profile-form-schema'
@@ -60,6 +55,7 @@ export type ProfileFormProps = {
 
 export const ProfileForm = ({ profile }: ProfileFormProps) => {
   const { t } = useLingui()
+  const switchLocale = useSwitchLocale()
   const updateProfile = useUpdateProfile()
   const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl)
   const [avatarFile, setAvatarFile] = useState<File | null>(null)
@@ -87,8 +83,7 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
 
   const selectLocale = (next: Locale) => {
     setLocale(next)
-    activateLocale(next)
-    persistLocale(next)
+    switchLocale(next)
   }
 
   const form = useForm({

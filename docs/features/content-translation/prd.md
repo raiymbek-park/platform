@@ -42,7 +42,10 @@ Supported locales are the three from the i18n feature: `ru`, `kk`, `en`.
   requester's active locale (`x-locale`). When the requested locale equals the source language,
   or the translation is not yet available, the stored original is returned. A translated
   response is flagged (`isTranslated`, `originalLang`) and carries the original text so the
-  client can toggle without another request.
+  client can toggle without another request. Because the locale rides on the request header
+  rather than the query key, a within-session change of the viewer's active locale (the profile
+  language switcher) invalidates the cached content so posts and issues re-fetch and re-render in
+  the newly chosen language rather than serving the previous locale's cached copy.
 - **Translation indicator** — post and issue detail screens show a "translated from
   {language}" indicator with a show-original toggle. Feed and list cards show the translated
   text without an indicator.

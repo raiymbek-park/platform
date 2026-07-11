@@ -44,7 +44,10 @@ their own profile.
   number. Saving plates does not require visibility to be on.
 - **Interface language** — Қазақша / Русский / English. Tapping an option applies the language to
   the whole UI immediately and persists it on the device; it does not depend on the save button and
-  is not stored on the server.
+  is not stored on the server. Switching the language also refreshes server-supplied localized
+  content (announcement and issue titles/descriptions, served per `x-locale` — see
+  `docs/features/content-translation/prd.md`): the cached content is invalidated so it re-renders in
+  the newly chosen language on the next view rather than lingering in the previous one.
 - **Save** — a single «Сохранить» action persists all server-side fields (avatar, name, visibility,
   block, apartment, role, plates) in one operation. Validation errors surface as toasts (the
   registration pattern); on success a confirmation toast is shown and the resident stays on the
