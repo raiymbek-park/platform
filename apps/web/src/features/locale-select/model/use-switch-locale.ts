@@ -9,6 +9,6 @@ export const useSwitchLocale = () => {
   return async (locale: Locale) => {
     await activateLocale(locale)
     persistLocale(locale)
-    await queryClient.invalidateQueries()
+    queryClient.invalidateQueries()
   }
 }
