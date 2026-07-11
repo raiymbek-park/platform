@@ -14,6 +14,7 @@ These rules apply to ALL code in the repository — `apps/`, `packages/`, and an
 - Avoid over-engineering: unnecessary abstractions, premature generalization, feature flags for simple changes
 - Windows compatibility: use forward slashes in glob patterns — `path.join` produces backslashes on Windows which breaks glob libraries. Use `path.join` only for non-glob filesystem paths
 - Follow FSD layering and common sense, not a blanket "everything is a widget" rule. Promote a block to its own `widgets/` (or `entities/`) slice only when it is reused across pages or is significant/self-contained on its own. A section used by a single page lives **inside that page's slice** as a child component (`pages/{page}/ui/*` with its data hooks in `pages/{page}/model/*`). A single-reference slice that trips `fsd/insignificant-slice` is the signal to inline it, not to suppress the rule. Pages may own the data-fetching for their own page-specific sections.
+- Shared-segment layout (`fsd/no-reserved-folder-names`): a `shared/*` segment holds its files directly (`shared/toast/{use-toast-store.ts, toast-host.tsx, index.ts}`) — never a `model/` or `ui/` subfolder inside it. Reserved folder names apply only to slices in the higher layers.
 
 ## JSX Props
 
@@ -112,6 +113,7 @@ When TypeScript complains about types:
 - Don't add comments. The only justified comment explains a genuine hack or workaround — code forced to do something out of the ordinary by a bug, a third-party quirk, or an environment constraint — where the *why* isn't recoverable from the code itself.
 - A comment explaining ordinary code is a smell: it signals the code isn't clear enough. Rewrite it instead — better names, smaller functions, early returns — until it reads on its own, rather than narrating it with a comment.
 - Use descriptive naming instead of comments
+- Concrete comment noise to never write (production code, and especially tests): section-divider banners (`// ---- otp.send ----`), JSDoc/line comments restating a well-named symbol (`// Seed the store` over `seedStore`), narration of mock setup or of what the next assertions demonstrate, `// Kill: <mutant>` notes in tests (the test name already states the behavior), and magic-number decoders (`86_399_000 // ~24h`) — write self-documenting arithmetic instead (`(24 * 60 * 60 - 1) * 1000`). Before adding any comment, first try to rename/restructure so it becomes unnecessary.
 
 ## Naming Conventions
 

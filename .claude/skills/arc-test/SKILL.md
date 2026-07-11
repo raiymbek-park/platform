@@ -66,6 +66,10 @@ A test written from code is a tautology — if the code has a bug, the test lock
 
 **Criterion:** if you can do a major refactoring (rename components, restructure folders, change state management) and all tests stay green — the tests are good. If tests break on refactoring that doesn't change behavior — they test implementation details, not requirements.
 
+## Precondition: implementation must be verified and approved first
+
+Tests are written **after** the implementation is confirmed working — verified in the real runtime the developer cares about (production for a prod bug, not just a green test runner), and explicitly approved by the developer. Writing or adjusting tests against an unverified (still-wrong) implementation locks the bug in as "correct" — a serious anti-pattern. While iterating on a fix, do not write or "fix" tests to match the current output and do not commit: keep changes in the working tree with typecheck/lint/fsd green, and defer tests + commits until the behavior is verified and approved. This holds for backend fixes too — passing tests + green typecheck do not mean the product works.
+
 ## Position in Pipeline
 
 In the canonical `arc:implement` flow (see `arc-implement/single.md`), test commands run **after** `arc:code`:

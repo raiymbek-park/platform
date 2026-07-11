@@ -178,6 +178,10 @@ Refinement modifies the **shape** of a reusable (typography, spacing, layout, co
 
 A genuinely breaking change requires listing affected consumer files, confirming with the user, and migrating library + consumers in the same pass. See [refine.md](../refine.md) for the full flow.
 
+## Design-Refresh Reconciliation Scope
+
+When a `.pen` design refresh lands and the task is to "bring the code into alignment", reconcile **only** the tokens, components, and screens **already developed in code**. Brand-new components/screens that appear in the design (e.g. posts, tasks, user-profile, chat, tags, reactions) are NOT implemented as part of the reconciliation — that is separate feature work. Diff developed `packages/ui` + `apps/web` screens against the design and implement deltas only for the overlap.
+
 ## Tool Policy
 
 - **Allowed:** Read, Write, Edit, Glob, Grep, Bash (`jq`, `sed`, `awk`). Pencil MCP **read/render** tools — `get_editor_state`, `get_screenshot`, `get_variables`, `snapshot_layout`, `batch_get`, `export_nodes`, `export_html` — for inspecting or screenshotting designs (e.g. rendering a mock for a pixel side-by-side).

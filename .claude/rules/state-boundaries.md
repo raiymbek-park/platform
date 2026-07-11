@@ -112,6 +112,10 @@ Mutations interact with overlays, not cache structures.
 - Use `mutationKey` to group/identify related mutations and query mutation state (e.g., via `useIsMutating`)
 - Always clean up overlays in `onSettled` — don't rely on invalidation alone, stale IDs accumulate
 
+### Driving mutations from components
+
+Trigger mutations with the fire-and-forget `mutation.mutate(vars, { onError, onSuccess, onSettled })` callback form. The component handler stays **synchronous** — it validates, calls the hook, and passes an `onFailure`/`onSuccess` callback for the view to react (e.g. set an error message). Loading state comes from `mutation.isPending`, never a hand-managed `useState`. **Never** write an `async` handler with `await mutation.mutateAsync()` + `try/catch` in the component — that duplicates the async lifecycle Query already models and spreads error handling into the view. Fold any async prerequisite (e.g. a Firebase media upload) **into the `mutationFn`** so the whole operation is one mutation, rather than `await upload()` then `await mutate()` in the component.
+
 **Avoid:** deep cache traversal, page-level manual updates, cross-query structural surgery.
 
 ## Data Update & Refetch Behavior
@@ -156,3 +160,7 @@ If it requires traversing pages, filters, or multiple query keys — use overlay
 - **Overlay-based optimistic updates** — use ID-based flags, avoid structural cache mutations
 - **URL-driven navigation state** — filters & pagination in search params
 - **Clear separation of truth sources** — server truth via Query, client truth via Zustand, navigation truth via Router
+
+## Forms
+
+Build forms with **`@tanstack/react-form`** — never hand-roll a `useState`-per-field hook with a manual `validate()`. Use `useForm({ defaultValues, validators: { onChange: zodSchema }, onSubmit })`, render fields via `<form.Field name='...'>{field => ...}</form.Field>` (`value={field.state.value}`, `onChange`, `onBlur={field.handleBlur}`), derive input border state from `field.state.meta`, and gate the submit button with `<form.Subscribe selector={s => s.canSubmit}>`. For reactive reads outside JSX (e.g. a theme derived from a field value) use `form.Subscribe` with a pure function, not the deprecated `useStore`. `onSubmit` stays synchronous and calls the mutation with callbacks (see Mutation Lifecycle). Required-select fields default to `null` and validate with `schema.nullable().refine(v => v !== null)` (input type stays `T | null`); narrow the null in `onSubmit` with an early-return guard, never `!`/`as`.
