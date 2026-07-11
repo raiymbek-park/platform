@@ -64,11 +64,11 @@ msgstr "In progress"
 msgid "Ваш код отправляется на проверку…"
 msgstr "Your code is being verified…"
 
-#: src/pages/settings/ui/profile-form.tsx:181
+#: src/pages/settings/ui/profile-form.tsx:176
 msgid "Ваш контактный номер виден для других жильцов."
 msgstr "Your contact number is visible to other residents."
 
-#: src/pages/settings/ui/profile-form.tsx:190
+#: src/pages/settings/ui/profile-form.tsx:185
 msgid "Ваш контактный номер скрыт от других жильцов."
 msgstr "Your contact number is hidden from other residents."
 
@@ -81,7 +81,7 @@ msgid "Ваши личные данные скрыты от других жил�
 msgstr "Your personal data is hidden from other residents. Only the administration has access to it — for quick contact in emergencies (flooding, fire)."
 
 #: src/features/onboarding/ui/registration-form.tsx:108
-#: src/pages/settings/ui/profile-form.tsx:150
+#: src/pages/settings/ui/profile-form.tsx:145
 msgid "Введите ваше имя"
 msgstr "Enter your name"
 
@@ -98,8 +98,8 @@ msgstr "Enter the apartment number"
 msgid "Введите номер телефона."
 msgstr "Enter your phone number."
 
+#: src/pages/settings/ui/profile-form.tsx:165
 #: src/pages/settings/ui/profile-form.tsx:170
-#: src/pages/settings/ui/profile-form.tsx:175
 msgid "Видимость номера"
 msgstr "Number visibility"
 
@@ -127,7 +127,7 @@ msgstr "Yesterday"
 #: src/features/onboarding/lib/validators.ts:30
 #: src/features/onboarding/ui/registration-form.tsx:140
 #: src/pages/settings/lib/profile-form-schema.ts:73
-#: src/pages/settings/ui/profile-form.tsx:200
+#: src/pages/settings/ui/profile-form.tsx:195
 msgid "Выберите блок"
 msgstr "Select a block"
 
@@ -135,8 +135,8 @@ msgstr "Select a block"
 msgid "Выберите роль"
 msgstr "Select a role"
 
-#: src/pages/onboarding/ui/language-page.tsx:41
-#: src/pages/settings/ui/profile-form.tsx:275
+#: src/pages/onboarding/ui/language-page.tsx:36
+#: src/pages/settings/ui/profile-form.tsx:270
 msgid "Выберите язык"
 msgstr "Select a language"
 
@@ -160,7 +160,7 @@ msgid "Городское управление"
 msgstr "City administration"
 
 #: src/features/onboarding/ui/registration-form.tsx:211
-#: src/pages/onboarding/ui/language-page.tsx:51
+#: src/pages/onboarding/ui/language-page.tsx:46
 msgid "Далее"
 msgstr "Next"
 
@@ -380,8 +380,8 @@ msgid "Измените уведомление и сохраните измен�
 msgstr "Edit the notice and save your changes."
 
 #: src/features/onboarding/ui/registration-form.tsx:107
+#: src/pages/settings/ui/profile-form.tsx:139
 #: src/pages/settings/ui/profile-form.tsx:144
-#: src/pages/settings/ui/profile-form.tsx:149
 msgid "Имя"
 msgstr "Name"
 
@@ -427,7 +427,7 @@ msgid "Кратко опишите проблему"
 msgstr "Briefly describe the problem"
 
 #: src/features/onboarding/ui/registration-form.tsx:167
-#: src/pages/settings/ui/profile-form.tsx:230
+#: src/pages/settings/ui/profile-form.tsx:225
 msgid "Кто вы?"
 msgstr "Who are you?"
 
@@ -641,8 +641,8 @@ msgid "Номер должен содержать хотя бы одну циф�
 msgstr "The plate must contain at least one digit"
 
 #: src/features/onboarding/ui/registration-form.tsx:156
+#: src/pages/settings/ui/profile-form.tsx:208
 #: src/pages/settings/ui/profile-form.tsx:213
-#: src/pages/settings/ui/profile-form.tsx:218
 msgid "Номер квартиры"
 msgstr "Apartment number"
 
@@ -651,7 +651,7 @@ msgid "Номер может содержать только латинские 
 msgstr "The plate may contain only Latin letters and digits"
 
 #: src/pages/settings/ui/plates-fieldset.tsx:32
-#: src/pages/settings/ui/profile-form.tsx:243
+#: src/pages/settings/ui/profile-form.tsx:238
 msgid "Номера машин"
 msgstr "Car plates"
 
@@ -727,7 +727,7 @@ msgstr "Giving away for free"
 msgid "Отклонено"
 msgstr "Rejected"
 
-#: src/pages/settings/ui/profile-form.tsx:180
+#: src/pages/settings/ui/profile-form.tsx:175
 msgid "Открыть"
 msgstr "Show"
 
@@ -972,7 +972,7 @@ msgstr "The code service is temporarily overloaded. Try again in a few minutes."
 msgid "Сервисы"
 msgstr "Services"
 
-#: src/pages/settings/ui/profile-form.tsx:189
+#: src/pages/settings/ui/profile-form.tsx:184
 msgid "Скрыть"
 msgstr "Hide"
 
@@ -1021,7 +1021,7 @@ msgstr "Message deleted."
 #: src/pages/issue-form/ui/edit-issue-form.tsx:27
 #: src/pages/issue-status/ui/status-form.tsx:107
 #: src/pages/post-form/ui/edit-post-form.tsx:31
-#: src/pages/settings/ui/profile-form.tsx:285
+#: src/pages/settings/ui/profile-form.tsx:280
 msgid "Сохранить"
 msgstr "Save"
 
@@ -1047,8 +1047,8 @@ msgid "Страница не найдена"
 msgstr "Page not found"
 
 #: src/features/onboarding/ui/registration-form.tsx:121
-#: src/pages/settings/ui/profile-form.tsx:161
-#: src/pages/settings/ui/profile-form.tsx:164
+#: src/pages/settings/ui/profile-form.tsx:156
+#: src/pages/settings/ui/profile-form.tsx:159
 msgid "Телефон"
 msgstr "Phone"
 

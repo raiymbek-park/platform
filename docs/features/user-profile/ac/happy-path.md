@@ -57,3 +57,10 @@
   When:  the resident taps «Сохранить»
   Then:  a success toast is shown
          after a full reload the photo is displayed as the avatar
+
+## Scenario 10: Switching language refreshes already-loaded localized content
+  Given: a resident with «Русский» active has opened the announcements feed, whose cards
+         are showing titles and descriptions in Russian
+  When:  the resident opens «Настройки», taps «English», and returns to the announcements feed
+  Then:  the feed cards render their titles and descriptions in English
+         they no longer show the previously loaded Russian text

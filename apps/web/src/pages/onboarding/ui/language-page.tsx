@@ -5,19 +5,15 @@ import { Button, Content, HeroImage, SectionHeader } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
 
-import { LocaleSelect } from '@/features/locale-select'
-import {
-  activateLocale,
-  i18n,
-  persistLocale,
-  resolveLocale,
-} from '@/shared/i18n'
+import { LocaleSelect, useSwitchLocale } from '@/features/locale-select'
+import { activateLocale, i18n, resolveLocale } from '@/shared/i18n'
 
 import css from './language-page.module.scss'
 
 export const LanguagePage = () => {
   const { t } = useLingui()
   const navigate = useNavigate()
+  const switchLocale = useSwitchLocale()
   const [selected, setSelected] = useState<Locale>(resolveLocale(i18n.locale))
 
   const selectLocale = (locale: Locale) => {
@@ -26,8 +22,7 @@ export const LanguagePage = () => {
   }
 
   const confirm = async () => {
-    await activateLocale(selected)
-    persistLocale(selected)
+    await switchLocale(selected)
     navigate({ to: '/onboarding/welcome' })
   }
 
