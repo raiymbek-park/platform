@@ -50,6 +50,8 @@ For each classified comment:
 
 Push all fix commits to the feature branch using the appropriate skill or MCP tool.
 
+Before pushing, if the project has an i18n catalog-drift CI gate (see `.arcana/project-context.md` § Local gates), re-run the extract/compile commands even when the fix itself isn't a translation change — a code-only edit that adds or removes lines shifts the `#:` source-reference comments in the `.po` files, which trips the drift check exactly like a new untranslated string would (found in PR #61: a role/storage-cleanup fix shifted a line reference in `messages.po` and failed the "i18n catalogs extracted" check).
+
 ### Step 4: Verify
 
 After fixing:

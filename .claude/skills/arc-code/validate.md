@@ -57,6 +57,7 @@ Default checklist (extend from the project's loaded rules):
 - **Descriptive naming** — are names doing the work a comment would? Flag comment-as-crutch.
 - **Over-engineering / premature abstraction** — unnecessary indirection, options nobody uses, abstractions with a single caller.
 - **Any project rule that biome/tsc cannot enforce** — if a loaded rule is not machine-checkable, it MUST appear here with a verdict.
+- **Merge-set / update mutations with a preserve-existing-value guard** — when an update endpoint conditionally keeps the currently-stored value for a field instead of writing the input (commonly to protect an elevated/exceptional state — a role, permission tier, plan — from being clobbered by an ordinary edit), verify the guard is scoped to the exact protected values, not a catch-all negation of the input's known enum. A catch-all ("stored value isn't one of these N normal values → preserve it") also silently preserves defaults, legacy data, and invalid values, which blocks the common case from ever writing a real change. State explicitly which values are preserved and why (found in PR #61: `resident.update` initially preserved any non-`owner`/`tenant` stored role, which also trapped the default `resident` role and legacy/invalid values — narrowed to preserve only `manager`/`administration`).
 
 These are usually `review`-class findings (judgment, not a single-pass transform), so report them; don't auto-apply.
 
