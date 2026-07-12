@@ -60,9 +60,10 @@ Supported locales are the three from the i18n feature: `ru`, `kk`, `en`.
 - **Cross-language search** — search keywords are built from the title in every available
   language (original plus translations), so a query in any supported locale matches regardless
   of the source language. Issue-number search is unaffected.
-- **Backfill** — a one-off script translates all existing posts and issues at rollout.
-  Comments have no backfill: a comment written before automatic comment translation shipped
-  shows its original text until its next edit triggers a translation.
+- **Backfill** — a one-off script translates all existing posts, issues, and comments at
+  rollout. A comment written before automatic comment translation shipped is translated by the
+  rollout backfill; any comment that somehow misses it still shows its original text until its
+  next edit triggers a translation.
 
 ### What's NOT included
 
@@ -70,7 +71,6 @@ Supported locales are the three from the i18n feature: `ru`, `kk`, `en`.
   language; their translations, when needed, are supplied at seed time by the seeding scripts.
 - **Manual editing or correction of machine translations.**
 - **Locales beyond `ru`, `kk`, `en`.**
-- **Backfill of existing comments** — only posts and issues are backfilled at rollout.
 - **Live update of already-rendered screens when a translation lands** — the translation
   appears on the next data fetch (normal TanStack Query refetch behavior).
 - **Translating author names, tags, or status labels** — status and tag labels are static UI
