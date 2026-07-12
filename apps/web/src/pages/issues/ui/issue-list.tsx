@@ -12,6 +12,7 @@ import { useIssueActionsAccess } from '../model/use-issue-actions-access'
 import { useIssueDeletion } from '../model/use-issue-deletion'
 import { useIssuesData } from '../model/use-issues-data'
 import { useUpdateIssueReaction } from '../model/use-update-issue-reaction'
+import { useUpdateIssueWatch } from '../model/use-update-issue-watch'
 import { IssueCardItem } from './issue-card-item'
 import { IssueDeleteConfirm } from './issue-delete-confirm'
 import css from './issue-list.module.scss'
@@ -40,6 +41,7 @@ export const IssueList = ({ query, search, status }: IssueListProps) => {
   } = useIssuesData({ query, search, status })
   const { canReact } = useReactionAccess()
   const { react } = useUpdateIssueReaction()
+  const { toggleWatch } = useUpdateIssueWatch()
   const access = useIssueActionsAccess()
   const deletion = useIssueDeletion()
   const sentinelRef = useIntersectionObserver<HTMLDivElement>({
@@ -95,10 +97,12 @@ export const IssueList = ({ query, search, status }: IssueListProps) => {
           canChangeStatus={access.canChangeStatus}
           canDelete={access.canDelete(issue)}
           canEdit={access.canEdit(issue)}
+          canFollow={access.canFollow}
           canReact={canReact}
           issue={issue}
           onDelete={deletion.request}
           onReact={react}
+          onToggleWatch={toggleWatch}
         />
       ))}
       {isFetchingNextPage && <SkeletonCard data-testid='issue-more-skeleton' />}

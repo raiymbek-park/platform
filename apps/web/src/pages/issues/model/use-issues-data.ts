@@ -11,6 +11,7 @@ import { useTRPC } from '@/shared/api'
 
 import { useStoreDeletedIssues } from './use-store-deleted-issues'
 import { useStoreReactions } from './use-store-reactions'
+import { useStoreWatches } from './use-store-watches'
 
 export type IssueView = Omit<Issue, 'author'> & {
   apartment: number
@@ -22,6 +23,7 @@ export type IssueView = Omit<Issue, 'author'> & {
 const toView = (
   { author, ...issue }: Issue,
   reaction: ReactionKind | null | undefined,
+  watching: boolean | undefined,
 ): IssueView => {
   const view = {
     ...issue,
@@ -29,6 +31,7 @@ const toView = (
     authorName: author.name,
     authorPhone: author.phone,
     block: author.block,
+    ...(watching === undefined ? {} : { isWatching: watching }),
   }
   return reaction === undefined
     ? view
@@ -69,6 +72,7 @@ export const useIssuesData = ({
 }: UseIssuesDataInput) => {
   const trpc = useTRPC()
   const reactions = useStoreReactions(store => store.reactions)
+  const watches = useStoreWatches(store => store.watches)
   const deletedIds = useStoreDeletedIssues(store => store.deletedIds)
   const list = useInfiniteQuery(
     trpc.issues.list.infiniteQueryOptions(
@@ -87,7 +91,7 @@ export const useIssuesData = ({
     list.data?.pages
       .flatMap(page => page.issues)
       .filter(issue => !deletedIds.has(issue.id))
-      .map(issue => toView(issue, reactions[issue.id])) ?? []
+      .map(issue => toView(issue, reactions[issue.id], watches[issue.id])) ?? []
   const isProjecting = query !== search || list.isPlaceholderData
 
   return {

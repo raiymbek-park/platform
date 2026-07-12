@@ -28,6 +28,7 @@ const seedIssue: Issue = {
   id: 'issue-201',
   isMine: true,
   isTranslated: false,
+  isWatching: false,
   keywords: ['кран'],
   likeCount: 0,
   media: [],

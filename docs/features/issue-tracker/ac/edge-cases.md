@@ -121,3 +121,28 @@ Boundary conditions around fields, reactions, and status filtering. Values refer
   When:  the first reaction request settles after the second tap
   Then:  the reaction reflects the second tap (the like is turned off) and the settling of the first
          request does not revert it
+
+## Scenario 19: Following an already-followed issue is idempotent
+
+  Given: a resident who already follows an issue
+  When:  a follow is issued again (for example, they comment on it while already following)
+  Then:  the subscription stays a single follow; nothing is duplicated
+
+## Scenario 20: Unfollowing an issue that is not followed is a no-op
+
+  Given: a resident who does not follow an issue
+  When:  an unfollow is issued
+  Then:  nothing changes and no error is raised
+
+## Scenario 21: An auto-followed issue can still be unfollowed by hand
+
+  Given: a resident who was auto-followed by commenting on an issue
+  When:  they tap the follow toggle
+  Then:  they stop following the issue; the earlier auto-follow does not re-add the subscription
+
+## Scenario 22: The follower set is not stored on the issue document
+
+  Given: an issue followed by many residents
+  When:  the issue document is read
+  Then:  it carries no follower array — each follow lives under `residents/{uid}/watches/{issueId}`
+         the issue document does not grow with the number of followers

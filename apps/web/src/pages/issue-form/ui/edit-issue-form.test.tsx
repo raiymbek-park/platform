@@ -28,6 +28,7 @@ const issue: Issue = {
   id: 'issue-1',
   isMine: true,
   isTranslated: false,
+  isWatching: false,
   keywords: [],
   likeCount: 0,
   media: [],

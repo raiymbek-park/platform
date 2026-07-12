@@ -35,6 +35,7 @@ import {
 } from '../store-helpers'
 import { localizedFields } from '../translation/localized-fields'
 import { buildKeywords } from './keywords'
+import { addWatch, getWatchedIssueIds, isWatching } from './watch-store'
 
 export type IssueAuthor = {
   apartment: number
@@ -53,6 +54,7 @@ export type Issue = {
   id: string
   isMine: boolean
   isTranslated: boolean
+  isWatching: boolean
   keywords: string[]
   likeCount: number
   media: string[]
@@ -71,7 +73,7 @@ const collection = () => getDb().collection('issues')
 const toCategory = (value: unknown): IssueCategory =>
   issueCategories.find(category => category === value) ?? 'other'
 
-const toStatus = (value: unknown): IssueStatus =>
+export const toStatus = (value: unknown): IssueStatus =>
   issueStatuses.find(status => status === value) ?? 'new'
 
 const toTags = (value: unknown): ClassificationTag[] =>
@@ -101,6 +103,7 @@ const parseIssue = (
   uid: string | null,
   role: PermissionRole | null,
   locale: Locale,
+  isWatched: boolean,
 ): Issue => {
   const reactions = toReactions(data.reactions)
   const kinds = Object.values(reactions)
@@ -116,6 +119,7 @@ const parseIssue = (
     dislikeCount: kinds.filter(kind => kind === 'dislike').length,
     id,
     isMine: uid !== null && authorId !== '' && authorId === uid,
+    isWatching: isWatched,
     keywords: toStringArray(data.keywords),
     likeCount: kinds.filter(kind => kind === 'like').length,
     media: toStringArray(data.media),
@@ -152,9 +156,13 @@ export const listIssues = async ({
   const scoped =
     status === 'all' ? collection() : collection().where('status', '==', status)
   const { paged } = searchedPage(scoped, search, cursor)
-  const snap = await paged.limit(ISSUE_PAGE_SIZE).get()
+  const [snap, watchedIds] = await Promise.all([
+    paged.limit(ISSUE_PAGE_SIZE).get(),
+    uid ? getWatchedIssueIds(uid) : [],
+  ])
+  const watched = new Set(watchedIds)
   const issues = snap.docs.map(doc =>
-    parseIssue(doc.id, doc.data(), uid, role, locale),
+    parseIssue(doc.id, doc.data(), uid, role, locale, watched.has(doc.id)),
   )
   const last = issues.at(-1)
   const nextCursor =
@@ -201,6 +209,7 @@ export const createIssue = async (
       title: input.title,
       urgent: input.urgent,
     })
+    addWatch(transaction, uid, input.id)
     return { id: input.id, number }
   })
 }
@@ -223,7 +232,8 @@ export const getIssue = async (
 ): Promise<Issue | null> => {
   const snap = await collection().doc(issueId).get()
   if (!snap.exists) return null
-  return parseIssue(snap.id, snap.data() ?? {}, uid, role, locale)
+  const isWatched = uid ? await isWatching(uid, issueId) : false
+  return parseIssue(snap.id, snap.data() ?? {}, uid, role, locale, isWatched)
 }
 
 export const updateIssue = (
@@ -264,6 +274,8 @@ export const changeStatus = async (
     const snap = await transaction.get(ref)
     if (!snap.exists) return false
     transaction.update(ref, {
+      lastStatusAt: FieldValue.serverTimestamp(),
+      lastStatusBy: uid,
       status: input.status,
       tags: input.tags,
       ...(comment ? { commentCount: FieldValue.increment(1) } : {}),

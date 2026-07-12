@@ -17,5 +17,6 @@ export const useIssueActionsAccess = () => {
     canChangeStatus: role === 'manager' || isAdministration,
     canDelete: canManage,
     canEdit: canManage,
+    canFollow: role !== 'manager' && !isAdministration,
   }
 }

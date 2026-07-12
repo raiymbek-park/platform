@@ -4,6 +4,7 @@ import {
   issueGetInputSchema,
   issueListInputSchema,
   issueUpdateInputSchema,
+  issueWatchInputSchema,
   reactionInputSchema,
   statusChangeInputSchema,
 } from '@raiymbek-park/shared/validation-schemas'
@@ -20,6 +21,7 @@ import {
   setIssueReaction,
   updateIssue,
 } from './issues-store'
+import { toggleWatch } from './watch-store'
 
 export const issuesRouter = router({
   list: publicProcedure
@@ -51,6 +53,22 @@ export const issuesRouter = router({
       }
 
       const updated = await setIssueReaction(input.issueId, ctx.uid, input.kind)
+      if (!updated) {
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'issueNotFound' })
+      }
+      return { ok: true }
+    }),
+  toggleWatch: publicProcedure
+    .input(issueWatchInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      if (!ctx.uid) {
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'phoneNotVerified',
+        })
+      }
+
+      const updated = await toggleWatch(ctx.uid, input.issueId)
       if (!updated) {
         throw new TRPCError({ code: 'NOT_FOUND', message: 'issueNotFound' })
       }

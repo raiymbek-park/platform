@@ -30,6 +30,7 @@ Permissions are enforced **on the server** for every action, not merely hidden i
 | Capability | Viewer | Resident | Owner | Manager | Administration |
 |---|:--:|:--:|:--:|:--:|:--:|
 | View issue list and detail | ✓ | ✓ | ✓ | ✓ | ✓ |
+| Follow / unfollow an issue *(residents opt in; staff are auto-subscribed to all)* | ✓ | ✓ | ✓ | auto | auto |
 | Open an issue | — | ✓ | ✓ | — | ✓ |
 | Edit or delete an issue you opened *(while New)* | — | ✓ | ✓ | — | ✓ |
 | Like / dislike any issue | — | ✓ | ✓ | ✓ | ✓ |
@@ -75,6 +76,8 @@ these are built here.*
   classification tags (Under warranty, Needs clarification, Duplicate), media, and a comment.
 - **Reactions** — a Resident or higher role leaves a single like or dislike on any issue; a Viewer
   cannot.
+- **Follow an issue** — any resident follows or unfollows any issue to receive its status changes and
+  new comments in their Home feed; opening or commenting on an issue follows it automatically.
 - **Role-based permission enforcement**, with **Resident** as the default role.
 
 ### Not included
@@ -104,6 +107,43 @@ these are built here.*
 - **Comment count** — the number of comments left on the issue, including comments left with a
   status change: a status-change comment lands in the issue's comment thread as a regular message.
 - **Number** (Issue #NNN, assigned in order of creation) and a **creation timestamp**.
+- **Activity timestamps** — `lastStatusAt` (set on every status change — **not** at creation, so
+  opening an issue is not a self-event) and `lastCommentAt` with `lastCommentBy` (set on every thread
+  comment). They let the Home feed detect, with a single field comparison, that an issue changed since
+  a resident's last visit and whose action it was — so a resident's own comment is excluded from their
+  own feed. A comment attached to a status change is surfaced by the status event, not a separate
+  comment event.
+- **Followers** — following is a **per-resident** subscription stored on the resident, not a list on
+  the issue (see Following an Issue); an issue document does not carry its follower set.
+
+## Following an Issue
+
+A resident can **follow** an issue to receive its activity — status changes and new comments — in the
+Home "what's new" feed. Following is a personal subscription: it changes nothing about the issue itself
+and is never shown to other residents.
+
+- **Follow button** — the issue card and detail carry a follow toggle (already in the design). Tapping
+  it follows an unfollowed issue and unfollows a followed one.
+- **Auto-follow** — a resident is subscribed automatically, exactly as if they had tapped the button,
+  when they **open an issue** (its author follows their own issue) or **post a comment** on it.
+  Auto-follow only ever adds a subscription; a resident who was auto-followed can still unfollow by
+  hand afterward.
+- **Unfollow** — tapping the toggle on a followed issue removes the subscription; the issue's later
+  activity no longer reaches that resident's feed.
+- **Idempotent** — following an already-followed issue is a no-op, and so is unfollowing one that is
+  not followed.
+- **What following drives** — only the Home feed; following changes nothing in the issue list or
+  detail beyond the toggle's own on/off state.
+
+**Managers and Administration are subscribed to every issue by default.** They receive all issue
+status changes and all new comments in their Home feed regardless of any explicit follow, and they have
+**no follow toggle** — there is nothing to opt into or out of. Activity a staff member caused themselves
+(their own status change or their own comment) is still excluded from their own feed.
+
+The subscription is stored per resident (`residents/{uid}/watches/{issueId}`), never as a follower
+array on the issue document, so a widely-followed issue's document does not grow with its audience.
+Staff need no watch records — their feed is derived across all issues from the `lastStatusAt` /
+`lastCommentAt` timestamps directly.
 
 ## Search and Loading
 
@@ -157,22 +197,31 @@ everything but cannot act.
 - A Manager can move an issue through its statuses, and residents see each change.
 - The server rejects unauthorized actions: a Viewer cannot open an issue, a Resident cannot change a
   status or touch another resident's issue, and a Manager cannot edit or delete.
+- A resident follows an issue — by tapping the button, or automatically by opening or commenting on
+  it — and its later status changes and comments appear in their Home feed until they unfollow.
 
 ## Non-functional Requirements
 
 - Mobile-only; a single interface language this iteration; no manual keyboard accessibility.
 - Permissions are enforced on the server, never only in the interface.
 - State boundaries: server data through TanStack Query; the active status filter in a URL search
-  parameter; transient interface state (optimistic reactions, form input) in Zustand overlays.
+  parameter; transient interface state (optimistic reactions, the optimistic follow toggle, form
+  input) in Zustand overlays. The follow toggle uses an ID-based optimistic overlay like reactions —
+  never cache surgery.
+- Per-resident data (issue follows) is stored on the resident side
+  (`residents/{uid}/watches/{issueId}`), never as a follower list on the issue document.
 
 ## Dependencies
 
 - The existing Firebase authentication and resident profile (id, name, phone, block, apartment, role).
 - A new issue router and an issue collection on the server.
 - Existing design-system components — the post-card variants, filter tabs, select options, status
-  tags, the create button, and the bottom navigation.
+  tags, the follow toggle, the create button, and the bottom navigation.
 - The resident profile carries a `role` field holding one of the five roles; an absent or unrecognized
   value resolves to Resident.
+- A per-resident issue-follow subscription (`residents/{uid}/watches/{issueId}`) and the issue
+  `lastStatusAt` / `lastCommentAt` activity timestamps — both consumed by the Home "what's new" feed
+  (see the home feature).
 
 ## Terminology
 
@@ -186,6 +235,10 @@ are not. Do not introduce synonyms (request, task, ticket) in code — the entit
   `urgent` flag.
 - **Classification tags** — `warranty`, `needs-clarification`, `duplicate`.
 - **Roles** — `viewer`, `resident`, `owner`, `manager`, `administration`.
+- **Follow / watch** — a resident's personal subscription to an issue; the canonical code term is
+  `watch` (a resident *watches* an issue), stored under `residents/{uid}/watches/{issueId}`. The
+  Russian button label is "Следить". Do not introduce synonyms (subscribe, star, pin) in code.
+- **Activity timestamps** — `lastStatusAt`, `lastCommentAt` on the issue document.
 
 ## Open Questions
 

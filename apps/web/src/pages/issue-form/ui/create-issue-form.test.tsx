@@ -43,6 +43,7 @@ const toIssue = (payload: IssueCreatePayload, number: number): Issue => ({
   id: payload.id,
   isMine: true,
   isTranslated: false,
+  isWatching: false,
   keywords: [],
   likeCount: 0,
   media: payload.media,

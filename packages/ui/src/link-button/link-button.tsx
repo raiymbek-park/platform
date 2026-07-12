@@ -8,20 +8,18 @@ import css from './link-button.module.scss'
 
 export type LinkButtonProps = Omit<ComponentProps<'button'>, 'children'> & {
   glyph: IconGlyph
-  iconClassName?: string
   label: ReactNode
 }
 
 export const LinkButton = ({
   className,
   glyph,
-  iconClassName,
   label,
   type = 'button',
   ...restProps
 }: LinkButtonProps) => (
   <button className={joinCss(css.button, className)} type={type} {...restProps}>
-    <Icon className={iconClassName} glyph={glyph} size={16} />
+    <Icon glyph={glyph} size={16} />
     {label}
   </button>
 )

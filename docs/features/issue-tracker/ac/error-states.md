@@ -69,3 +69,9 @@ rules live in `validation.md`.
   Then:  skeleton cards remain shown for the full wait, with no error state shown before the response
          arrives
          once the response arrives, the skeleton cards are replaced by the issue cards as usual
+
+## Scenario 10: Follow toggle fails
+
+  Given: a resident whose follow (or unfollow) was applied optimistically
+  When:  the request fails
+  Then:  the optimistic follow state is rolled back to what it was before the tap

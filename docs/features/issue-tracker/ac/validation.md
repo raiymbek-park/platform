@@ -152,6 +152,29 @@ the interface is not sufficient.
   Then:  the query remains in the search field and continues to narrow the issues shown under the
          newly selected filter
 
+## Follow rules
+
+## Scenario 22: Any signed-in resident may follow or unfollow
+
+  Given: a signed-in resident of any role, including a Viewer
+  When:  they follow or unfollow an issue
+  Then:  the action succeeds — following is a personal subscription available to every role that can
+         view issues, and does not fall under the Viewer read-only restriction
+
+## Scenario 23: Follow targets an existing issue
+
+  Given: a follow or unfollow request
+  When:  the target issue id does not exist
+  Then:  the server rejects it
+
+## Scenario 24: Auto-follow is applied only when its action succeeds
+
+  Given: a resident creating an issue or posting a comment on one
+  When:  the create or comment succeeds
+  Then:  the resident follows the issue as part of the same operation
+  When:  the create or comment fails
+  Then:  no follow is recorded
+
 ## Author phone visibility
 
 ## Scenario 21: The author's phone is visible only to Managers, Administration, and the author
