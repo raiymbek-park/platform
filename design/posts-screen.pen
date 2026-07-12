@@ -700,7 +700,13 @@
                       "content": "10:24"
                     },
                     "ds:chat-in-text": {
-                      "content": "Спасибо, всё прошло отлично! 🙌"
+                      "content": "All good, thank you guys!"
+                    },
+                    "ds:u84BYJ": {
+                      "enabled": true
+                    },
+                    "ds:ECTGQ": {
+                      "enabled": true
                     }
                   }
                 }
@@ -747,6 +753,12 @@
                       "content": "Занимаемся с сыном уже два месяца — прогресс заметный. Объясняет спокойно и понятно, разбирает каждую тему до конца, всегда на связи и подстраивается под расписание. Подтянули алгебру перед контрольной — сын стал увереннее. Однозначно рекомендую!",
                       "textGrowth": "fixed-width",
                       "width": 240
+                    },
+                    "ds:u84BYJ": {
+                      "enabled": false
+                    },
+                    "ds:ECTGQ": {
+                      "enabled": false
                     }
                   }
                 }
@@ -823,7 +835,7 @@
               "type": "ref",
               "ref": "ds:MessageImage",
               "x": 20,
-              "y": 482,
+              "y": 541,
               "descendants": {
                 "ds:O6uFz": {
                   "fill": {

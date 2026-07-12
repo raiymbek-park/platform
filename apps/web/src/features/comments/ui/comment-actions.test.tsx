@@ -23,7 +23,7 @@ if (!HTMLDialogElement.prototype.close)
   }
 
 const seedComment = (overrides: Partial<Comment> = {}): Comment => ({
-  author: { apartment: 12, block: 1, name: 'Тимур Ким' },
+  author: { apartment: 12, avatarUrl: null, block: 1, name: 'Тимур Ким' },
   createdAt: 1_700_000_000_000,
   editedAt: null,
   id: 'comment-1',
@@ -130,9 +130,7 @@ const messageRow = (text: string) => {
 }
 
 const messageActions = (text: string) =>
-  within(messageRow(text)).queryByRole('button', {
-    name: 'Действия с сообщением',
-  })
+  within(messageRow(text)).queryByTitle('Действия с сообщением')
 
 const openActions = async (
   user: ReturnType<typeof renderApp>['user'],
@@ -154,7 +152,7 @@ beforeEach(() => {
 test('happy-path 15: opening edit on your own message loads its text into the input bar', async () => {
   postComments = [
     seedComment({
-      author: { apartment: 42, block: 1, name: 'Алиса' },
+      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
       id: 'c1',
       isMine: true,
       text: 'Исходный текст',
@@ -174,7 +172,7 @@ test('happy-path 15: opening edit on your own message loads its text into the in
 test('happy-path 15a: saving an edited comment updates the message in place', async () => {
   postComments = [
     seedComment({
-      author: { apartment: 42, block: 1, name: 'Алиса' },
+      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
       id: 'c1',
       isMine: true,
       text: 'Исходный текст',
@@ -197,7 +195,7 @@ test('happy-path 15a: saving an edited comment updates the message in place', as
 test('happy-path 16: the author deletes their own comment and the count decreases by one', async () => {
   postComments = [
     seedComment({
-      author: { apartment: 42, block: 1, name: 'Алиса' },
+      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
       id: 'c1',
       isMine: true,
       text: 'Удалить меня',
@@ -261,7 +259,7 @@ test('happy-path 17: Administration deletes another member’s comment regardles
 test('validation 15: canceling the delete confirmation leaves the comment in the thread', async () => {
   postComments = [
     seedComment({
-      author: { apartment: 42, block: 1, name: 'Алиса' },
+      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
       id: 'c1',
       isMine: true,
       text: 'Не удаляй меня',
@@ -287,7 +285,7 @@ test('validation 15: canceling the delete confirmation leaves the comment in the
 test('edge-cases 17: a member sees actions only on their own comment', async () => {
   postComments = [
     seedComment({
-      author: { apartment: 42, block: 1, name: 'Алиса' },
+      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
       id: 'own',
       isMine: true,
       text: 'Моё сообщение',
@@ -319,7 +317,7 @@ test('edge-cases 17: Administration sees the delete action on every comment', as
 test('error-states 7 / error-states 9: a failed edit surfaces an error and keeps the edited text in edit mode', async () => {
   postComments = [
     seedComment({
-      author: { apartment: 42, block: 1, name: 'Алиса' },
+      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
       id: 'c1',
       isMine: true,
       text: 'Исходный текст',
@@ -348,7 +346,7 @@ test('error-states 7 / error-states 9: a failed edit surfaces an error and keeps
 test('error-states 7 / error-states 9: a failed delete leaves the message visible in the thread', async () => {
   postComments = [
     seedComment({
-      author: { apartment: 42, block: 1, name: 'Алиса' },
+      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
       id: 'c1',
       isMine: true,
       text: 'Останься на месте',
@@ -379,7 +377,7 @@ test('error-states 7 / error-states 9: a failed delete leaves the message visibl
 test('edge-cases 7: deleting a comment on an issue decrements the issue’s comment count identically to a post', async () => {
   issueComments = [
     seedComment({
-      author: { apartment: 42, block: 1, name: 'Алиса' },
+      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
       id: 'i1',
       isMine: true,
       text: 'Удалить меня',

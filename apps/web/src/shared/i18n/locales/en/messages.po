@@ -363,7 +363,7 @@ msgstr "Changes saved."
 msgid "Изменения сохранены. Файлов не загрузилось: {count}"
 msgstr "Changes saved. Files not uploaded: {count}"
 
-#: src/features/comments/ui/comment-message.tsx:71
+#: src/features/comments/ui/comment-message.tsx:72
 msgid "изменено"
 msgstr "edited"
 
@@ -759,16 +759,16 @@ msgid "Очистить поиск"
 msgstr "Clear search"
 
 #: src/shared/i18n/translation-note.tsx:20
-msgid "Переведено с английского"
-msgstr "Translated from English"
+#~ msgid "Переведено с английского"
+#~ msgstr "Translated from English"
 
 #: src/shared/i18n/translation-note.tsx:21
-msgid "Переведено с казахского"
-msgstr "Translated from Kazakh"
+#~ msgid "Переведено с казахского"
+#~ msgstr "Translated from Kazakh"
 
 #: src/shared/i18n/translation-note.tsx:22
-msgid "Переведено с русского"
-msgstr "Translated from Russian"
+#~ msgid "Переведено с русского"
+#~ msgstr "Translated from Russian"
 
 #: src/features/comments/ui/comment-message.tsx:60
 msgid "Перевести"
@@ -850,11 +850,14 @@ msgid "Пока нет ни одного объявления."
 msgstr "No posts yet."
 
 #: src/features/comments/ui/comment-message.tsx:59
-#: src/shared/i18n/translation-note.tsx:29
 msgid "Показать оригинал"
 msgstr "Show original"
 
-#: src/shared/i18n/translation-note.tsx:29
+#: src/shared/i18n/translation-note.tsx:18
+msgid "Показать оригинальный текст"
+msgstr "Show original text"
+
+#: src/shared/i18n/translation-note.tsx:18
 msgid "Показать перевод"
 msgstr "Show translation"
 

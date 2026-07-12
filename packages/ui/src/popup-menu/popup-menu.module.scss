@@ -1,7 +1,7 @@
 .sheet {
   background: var(--background);
   border: 0;
-  border-radius: 28px 28px 0 0;
+  border-radius: 24px 24px 0 0;
   box-shadow: 0 -8px 30px var(--shadow);
   margin: 0 auto auto;
   max-width: 480px;
@@ -42,12 +42,12 @@
 }
 
 .handle {
-  background: var(--border);
-  border-radius: 180px;
+  background: var(--text-muted);
+  border-radius: 2px;
   display: block;
-  height: 5px;
-  margin: 0 auto 16px;
-  width: 44px;
+  height: 4px;
+  margin: 10px auto 24px;
+  width: 80px;
 }
 
 .content {

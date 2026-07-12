@@ -463,11 +463,13 @@ test('happy-path 2: the expanded card shows the indicator, toggles to the origin
 
   await user.click(within(card).getByRole('button', { name: /Читать далее/ }))
 
-  expect(within(card).getByText('Переведено с русского')).toBeInTheDocument()
+  expect(
+    within(card).getByRole('button', { name: 'Показать оригинальный текст' }),
+  ).toBeInTheDocument()
   expect(within(card).getByText('Суды өшіру')).toBeInTheDocument()
 
   await user.click(
-    within(card).getByRole('button', { name: 'Показать оригинал' }),
+    within(card).getByRole('button', { name: 'Показать оригинальный текст' }),
   )
   expect(within(card).getByText('Отключение воды')).toBeInTheDocument()
 
@@ -492,15 +494,19 @@ test('happy-path 3: a same-locale post shows the original with no translation in
   const card = await firstCard()
 
   await within(card).findByText('Отключение воды')
-  expect(screen.queryByText(/Переведено с/)).not.toBeInTheDocument()
+  expect(
+    screen.queryByRole('button', { name: 'Показать оригинальный текст' }),
+  ).not.toBeInTheDocument()
 })
 
-test('edge-cases 3: a Russian-locale viewer sees a Kazakh-authored post with a "translated from Kazakh" indicator', async () => {
+test('edge-cases 3: a translated post exposes the show-original toggle regardless of the source language', async () => {
   serveTranslated(translatedPost({ originalLang: 'kk' }))
   const { user } = renderApp('/posts?tab=all')
   const card = await firstCard()
 
   await user.click(within(card).getByRole('button', { name: /Читать далее/ }))
 
-  expect(within(card).getByText('Переведено с казахского')).toBeInTheDocument()
+  expect(
+    within(card).getByRole('button', { name: 'Показать оригинальный текст' }),
+  ).toBeInTheDocument()
 })

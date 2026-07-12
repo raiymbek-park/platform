@@ -93,7 +93,8 @@ Boundary conditions.
 
 ## Scenario 17: Member sees own-comment actions only
   Given: a thread holds comments by different authors
-  When:  a non-Administration member opens the message actions menu
-  Then:  edit and delete appear only on their own messages
-         Administration sees delete on every message
+  When:  a non-Administration member taps a message
+  Then:  tapping their own message opens its actions (edit and delete); others' messages are not
+         actionable and tapping them opens nothing
+         Administration can tap any message to open its actions, which include delete
 </content>

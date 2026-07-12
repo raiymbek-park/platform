@@ -1,33 +1,9 @@
 .row {
   display: flex;
   gap: 10px;
-  padding-right: 32px;
-  position: relative;
 
   &-is-own {
     flex-direction: row-reverse;
-    padding-left: 32px;
-    padding-right: 0;
-  }
-}
-
-.actions {
-  align-items: center;
-  background: none;
-  border: 0;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  min-height: 32px;
-  min-width: 32px;
-  position: absolute;
-  right: 0;
-  top: 4px;
-
-  &-is-own {
-    left: 0;
-    right: auto;
   }
 }
 
@@ -47,13 +23,18 @@
     padding-bottom: 16px;
   }
 
+  &-is-actionable {
+    cursor: pointer;
+  }
+
   &-is-own {
     background: var(--brand-subtle);
     border-radius: 16px 0 16px 16px;
+    color: var(--foreground);
     flex: 0 1 auto;
     min-width: 183px;
 
-    .name,
+    .edited,
     .time {
       color: var(--brand-text);
     }
@@ -98,24 +79,7 @@
 }
 
 .translate {
-  align-items: center;
-  align-self: flex-start;
-  background: none;
-  border: 0;
-  color: var(--action);
-  cursor: pointer;
-  display: flex;
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: var(--weight-bold);
-  gap: 6px;
-  min-height: 24px;
-  padding: 0 16px;
-
-  &-is-translating {
-    color: var(--text-muted);
-    cursor: default;
-  }
+  --link-button-inline: 16px;
 }
 
 .loader {

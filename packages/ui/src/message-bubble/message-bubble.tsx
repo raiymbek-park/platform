@@ -4,7 +4,7 @@ import { joinCss, pickCss } from '@raiymbek-park/shared'
 
 import { Avatar } from '../avatar/avatar'
 import { Carousel } from '../carousel/carousel'
-import { Icon } from '../icon'
+import { LinkButton } from '../link-button/link-button'
 import { Markdown } from '../markdown/markdown'
 import css from './message-bubble.module.scss'
 
@@ -15,6 +15,7 @@ type MessageBubbleTranslateProps =
 export type MessageBubbleProps = ComponentProps<'div'> &
   MessageBubbleTranslateProps & {
     actionsLabel?: string
+    authorAvatar?: string
     authorName: string
     editedLabel?: ReactNode
     isEdited?: boolean
@@ -28,8 +29,6 @@ export type MessageBubbleProps = ComponentProps<'div'> &
 
 const rowCss = pickCss(css, css.row)
 const bubbleCss = pickCss(css, css.bubble)
-const actionsCss = pickCss(css, css.actions)
-const translateCss = pickCss(css, css.translate)
 
 type TranslateButtonProps = {
   isTranslating?: boolean
@@ -42,23 +41,22 @@ const TranslateButton = ({
   label,
   onTranslate,
 }: TranslateButtonProps) => (
-  <button
-    className={translateCss({ isTranslating })}
+  <LinkButton
+    className={css.translate}
     disabled={isTranslating}
-    type='button'
-    onClick={onTranslate}
-  >
-    <Icon
-      className={isTranslating ? css.loader : undefined}
-      glyph={isTranslating ? 'loader-circle' : 'languages'}
-      size={14}
-    />
-    {label}
-  </button>
+    glyph={isTranslating ? 'loader-circle' : 'languages'}
+    iconClassName={isTranslating ? css.loader : undefined}
+    label={label}
+    onClick={event => {
+      event.stopPropagation()
+      onTranslate()
+    }}
+  />
 )
 
 export const MessageBubble = ({
   actionsLabel,
+  authorAvatar,
   authorName,
   className,
   editedLabel,
@@ -74,8 +72,14 @@ export const MessageBubble = ({
   ...restProps
 }: MessageBubbleProps) => (
   <div className={joinCss(rowCss({ isOwn }), className)} {...restProps}>
-    {!isOwn && <Avatar name={authorName} />}
-    <div className={bubbleCss({ isOwn })}>
+    {!isOwn && <Avatar name={authorName} src={authorAvatar} />}
+    {/* biome-ignore lint/a11y/useKeyWithClickEvents: tapping the bubble opens the actions sheet; keyboard a11y is not required (mobile-only) */}
+    {/* biome-ignore lint/a11y/noStaticElementInteractions: the bubble is the tap target for message actions on touch devices */}
+    <div
+      className={bubbleCss({ isActionable: Boolean(onActions), isOwn })}
+      title={onActions ? actionsLabel : undefined}
+      onClick={onActions}
+    >
       <header className={css.head}>
         <span className={css.name}>{authorName}</span>
         <time className={css.time}>{time}</time>
@@ -97,15 +101,5 @@ export const MessageBubble = ({
         />
       )}
     </div>
-    {onActions && (
-      <button
-        aria-label={actionsLabel}
-        className={actionsCss({ isOwn })}
-        type='button'
-        onClick={onActions}
-      >
-        <Icon glyph='ellipsis' size={18} />
-      </button>
-    )}
   </div>
 )

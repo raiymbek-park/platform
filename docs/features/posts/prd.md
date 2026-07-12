@@ -172,12 +172,13 @@ A **comment** is one message in a post's threaded conversation. The same thread 
 `/issues/{issueId}/comments`.
 
 - **Thread screen** — opening a post's (or issue's) comment count shows the conversation, its own
-  messages aligned right and others' aligned left with the author's avatar, name, and time; message
-  text renders as Markdown and a message may carry images. New messages appear at the end.
+  messages aligned right and others' aligned left with the author's avatar (their photo, falling back
+  to initials), name, and time; message text renders as Markdown and a message may carry images. New
+  messages appear at the end.
 - **Writing a comment** — an input bar at the foot of the thread lets a Resident or higher role send a
   comment with text, an image, or both. The post's (or issue's) comment count reflects the new comment.
-- **Editing a comment** — the author opens an actions menu on their own message to edit it in place;
-  the input bar enters edit mode and saves the change.
+- **Editing a comment** — the author taps their own message to open an actions menu and edit it in
+  place; the input bar enters edit mode and saves the change.
 - **Deleting a comment** — the author deletes their own message behind a confirmation; Administration
   may delete any message as moderation. The comment count reflects the removal.
 - **Status-change reasons on issues** — when a Manager or Administration changes an issue's status

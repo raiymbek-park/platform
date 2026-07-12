@@ -19,8 +19,8 @@
   Given: a resident whose active locale is `ru` writes a post in Kazakh
   When:  translation completes
   Then:  the post's recorded source language is `kk`
-         a Russian-locale viewer sees the Russian translation with a "translated from Kazakh"
-         indicator
+         a Russian-locale viewer sees the Russian translation with a show-original toggle
+         (the toggle does not name the source language)
          a Kazakh-locale viewer sees the original without an indicator
 
 ## Scenario 4: Comment translate corrects a wrong recorded language
@@ -40,7 +40,7 @@
   Given: a post created before this feature existed, containing Russian text
   When:  the backfill script has run and a Kazakh-locale resident opens the feed
   Then:  the post shows the Kazakh title and description
-         its detail view shows the "translated from Russian" indicator
+         its detail view shows the show-original toggle
 
 ## Scenario 7: A target-locale search finds nothing until translation completes
   Given: a post authored in Russian whose Kazakh translation title contains a word not present

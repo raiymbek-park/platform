@@ -171,7 +171,6 @@ export const IssueCardItem = ({
         issue.original && (
           <TranslationNote
             isShowingOriginal={isShowingOriginal}
-            lang={issue.originalLang}
             onToggle={() => setShowingOriginal(showing => !showing)}
           />
         )
