@@ -4,7 +4,11 @@ import '@/app/app.scss'
 
 import { I18nProvider } from '@lingui/react'
 import { QueryClientProvider } from '@tanstack/react-query'
-import { createRouter, RouterProvider } from '@tanstack/react-router'
+import {
+  createHashHistory,
+  createRouter,
+  RouterProvider,
+} from '@tanstack/react-router'
 
 import { routeTree } from '@/app/routeTree.gen'
 import { queryClient, TRPCProvider, trpc, trpcClient } from '@/shared/api'
@@ -13,9 +17,9 @@ import { ToastHost } from '@/shared/toast'
 
 const router = createRouter({
   routeTree,
-  basepath: import.meta.env.BASE_URL,
   context: { queryClient, trpc },
   defaultPreload: 'intent',
+  history: createHashHistory(),
   notFoundMode: 'root',
 })
 
