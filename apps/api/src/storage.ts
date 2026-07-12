@@ -1,6 +1,6 @@
 import { getStorage } from 'firebase-admin/storage'
 
-export const resolveBucketName = async (): Promise<string> => {
+const resolveBucketName = async (): Promise<string> => {
   const project = process.env.GOOGLE_CLOUD_PROJECT ?? 'raiymbek-park-sa99'
   const candidates = [
     `${project}.firebasestorage.app`,

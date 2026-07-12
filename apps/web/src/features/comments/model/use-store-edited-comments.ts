@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type EditedComment = {
+type EditedComment = {
   editedAt: number
   media: string[]
   text: string

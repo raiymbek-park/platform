@@ -1,4 +1,3 @@
-import type { MessageCreateParamsNonStreaming } from '@anthropic-ai/sdk/resources/messages'
 import type { Locale } from '../i18n'
 
 import Anthropic from '@anthropic-ai/sdk'
@@ -140,20 +139,6 @@ export const translateDocument = ({
     subject: DOCUMENT_SUBJECT,
     texts,
   })
-
-export type DocumentTranslationRequest = Omit<TranslateDocumentInput, 'apiKey'>
-
-export const documentTranslationParams = ({
-  sourceLocaleHint,
-  texts,
-}: DocumentTranslationRequest): MessageCreateParamsNonStreaming => ({
-  max_tokens: MAX_TOKENS,
-  messages: [{ content: JSON.stringify(texts), role: 'user' }],
-  model: MODEL,
-  output_config: { format: zodOutputFormat(documentOutputSchema) },
-  system: systemPrompt(sourceLocaleHint, DOCUMENT_SUBJECT),
-  temperature: 0,
-})
 
 const parseJson = (raw: string): unknown => {
   try {
