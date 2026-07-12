@@ -17,6 +17,10 @@ logs
 node_modules
 npm-debug.log*
 
+.env
+.env.*
+!.env.example
+
 # firebase
 .firebase/
 .runtimeconfig.json
