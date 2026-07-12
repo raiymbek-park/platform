@@ -6,7 +6,7 @@ import { joinCss } from '@raiymbek-park/shared'
 import { Icon } from '../icon'
 import css from './link-button.module.scss'
 
-export type LinkButtonProps = ComponentProps<'button'> & {
+export type LinkButtonProps = Omit<ComponentProps<'button'>, 'children'> & {
   glyph: IconGlyph
   iconClassName?: string
   label: ReactNode

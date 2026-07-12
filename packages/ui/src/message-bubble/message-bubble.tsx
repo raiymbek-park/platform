@@ -78,7 +78,17 @@ export const MessageBubble = ({
     <div
       className={bubbleCss({ isActionable: Boolean(onActions), isOwn })}
       title={onActions ? actionsLabel : undefined}
-      onClick={onActions}
+      onClick={
+        onActions &&
+        (event => {
+          if (
+            event.target instanceof Element &&
+            event.target.closest('a, button')
+          )
+            return
+          onActions?.()
+        })
+      }
     >
       <header className={css.head}>
         <span className={css.name}>{authorName}</span>
