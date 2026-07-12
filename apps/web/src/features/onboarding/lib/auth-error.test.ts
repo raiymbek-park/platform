@@ -47,8 +47,8 @@ test('sendCodeErrorText — captcha and app-credential share the security messag
   })
   const body = (text: string) => text.replace(/ \([^)]+\)$/, '')
   expect(body(captcha)).toBe(body(appCredential))
-  expect(captcha).toContain('(auth/captcha-check-failed)')
-  expect(appCredential).toContain('(auth/invalid-app-credential)')
+  expect(captcha).toMatch(/ \(auth\/captcha-check-failed\)$/)
+  expect(appCredential).toMatch(/ \(auth\/invalid-app-credential\)$/)
 })
 
 test('sendCodeErrorText — the visible message carries the error code for on-device diagnosis', () => {
