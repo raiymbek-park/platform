@@ -20,6 +20,6 @@ export const useStoreWatches = create<WatchesState>()(set => ({
     set(state =>
       state.watches[id] === isWatching
         ? { watches: without(state.watches, id) }
-        : {},
+        : state,
     ),
 }))

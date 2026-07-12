@@ -25,6 +25,6 @@ export const createReactionsStore = () =>
       set(state =>
         state.reactions[id] === reaction
           ? { reactions: without(state.reactions, id) }
-          : {},
+          : state,
       ),
   }))
