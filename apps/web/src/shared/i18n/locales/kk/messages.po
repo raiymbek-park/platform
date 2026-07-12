@@ -169,7 +169,7 @@ msgstr "Келесі"
 msgid "Даром"
 msgstr "Тегін"
 
-#: src/features/comments/ui/comment-message.tsx:69
+#: src/features/comments/ui/comment-message.tsx:70
 msgid "Действия с сообщением"
 msgstr "Хабарламамен әрекеттер"
 
@@ -363,7 +363,7 @@ msgstr "Өзгерістер сақталды."
 msgid "Изменения сохранены. Файлов не загрузилось: {count}"
 msgstr "Өзгерістер сақталды. Жүктелмеген файлдар: {count}"
 
-#: src/features/comments/ui/comment-message.tsx:72
+#: src/features/comments/ui/comment-message.tsx:73
 msgid "изменено"
 msgstr "өзгертілді"
 
@@ -403,7 +403,7 @@ msgstr "Пәтер таңдалған блоктың ауқымынан тыс"
 msgid "Код подтверждения"
 msgstr "Растау коды"
 
-#: src/features/comments/ui/comments-screen.tsx:72
+#: src/features/comments/ui/comments-screen.tsx:70
 msgid "Комментарии"
 msgstr "Пікірлер"
 
@@ -460,7 +460,7 @@ msgstr "Тұрғындар қарауында"
 msgid "Наберите текст"
 msgstr "Мәтін теріңіз"
 
-#: src/features/comments/ui/comments-screen.tsx:71
+#: src/features/comments/ui/comments-screen.tsx:69
 #: src/features/onboarding/ui/otp-actions.tsx:32
 #: src/features/onboarding/ui/registration-form.tsx:196
 #: src/shared/form/form-dock.tsx:31
@@ -533,7 +533,7 @@ msgstr "Кодты жіберу мүмкін болмады. Қайталап к
 msgid "Не удалось отправить сообщение. Попробуйте ещё раз."
 msgstr "Хабарламаны жіберу мүмкін болмады. Қайталап көріңіз."
 
-#: src/features/comments/ui/comment-message.tsx:42
+#: src/features/comments/ui/comment-message.tsx:43
 msgid "Не удалось перевести сообщение. Попробуйте ещё раз."
 msgstr "Хабарламаны аудару мүмкін болмады. Қайталап көріңіз."
 
@@ -572,7 +572,7 @@ msgstr "Өтінімді жою мүмкін болмады. Қайталап к
 msgid "Не удалось удалить объявление. Попробуйте ещё раз."
 msgstr "Хабарландыруды жою мүмкін болмады. Қайталап көріңіз."
 
-#: src/features/comments/ui/comments-screen.tsx:58
+#: src/features/comments/ui/comments-screen.tsx:59
 msgid "Не удалось удалить сообщение. Попробуйте ещё раз."
 msgstr "Хабарламаны жою мүмкін болмады. Қайталап көріңіз."
 
@@ -770,11 +770,11 @@ msgstr "Іздеуді тазалау"
 #~ msgid "Переведено с русского"
 #~ msgstr "Орыс тілінен аударылды"
 
-#: src/features/comments/ui/comment-message.tsx:60
+#: src/features/comments/ui/comment-message.tsx:61
 msgid "Перевести"
 msgstr "Аудару"
 
-#: src/features/comments/ui/comment-message.tsx:58
+#: src/features/comments/ui/comment-message.tsx:59
 msgid "Переводим…"
 msgstr "Аударылуда…"
 
@@ -849,15 +849,15 @@ msgstr "Әзірге пікірлер жоқ"
 msgid "Пока нет ни одного объявления."
 msgstr "Әзірге бірде-бір хабарландыру жоқ."
 
-#: src/features/comments/ui/comment-message.tsx:59
+#: src/features/comments/ui/comment-message.tsx:60
 msgid "Показать оригинал"
 msgstr "Түпнұсқаны көрсету"
 
-#: src/shared/i18n/translation-note.tsx:18
+#: src/shared/i18n/translation-note.tsx:19
 msgid "Показать оригинальный текст"
 msgstr "Түпнұсқа мәтінді көрсету"
 
-#: src/shared/i18n/translation-note.tsx:18
+#: src/shared/i18n/translation-note.tsx:19
 msgid "Показать перевод"
 msgstr "Аударманы көрсету"
 
@@ -1016,7 +1016,7 @@ msgstr "Хабарландыру жасау"
 msgid "Сообщение отправлено. Файлов не загрузилось: {failedCount}"
 msgstr "Хабарлама жіберілді. Жүктелмеген файлдар: {failedCount}"
 
-#: src/features/comments/ui/comments-screen.tsx:63
+#: src/features/comments/ui/comments-screen.tsx:62
 msgid "Сообщение удалено."
 msgstr "Хабарлама жойылды."
 

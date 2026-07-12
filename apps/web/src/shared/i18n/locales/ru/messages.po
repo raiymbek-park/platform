@@ -169,7 +169,7 @@ msgstr "Далее"
 msgid "Даром"
 msgstr "Даром"
 
-#: src/features/comments/ui/comment-message.tsx:69
+#: src/features/comments/ui/comment-message.tsx:70
 msgid "Действия с сообщением"
 msgstr "Действия с сообщением"
 
@@ -363,7 +363,7 @@ msgstr "Изменения сохранены."
 msgid "Изменения сохранены. Файлов не загрузилось: {count}"
 msgstr "Изменения сохранены. Файлов не загрузилось: {count}"
 
-#: src/features/comments/ui/comment-message.tsx:72
+#: src/features/comments/ui/comment-message.tsx:73
 msgid "изменено"
 msgstr "изменено"
 
@@ -403,7 +403,7 @@ msgstr "Квартира вне диапазона выбранного блок
 msgid "Код подтверждения"
 msgstr "Код подтверждения"
 
-#: src/features/comments/ui/comments-screen.tsx:72
+#: src/features/comments/ui/comments-screen.tsx:70
 msgid "Комментарии"
 msgstr "Комментарии"
 
@@ -460,7 +460,7 @@ msgstr "На рассмотрении жильцов"
 msgid "Наберите текст"
 msgstr "Наберите текст"
 
-#: src/features/comments/ui/comments-screen.tsx:71
+#: src/features/comments/ui/comments-screen.tsx:69
 #: src/features/onboarding/ui/otp-actions.tsx:32
 #: src/features/onboarding/ui/registration-form.tsx:196
 #: src/shared/form/form-dock.tsx:31
@@ -533,7 +533,7 @@ msgstr "Не удалось отправить код. Попробуйте сн
 msgid "Не удалось отправить сообщение. Попробуйте ещё раз."
 msgstr "Не удалось отправить сообщение. Попробуйте ещё раз."
 
-#: src/features/comments/ui/comment-message.tsx:42
+#: src/features/comments/ui/comment-message.tsx:43
 msgid "Не удалось перевести сообщение. Попробуйте ещё раз."
 msgstr "Не удалось перевести сообщение. Попробуйте ещё раз."
 
@@ -572,7 +572,7 @@ msgstr "Не удалось удалить заявку. Попробуйте е
 msgid "Не удалось удалить объявление. Попробуйте ещё раз."
 msgstr "Не удалось удалить объявление. Попробуйте ещё раз."
 
-#: src/features/comments/ui/comments-screen.tsx:58
+#: src/features/comments/ui/comments-screen.tsx:59
 msgid "Не удалось удалить сообщение. Попробуйте ещё раз."
 msgstr "Не удалось удалить сообщение. Попробуйте ещё раз."
 
@@ -770,11 +770,11 @@ msgstr "Очистить поиск"
 #~ msgid "Переведено с русского"
 #~ msgstr "Переведено с русского"
 
-#: src/features/comments/ui/comment-message.tsx:60
+#: src/features/comments/ui/comment-message.tsx:61
 msgid "Перевести"
 msgstr "Перевести"
 
-#: src/features/comments/ui/comment-message.tsx:58
+#: src/features/comments/ui/comment-message.tsx:59
 msgid "Переводим…"
 msgstr "Переводим…"
 
@@ -849,15 +849,15 @@ msgstr "Пока нет комментариев"
 msgid "Пока нет ни одного объявления."
 msgstr "Пока нет ни одного объявления."
 
-#: src/features/comments/ui/comment-message.tsx:59
+#: src/features/comments/ui/comment-message.tsx:60
 msgid "Показать оригинал"
 msgstr "Показать оригинал"
 
-#: src/shared/i18n/translation-note.tsx:18
+#: src/shared/i18n/translation-note.tsx:19
 msgid "Показать оригинальный текст"
 msgstr "Показать оригинальный текст"
 
-#: src/shared/i18n/translation-note.tsx:18
+#: src/shared/i18n/translation-note.tsx:19
 msgid "Показать перевод"
 msgstr "Показать перевод"
 
@@ -1016,7 +1016,7 @@ msgstr "Создать объявление"
 msgid "Сообщение отправлено. Файлов не загрузилось: {failedCount}"
 msgstr "Сообщение отправлено. Файлов не загрузилось: {failedCount}"
 
-#: src/features/comments/ui/comments-screen.tsx:63
+#: src/features/comments/ui/comments-screen.tsx:62
 msgid "Сообщение удалено."
 msgstr "Сообщение удалено."
 
