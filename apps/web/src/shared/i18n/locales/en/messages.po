@@ -41,7 +41,7 @@ msgstr "Block"
 #. placeholder {1}: issue.apartment
 #. placeholder {1}: post.apartment
 #: src/pages/home/ui/building-hero.tsx:15
-#: src/pages/issues/ui/issue-card-item.tsx:97
+#: src/pages/issues/ui/issue-card-item.tsx:102
 #: src/pages/posts/ui/post-card-item.tsx:92
 msgid "Блок {0} · Квартира {1}"
 msgstr "Block {0} · Apartment {1}"
@@ -54,6 +54,7 @@ msgstr "Block {block}"
 msgid "Будьте первым, кто оставит комментарий."
 msgstr "Be the first to leave a comment."
 
+#: src/pages/home/model/use-events-data.ts:29
 #: src/pages/issue-status/model/use-status-options.ts:22
 #: src/pages/issues/model/use-issue-badges.ts:46
 #: src/pages/issues/model/use-issue-badges.ts:56
@@ -112,7 +113,7 @@ msgid "Вопросы по комплексу"
 msgstr "Questions about the complex"
 
 #: src/pages/issues/model/use-issue-badges.ts:44
-#: src/pages/posts/model/use-post-badges.ts:53
+#: src/pages/posts/model/use-post-badges.ts:32
 msgid "Все"
 msgstr "All"
 
@@ -140,6 +141,7 @@ msgstr "Select a role"
 msgid "Выберите язык"
 msgstr "Select a language"
 
+#: src/pages/home/model/use-events-data.ts:33
 #: src/pages/issue-status/model/use-status-options.ts:34
 #: src/pages/issues/model/use-issue-badges.ts:50
 #: src/pages/issues/model/use-issue-badges.ts:60
@@ -155,7 +157,7 @@ msgid "Городские службы"
 msgstr "City services"
 
 #: src/pages/post-form/model/use-post-categories.ts:68
-#: src/pages/posts/model/use-post-badges.ts:68
+#: src/pages/posts/model/use-post-badges.ts:47
 msgid "Городское управление"
 msgstr "City administration"
 
@@ -165,11 +167,11 @@ msgid "Далее"
 msgstr "Next"
 
 #: src/pages/post-form/model/use-post-categories.ts:59
-#: src/pages/posts/model/use-post-badges.ts:59
+#: src/pages/posts/model/use-post-badges.ts:38
 msgid "Даром"
 msgstr "Free"
 
-#: src/features/comments/ui/comment-message.tsx:70
+#: src/features/comments/ui/comment-message.tsx:31
 msgid "Действия с сообщением"
 msgstr "Message actions"
 
@@ -232,7 +234,7 @@ msgid "Жалоба"
 msgstr "Complaint"
 
 #: src/pages/post-form/model/use-post-categories.ts:72
-#: src/pages/posts/model/use-post-badges.ts:69
+#: src/pages/posts/model/use-post-badges.ts:48
 msgid "ЖК Raiymbek Park"
 msgstr "Raiymbek Park complex"
 
@@ -244,6 +246,7 @@ msgstr "All was quiet while you were away — no news."
 msgid "За время вашего отсутствия появились изменения:"
 msgstr "Changes appeared while you were away:"
 
+#: src/pages/home/model/use-events-data.ts:31
 #: src/pages/issue-status/model/use-status-options.ts:29
 #: src/pages/issues/model/use-issue-badges.ts:48
 #: src/pages/issues/model/use-issue-badges.ts:58
@@ -278,6 +281,7 @@ msgstr "Replacement"
 msgid "Замена оборудования"
 msgstr "Equipment replacement"
 
+#: src/pages/home/model/use-events-data.ts:30
 #: src/pages/issue-status/model/use-status-options.ts:26
 #: src/pages/issues/model/use-issue-badges.ts:47
 #: src/pages/issues/model/use-issue-badges.ts:57
@@ -299,7 +303,7 @@ msgstr "Resend code in {0}"
 
 #. placeholder {0}: issue.number
 #. placeholder {1}: cardStatusLabel(status)
-#: src/pages/issues/ui/issue-card-item.tsx:62
+#: src/pages/issues/ui/issue-card-item.tsx:67
 msgid "Заявка №{0} · {1}"
 msgstr "Issue №{0} · {1}"
 
@@ -312,6 +316,12 @@ msgstr "Issue #{0} · {currentLabel}"
 #: src/pages/issue-status/ui/issue-summary.tsx:41
 msgid "Заявка №{0} · {label}"
 msgstr "Issue #{0} · {label}"
+
+#. placeholder {0}: event.number
+#. placeholder {1}: statusLabel[event.status]
+#: src/pages/home/model/use-events-data.ts:50
+msgid "Заявка №{0}: {1}"
+msgstr "Issue #{0}: {1}"
 
 #: src/pages/issue-form/model/use-create-issue.ts:29
 #: src/pages/issue-form/model/use-update-issue.ts:32
@@ -363,7 +373,7 @@ msgstr "Changes saved."
 msgid "Изменения сохранены. Файлов не загрузилось: {count}"
 msgstr "Changes saved. Files not uploaded: {count}"
 
-#: src/features/comments/ui/comment-message.tsx:73
+#: src/features/comments/ui/comment-message.tsx:34
 msgid "изменено"
 msgstr "edited"
 
@@ -409,7 +419,7 @@ msgstr "Comments"
 
 #. placeholder {0}: issue.commentCount
 #. placeholder {0}: post.commentCount
-#: src/pages/issues/ui/issue-card-item.tsx:162
+#: src/pages/issues/ui/issue-card-item.tsx:181
 #: src/pages/posts/ui/post-card-item.tsx:152
 msgid "Комментарии: {0}"
 msgstr "Comments: {0}"
@@ -452,6 +462,7 @@ msgstr "Go home"
 msgid "На рассмотрение жильцам"
 msgstr "Under resident review"
 
+#: src/pages/home/model/use-events-data.ts:32
 #: src/pages/issues/model/use-issue-badges.ts:59
 msgid "На рассмотрении жильцов"
 msgstr "Under resident review"
@@ -480,20 +491,24 @@ msgstr "Rule violation"
 msgid "Настройки"
 msgstr "Settings"
 
-#: src/pages/issues/ui/issue-list.tsx:84
+#: src/pages/issues/ui/issue-list.tsx:86
 msgid "Не найдено ни одной заявки."
 msgstr "No issues found."
 
-#: src/pages/issues/ui/issue-card-item.tsx:154
+#: src/pages/issues/ui/issue-card-item.tsx:173
 #: src/pages/posts/ui/post-card-item.tsx:144
 msgid "Не нравится"
 msgstr "Dislike"
+
+#: src/pages/issues/ui/issue-card-item.tsx:152
+msgid "Не следить за заявкой"
+msgstr "Unfollow the issue"
 
 #: src/features/onboarding/ui/otp-verification.tsx:38
 msgid "Не удалось завершить регистрацию. Повторите попытку."
 msgstr "Couldn't complete registration. Please try again."
 
-#: src/pages/issues/ui/issue-list.tsx:54
+#: src/pages/issues/ui/issue-list.tsx:56
 msgid "Не удалось загрузить заявки"
 msgstr "Couldn’t load issues"
 
@@ -534,8 +549,8 @@ msgid "Не удалось отправить сообщение. Попробу
 msgstr "Failed to send the message. Please try again."
 
 #: src/features/comments/ui/comment-message.tsx:43
-msgid "Не удалось перевести сообщение. Попробуйте ещё раз."
-msgstr "Couldn't translate the message. Please try again."
+#~ msgid "Не удалось перевести сообщение. Попробуйте ещё раз."
+#~ msgstr "Couldn't translate the message. Please try again."
 
 #: src/features/onboarding/ui/otp-verification.tsx:37
 msgid "Не удалось проверить код. Проверьте соединение."
@@ -580,7 +595,7 @@ msgstr "Failed to delete the message. Please try again."
 msgid "Неверный код. Попробуйте ещё раз."
 msgstr "Invalid code. Please try again."
 
-#: src/pages/issues/ui/issue-list.tsx:85
+#: src/pages/issues/ui/issue-list.tsx:87
 #: src/pages/posts/ui/post-list.tsx:85
 msgid "Нет данных"
 msgstr "No data"
@@ -588,6 +603,10 @@ msgstr "No data"
 #: src/features/onboarding/lib/auth-error.ts:23
 msgid "Нет связи с сервером. Проверьте интернет и попробуйте снова."
 msgstr "No connection to the server. Check your internet and try again."
+
+#: src/pages/home/model/use-events-data.ts:28
+msgid "Новая"
+msgstr "New"
 
 #: src/pages/issue-form/ui/create-issue-form.tsx:30
 #: src/pages/issues/model/use-issue-badges.ts:55
@@ -600,9 +619,19 @@ msgstr "New issue"
 msgid "Новое объявление"
 msgstr "New post"
 
+#. placeholder {0}: event.title
+#: src/pages/home/model/use-events-data.ts:43
+#~ msgid "Новое объявление: {0}"
+#~ msgstr "New announcement: {0}"
+
 #: src/pages/post-form/ui/create-post-form.tsx:54
 msgid "Новое уведомление"
 msgstr "New notice"
+
+#. placeholder {0}: event.title
+#: src/pages/home/model/use-events-data.ts:51
+#~ msgid "Новое частное объявление: {0}"
+#~ msgstr "New private ad: {0}"
 
 #: src/pages/home/ui/services-section.tsx:40
 msgid "Новости, уведомления и частные предложения"
@@ -615,6 +644,11 @@ msgstr "News feed and private ads from residents."
 #: src/pages/issues/model/use-issue-badges.ts:45
 msgid "Новые"
 msgstr "New"
+
+#. placeholder {0}: event.number
+#: src/pages/home/model/use-events-data.ts:57
+msgid "Новые сообщения по заявке №{0}"
+msgstr "New messages on issue #{0}"
 
 #: src/pages/issue-status/model/use-status-options.ts:20
 msgid "Новый"
@@ -659,7 +693,7 @@ msgstr "Car plates"
 msgid "Номера машин не должны повторяться"
 msgstr "Car plates must not repeat"
 
-#: src/pages/issues/ui/issue-card-item.tsx:146
+#: src/pages/issues/ui/issue-card-item.tsx:165
 #: src/pages/posts/ui/post-card-item.tsx:136
 msgid "Нравится"
 msgstr "Like"
@@ -721,6 +755,7 @@ msgstr "Publish a notice for the residents of our complex."
 msgid "Отдам бесплатно"
 msgstr "Giving away for free"
 
+#: src/pages/home/model/use-events-data.ts:34
 #: src/pages/issue-status/model/use-status-options.ts:35
 #: src/pages/issues/model/use-issue-badges.ts:51
 #: src/pages/issues/model/use-issue-badges.ts:61
@@ -771,12 +806,12 @@ msgstr "Clear search"
 #~ msgstr "Translated from Russian"
 
 #: src/features/comments/ui/comment-message.tsx:61
-msgid "Перевести"
-msgstr "Translate"
+#~ msgid "Перевести"
+#~ msgstr "Translate"
 
 #: src/features/comments/ui/comment-message.tsx:59
-msgid "Переводим…"
-msgstr "Translating…"
+#~ msgid "Переводим…"
+#~ msgstr "Translating…"
 
 #: src/pages/issue-status/model/use-tag-options.ts:15
 #: src/pages/issues/model/use-issue-badges.ts:65
@@ -785,7 +820,7 @@ msgstr "Under warranty"
 
 #: src/features/comments/ui/comment-thread.tsx:70
 #: src/features/onboarding/ui/account-locked.tsx:61
-#: src/pages/issues/ui/issue-list.tsx:71
+#: src/pages/issues/ui/issue-list.tsx:73
 #: src/pages/post-form/ui/query-screens.tsx:27
 #: src/pages/posts/ui/post-list.tsx:71
 #: src/shared/issue/issue-load-error.tsx:21
@@ -808,7 +843,7 @@ msgstr "Submit a request to the management company"
 msgid "Поддерживается разметка Markdown."
 msgstr "Markdown formatting is supported."
 
-#: src/pages/issues/ui/issue-card-item.tsx:139
+#: src/pages/issues/ui/issue-card-item.tsx:144
 #: src/pages/posts/ui/post-card-item.tsx:128
 msgid "Подробнее"
 msgstr "Details"
@@ -850,13 +885,15 @@ msgid "Пока нет ни одного объявления."
 msgstr "No posts yet."
 
 #: src/features/comments/ui/comment-message.tsx:60
-msgid "Показать оригинал"
-msgstr "Show original"
+#~ msgid "Показать оригинал"
+#~ msgstr "Show original"
 
+#: src/features/comments/ui/comment-message.tsx:24
 #: src/shared/i18n/translation-note.tsx:19
 msgid "Показать оригинальный текст"
 msgstr "Show original text"
 
+#: src/features/comments/ui/comment-message.tsx:23
 #: src/shared/i18n/translation-note.tsx:19
 msgid "Показать перевод"
 msgstr "Show translation"
@@ -886,7 +923,7 @@ msgid "Продажа вещей"
 msgstr "Selling items"
 
 #: src/pages/post-form/model/use-post-categories.ts:62
-#: src/pages/posts/model/use-post-badges.ts:62
+#: src/pages/posts/model/use-post-badges.ts:41
 msgid "Продам"
 msgstr "For sale"
 
@@ -898,7 +935,7 @@ msgstr "Profile saved."
 #: src/pages/issues/model/use-issue-badges.ts:75
 #: src/pages/post-form/model/use-post-categories.ts:60
 #: src/pages/post-form/model/use-post-categories.ts:79
-#: src/pages/posts/model/use-post-badges.ts:60
+#: src/pages/posts/model/use-post-badges.ts:39
 msgid "Прочее"
 msgstr "Other"
 
@@ -915,7 +952,7 @@ msgid "Расскажите подробнее о вашем объявлени�
 msgstr "Tell us more about your post…"
 
 #: src/features/comments/ui/comment-actions-sheet.tsx:31
-#: src/pages/issues/ui/issue-card-item.tsx:109
+#: src/pages/issues/ui/issue-card-item.tsx:114
 #: src/pages/posts/ui/post-card-item.tsx:105
 msgid "Редактировать"
 msgstr "Edit"
@@ -945,13 +982,13 @@ msgstr "Resolution is on hold"
 msgid "Роль"
 msgstr "Role"
 
-#: src/pages/issues/ui/issue-card-item.tsx:135
+#: src/pages/issues/ui/issue-card-item.tsx:140
 #: src/pages/posts/ui/post-card-item.tsx:123
 msgid "Свернуть"
 msgstr "Collapse"
 
 #: src/pages/post-form/model/use-post-categories.ts:61
-#: src/pages/posts/model/use-post-badges.ts:61
+#: src/pages/posts/model/use-post-badges.ts:40
 msgid "Сдам"
 msgstr "For rent"
 
@@ -979,6 +1016,10 @@ msgstr "Services"
 msgid "Скрыть"
 msgstr "Hide"
 
+#: src/pages/issues/ui/issue-card-item.tsx:153
+msgid "Следить за заявкой"
+msgstr "Follow the issue"
+
 #: src/features/onboarding/ui/account-locked.tsx:48
 msgid "Слишком много попыток. Подождите немного и попробуйте снова."
 msgstr "Too many attempts. Wait a little and try again."
@@ -987,7 +1028,7 @@ msgstr "Too many attempts. Wait a little and try again."
 msgid "Смена статуса"
 msgstr "Change status"
 
-#: src/pages/issues/ui/issue-card-item.tsx:117
+#: src/pages/issues/ui/issue-card-item.tsx:122
 msgid "Сменить статус"
 msgstr "Change status"
 
@@ -1068,7 +1109,7 @@ msgid "Требует срочного решения"
 msgstr "Needs urgent action"
 
 #: src/pages/post-form/model/use-post-categories.ts:64
-#: src/pages/posts/model/use-post-badges.ts:64
+#: src/pages/posts/model/use-post-badges.ts:43
 msgid "Требуется"
 msgstr "Wanted"
 
@@ -1089,13 +1130,13 @@ msgstr "Have an offer or looking for something? Post it here"
 msgid "Уведомление"
 msgstr "Notice"
 
-#: src/pages/posts/model/use-post-badges.ts:54
+#: src/pages/posts/model/use-post-badges.ts:33
 msgid "Уведомления"
 msgstr "Notices"
 
 #: src/features/comments/ui/comment-delete-confirm.tsx:22
 #: src/features/comments/ui/comment-input-bar.tsx:112
-#: src/pages/issues/ui/issue-card-item.tsx:125
+#: src/pages/issues/ui/issue-card-item.tsx:130
 #: src/pages/issues/ui/issue-delete-confirm.tsx:22
 #: src/pages/posts/ui/post-card-item.tsx:113
 #: src/pages/posts/ui/post-delete-confirm.tsx:22
@@ -1129,7 +1170,7 @@ msgstr "Remove photo"
 
 #: src/pages/home/model/contact-roles.ts:28
 #: src/pages/post-form/model/use-post-categories.ts:76
-#: src/pages/posts/model/use-post-badges.ts:70
+#: src/pages/posts/model/use-post-badges.ts:49
 msgid "Управляющая компания"
 msgstr "Management company"
 
@@ -1138,7 +1179,7 @@ msgid "Управляющая компания решает заявку"
 msgstr "The management company is handling the issue"
 
 #: src/pages/post-form/model/use-post-categories.ts:63
-#: src/pages/posts/model/use-post-badges.ts:63
+#: src/pages/posts/model/use-post-badges.ts:42
 msgid "Услуги"
 msgstr "Services"
 
@@ -1171,7 +1212,7 @@ msgstr "I want to complain"
 msgid "Частное объявление"
 msgstr "Private ad"
 
-#: src/pages/posts/model/use-post-badges.ts:55
+#: src/pages/posts/model/use-post-badges.ts:34
 msgid "Частные объявления"
 msgstr "Private ads"
 
