@@ -43,11 +43,13 @@
   Then:  the external Trello board opens in a new browser tab
          the Заявки tab is never marked active
 
-## Scenario 8: Feed reflects the visit before it is recorded
+## Scenario 8: Feed reflects the visit before it is recorded, and is stable across in-app navigation
   Given: events exist that were created after the resident's last recorded visit
   When:  the resident opens home and the feed loads
-  Then:  those events are listed in the feed for this session
-         re-navigating back to home within the same app session keeps the same feed (the visit is not re-recorded mid-session)
+  Then:  those events are listed in the feed for this page load
+         the visit is recorded once for this page load, only after the feed has loaded
+         navigating to another section and back to home keeps the same feed — it is served from cache,
+         not re-fetched, and the events do not disappear without a full page reload
 
 ## Scenario 9: Language switcher is inert
   Given: the header is shown

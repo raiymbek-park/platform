@@ -69,7 +69,7 @@ const categories = [...announcementCategories, ...offerCategories]
 const toKind = (value: unknown): PostKind =>
   postKinds.find(kind => kind === value) ?? 'offer'
 
-const toCategory = (value: unknown): PostCategory =>
+export const toCategory = (value: unknown): PostCategory =>
   categories.find(category => category === value) ?? 'other'
 
 const toAuthor = (data: DocumentData, canSeePhone: boolean): PostAuthor => ({

@@ -1,10 +1,14 @@
-import { getLastVisit } from '../resident/resident-store'
+import { getLastVisit, getRole } from '../resident/resident-store'
 import { publicProcedure, router } from '../trpc'
 import { getEvents } from './events-store'
 
 export const eventsRouter = router({
   list: publicProcedure.query(async ({ ctx }) => {
-    const lastVisit = ctx.uid ? await getLastVisit(ctx.uid) : null
-    return getEvents(lastVisit)
+    if (!ctx.uid) return getEvents(null, null, null)
+    const [role, lastVisit] = await Promise.all([
+      getRole(ctx.uid),
+      getLastVisit(ctx.uid),
+    ])
+    return getEvents(ctx.uid, role, lastVisit)
   }),
 })

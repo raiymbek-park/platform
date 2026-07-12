@@ -3,19 +3,20 @@ import { useEffect } from 'react'
 
 import { useTRPC } from '@/shared/api'
 
-const VISIT_MARKED_KEY = 'raiymbek:visit-marked'
+// Module-scoped so the visit is recorded once per page load: the flag survives
+// SPA section navigation (module stays loaded) yet resets on a full reload (the
+// module re-executes), which is exactly when the feed should be re-read against
+// the freshly advanced lastVisit. Set only after the feed has loaded, so the
+// feed is read against the previous lastVisit before this visit overwrites it.
+let visitMarked = false
 
-// Records the visit once per browser session, and only after the changes feed has
-// loaded — so the feed is read against the previous lastVisit before this visit
-// overwrites it. The synchronous sessionStorage guard also skips SPA re-navigation
-// and React StrictMode's double-invoked effect.
 export const useMarkVisit = (ready: boolean) => {
   const trpc = useTRPC()
   const { mutate } = useMutation(trpc.resident.markVisit.mutationOptions())
 
   useEffect(() => {
-    if (!ready || sessionStorage.getItem(VISIT_MARKED_KEY)) return
-    sessionStorage.setItem(VISIT_MARKED_KEY, '1')
+    if (!ready || visitMarked) return
+    visitMarked = true
     mutate()
   }, [ready, mutate])
 }

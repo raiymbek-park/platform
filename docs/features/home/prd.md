@@ -14,8 +14,9 @@ Requirements:
 
 - A scrollable home screen composed from the design system and wired to live data via real client
   queries.
-- A "what's new since your last visit" feed: events created after the resident's recorded last visit,
-  newest first; a friendly greeting when nothing is new.
+- A "what's new since your last visit" feed derived from real activity — new announcements, new
+  private offers, and status changes or new comments on issues the resident follows — dated after the
+  resident's recorded last visit, newest first; a friendly greeting when nothing is new.
 - A persistent bottom-nav shell linking the four top-level destinations, with the active internal tab
   reflecting the current route.
 - Per-block loading and error handling so a single failing query never blanks the screen.
@@ -36,13 +37,30 @@ derived from their session.
     **visible but inert** (Russian only); tapping a chip does nothing.
   - **Building Hero** — full-bleed building photo (`images/building.png`) with a **Location Badge**
     showing the resident's block and apartment (e.g. "Блок 1 · Квартира 142"), from their profile.
-  - **Welcome Card** — a "what's new since your last visit" feed. When new events exist, the card
-    greets the resident ("За время вашего отсутствия появились изменения:") and lists the events as
-    change rows (icon + text), newest first, up to **10**. The feed contains events created **after**
-    the resident's recorded last visit; a resident with no recorded last visit sees the most recent
-    events. When there are no new events, the card shows a fixed greeting by first name
+  - **Welcome Card** — a "what's new since your last visit" feed, **derived from real activity** in
+    the complex rather than a hand-authored list. When new events exist, the card greets the resident
+    ("За время вашего отсутствия появились изменения:") and lists the events as change rows
+    (icon + text), newest first, up to **10**. The feed contains events dated **after** the resident's
+    recorded last visit; a resident with no recorded last visit sees the most recent activity. Each
+    event is one of three kinds:
+    - **New announcement** — an announcement published since the last visit; shown to every resident
+      except its own author.
+    - **New private offer** — a private offer published since the last visit; shown to every resident
+      except its own author.
+    - **Issue activity** — a status change, or a **new comment from someone else**, on an issue the
+      resident follows. Authoring an issue or commenting on one subscribes the resident to it, and a
+      resident may also follow an issue by hand; activity on issues the resident does not follow never
+      appears. **Managers and Administration** are subscribed to every issue by default, so they receive
+      status changes and new comments across **all** issues, not only followed ones.
+    The feed never notifies a resident about **their own actions** — their own posts, their own
+    comments, and the act of creating their own issue are all excluded; only later activity by others
+    (others' posts, others' comments, and staff status changes) surfaces.
+    The API returns each event as a **semantic type with its references** (kind, ids, the issue's
+    number and new status, the announcement/offer category and title) — never a pre-rendered icon,
+    colour, or sentence. The screen maps each type to its icon, tone, and Russian text in client code.
+    When there are no new events, the card shows a fixed greeting by first name
     ("Привет, {name}! 👋", or "Привет! 👋" when the name is unavailable) plus a "no news" message
-    chosen at random from a set of friendly variants. Events come from the API.
+    chosen at random from a set of friendly variants.
   - **Services Section** — titled section ("Сервисы") of **five** fixed service items defined in the
     web app (a static catalog, not from the API), each with icon, title, and description:
     **Объявления** and **Создать объявление** (both open the in-app `/announcements` screen, same
@@ -51,16 +69,21 @@ derived from their session.
   - **Contacts Section** — "Аварийные контакты" card listing emergency / service contacts (name, role,
     icon, phone number), divider-separated, from the API. **Tapping a contact opens the phone dialer**
     with that number (native `tel:` call on mobile).
-- **Visit recording** — the resident's last-visit timestamp is recorded once per app session, and only
+- **Visit recording** — the resident's last-visit timestamp is recorded once per **page load**, only
   **after the feed has loaded** (so the feed is read against the previous last visit before it is
-  overwritten). On the next app session, events already seen drop off the feed.
+  overwritten). The feed then stays stable while the resident navigates between in-app sections and
+  returns to Home — it is served from cache, not re-fetched. Only a **full page reload** re-reads the
+  feed against the now-advanced last visit, dropping the events already seen.
 - **Bottom navigation** — a persistent `BottomNav` component with **4 tabs**: **Главная** (house, the
   Home screen at `/home`), **Объявления** (megaphone, `/announcements`), **Заявки** (clipboard-list,
   opens an external Trello board in a new browser tab), and **Настройки** (settings, `/settings`). The
   active internal tab is highlighted; the external **Заявки** tab is never marked active. There is no
   internal requests screen.
-- **Live data layer** — tRPC procedures on `apps/api` serve profile, events feed, and contacts from
-  Firestore. The web side queries them via TanStack Query with caching, loading, and error handling.
+- **Live data layer** — tRPC procedures on `apps/api` serve the profile, the derived events feed, and
+  contacts. The events procedure computes the feed on read from the `posts` and `issues` collections
+  and the resident's issue follows, scoped by their last visit — there is no stored events collection
+  and no UI text or icon is persisted. The web side queries them via TanStack Query with caching,
+  loading, and error handling.
 - **Data states** — each API-backed block renders its loading and error state independently; a failure
   in one block does not blank the screen.
 
@@ -96,8 +119,9 @@ session the resident never reaches home — the guard redirects to welcome.
 
 - A resident with a valid session reaches a fully rendered home screen — header, hero with their
   block/apartment, the "what's new" feed (or a "no news" greeting), services, and contacts.
-- The feed lists only events created after the resident's recorded last visit, newest first; after the
-  visit is recorded, those events no longer appear on the next session.
+- The feed lists only activity dated after the resident's recorded last visit, newest first — new
+  announcements and offers for every resident, and issue status changes or comments only for issues the
+  resident follows; after the visit is recorded, those events no longer appear on the next session.
 - The Объявления and Настройки tabs navigate to their screens and back to home with the nav intact and
   the correct internal tab marked active; the Заявки tab opens the external Trello board.
 - Tapping a service item opens its destination; tapping a contact invokes the device dialer with the
@@ -127,11 +151,17 @@ session the resident never reaches home — the guard redirects to welcome.
   token (`hasValidAccessToken`), silently rotates an expired access token against a valid refresh token
   (`hasValidRefreshToken` → `refreshSession`), and redirects to `/onboarding/welcome` when no refresh
   token can renew the session.
-- **tRPC API** (`apps/api`) — procedures for the resident `profile`, the `events` feed (`changes`), and
-  the `contacts` list, plus a `markVisit` mutation; types flow to web with no codegen.
-- **Firestore** — the `residents` collection (profile + `lastVisit` per uid), the `events` collection
-  (feed, queried by `createdAt`, newest first), and the `serviceContacts` collection (contacts, ordered
-  by their `order` field).
+- **tRPC API** (`apps/api`) — procedures for the resident `profile`, the derived `events` feed, and
+  the `contacts` list, plus a `markVisit` mutation; types flow to web with no codegen. The events
+  procedure returns a discriminated union of event types, computed on read.
+- **Firestore** — the `residents` collection (profile, `lastVisit` per uid, and each resident's issue
+  follows under `residents/{uid}/watches/{issueId}`), the `posts` collection (announcements and offers,
+  queried by `createdAt`), the `issues` collection (carrying `lastStatusAt` / `lastCommentAt` activity
+  timestamps), and the `serviceContacts` collection (contacts, ordered by their `order` field). The
+  events feed is derived from posts and issues on read; there is no stored `events` collection.
+- **Issue follows** (`issue-tracker`) — the per-resident issue-follow subscription and the issue
+  `lastStatusAt` / `lastCommentAt` timestamps are owned by the issue-tracker feature and consumed here
+  to scope and date the issue events in the feed.
 - **Design system** (`design/design-system.lib.pen` + `design/home-screen.pen`) — the composed
   components above.
 - **Image asset** — `images/building.png` for the hero (ships in the web app's assets).

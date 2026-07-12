@@ -1,5 +1,5 @@
 import { getDb } from '../firestore'
-import { toText } from '../shared/glyph-tone'
+import { toText } from '../store-helpers'
 
 export type ServiceContact = {
   id: string
