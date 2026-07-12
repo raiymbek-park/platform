@@ -161,7 +161,6 @@ export const PostCardItem = ({
         post.original && (
           <TranslationNote
             isShowingOriginal={isShowingOriginal}
-            lang={post.originalLang}
             onToggle={() => setShowingOriginal(showing => !showing)}
           />
         )

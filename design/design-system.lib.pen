@@ -2215,7 +2215,7 @@
             {
               "type": "frame",
               "id": "AddLink",
-              "name": "AddLink",
+              "name": "LinkButton",
               "reusable": true,
               "gap": 4,
               "padding": [
@@ -5021,6 +5021,20 @@
                       ]
                     },
                     {
+                      "id": "R82KCs",
+                      "type": "ref",
+                      "ref": "AddLink",
+                      "descendants": {
+                        "add-link-ic": {
+                          "library": "lucide",
+                          "icon": "languages"
+                        },
+                        "add-link-tx": {
+                          "content": "Показать оригинальный текст"
+                        }
+                      }
+                    },
+                    {
                       "type": "frame",
                       "id": "roce-footer",
                       "name": "extended-info",
@@ -7435,6 +7449,33 @@
               "textGrowth": "fixed-width",
               "width": "fill_container",
               "content": "Спасибо, всё прошло отлично!"
+            },
+            {
+              "id": "u84BYJ",
+              "type": "ref",
+              "ref": "TextBody",
+              "name": "changed",
+              "textGrowth": "fixed-width",
+              "width": "fill_container(400)",
+              "content": "исправлено",
+              "fill": "$text-muted",
+              "enabled": false
+            },
+            {
+              "id": "ECTGQ",
+              "type": "ref",
+              "ref": "AddLink",
+              "name": "translate",
+              "enabled": false,
+              "descendants": {
+                "add-link-ic": {
+                  "library": "lucide",
+                  "icon": "languages"
+                },
+                "add-link-tx": {
+                  "content": "Перевести"
+                }
+              }
             }
           ]
         },
@@ -7503,6 +7544,19 @@
               "name": "text",
               "fill": "$foreground",
               "content": "Рад был помочь"
+            },
+            {
+              "id": "mlBKA",
+              "type": "ref",
+              "ref": "TextBody",
+              "name": "changed",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "исправлено",
+              "fill": "$brand-text",
+              "enabled": true,
+              "x": 16,
+              "y": 53
             }
           ]
         },

@@ -32,7 +32,8 @@ export const CommentMessage = ({
 
   const lang = result?.lang ?? comment.lang
   const translation = result?.text ?? comment.translation
-  const isTranslatable = comment.text !== '' && lang !== i18n.locale
+  const isTranslatable =
+    !comment.isMine && comment.text !== '' && lang !== i18n.locale
 
   const requestTranslation = () =>
     translateComment({
@@ -67,6 +68,7 @@ export const CommentMessage = ({
   return (
     <MessageBubble
       actionsLabel={t`Действия с сообщением`}
+      authorAvatar={comment.author.avatarUrl ?? undefined}
       authorName={comment.author.name}
       editedLabel={t`изменено`}
       isEdited={comment.editedAt !== null}

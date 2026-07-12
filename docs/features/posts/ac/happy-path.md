@@ -99,7 +99,8 @@ Scenarios are grouped by the three task slices. Task 1 unblocks the others.
   Given: a member views a post (or an issue)
   When:  they tap the comment count
   Then:  the thread screen opens at `/posts/{postId}/comments` (or `/issues/{issueId}/comments`)
-         their own messages align right, others align left with avatar, name, and time
+         their own messages align right, others align left with the author's avatar (their photo,
+         or initials when they have none), name, and time
          messages with images show them
 
 ## Scenario 14: Write a comment
@@ -110,7 +111,7 @@ Scenarios are grouped by the three task slices. Task 1 unblocks the others.
 
 ## Scenario 15: Opening edit loads the message into the input bar
   Given: the author is on a thread with their own message
-  When:  they open the message actions and choose edit
+  When:  they tap the message to open its actions and choose edit
   Then:  the input bar enters edit mode, pre-filled with the message's current text
 
 ## Scenario 15a: Author saves an edited comment

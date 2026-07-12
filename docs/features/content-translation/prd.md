@@ -46,9 +46,9 @@ Supported locales are the three from the i18n feature: `ru`, `kk`, `en`.
   rather than the query key, a within-session change of the viewer's active locale (the profile
   language switcher) invalidates the cached content so posts and issues re-fetch and re-render in
   the newly chosen language rather than serving the previous locale's cached copy.
-- **Translation indicator** — post and issue detail screens show a "translated from
-  {language}" indicator with a show-original toggle. Feed and list cards show the translated
-  text without an indicator.
+- **Translation indicator** — post and issue detail screens show a single inline show-original
+  toggle ("Показать оригинальный текст" ↔ "Показать перевод"). It does not name the source
+  language. Feed and list cards show the translated text without an indicator.
 - **On-demand comment translation** — comments display their original text. A "Translate"
   action appears on a comment whose recorded source language differs from the viewer's locale;
   tapping it shows the translation and a show-original toggle. The result is cached on the
@@ -75,7 +75,7 @@ Supported locales are the three from the i18n feature: `ru`, `kk`, `en`.
 
 A resident using the app in Kazakh opens the announcements feed. Posts written in Russian
 appear with Kazakh titles and descriptions. Opening a post, they see the full text in Kazakh
-with a small "translated from Russian" indicator; tapping it reveals the stored original,
+with an inline "Показать оригинальный текст" toggle; tapping it reveals the stored original,
 tapping again returns to the translation. In an issue thread, a Russian comment shows a
 "Translate" action; the resident taps it and reads the comment in Kazakh, with the option to
 show the original. They search the feed with a Kazakh word — a Russian-authored post whose

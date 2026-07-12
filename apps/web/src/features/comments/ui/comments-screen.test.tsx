@@ -36,7 +36,7 @@ const makeFile = (
 }
 
 const seedComment = (overrides: Partial<Comment> = {}): Comment => ({
-  author: { apartment: 12, block: 1, name: 'Тимур Ким' },
+  author: { apartment: 12, avatarUrl: null, block: 1, name: 'Тимур Ким' },
   createdAt: 1_700_000_000_000,
   editedAt: null,
   id: 'comment-1',
@@ -115,7 +115,7 @@ const serve = (role: PermissionRole = 'resident') =>
     trpcMutation('comments.create', raw => {
       const input = commentCreateInputSchema.parse(raw)
       const created = seedComment({
-        author: { apartment: 42, block: 1, name: 'Алиса' },
+        author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
         createdAt: Date.now(),
         id: input.id,
         isMine: true,
@@ -163,7 +163,7 @@ test('happy-path 13: opening a post’s comment thread shows the post’s title,
       text: 'Отличное предложение',
     }),
     seedComment({
-      author: { apartment: 42, block: 1, name: 'Алиса' },
+      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
       id: 'c2',
       isMine: true,
       text: 'Спасибо!',

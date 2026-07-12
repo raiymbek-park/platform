@@ -30,6 +30,7 @@ import { translateText } from '../translation/translation-client'
 
 export type CommentAuthor = {
   apartment: number
+  avatarUrl: string | null
   block: number
   name: string
 }
@@ -60,11 +61,29 @@ const commentsCollection = (
 const cachedTranslation = (data: DocumentData, locale: Locale): string =>
   toText(data.translations?.[locale]?.text)
 
+const avatarUrlByAuthor = async (
+  authorIds: string[],
+): Promise<Map<string, string>> => {
+  const ids = [...new Set(authorIds.filter(id => id !== ''))]
+  if (ids.length === 0) return new Map()
+  const db = getDb()
+  const snaps = await db.getAll(
+    ...ids.map(id => db.collection('residents').doc(id)),
+  )
+  return new Map(
+    snaps.flatMap(snap => {
+      const url = snap.data()?.avatarUrl
+      return typeof url === 'string' ? [[snap.id, url] as const] : []
+    }),
+  )
+}
+
 const parseComment = (
   id: string,
   data: DocumentData,
   uid: string | null,
   locale: Locale,
+  avatarUrl: string | null,
 ): Comment => {
   const author =
     typeof data.author === 'object' && data.author !== null ? data.author : {}
@@ -73,6 +92,7 @@ const parseComment = (
   return {
     author: {
       apartment: toNumber(author.apartment),
+      avatarUrl,
       block: toNumber(author.block),
       name: toText(author.name),
     },
@@ -117,8 +137,17 @@ export const listComments = async ({
       ? ordered
       : ordered.startAfter(Timestamp.fromMillis(cursor))
   const snap = await paged.limit(COMMENT_PAGE_SIZE).get()
+  const avatars = await avatarUrlByAuthor(
+    snap.docs.map(doc => toText(doc.data().authorId)),
+  )
   const comments = snap.docs.map(doc =>
-    parseComment(doc.id, doc.data(), uid, locale),
+    parseComment(
+      doc.id,
+      doc.data(),
+      uid,
+      locale,
+      avatars.get(toText(doc.data().authorId)) ?? null,
+    ),
   )
   const last = comments.at(-1)
   const nextCursor =
@@ -132,7 +161,7 @@ export const createComment = async (
   input: CommentCreateInput,
 ): Promise<WriteOutcome> => {
   const resident = await getResident(uid)
-  const author: CommentAuthor = {
+  const author = {
     apartment: resident?.apartment ?? 0,
     block: resident?.block ?? 0,
     name: resident?.name ?? '',
@@ -225,7 +254,10 @@ export const translateComment = async (
     apiKey: toText(process.env.ANTHROPIC_API_KEY),
     sourceLocaleHint: lang,
     text,
-  }).catch(() => null)
+  }).catch((error: unknown) => {
+    console.error('[comments.translate] request failed', error)
+    return null
+  })
   if (!result) return 'failed'
   await ref.update({ lang: result.lang, translations: result.translations })
   return {

@@ -510,10 +510,12 @@ test('happy-path 4: the list shows the translated title, and the expanded detail
 
   await user.click(within(card).getByRole('button', { name: /Подробнее/ }))
 
-  expect(within(card).getByText('Переведено с русского')).toBeInTheDocument()
+  expect(
+    within(card).getByRole('button', { name: 'Показать оригинальный текст' }),
+  ).toBeInTheDocument()
 
   await user.click(
-    within(card).getByRole('button', { name: 'Показать оригинал' }),
+    within(card).getByRole('button', { name: 'Показать оригинальный текст' }),
   )
   expect(within(card).getByText('Не работает домофон')).toBeInTheDocument()
 

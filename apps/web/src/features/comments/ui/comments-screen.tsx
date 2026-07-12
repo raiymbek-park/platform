@@ -28,7 +28,7 @@ export const CommentsScreen = ({ parent, parentId }: CommentsScreenProps) => {
   const target = { parent, parentId }
   const access = useCommentAccess()
   const title = useParentTitle(target)
-  const { deleteComment, isPending: isDeleting } = useDeleteComment(target)
+  const { deleteComment } = useDeleteComment(target)
 
   const [editing, setEditing] = useState<Comment | null>(null)
   const [actionsFor, setActionsFor] = useState<Comment | null>(null)
@@ -50,18 +50,16 @@ export const CommentsScreen = ({ parent, parentId }: CommentsScreenProps) => {
 
   const confirmDelete = () => {
     if (!deleting) return
-    deleteComment(deleting.id, {
-      onFailure: () => {
-        setDeleting(null)
+    const { id } = deleting
+    setDeleting(null)
+    deleteComment(id, {
+      onFailure: () =>
         showToastMessage({
           kind: 'error',
           text: t`Не удалось удалить сообщение. Попробуйте ещё раз.`,
-        })
-      },
-      onSuccess: () => {
-        setDeleting(null)
-        showToastMessage({ kind: 'success', text: t`Сообщение удалено.` })
-      },
+        }),
+      onSuccess: () =>
+        showToastMessage({ kind: 'success', text: t`Сообщение удалено.` }),
     })
   }
 
@@ -94,7 +92,6 @@ export const CommentsScreen = ({ parent, parentId }: CommentsScreenProps) => {
         onEdit={startEdit}
       />
       <CommentDeleteConfirm
-        isLoading={isDeleting}
         isOpen={deleting !== null}
         onCancel={() => setDeleting(null)}
         onConfirm={confirmDelete}

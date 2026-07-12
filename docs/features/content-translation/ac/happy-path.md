@@ -7,11 +7,12 @@
   Then:  the post card shows the Kazakh title and description
          the card shows no translation indicator
 
-## Scenario 2: Post detail shows the indicator and toggles to the original
+## Scenario 2: Post detail shows the toggle and toggles to the original
   Given: the same post is open in detail view with active locale `kk`
   When:  the screen renders
   Then:  the title and description are in Kazakh
-         a "translated from Russian" indicator is shown
+         a show-original toggle ("Показать оригинальный текст") is shown, without naming the
+         source language
   When:  the resident taps show original
   Then:  the exact stored Russian title and description are shown
   When:  the resident taps the toggle again
@@ -30,8 +31,8 @@
          the resident's active locale is `kk`
   When:  the resident opens the issues list and the issue detail
   Then:  the list card shows the Kazakh title without an indicator
-         the detail shows Kazakh text with a "translated from Russian" indicator and a working
-         show-original toggle
+         the detail shows Kazakh text with a working show-original toggle
+         ("Показать оригинальный текст"), without naming the source language
 
 ## Scenario 5: Comment is translated on demand
   Given: a comment with recorded source language `ru` in an issue thread

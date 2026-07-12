@@ -5,6 +5,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { trpcClient, useTRPC } from '@/shared/api'
 
+import { useStoreEditedComments } from './use-store-edited-comments'
+
 type UpdateArgs = {
   id: string
   media: string[]
@@ -20,6 +22,8 @@ export const useUpdateComment = ({ parent, parentId }: CommentTarget) => {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const listKey = trpc.comments.list.pathKey()
+  const apply = useStoreEditedComments(store => store.apply)
+  const clear = useStoreEditedComments(store => store.clear)
 
   const mutation = useMutation({
     mutationFn: async ({ id, media, text }: UpdateArgs) => {
@@ -32,14 +36,31 @@ export const useUpdateComment = ({ parent, parentId }: CommentTarget) => {
       })
       await trpcClient.comments.update.mutate(payload)
     },
-    onSettled: () =>
-      queryClient.invalidateQueries({ queryKey: listKey, refetchType: 'all' }),
   })
 
   const updateComment = (
-    args: UpdateArgs,
+    { id, media, text }: UpdateArgs,
     { onFailure, onSuccess }: Callbacks,
-  ) => mutation.mutate(args, { onError: onFailure, onSuccess })
+  ) => {
+    apply(id, { editedAt: Date.now(), media, text })
+    mutation.mutate(
+      { id, media, text },
+      {
+        onError: () => {
+          clear(id)
+          onFailure()
+        },
+        onSuccess,
+        onSettled: async () => {
+          await queryClient.invalidateQueries({
+            queryKey: listKey,
+            refetchType: 'all',
+          })
+          clear(id)
+        },
+      },
+    )
+  }
 
   return { isPending: mutation.isPending, updateComment }
 }
