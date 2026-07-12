@@ -28,8 +28,8 @@ const sendCodeMessages = (): Record<string, string> => ({
 export const sendCodeErrorText = (error: unknown): string => {
   logAuthError('send-code', error)
   const code = authErrorCode(error)
-  return (
+  const message =
     (code && sendCodeMessages()[code]) ??
     t`Не удалось отправить код. Попробуйте снова.`
-  )
+  return code ? `${message} (${code})` : message
 }

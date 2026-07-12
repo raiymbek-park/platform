@@ -39,18 +39,25 @@ test('sendCodeErrorText — known codes map to distinct, specific messages', () 
   expect(new Set([fallback, quota, invalidPhone, network]).size).toBe(4)
 })
 
-test('sendCodeErrorText — captcha and app-credential share the security message', () => {
+test('sendCodeErrorText — captcha and app-credential share the security message, each tagged with its own code', () => {
   silenceLog()
-  expect(sendCodeErrorText({ code: 'auth/captcha-check-failed' })).toBe(
-    sendCodeErrorText({ code: 'auth/invalid-app-credential' }),
-  )
+  const captcha = sendCodeErrorText({ code: 'auth/captcha-check-failed' })
+  const appCredential = sendCodeErrorText({
+    code: 'auth/invalid-app-credential',
+  })
+  const body = (text: string) => text.replace(/ \([^)]+\)$/, '')
+  expect(body(captcha)).toBe(body(appCredential))
+  expect(captcha).toContain('(auth/captcha-check-failed)')
+  expect(appCredential).toContain('(auth/invalid-app-credential)')
 })
 
-test('sendCodeErrorText — unknown or code-less errors fall back to the generic message', () => {
+test('sendCodeErrorText — the visible message carries the error code for on-device diagnosis', () => {
   silenceLog()
-  const fallback = sendCodeErrorText({ code: 'auth/unknown-xyz' })
-  expect(sendCodeErrorText(new Error('boom'))).toBe(fallback)
-  expect(sendCodeErrorText(null)).toBe(fallback)
+  const generic = sendCodeErrorText(new Error('boom'))
+  expect(sendCodeErrorText(null)).toBe(generic)
+  expect(sendCodeErrorText({ code: 'auth/unknown-xyz' })).toBe(
+    `${generic} (auth/unknown-xyz)`,
+  )
 })
 
 test('sendCodeErrorText — logs the real Firebase error code for field diagnosis', () => {
