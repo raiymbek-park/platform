@@ -21,7 +21,7 @@ export const LinkButton = ({
   ...restProps
 }: LinkButtonProps) => (
   <button className={joinCss(css.button, className)} type={type} {...restProps}>
-    <Icon className={iconClassName} glyph={glyph} size={18} />
+    <Icon className={iconClassName} glyph={glyph} size={16} />
     {label}
   </button>
 )
