@@ -184,6 +184,10 @@ A **comment** is one message in a post's threaded conversation. The same thread 
 - **Status-change reasons on issues** — when a Manager or Administration changes an issue's status
   and leaves a comment, that comment is a regular message in the issue's thread: residents read it
   there and reply in the same conversation. The comment count includes it.
+- **Translation** — a comment is translated automatically after it is written, exactly like post
+  and issue text (see `docs/features/content-translation/prd.md`). A viewer whose locale differs
+  from the comment's source language reads the translation by default; the message carries the
+  show-original / show-translation toggle, which swaps the stored texts without any request.
 - A Viewer reads the thread but cannot write, edit, or delete.
 
 ## Content Formatting
@@ -194,7 +198,8 @@ subset**: paragraphs, headings, bold and italic, ordered and unordered lists, **
 (`- [ ]` / `- [x]`, rendered as **read-only** checkboxes — never interactive), links, inline code and
 code blocks, and blockquotes. Raw HTML and scripts are never rendered; links open safely
 (`rel="noopener noreferrer"`, new tab). Titles stay plain text. The character limits apply to the raw
-Markdown source.
+Markdown source. Automatic translation applies to the raw Markdown source, and the translated text
+renders through the same renderer.
 
 ## Card System
 

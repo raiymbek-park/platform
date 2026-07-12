@@ -134,3 +134,38 @@ category names refer to the values fixed in `prd.md`.
   When:  the search request is still in flight
   Then:  skeleton loading placeholders are shown in place of the list
          the empty state is not shown while the request is in flight
+
+## Scenario 18: Follow an issue with the button
+
+  Given: a resident viewing an issue they do not yet follow
+  When:  they tap the follow toggle
+  Then:  the issue is marked as followed for them
+         its later status changes and new comments will reach their Home feed
+
+## Scenario 19: Unfollow an issue
+
+  Given: a resident who follows an issue
+  When:  they tap the follow toggle again
+  Then:  the issue is no longer followed
+         its later activity no longer reaches their Home feed
+
+## Scenario 20: Opening an issue auto-follows it
+
+  Given: a Resident on the create-issue screen
+  When:  they submit a valid new issue
+  Then:  the issue is created and its author automatically follows it, with no separate tap
+
+## Scenario 21: Commenting on an issue auto-follows it
+
+  Given: a resident who does not follow an issue
+  When:  they post a comment on it
+  Then:  the resident automatically follows the issue, exactly as if they had tapped the follow toggle
+
+## Scenario 22: Managers and Administration are subscribed to every issue
+
+  Given: a Manager or Administration user
+  When:  they view an issue
+  Then:  no follow toggle is shown — they cannot follow or unfollow
+  When:  any issue receives a status change or a new comment from someone else
+  Then:  that activity appears in their Home feed, whether or not they ever interacted with the issue
+         activity they caused themselves does not appear in their own feed

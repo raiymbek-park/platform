@@ -2,38 +2,17 @@ import type {
   PostCategory,
   PostTab,
 } from '@raiymbek-park/shared/validation-schemas'
-import type {
-  ContentCardBadge,
-  IconChipTone,
-  IconGlyph,
-  StatusTagTone,
-} from '@raiymbek-park/ui'
+import type { ContentCardBadge, StatusTagTone } from '@raiymbek-park/ui'
+import type { CategoryVisual } from '@/shared/post'
 import type { PostView } from './use-posts-data'
 
 import { useLingui } from '@lingui/react/macro'
 
-type Visual = {
-  glyph: IconGlyph
-  tone: IconChipTone
-}
-
-const announcementVisual: Partial<Record<PostCategory, Visual>> = {
-  city: { glyph: 'landmark', tone: 'accent' },
-  complex: { glyph: 'building-2', tone: 'brand' },
-  management: { glyph: 'briefcase', tone: 'info' },
-  other: { glyph: 'megaphone', tone: 'warning' },
-}
-
-const offerVisual: Partial<Record<PostCategory, Visual>> = {
-  free: { glyph: 'gift', tone: 'warning' },
-  other: { glyph: 'coffee', tone: 'warning' },
-  rent: { glyph: 'key-round', tone: 'accent' },
-  sell: { glyph: 'banknote', tone: 'info' },
-  services: { glyph: 'handshake', tone: 'brand' },
-  wanted: { glyph: 'search', tone: 'accent' },
-}
-
-const fallbackVisual: Visual = { glyph: 'megaphone', tone: 'neutral' }
+import {
+  announcementVisuals,
+  fallbackVisual,
+  offerVisuals,
+} from '@/shared/post'
 
 const offerTagTone: Partial<Record<PostCategory, StatusTagTone>> = {
   free: 'warning',
@@ -70,8 +49,8 @@ export const usePostBadges = () => {
     management: t`Управляющая компания`,
   }
 
-  const categoryVisual = (post: PostView): Visual =>
-    (post.kind === 'announcement' ? announcementVisual : offerVisual)[
+  const categoryVisual = (post: PostView): CategoryVisual =>
+    (post.kind === 'announcement' ? announcementVisuals : offerVisuals)[
       post.category
     ] ?? fallbackVisual
 

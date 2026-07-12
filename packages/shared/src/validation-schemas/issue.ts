@@ -130,6 +130,10 @@ export const issueGetInputSchema = issueRefInputSchema
 
 export type IssueGetInput = z.infer<typeof issueGetInputSchema>
 
+export const issueWatchInputSchema = issueRefInputSchema
+
+export type IssueWatchInput = z.infer<typeof issueWatchInputSchema>
+
 export const statusChangeInputSchema = issueRefInputSchema.extend({
   comment: z.string().trim().max(ISSUE_COMMENT_MAX).optional(),
   media: z.array(z.string()).max(MEDIA_MAX_ITEMS).default([]),

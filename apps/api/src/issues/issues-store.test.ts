@@ -16,6 +16,7 @@ vi.mock('../firestore', () => {
       Promise.resolve({
         docs: state.docs.map(doc => ({ id: doc.id, data: () => doc.data })),
       }),
+    doc: () => ({ collection: () => query }),
   }
   class Timestamp {
     toMillis() {

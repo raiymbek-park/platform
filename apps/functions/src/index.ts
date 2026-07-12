@@ -4,6 +4,10 @@ import { onRequest } from 'firebase-functions/v2/https'
 
 import { anthropicApiKey } from './anthropic-key'
 
+export {
+  translateIssueComments,
+  translatePostComments,
+} from './translate-comments'
 export { translateIssues } from './translate-issues'
 export { translatePosts } from './translate-posts'
 

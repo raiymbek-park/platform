@@ -23,6 +23,7 @@ const seedIssue: Issue = {
   id: 'issue-301',
   isMine: false,
   isTranslated: false,
+  isWatching: false,
   keywords: [],
   likeCount: 0,
   media: [],

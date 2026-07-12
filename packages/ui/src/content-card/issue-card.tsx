@@ -27,6 +27,7 @@ export type IssueCardProps = ComponentProps<'article'> & {
   contacts: IssueCardContact[]
   description: string
   expandLabel: ReactNode
+  follow?: ReactNode
   isExpanded?: boolean
   media?: string[]
   meta: ReactNode
@@ -46,6 +47,7 @@ export const IssueCard = ({
   contacts,
   description,
   expandLabel,
+  follow,
   isExpanded,
   media,
   meta,
@@ -71,6 +73,7 @@ export const IssueCard = ({
       {tags && tags.length > 0 && <CardTags tags={tags} />}
       <CardDetails isExpanded={isExpanded}>
         {translation}
+        {follow}
         <Divider />
         <CardContacts contacts={contacts} />
         {actions && <div className={css.actions}>{actions}</div>}

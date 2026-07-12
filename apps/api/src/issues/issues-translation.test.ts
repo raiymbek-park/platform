@@ -51,6 +51,10 @@ vi.mock('../firestore', () => {
       collection: (name: string) => ({
         ...query,
         doc: (id?: string) => ({
+          collection: () => ({
+            ...query,
+            doc: (subId?: string) => ({ id: subId }),
+          }),
           id: id ?? `${name}/issues`,
           get: () => {
             const doc = state.docs.find(entry => entry.id === id)

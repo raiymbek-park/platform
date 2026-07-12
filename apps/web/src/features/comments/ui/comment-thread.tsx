@@ -89,7 +89,6 @@ export const CommentThread = ({
         <CommentMessage
           key={comment.id}
           comment={comment}
-          target={target}
           onActions={canAct(comment) ? () => onActions(comment) : undefined}
         />
       ))}

@@ -11,6 +11,7 @@ import {
   CommentCount,
   InlineButton,
   IssueCard,
+  LinkButton,
   Reaction,
 } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
@@ -25,6 +26,7 @@ export type IssueCardItemProps = {
   canChangeStatus: boolean
   canDelete: boolean
   canEdit: boolean
+  canFollow: boolean
   canReact: boolean
   issue: IssueView
   onDelete: (issueId: string) => void
@@ -33,16 +35,19 @@ export type IssueCardItemProps = {
     kind: ReactionKind,
     current: ReactionKind | null,
   ) => void
+  onToggleWatch: (issueId: string, current: boolean) => void
 }
 
 export const IssueCardItem = ({
   canChangeStatus,
   canDelete,
   canEdit,
+  canFollow,
   canReact,
   issue,
   onDelete,
   onReact,
+  onToggleWatch,
 }: IssueCardItemProps) => {
   const { t } = useLingui()
   const navigate = useNavigate()
@@ -137,6 +142,20 @@ export const IssueCardItem = ({
       data-testid='issue-card'
       description={original?.description ?? issue.description}
       expandLabel={t`Подробнее`}
+      follow={
+        canFollow ? (
+          <LinkButton
+            data-testid='issue-watch-toggle'
+            glyph={issue.isWatching ? 'eye-off' : 'eye'}
+            label={
+              issue.isWatching
+                ? t`Не следить за заявкой`
+                : t`Следить за заявкой`
+            }
+            onClick={() => onToggleWatch(issue.id, issue.isWatching)}
+          />
+        ) : undefined
+      }
       isExpanded={isExpanded}
       media={issue.media}
       meta={meta}

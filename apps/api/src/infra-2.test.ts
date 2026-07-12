@@ -41,7 +41,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
     await Promise.all([
       clearCollection(db, 'residents'),
       clearCollection(db, 'service-contacts'),
-      clearCollection(db, 'events'),
+      clearCollection(db, 'posts'),
     ])
   }
 
@@ -134,33 +134,32 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       const newerDate = new Date('2026-06-20T09:00:00Z')
 
       await db
-        .collection('events')
+        .collection('posts')
         .doc('older')
         .set({
           kind: 'announcement',
+          category: 'complex',
           title: 'Older',
-          text: 'Older event',
-          glyph: 'megaphone',
-          tone: 'brand',
           createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
         })
       await db
-        .collection('events')
+        .collection('posts')
         .doc('newer')
         .set({
-          kind: 'utility',
+          kind: 'offer',
+          category: 'sell',
           title: 'Newer',
-          text: 'Newer event',
-          glyph: 'droplet-off',
-          tone: 'info',
           createdAt: Timestamp.fromDate(newerDate),
         })
 
       const { getEvents } = await import('./events/events-store')
-      const events = await getEvents(null)
-      expect(events.map(e => e.id)).toEqual(['newer', 'older'])
-      expect(events[0]?.text).toBe('Newer event')
-      expect(events[0]?.kind).toBe('utility')
+      const events = await getEvents(null, null, null)
+      expect(
+        events.map(e =>
+          e.type === 'announcement' || e.type === 'offer' ? e.id : '',
+        ),
+      ).toEqual(['newer', 'older'])
+      expect(events[0]?.type).toBe('offer')
       expect(events[0]?.createdAt).toBe(newerDate.getTime())
     })
   })
@@ -171,33 +170,31 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       const { Timestamp } = await import('./firestore')
 
       await db
-        .collection('events')
+        .collection('posts')
         .doc('seen')
         .set({
           kind: 'announcement',
+          category: 'complex',
           title: 'Seen',
-          text: 'Already seen',
-          glyph: 'megaphone',
-          tone: 'brand',
           createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
         })
       await db
-        .collection('events')
+        .collection('posts')
         .doc('fresh')
         .set({
-          kind: 'utility',
+          kind: 'announcement',
+          category: 'management',
           title: 'Fresh',
-          text: 'New since last visit',
-          glyph: 'droplet-off',
-          tone: 'info',
           createdAt: Timestamp.fromDate(new Date('2026-06-20T09:00:00Z')),
         })
 
       const { getEvents } = await import('./events/events-store')
       const lastVisit = Timestamp.fromDate(new Date('2026-06-10T09:00:00Z'))
-      const events = await getEvents(lastVisit)
+      const events = await getEvents(null, null, lastVisit)
 
-      expect(events.map(e => e.id)).toEqual(['fresh'])
+      expect(events.map(e => (e.type === 'announcement' ? e.id : ''))).toEqual([
+        'fresh',
+      ])
     })
   })
 
@@ -229,40 +226,40 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
   })
 
   describe('events — live edits', () => {
-    it('an updated events document is reflected on the next read without a redeploy', async () => {
+    it('an updated source document is reflected on the next read without a redeploy', async () => {
       const db = getDb()
       const { Timestamp } = await import('./firestore')
 
       await db
-        .collection('events')
+        .collection('posts')
         .doc('e1')
         .set({
           kind: 'announcement',
+          category: 'complex',
           title: 'Original',
-          text: 'Original',
-          glyph: 'megaphone',
-          tone: 'brand',
           createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
         })
 
       const { getEvents } = await import('./events/events-store')
-      const before = await getEvents(null)
-      expect(before[0]?.text).toBe('Original')
+      const before = await getEvents(null, null, null)
+      expect(before[0]?.type === 'announcement' && before[0].title).toBe(
+        'Original',
+      )
 
       await db
-        .collection('events')
+        .collection('posts')
         .doc('e1')
         .set({
           kind: 'announcement',
+          category: 'complex',
           title: 'Updated',
-          text: 'Updated without deploy',
-          glyph: 'megaphone',
-          tone: 'brand',
           createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
         })
 
-      const after = await getEvents(null)
-      expect(after[0]?.text).toBe('Updated without deploy')
+      const after = await getEvents(null, null, null)
+      expect(after[0]?.type === 'announcement' && after[0].title).toBe(
+        'Updated',
+      )
     })
   })
 
@@ -315,7 +312,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       )
       const { getEvents } = await import('./events/events-store')
       const contacts = await getServiceContacts()
-      const events = await getEvents(null)
+      const events = await getEvents(null, null, null)
       expect(contacts).toEqual([])
       expect(events).toEqual([])
     })
@@ -327,31 +324,31 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       const { Timestamp } = await import('./firestore')
 
       await db
-        .collection('events')
+        .collection('posts')
         .doc('old')
         .set({
           kind: 'announcement',
+          category: 'complex',
           title: 'Old',
-          text: 'Old event',
-          glyph: 'megaphone',
-          tone: 'brand',
           createdAt: Timestamp.fromDate(new Date('2026-01-01T09:00:00Z')),
         })
       await db
-        .collection('events')
+        .collection('posts')
         .doc('new')
         .set({
-          kind: 'utility',
+          kind: 'offer',
+          category: 'sell',
           title: 'New',
-          text: 'New event',
-          glyph: 'droplet-off',
-          tone: 'info',
           createdAt: Timestamp.fromDate(new Date('2026-06-20T09:00:00Z')),
         })
 
       const { getEvents } = await import('./events/events-store')
-      const events = await getEvents(null)
-      expect(events.map(e => e.id)).toEqual(['new', 'old'])
+      const events = await getEvents(null, null, null)
+      expect(
+        events.map(e =>
+          e.type === 'announcement' || e.type === 'offer' ? e.id : '',
+        ),
+      ).toEqual(['new', 'old'])
     })
   })
 
@@ -362,13 +359,11 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
 
       const batch = db.batch()
       Array.from({ length: 12 }, (_, i) => i).forEach(i => {
-        const ref = db.collection('events').doc(`event-${i}`)
+        const ref = db.collection('posts').doc(`event-${i}`)
         batch.set(ref, {
           kind: 'announcement',
+          category: 'complex',
           title: `Event ${i}`,
-          text: `Text ${i}`,
-          glyph: 'megaphone',
-          tone: 'brand',
           createdAt: Timestamp.fromDate(
             new Date(`2026-06-${String(i + 1).padStart(2, '0')}T09:00:00Z`),
           ),
@@ -377,33 +372,8 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       await batch.commit()
 
       const { getEvents } = await import('./events/events-store')
-      const events = await getEvents(null)
+      const events = await getEvents(null, null, null)
       expect(events).toHaveLength(10)
-    })
-  })
-
-  describe('events — unknown glyph/tone fallback', () => {
-    it('items with unknown glyph fall back to megaphone and unknown tone falls back to brand', async () => {
-      const db = getDb()
-      const { Timestamp } = await import('./firestore')
-
-      await db
-        .collection('events')
-        .doc('unknown-icons')
-        .set({
-          kind: 'announcement',
-          title: 'Unknown icons',
-          text: 'Event with unknown glyph and tone',
-          glyph: 'nonexistent-icon',
-          tone: 'nonexistent-tone',
-          createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
-        })
-
-      const { getEvents } = await import('./events/events-store')
-      const events = await getEvents(null)
-
-      expect(events[0]?.glyph).toBe('megaphone')
-      expect(events[0]?.tone).toBe('brand')
     })
   })
 })

@@ -6,11 +6,7 @@ import { residentRouter } from './resident/router'
 import { serviceContactsRouter } from './service-contacts/router'
 import { publicProcedure, router } from './trpc'
 
-export type {
-  Comment,
-  CommentAuthor,
-  CommentTranslation,
-} from './comments/comments-store'
+export type { Comment, CommentAuthor } from './comments/comments-store'
 export type { Context } from './context'
 export type { Event } from './events/events-store'
 export type { Locale } from './i18n'
@@ -23,7 +19,11 @@ export { createContext } from './context'
 export { buildKeywords as buildIssueKeywords } from './issues/keywords'
 export { buildPostKeywords } from './posts/keywords'
 export { translateDocumentFields } from './translation/translate-document-fields'
-export { translateDocument } from './translation/translation-client'
+export { translateTextField } from './translation/translate-text-field'
+export {
+  translateDocument,
+  translateText,
+} from './translation/translation-client'
 
 export const appRouter = router({
   comments: commentsRouter,
