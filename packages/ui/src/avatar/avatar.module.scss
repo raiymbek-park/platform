@@ -12,7 +12,7 @@
 }
 
 .initials {
-  font-size: 12px;
+  font-size: calc(var(--size, 40px) * 0.3);
   font-weight: var(--weight-bold);
 }
 
