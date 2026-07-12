@@ -48,11 +48,6 @@ const messages = {
     kk: 'Мәртебені өзгертуге құқық жеткіліксіз',
     en: 'Not allowed to change the status',
   },
-  commentTranslateFailed: {
-    ru: 'Не удалось перевести комментарий',
-    kk: 'Пікірді аудару мүмкін болмады',
-    en: 'Could not translate the comment',
-  },
 } satisfies Record<string, Record<Locale, string>>
 
 const isMessageKey = (key: string): key is keyof typeof messages =>

@@ -7,10 +7,10 @@ content — post and issue titles and descriptions, comments — is stored and d
 single language its author wrote it in (predominantly Russian). A Kazakh- or English-speaking
 resident reads a localized shell framing untranslated content.
 
-The goal is content that reads in the resident's language. Posts and issues are translated
-automatically by an AI model into the other supported languages shortly after publication and
-served already localized; comments are translated on demand. Search matches titles in any
-supported language. The original text always remains available to the reader.
+The goal is content that reads in the resident's language. Posts, issues, and comments are
+translated automatically by an AI model into the other supported languages shortly after they
+are written and served already localized. Search matches titles in any supported language. The
+original text always remains available to the reader.
 
 **Pinned terminology** (used across PRD, AC, and code):
 
@@ -49,15 +49,20 @@ Supported locales are the three from the i18n feature: `ru`, `kk`, `en`.
 - **Translation indicator** — post and issue detail screens show a single inline show-original
   toggle ("Показать оригинальный текст" ↔ "Показать перевод"). It does not name the source
   language. Feed and list cards show the translated text without an indicator.
-- **On-demand comment translation** — comments display their original text. A "Translate"
-  action appears on a comment whose recorded source language differs from the viewer's locale;
-  tapping it shows the translation and a show-original toggle. The result is cached on the
-  comment, so every later viewer of that locale gets it instantly. The detection performed
-  during translation corrects the comment's recorded source language.
+- **Automatic comment translation** — a comment's `text` is translated into the two target
+  locales asynchronously after creation and after any edit that changes it, exactly like posts
+  and issues (including the status-change comments managers leave on issues). A viewer whose
+  locale differs from the comment's source language sees the translated text by default, with
+  the same show-original toggle posts and issues use; the toggle swaps between the stored
+  translation and the stored original without any request. Until a translation is available,
+  the original is shown with no toggle. The detection performed during translation corrects
+  the comment's recorded source language.
 - **Cross-language search** — search keywords are built from the title in every available
   language (original plus translations), so a query in any supported locale matches regardless
   of the source language. Issue-number search is unaffected.
 - **Backfill** — a one-off script translates all existing posts and issues at rollout.
+  Comments have no backfill: a comment written before automatic comment translation shipped
+  shows its original text until its next edit triggers a translation.
 
 ### What's NOT included
 
@@ -65,7 +70,7 @@ Supported locales are the three from the i18n feature: `ru`, `kk`, `en`.
   language; their translations, when needed, are supplied at seed time by the seeding scripts.
 - **Manual editing or correction of machine translations.**
 - **Locales beyond `ru`, `kk`, `en`.**
-- **Automatic translation of comments at creation** — comments are translated on demand only.
+- **Backfill of existing comments** — only posts and issues are backfilled at rollout.
 - **Live update of already-rendered screens when a translation lands** — the translation
   appears on the next data fetch (normal TanStack Query refetch behavior).
 - **Translating author names, tags, or status labels** — status and tag labels are static UI
@@ -76,9 +81,9 @@ Supported locales are the three from the i18n feature: `ru`, `kk`, `en`.
 A resident using the app in Kazakh opens the announcements feed. Posts written in Russian
 appear with Kazakh titles and descriptions. Opening a post, they see the full text in Kazakh
 with an inline "Показать оригинальный текст" toggle; tapping it reveals the stored original,
-tapping again returns to the translation. In an issue thread, a Russian comment shows a
-"Translate" action; the resident taps it and reads the comment in Kazakh, with the option to
-show the original. They search the feed with a Kazakh word — a Russian-authored post whose
+tapping again returns to the translation. In an issue thread, a comment written in Russian
+reads in Kazakh with the same show-original toggle on the message, so the resident can check
+the original wording at any time. They search the feed with a Kazakh word — a Russian-authored post whose
 translated title contains that word appears in the results. When they publish their own post in
 Kazakh, it appears in the feed immediately; within a minute, Russian- and English-speaking
 neighbours see it in their languages.
@@ -88,22 +93,23 @@ neighbours see it in their languages.
 - A resident whose locale differs from a document's source language sees the document's title
   and description in their locale in lists and detail views once translation completes.
 - The show-original toggle displays the exact stored original text and toggles back.
-- The comment "Translate" action shows the comment in the viewer's locale; the cached result is
-  served to subsequent viewers without a new AI call.
+- A comment whose source language differs from the viewer's locale reads in the viewer's locale
+  once translation completes, with a working show-original toggle; the stored translation is
+  served to every viewer without further AI calls.
 - A title search in any supported locale finds the document regardless of its source language.
 - Creation and edit latency of posts, issues, and comments is unchanged by this feature.
 - A translation failure never blocks or breaks display — the reader sees the original.
 
 ## Non-functional Requirements
 
-- **Translation freshness** — a post/issue translation is available within 60 seconds of the
-  write under normal operation; an on-demand comment translation responds within 10 seconds.
+- **Translation freshness** — a post, issue, or comment translation is available within
+  60 seconds of the write under normal operation.
 - **No duplicate work** — each version of a document's source text is translated at most once
   per target locale; an edit that does not change the source text does not retranslate.
 - **Privacy** — only the content text (title, description, comment text) is sent to the AI
   provider; author identity (name, phone, apartment) and other metadata are never included.
-- **Mobile-only** — no keyboard-accessibility work for the indicator, toggle, or translate
-  action (per project scope limits); tap targets follow the styling rules.
+- **Mobile-only** — no keyboard-accessibility work for the indicator or toggle (per project
+  scope limits); tap targets follow the styling rules.
 
 ## Dependencies
 

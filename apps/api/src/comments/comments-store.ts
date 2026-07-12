@@ -2,7 +2,6 @@ import type {
   CommentCreateInput,
   CommentDeleteInput,
   CommentParent,
-  CommentTranslateInput,
   CommentUpdateInput,
   PermissionRole,
 } from '@raiymbek-park/shared/validation-schemas'
@@ -16,7 +15,7 @@ import type { WriteOutcome } from '../store-helpers'
 import { COMMENT_PAGE_SIZE } from '@raiymbek-park/shared/validation-schemas'
 
 import { FieldValue, getDb, Timestamp } from '../firestore'
-import { resolveLocale } from '../i18n'
+import { addWatch } from '../issues/watch-store'
 import { getResident } from '../resident/resident-store'
 import { deleteCommentMedia } from '../storage'
 import {
@@ -26,7 +25,7 @@ import {
   toStringArray,
   toText,
 } from '../store-helpers'
-import { translateText } from '../translation/translation-client'
+import { localizedText } from '../translation/localized-text'
 
 export type CommentAuthor = {
   apartment: number
@@ -41,10 +40,11 @@ export type Comment = {
   editedAt: number | null
   id: string
   isMine: boolean
+  isTranslated: boolean
   lang: Locale
   media: string[]
+  original: string | null
   text: string
-  translation: string | null
 }
 
 const parentCollection = (parent: CommentParent) =>
@@ -57,9 +57,6 @@ const commentsCollection = (
   parent: CommentParent,
   parentId: string,
 ): CollectionReference => parentRef(parent, parentId).collection('comments')
-
-const cachedTranslation = (data: DocumentData, locale: Locale): string =>
-  toText(data.translations?.[locale]?.text)
 
 const avatarUrlByAuthor = async (
   authorIds: string[],
@@ -88,7 +85,10 @@ const parseComment = (
   const author =
     typeof data.author === 'object' && data.author !== null ? data.author : {}
   const authorId = toText(data.authorId)
-  const translation = cachedTranslation(data, locale)
+  const { isTranslated, original, originalLang, text } = localizedText(
+    data,
+    locale,
+  )
   return {
     author: {
       apartment: toNumber(author.apartment),
@@ -101,10 +101,11 @@ const parseComment = (
       data.editedAt instanceof Timestamp ? data.editedAt.toMillis() : null,
     id,
     isMine: uid !== null && authorId !== '' && authorId === uid,
-    lang: resolveLocale(toText(data.lang)),
+    isTranslated,
+    lang: originalLang,
     media: toStringArray(data.media),
-    text: toText(data.text),
-    translation: translation || null,
+    original,
+    text,
   }
 }
 
@@ -168,6 +169,7 @@ export const createComment = async (
   }
   const parent = parentRef(input.parent, input.parentId)
   const commentRef = parent.collection('comments').doc(input.id)
+  const isIssue = input.parent === 'issue'
   return getDb().runTransaction<WriteOutcome>(async transaction => {
     const snap = await transaction.get(parent)
     if (!snap.exists) return 'not-found'
@@ -179,7 +181,13 @@ export const createComment = async (
       media: input.media,
       text: input.text,
     })
-    transaction.update(parent, { commentCount: FieldValue.increment(1) })
+    transaction.update(parent, {
+      commentCount: FieldValue.increment(1),
+      ...(isIssue
+        ? { lastCommentAt: FieldValue.serverTimestamp(), lastCommentBy: uid }
+        : {}),
+    })
+    if (isIssue) addWatch(transaction, uid, input.parentId)
     return 'ok'
   })
 }
@@ -230,38 +238,4 @@ export const deleteComment = async (
     )
   }
   return outcome
-}
-
-export type CommentTranslation = {
-  lang: Locale
-  text: string
-}
-
-export const translateComment = async (
-  locale: Locale,
-  input: CommentTranslateInput,
-): Promise<CommentTranslation | 'not-found' | 'failed'> => {
-  const ref = commentsCollection(input.parent, input.parentId).doc(input.id)
-  const snap = await ref.get()
-  const data = snap.data()
-  if (!data) return 'not-found'
-  const lang = resolveLocale(toText(data.lang))
-  const cached = cachedTranslation(data, locale)
-  if (cached) return { lang, text: cached }
-  const text = toText(data.text)
-  if (!text) return { lang, text }
-  const result = await translateText({
-    apiKey: toText(process.env.ANTHROPIC_API_KEY),
-    sourceLocaleHint: lang,
-    text,
-  }).catch((error: unknown) => {
-    console.error('[comments.translate] request failed', error)
-    return null
-  })
-  if (!result) return 'failed'
-  await ref.update({ lang: result.lang, translations: result.translations })
-  return {
-    lang: result.lang,
-    text: result.translations[locale]?.text ?? text,
-  }
 }

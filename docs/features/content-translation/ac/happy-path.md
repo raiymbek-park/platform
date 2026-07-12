@@ -34,19 +34,19 @@
          the detail shows Kazakh text with a working show-original toggle
          ("Показать оригинальный текст"), without naming the source language
 
-## Scenario 5: Comment is translated on demand
-  Given: a comment with recorded source language `ru` in an issue thread
-         the viewer's active locale is `en`
-         no `en` translation is cached on the comment
-  When:  the viewer taps the "Translate" action on the comment
+## Scenario 5: Comment is translated automatically after it is written
+  Given: a resident writes a comment in Russian in an issue thread
+  When:  translation completes (within 60 seconds of the write) and a viewer with active
+         locale `en` opens the thread
   Then:  the comment text is shown in English
-         the action becomes a show-original toggle
-         the English translation is stored on the comment
+         the message carries a show-original toggle ("Показать оригинальный текст") that
+         swaps to the stored Russian original and back ("Показать перевод")
+         the translations are stored on the comment
 
-## Scenario 6: Cached comment translation is reused
-  Given: the comment from Scenario 5 already holds a cached `en` translation
-  When:  another resident with locale `en` taps "Translate" on it
-  Then:  the cached English text is shown
+## Scenario 6: Stored comment translation is reused
+  Given: the comment from Scenario 5 already holds its stored translations
+  When:  another resident with locale `en` opens the thread
+  Then:  the stored English text is shown
          no new AI translation call is made
 
 ## Scenario 7: Search matches a translated title

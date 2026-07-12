@@ -20,7 +20,6 @@ export type MessageBubbleProps = ComponentProps<'div'> &
     editedLabel?: ReactNode
     isEdited?: boolean
     isOwn?: boolean
-    isTranslating?: boolean
     media?: string[]
     text?: string
     time: ReactNode
@@ -31,21 +30,14 @@ const rowCss = pickCss(css, css.row)
 const bubbleCss = pickCss(css, css.bubble)
 
 type TranslateButtonProps = {
-  isTranslating?: boolean
   label: ReactNode
   onTranslate: () => void
 }
 
-const TranslateButton = ({
-  isTranslating,
-  label,
-  onTranslate,
-}: TranslateButtonProps) => (
+const TranslateButton = ({ label, onTranslate }: TranslateButtonProps) => (
   <LinkButton
     className={css.translate}
-    disabled={isTranslating}
-    glyph={isTranslating ? 'loader-circle' : 'languages'}
-    iconClassName={isTranslating ? css.loader : undefined}
+    glyph='languages'
     label={label}
     onClick={event => {
       event.stopPropagation()
@@ -62,7 +54,6 @@ export const MessageBubble = ({
   editedLabel,
   isEdited,
   isOwn,
-  isTranslating,
   media,
   text,
   time,
@@ -104,11 +95,7 @@ export const MessageBubble = ({
         <span className={css.edited}>{editedLabel}</span>
       )}
       {onTranslate && (
-        <TranslateButton
-          isTranslating={isTranslating}
-          label={translateLabel}
-          onTranslate={onTranslate}
-        />
+        <TranslateButton label={translateLabel} onTranslate={onTranslate} />
       )}
     </div>
   </div>

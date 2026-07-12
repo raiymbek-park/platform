@@ -23,18 +23,19 @@
          (the toggle does not name the source language)
          a Kazakh-locale viewer sees the original without an indicator
 
-## Scenario 4: Comment translate corrects a wrong recorded language
+## Scenario 4: Comment translation corrects a wrong recorded language
   Given: a comment created by a resident with active locale `kk`, written in Russian
          (recorded source language is `kk`)
-  When:  a Russian-locale viewer taps "Translate"
-  Then:  the returned text is shown and the comment's recorded source language becomes `ru`
-         Russian-locale viewers no longer see the "Translate" action on this comment
+  When:  the automatic translation completes
+  Then:  the comment's recorded source language becomes `ru`
+         a Russian-locale viewer sees the original text with no toggle
+         a Kazakh-locale viewer sees the Kazakh translation with a show-original toggle
 
-## Scenario 5: Comment in the viewer's own language shows no translate action
+## Scenario 5: Comment in the viewer's own language shows no toggle
   Given: a comment with recorded source language `en`
          the viewer's active locale is `en`
   When:  the thread renders
-  Then:  the comment shows no "Translate" action
+  Then:  the comment shows its original text with no show-original toggle
 
 ## Scenario 6: Backfilled legacy content is translated
   Given: a post created before this feature existed, containing Russian text

@@ -13,6 +13,7 @@ vi.mock('../firestore', () => {
       state.createSpy(data)
     },
     get: () => Promise.resolve({ exists: true }),
+    set: () => {},
     update: (_ref: unknown, data: Record<string, unknown>) => {
       state.incrementCalls.push(data)
     },
@@ -53,14 +54,7 @@ vi.mock('../resident/resident-store', () => ({
   })),
 }))
 
-vi.mock('../translation/translation-client', () => ({
-  translateText: vi.fn(),
-}))
-
-const { createComment, translateComment } = await import('./comments-store')
-const { translateText } = await import('../translation/translation-client')
-
-const mockTranslateText = vi.mocked(translateText)
+const { createComment } = await import('./comments-store')
 
 const target = { parent: 'issue' as const, parentId: 'issue-1' }
 
@@ -69,7 +63,6 @@ beforeEach(() => {
   state.incrementCalls = []
   state.createSpy.mockClear()
   state.updateSpy.mockClear()
-  mockTranslateText.mockReset()
 })
 
 test('happy-path 5: createComment records the author’s active locale as the recorded source language', async () => {
@@ -83,77 +76,4 @@ test('happy-path 5: createComment records the author’s active locale as the re
   expect(state.createSpy).toHaveBeenCalledWith(
     expect.objectContaining({ lang: 'kk' }),
   )
-})
-
-test('happy-path 6: a cached translation is reused with no new AI translation call', async () => {
-  state.doc = {
-    data: {
-      lang: 'ru',
-      text: 'Отличное предложение',
-      translations: { en: { text: 'Great offer' } },
-    },
-  }
-
-  const result = await translateComment('en', { ...target, id: 'comment-1' })
-
-  expect(result).toEqual({ lang: 'ru', text: 'Great offer' })
-  expect(mockTranslateText).not.toHaveBeenCalled()
-})
-
-test('happy-path 5: an on-demand translate calls the provider on a cache miss and caches the result', async () => {
-  state.doc = { data: { lang: 'ru', text: 'Отличное предложение' } }
-  mockTranslateText.mockResolvedValueOnce({
-    lang: 'ru',
-    translations: {
-      en: { text: 'Great offer' },
-      kk: { text: 'Тамаша ұсыныс' },
-    },
-  })
-
-  const result = await translateComment('en', { ...target, id: 'comment-1' })
-
-  expect(result).toEqual({ lang: 'ru', text: 'Great offer' })
-  expect(state.updateSpy).toHaveBeenCalledWith({
-    lang: 'ru',
-    translations: {
-      en: { text: 'Great offer' },
-      kk: { text: 'Тамаша ұсыныс' },
-    },
-  })
-})
-
-test('edge-cases 4: a translate corrects a wrongly recorded source language', async () => {
-  state.doc = { data: { lang: 'kk', text: 'Отличное предложение' } }
-  mockTranslateText.mockResolvedValueOnce({
-    lang: 'ru',
-    translations: {
-      en: { text: 'Great offer' },
-      kk: { text: 'Тамаша ұсыныс' },
-    },
-  })
-
-  const result = await translateComment('ru', { ...target, id: 'comment-1' })
-
-  expect(result).toEqual({ lang: 'ru', text: 'Отличное предложение' })
-  expect(state.updateSpy).toHaveBeenCalledWith(
-    expect.objectContaining({ lang: 'ru' }),
-  )
-})
-
-test('error-states 2: a provider failure reports failed and leaves the comment untouched', async () => {
-  state.doc = { data: { lang: 'ru', text: 'Отличное предложение' } }
-  mockTranslateText.mockResolvedValueOnce(null)
-
-  const result = await translateComment('en', { ...target, id: 'comment-1' })
-
-  expect(result).toBe('failed')
-  expect(state.updateSpy).not.toHaveBeenCalled()
-})
-
-test('a translate request for a comment that no longer exists reports not-found', async () => {
-  state.doc = null
-
-  const result = await translateComment('en', { ...target, id: 'missing' })
-
-  expect(result).toBe('not-found')
 })

@@ -36,8 +36,3 @@ const server = createHTTPServer({
 server.listen(port)
 
 console.info(`tRPC stub server listening on http://localhost:${port}`)
-console.info(
-  process.env.ANTHROPIC_API_KEY
-    ? 'ANTHROPIC_API_KEY loaded — comment translation enabled'
-    : 'ANTHROPIC_API_KEY missing — set it in apps/api/.env to enable comment translation',
-)
