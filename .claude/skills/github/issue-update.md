@@ -48,10 +48,10 @@ For label changes, list adds and removes explicitly (`add: bug`, `remove: featur
 Run only the fields that changed:
 
 ```bash
-gh issue edit <number> --title "<title>"
-gh issue edit <number> --body-file <path-to-temp-file>
-gh issue edit <number> --add-label "<label>"
-gh issue edit <number> --remove-label "<label>"
+__via_skill__=1 gh issue edit <number> --title "<title>"
+__via_skill__=1 gh issue edit <number> --body-file <path-to-temp-file>
+__via_skill__=1 gh issue edit <number> --add-label "<label>"
+__via_skill__=1 gh issue edit <number> --remove-label "<label>"
 ```
 
 For multi-line bodies, write the new body to a temp file and pass `--body-file` rather than `--body` — avoids shell quoting issues and CRLF mangling on Windows. Clean the temp file up afterwards.

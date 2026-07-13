@@ -50,7 +50,7 @@ Prefer fewer commits over many tiny ones. When in doubt, one well-described comm
 Always pass the commit message via a HEREDOC to avoid issues with special characters and multi-line messages:
 
 ```bash
-git commit -m "$(cat <<'EOF'
+__via_skill__=1 git commit -m "$(cat <<'EOF'
 <type>(<scope>): <description>
 
 <optional body>

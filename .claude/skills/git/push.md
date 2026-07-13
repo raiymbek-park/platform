@@ -45,7 +45,7 @@ If violations found → list them and stop. Suggest using `/git commit squash` t
 **Confirmation gate:** Show branch name and commit count. If `-y` or `--yes` → proceed. Otherwise → ask "Push N commit(s) to `origin/<branch>`?" and wait.
 
 ```bash
-git push -u origin <branch-name>
+__via_skill__=1 git push -u origin <branch-name>
 ```
 
 ### Step 4: Report result
