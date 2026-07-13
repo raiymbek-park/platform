@@ -12,8 +12,8 @@ import {
   trpcServer,
 } from '@/shared/test'
 
-import { useConfirmationStore } from '../model/use-confirmation-store'
 import { useOnboardingStore } from '../model/use-onboarding-store'
+import { useOtpRequestStore } from '../model/use-otp-request-store'
 
 const phone = '+77071234567'
 
@@ -48,7 +48,7 @@ const arriveAtVerification = async () => {
 beforeEach(() => {
   firebaseAuth.reset()
   useOnboardingStore.getState().reset()
-  useConfirmationStore.getState().clear()
+  useOtpRequestStore.getState().clear()
   sessionStorage.clear()
 })
 
@@ -141,7 +141,7 @@ test('the clipboard-paste affordance no longer exists', async () => {
 })
 
 test('error-states 2: a wrong code shows the wrong-code error and clears the field', async () => {
-  firebaseAuth.rejectCodeAsWrong()
+  trpcServer.use(trpcMutationError('otp.verify', 'BAD_REQUEST', 400))
   const { user, currentPath } = await arriveAtVerification()
 
   await typeCode(user, '999999')
@@ -152,7 +152,7 @@ test('error-states 2: a wrong code shows the wrong-code error and clears the fie
 })
 
 test('error-states 3: a network failure during the check shows the connection error and clears the field', async () => {
-  firebaseAuth.rejectCodeWithNetworkError()
+  trpcServer.use(http.post('*/otp.verify', () => HttpResponse.error()))
   const { user } = await arriveAtVerification()
 
   await typeCode(user, '555555')
@@ -164,14 +164,14 @@ test('error-states 3: a network failure during the check shows the connection er
 })
 
 test('error-states 2: after a wrong code, re-entering a correct code confirms again', async () => {
-  firebaseAuth.rejectCodeAsWrong()
+  trpcServer.use(trpcMutationError('otp.verify', 'BAD_REQUEST', 400))
   const { user, currentPath } = await arriveAtVerification()
 
   await typeCode(user, '111111')
   await screen.findByText(/Неверный код/)
   await waitFor(() => expect(codeInput()).toHaveValue(''))
 
-  firebaseAuth.reset()
+  trpcServer.resetHandlers()
   await typeCode(user, '123456')
 
   await waitFor(() => expect(currentPath()).toBe('/home'))
@@ -199,10 +199,12 @@ test('error-states 5: a resend failure keeps the screen and lets the user retry'
   const { user, currentPath } = await arriveAtVerification()
 
   await act(() => vi.advanceTimersByTimeAsync(60_000))
-  firebaseAuth.failSend()
+  trpcServer.use(trpcMutationError('otp.send', 'BAD_GATEWAY', 502))
   await user.click(resendButton())
 
-  expect(await screen.findByText(/Нет связи с сервером/)).toBeInTheDocument()
+  expect(
+    await screen.findByText(/Не удалось отправить SMS/),
+  ).toBeInTheDocument()
   expect(currentPath()).toBe('/onboarding/verification')
 })
 
@@ -211,7 +213,7 @@ test('error-states 6: a too-many-requests resend routes to the locked screen', a
   const { user, currentPath } = await arriveAtVerification()
 
   await act(() => vi.advanceTimersByTimeAsync(60_000))
-  firebaseAuth.failSendTooManyRequests()
+  trpcServer.use(trpcMutationError('otp.send', 'TOO_MANY_REQUESTS', 429))
   await user.click(resendButton())
 
   await waitFor(() => expect(currentPath()).toBe('/onboarding/locked'))
@@ -219,7 +221,7 @@ test('error-states 6: a too-many-requests resend routes to the locked screen', a
 })
 
 test('error-states 6: a too-many-requests code check routes to the locked screen', async () => {
-  firebaseAuth.rejectCodeTooManyRequests()
+  trpcServer.use(trpcMutationError('otp.verify', 'TOO_MANY_REQUESTS', 429))
   const { user, currentPath } = await arriveAtVerification()
 
   await typeCode(user, '999999')

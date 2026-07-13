@@ -1,7 +1,11 @@
 // E2E smoke for the critical auth happy path: register → phone code → home.
 // Runtime requirements:
-//  - api server on :3001 (vite proxies /trpc → :3001 for the register call)
-//  - the Firebase test number +7 705 226 6666 with fixed code 123456 (Firebase console)
+//  - api server on :3001 with OTP_TEST_MODE=true in apps/api/.env — otp.send
+//    honors the test-code map (+7 705 226 6666 → 123456) and skips smsc.kz
+//  - otp.verify runs the real path and mints a Firebase custom token; locally
+//    the api's authorized_user credentials cannot sign custom tokens, so the
+//    signed-in leg needs GOOGLE_APPLICATION_CREDENTIALS pointing at a service
+//    account (known local limitation — CI gates on lint/typecheck/unit only)
 // Run with both servers up: `npm run test:e2e`.
 
 Feature('Onboarding')

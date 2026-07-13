@@ -11,10 +11,9 @@ auth.languageCode = navigator.language
 
 export const storage = getStorage(app)
 
-// E2E only: bypass reCAPTCHA so test phone numbers verify in a headless browser
-// (real reCAPTCHA escalates to an image challenge under automation), and route
-// Storage uploads to the local emulator instead of the live bucket.
+// E2E only: route Storage uploads to the local emulator instead of the live
+// bucket. OTP delivery is bypassed server-side (OTP_TEST_MODE test-code map),
+// so no client-side auth switch is needed here.
 if (import.meta.env.MODE === 'e2e') {
-  auth.settings.appVerificationDisabledForTesting = true
   connectStorageEmulator(storage, '127.0.0.1', 9199)
 }

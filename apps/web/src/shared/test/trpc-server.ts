@@ -97,6 +97,8 @@ const homeHandlers = [
 ]
 
 const onboardingHandlers = [
+  trpcMutation('otp.send', () => ({ ok: true })),
+  trpcMutation('otp.verify', () => ({ token: 'custom-token' })),
   trpcMutation('resident.register', input => ({ resident: input })),
 ]
 

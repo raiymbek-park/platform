@@ -2,19 +2,23 @@ import { expect, test } from 'vitest'
 
 import { isTooManyRequests } from './is-too-many-requests'
 
-test('error-states 6 — auth/too-many-requests is a too-many-requests rejection', () => {
-  expect(isTooManyRequests({ code: 'auth/too-many-requests' })).toBe(true)
+test('error-states 6 — a TOO_MANY_REQUESTS tRPC error is a too-many-requests rejection', () => {
+  expect(isTooManyRequests({ data: { code: 'TOO_MANY_REQUESTS' } })).toBe(true)
 })
 
-test('error-states 6 — auth/error-code:-39 (503 abuse throttle) is a too-many-requests rejection', () => {
-  expect(isTooManyRequests({ code: 'auth/error-code:-39' })).toBe(true)
+test('error-states 6 — a BAD_REQUEST tRPC error is not a too-many-requests rejection', () => {
+  expect(isTooManyRequests({ data: { code: 'BAD_REQUEST' } })).toBe(false)
 })
 
-test('error-states 6 — a network/internal FirebaseError is not a too-many-requests rejection', () => {
-  expect(isTooManyRequests({ code: 'auth/network-request-failed' })).toBe(false)
+test('error-states 6 — a BAD_GATEWAY tRPC error is not a too-many-requests rejection', () => {
+  expect(isTooManyRequests({ data: { code: 'BAD_GATEWAY' } })).toBe(false)
 })
 
-test('error-states 6 — plain Error (no .code) is not a too-many-requests rejection', () => {
+test('error-states 6 — a tRPC error without data is not a too-many-requests rejection', () => {
+  expect(isTooManyRequests({ data: undefined })).toBe(false)
+})
+
+test('error-states 6 — plain Error (no .data) is not a too-many-requests rejection', () => {
   expect(isTooManyRequests(new Error('Network error'))).toBe(false)
 })
 
@@ -26,8 +30,8 @@ test('error-states 6 — a string is not a too-many-requests rejection', () => {
   expect(isTooManyRequests('something went wrong')).toBe(false)
 })
 
-test('error-states 6 — an object with .code = null is not a too-many-requests rejection', () => {
-  expect(isTooManyRequests({ code: null })).toBe(false)
+test('error-states 6 — an object with a non-string data.code is not a too-many-requests rejection', () => {
+  expect(isTooManyRequests({ data: { code: 429 } })).toBe(false)
 })
 
 test('error-states 6 — undefined is not a too-many-requests rejection', () => {

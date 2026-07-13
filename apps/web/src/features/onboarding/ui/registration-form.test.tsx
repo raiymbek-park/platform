@@ -1,17 +1,19 @@
 import type { UserEvent } from '@testing-library/user-event'
 
 import { screen, waitFor } from '@testing-library/react'
+import { HttpResponse, http } from 'msw'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import {
   firebaseAuth,
   renderApp,
   trpcMutation,
+  trpcMutationError,
   trpcServer,
 } from '@/shared/test'
 
-import { useConfirmationStore } from '../model/use-confirmation-store'
 import { useOnboardingStore } from '../model/use-onboarding-store'
+import { useOtpRequestStore } from '../model/use-otp-request-store'
 
 const next = () => screen.getByRole('button', { name: /Далее/ })
 
@@ -78,10 +80,19 @@ const expectPhoneNormalizedOnSubmit = async (
   expect(useOnboardingStore.getState().draft.phone).toBe(normalized)
 }
 
+const holdOtpSend = (onStart: () => void, release: Promise<void>) =>
+  trpcServer.use(
+    http.post('*/otp.send', async () => {
+      onStart()
+      await release
+      return HttpResponse.json([{ result: { data: { ok: true } } }])
+    }),
+  )
+
 beforeEach(() => {
   firebaseAuth.reset()
   useOnboardingStore.getState().reset()
-  useConfirmationStore.getState().clear()
+  useOtpRequestStore.getState().clear()
 })
 
 afterEach(() => {
@@ -320,7 +331,7 @@ test('happy-path 10: "Далее" cannot be submitted twice while the send is in
   const sendHeld = new Promise<void>(resolve => {
     release = resolve
   })
-  firebaseAuth.holdSend(onStart, sendHeld)
+  holdOtpSend(onStart, sendHeld)
 
   const { user } = await renderWelcome()
   await fillValidForm(user)
@@ -342,7 +353,7 @@ test('inputs and block/role choices are disabled while the send is in flight', a
   const sendHeld = new Promise<void>(resolve => {
     release = resolve
   })
-  firebaseAuth.holdSend(onStart, sendHeld)
+  holdOtpSend(onStart, sendHeld)
 
   const { user } = await renderWelcome()
   await fillValidForm(user)
@@ -360,20 +371,22 @@ test('inputs and block/role choices are disabled while the send is in flight', a
 })
 
 test('error-states 1: a send failure keeps the welcome screen and re-enables "Далее"', async () => {
-  firebaseAuth.failSend()
+  trpcServer.use(trpcMutationError('otp.send', 'BAD_GATEWAY', 502))
   const { user, currentPath } = await renderWelcome()
   await fillValidForm(user)
   await waitFor(() => expect(next()).toBeEnabled())
 
   await user.click(next())
 
-  expect(await screen.findByText(/Нет связи с сервером/)).toBeInTheDocument()
+  expect(
+    await screen.findByText(/Не удалось отправить SMS/),
+  ).toBeInTheDocument()
   expect(currentPath()).toBe('/onboarding/welcome')
   await waitFor(() => expect(next()).toBeEnabled())
 })
 
 test('error-states 6: a too-many-requests send routes to the locked screen', async () => {
-  firebaseAuth.failSendTooManyRequests()
+  trpcServer.use(trpcMutationError('otp.send', 'TOO_MANY_REQUESTS', 429))
   const { user, currentPath } = await renderWelcome()
   await fillValidForm(user)
   await waitFor(() => expect(next()).toBeEnabled())

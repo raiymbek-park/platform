@@ -1,7 +1,12 @@
 import { screen, waitFor } from '@testing-library/react'
 import { beforeEach, expect, test } from 'vitest'
 
-import { firebaseAuth, renderApp } from '@/shared/test'
+import {
+  firebaseAuth,
+  renderApp,
+  trpcMutationError,
+  trpcServer,
+} from '@/shared/test'
 
 import { useOnboardingStore } from '../model/use-onboarding-store'
 
@@ -38,7 +43,7 @@ test('error-states 6: retrying from the locked screen with success reaches verif
 
 test('error-states 6: retrying from the locked screen with failure keeps it locked', async () => {
   fillLockedDraft()
-  firebaseAuth.failSend()
+  trpcServer.use(trpcMutationError('otp.send', 'BAD_GATEWAY', 502))
   const { user, currentPath } = renderApp('/onboarding/locked')
 
   await screen.findByText('Доступ заблокирован')
