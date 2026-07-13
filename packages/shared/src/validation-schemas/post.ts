@@ -57,6 +57,10 @@ export const POST_TITLE_MIN = 3
 export const POST_TITLE_MAX = 80
 export const POST_DESCRIPTION_MIN = 10
 export const POST_DESCRIPTION_MAX = 1000
+export const ANNOUNCEMENT_DESCRIPTION_MAX = 3000
+
+export const postDescriptionMax = (kind: PostKind): number =>
+  kind === 'announcement' ? ANNOUNCEMENT_DESCRIPTION_MAX : POST_DESCRIPTION_MAX
 
 const titleSchema = z.string().trim().min(POST_TITLE_MIN).max(POST_TITLE_MAX)
 const descriptionSchema = z
@@ -64,11 +68,16 @@ const descriptionSchema = z
   .trim()
   .min(POST_DESCRIPTION_MIN)
   .max(POST_DESCRIPTION_MAX)
+const announcementDescriptionSchema = z
+  .string()
+  .trim()
+  .min(POST_DESCRIPTION_MIN)
+  .max(ANNOUNCEMENT_DESCRIPTION_MAX)
 const mediaSchema = z.array(z.string()).max(MEDIA_MAX_ITEMS).default([])
 
 const announcementFields = {
   category: announcementCategorySchema,
-  description: descriptionSchema,
+  description: announcementDescriptionSchema,
   kind: z.literal('announcement'),
   media: mediaSchema,
   title: titleSchema,

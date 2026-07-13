@@ -5,6 +5,7 @@ import type { MediaPicker } from '@/shared/media'
 import type { PostFormSubmit, PostFormValues } from '../lib/validators'
 
 import { useLingui } from '@lingui/react/macro'
+import { postDescriptionMax } from '@raiymbek-park/shared/validation-schemas'
 import { InfoCallout, Input, ScreenTitle } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
@@ -114,7 +115,7 @@ export const PostFormFields = ({
             <TextareaField
               field={field}
               label={t`Описание`}
-              maxLength={1000}
+              maxLength={postDescriptionMax(kind)}
               placeholder={t`Расскажите подробнее о вашем объявлении…`}
             />
             <p className={css.hint}>{t`Поддерживается разметка Markdown.`}</p>

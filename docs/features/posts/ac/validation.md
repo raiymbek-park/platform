@@ -8,8 +8,9 @@ Input rules and permission gating. Field limits reuse the issues conventions.
   Then:  the form blocks submission and flags the title
 
 ## Scenario 2: Description length
-  Given: the create/edit form (either kind)
-  When:  the trimmed description is shorter than 10 or longer than 1000 characters
+  Given: the create/edit form
+  When:  the trimmed description is shorter than 10, or longer than the kind's maximum
+         (1000 characters for an offer, 3000 for an announcement)
   Then:  the form blocks submission and flags the description
 
 ## Scenario 3: Category required

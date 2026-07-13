@@ -6,10 +6,10 @@ import type {
 import {
   announcementCategories,
   offerCategories,
-  POST_DESCRIPTION_MAX,
   POST_DESCRIPTION_MIN,
   POST_TITLE_MAX,
   POST_TITLE_MIN,
+  postDescriptionMax,
 } from '@raiymbek-park/shared/validation-schemas'
 import { z } from 'zod'
 
@@ -27,7 +27,7 @@ export const postFormSchema = (kind: PostKind) =>
       .string()
       .trim()
       .min(POST_DESCRIPTION_MIN)
-      .max(POST_DESCRIPTION_MAX),
+      .max(postDescriptionMax(kind)),
     title: z.string().trim().min(POST_TITLE_MIN).max(POST_TITLE_MAX),
   })
 

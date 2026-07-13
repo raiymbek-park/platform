@@ -68,8 +68,9 @@ Boundary conditions.
          the title is not flagged
 
 ## Scenario 13: Description at the exact length boundary is accepted
-  Given: the create/edit form (either kind)
-  When:  the trimmed description is exactly 10 characters, or exactly 1000 characters
+  Given: the create/edit form
+  When:  the trimmed description is exactly 10 characters, or exactly the kind's maximum
+         (1000 characters for an offer, 3000 for an announcement)
   Then:  the form allows submission
          the description is not flagged
 

@@ -228,7 +228,8 @@ primitives, all living together in **`packages/ui/content-card`**:
 - **Kind** — required; `announcement` or `offer`; fixed after creation.
 - **Category** — required; exactly one from the kind's set.
 - **Title** — required; trimmed length 3–80 characters.
-- **Description** — required; Markdown source, trimmed length 10–1000 characters.
+- **Description** — required; Markdown source, trimmed length 10–1000 characters for an offer and
+  10–3000 for an announcement.
 - **Media** — optional; up to 10 photos and/or videos combined, total size at most 200 MB.
 - **Comment message** — Markdown source, trimmed text up to 1000 characters, plus optional media (up to
   10 items, 200 MB combined); at least one of text or media must be present.
