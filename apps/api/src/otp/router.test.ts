@@ -174,6 +174,36 @@ describe('otp.send — issue and deliver a code (happy-path 7)', () => {
   })
 })
 
+describe('otp.send — SMS copy follows the caller locale', () => {
+  const deliveredMessage = () =>
+    sendSmsMock.mock.calls.at(-1)?.[0].message ?? ''
+
+  test('sends the confirmation copy in Russian for a ru caller', async () => {
+    await caller.send({ phone: PHONE })
+    expect(deliveredMessage()).toContain('код подтверждения')
+  })
+
+  test('sends the confirmation copy in Kazakh for a kk caller', async () => {
+    const kkCaller = otpRouter.createCaller({
+      locale: 'kk',
+      phone: null,
+      uid: null,
+    })
+    await kkCaller.send({ phone: PHONE })
+    expect(deliveredMessage()).toContain('растау коды')
+  })
+
+  test('sends the confirmation copy in English for an en caller', async () => {
+    const enCaller = otpRouter.createCaller({
+      locale: 'en',
+      phone: null,
+      uid: null,
+    })
+    await enCaller.send({ phone: PHONE })
+    expect(deliveredMessage()).toContain('verification code')
+  })
+})
+
 describe('otp.send — gateway delivery failure (error-states 4)', () => {
   test('surfaces BAD_GATEWAY when the gateway returns an error', async () => {
     sendSmsMock.mockResolvedValue({ error: 'insufficient balance', ok: false })
