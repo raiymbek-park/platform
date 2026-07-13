@@ -40,6 +40,15 @@ test('sendCodeErrorText — known tRPC codes map to distinct, specific messages'
   expect(new Set([fallback, gateway, invalidPhone]).size).toBe(3)
 })
 
+test('sendCodeErrorText — each mapped code renders a non-empty message ahead of the code suffix', () => {
+  silenceLog()
+  const gateway = sendCodeErrorText({ data: { code: 'BAD_GATEWAY' } })
+  const invalidPhone = sendCodeErrorText({ data: { code: 'BAD_REQUEST' } })
+
+  expect(gateway.replace(/ \(BAD_GATEWAY\)$/, '')).not.toBe('')
+  expect(invalidPhone.replace(/ \(BAD_REQUEST\)$/, '')).not.toBe('')
+})
+
 test('sendCodeErrorText — the visible message carries the error code for on-device diagnosis', () => {
   silenceLog()
   const generic = sendCodeErrorText(new Error('boom'))
