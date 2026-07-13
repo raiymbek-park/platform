@@ -73,7 +73,7 @@ msgstr "Your contact number is visible to other residents."
 msgid "Ваш контактный номер скрыт от других жильцов."
 msgstr "Your contact number is hidden from other residents."
 
-#: src/pages/post-form/ui/post-form-fields.tsx:129
+#: src/pages/post-form/ui/post-form-fields.tsx:130
 msgid "Ваш номер телефона будет виден всем пользователям."
 msgstr "Your phone number will be visible to everyone."
 
@@ -253,7 +253,7 @@ msgstr "Changes appeared while you were away:"
 msgid "Заблокировано"
 msgstr "Blocked"
 
-#: src/pages/post-form/ui/post-form-fields.tsx:96
+#: src/pages/post-form/ui/post-form-fields.tsx:97
 msgid "Заголовок"
 msgstr "Title"
 
@@ -428,7 +428,7 @@ msgstr "Comments: {0}"
 msgid "Комментарий"
 msgstr "Comment"
 
-#: src/pages/post-form/ui/post-form-fields.tsx:98
+#: src/pages/post-form/ui/post-form-fields.tsx:99
 msgid "Кратко о вашем объявлении"
 msgstr "Briefly describe your post"
 
@@ -743,7 +743,7 @@ msgid "Объявления"
 msgstr "Announcements"
 
 #: src/pages/issue-form/ui/issue-form-fields.tsx:113
-#: src/pages/post-form/ui/post-form-fields.tsx:116
+#: src/pages/post-form/ui/post-form-fields.tsx:117
 msgid "Описание"
 msgstr "Description"
 
@@ -848,7 +848,7 @@ msgstr "Duplicates another issue"
 msgid "Подайте обращение в УК"
 msgstr "Submit a request to the management company"
 
-#: src/pages/post-form/ui/post-form-fields.tsx:120
+#: src/pages/post-form/ui/post-form-fields.tsx:121
 msgid "Поддерживается разметка Markdown."
 msgstr "Markdown formatting is supported."
 
@@ -956,7 +956,7 @@ msgstr "Work is planned for the future"
 msgid "Разместите частное объявление для жителей нашего ЖК."
 msgstr "Post a private ad for the residents of our complex."
 
-#: src/pages/post-form/ui/post-form-fields.tsx:118
+#: src/pages/post-form/ui/post-form-fields.tsx:119
 msgid "Расскажите подробнее о вашем объявлении…"
 msgstr "Tell us more about your post…"
 
@@ -1201,7 +1201,7 @@ msgid "Файл слишком большой: суммарный размер �
 msgstr "File too large: the total size of attachments must not exceed {MEDIA_MAX_MB} MB"
 
 #: src/pages/issue-form/ui/issue-form-fields.tsx:120
-#: src/pages/post-form/ui/post-form-fields.tsx:125
+#: src/pages/post-form/ui/post-form-fields.tsx:126
 msgid "Фото"
 msgstr "Photos"
 
