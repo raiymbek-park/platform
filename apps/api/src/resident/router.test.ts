@@ -6,17 +6,21 @@ import type { z } from 'zod'
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createResident, getResident, updateResident } from './resident-store'
+import {
+  createResidentIfAbsent,
+  getResident,
+  updateResident,
+} from './resident-store'
 import { residentRouter } from './router'
 
 vi.mock('./resident-store', () => ({
-  createResident: vi.fn(),
+  createResidentIfAbsent: vi.fn(),
   getResident: vi.fn(),
   markVisit: vi.fn(),
   updateResident: vi.fn(),
 }))
 
-const mockCreateResident = vi.mocked(createResident)
+const mockCreateResidentIfAbsent = vi.mocked(createResidentIfAbsent)
 const mockGetResident = vi.mocked(getResident)
 const mockUpdateResident = vi.mocked(updateResident)
 
@@ -84,19 +88,26 @@ describe('residentRouter — Firebase identity gate', () => {
 })
 
 describe('residentRouter.register — one record per identity', () => {
-  it('creates a resident when none exists for the caller uid', async () => {
-    mockGetResident.mockResolvedValueOnce(null)
+  it('writes the form profile under the caller uid via an atomic create-if-absent', async () => {
+    mockCreateResidentIfAbsent.mockImplementationOnce(
+      async (_uid, input) => input,
+    )
 
     await caller.register(validInput)
 
-    expect(mockCreateResident).toHaveBeenCalledWith(
+    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
       'uid-1',
-      expect.objectContaining({ name: 'Иван Петров', phone: '+77071234567' }),
+      expect.objectContaining({
+        avatarUrl: null,
+        cars: [],
+        name: 'Иван Петров',
+        phone: '+77071234567',
+      }),
     )
   })
 
-  it('is idempotent — a returning uid keeps its stored profile and writes nothing', async () => {
-    const stored = {
+  it('returns the stored profile a returning identity already has, unchanged', async () => {
+    const existing = {
       apartment: 60,
       avatarUrl: 'https://example/avatar.webp',
       block: 3,
@@ -106,12 +117,11 @@ describe('residentRouter.register — one record per identity', () => {
       phone: '+77071234567',
       role: 'administration',
     }
-    mockGetResident.mockResolvedValueOnce(stored)
+    mockCreateResidentIfAbsent.mockResolvedValueOnce(existing)
 
     await expect(caller.register(validInput)).resolves.toEqual({
-      resident: stored,
+      resident: existing,
     })
-    expect(mockCreateResident).not.toHaveBeenCalled()
   })
 })
 

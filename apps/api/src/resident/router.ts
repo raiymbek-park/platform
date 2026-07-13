@@ -10,7 +10,7 @@ import { TRPCError } from '@trpc/server'
 
 import { publicProcedure, router } from '../trpc'
 import {
-  createResident,
+  createResidentIfAbsent,
   getResident,
   markVisit,
   updateResident,
@@ -53,9 +53,6 @@ export const residentRouter = router({
         })
       }
 
-      const existing = await getResident(ctx.uid)
-      if (existing) return { resident: existing }
-
       const stored = {
         ...resident,
         avatarUrl: null,
@@ -63,8 +60,8 @@ export const residentRouter = router({
         isPhoneVisible: false,
         phone: ctx.phone ?? resident.phone,
       }
-      await createResident(ctx.uid, stored)
-      return { resident: stored }
+      const persisted = await createResidentIfAbsent(ctx.uid, stored)
+      return { resident: persisted }
     }),
   update: publicProcedure
     .input(profileUpdateSchema)

@@ -71,10 +71,9 @@
   When:  the user navigates to the "Доступ заблокирован" (Access locked) screen
   Then:  the app redirects to the welcome screen
 
-## Scenario 10: Re-authenticating with the same phone keeps a single resident record
+## Scenario 10: Re-authenticating on an existing identity keeps a single resident record
 
-  Given: a resident already exists for the caller's verified identity (same phone → same
-         Firebase user id)
+  Given: a resident record already exists under the caller's verified Firebase user id
   When:  the resident completes the registration form and confirms an SMS code again
   Then:  no new resident record is created
          the stored profile (name, avatar, cars, role) is preserved and not overwritten by

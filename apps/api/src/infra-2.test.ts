@@ -50,7 +50,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
 
   describe('resident-store — register writes residents/{uid}', () => {
     it('stored profile is readable back under the same uid', async () => {
-      const { createResident, getResident } = await import(
+      const { createResidentIfAbsent, getResident } = await import(
         './resident/resident-store'
       )
 
@@ -65,7 +65,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         role: 'owner',
       }
       const uid = 'firebase-uid-happy-2'
-      await createResident(uid, input)
+      await createResidentIfAbsent(uid, input)
 
       const resident = await getResident(uid)
       expect(resident).toEqual(input)
@@ -74,7 +74,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
 
   describe('resident-store — profile read', () => {
     it('returned profile equals the stored name, block, apartment, role, and phone', async () => {
-      const { createResident, getResident } = await import(
+      const { createResidentIfAbsent, getResident } = await import(
         './resident/resident-store'
       )
 
@@ -89,7 +89,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         role: 'tenant',
       }
       const uid = 'firebase-uid-happy-3'
-      await createResident(uid, input)
+      await createResidentIfAbsent(uid, input)
 
       const resident = await getResident(uid)
       expect(resident?.name).toBe(input.name)
@@ -200,13 +200,13 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
 
   describe('resident-store — markVisit', () => {
     it('writes residents/{uid}.lastVisit as a server timestamp', async () => {
-      const { createResident, markVisit } = await import(
+      const { createResidentIfAbsent, markVisit } = await import(
         './resident/resident-store'
       )
       const { Timestamp } = await import('./firestore')
 
       const uid = 'firebase-uid-visit'
-      await createResident(uid, {
+      await createResidentIfAbsent(uid, {
         apartment: 1,
         avatarUrl: null,
         block: 1,
