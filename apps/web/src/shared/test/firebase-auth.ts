@@ -40,6 +40,7 @@ const signOut = vi.fn(() => {
 })
 
 export const firebaseAuthModule = {
+  connectAuthEmulator: vi.fn(),
   getAuth,
   signInWithCustomToken,
   signOut,
