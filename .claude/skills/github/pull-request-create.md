@@ -62,7 +62,7 @@ Fill in each section based on the GitHub issue and branch analysis.
 **Confirmation gate:** Show the PR title, target branch, and commit count. If `-y` → proceed. Otherwise → ask "Push and create PR?" and wait.
 
 ```bash
-gh pr create --title "<title>" --body "<description>"
+__via_skill__=1 gh pr create --title "<title>" --body "<description>"
 ```
 
 ### Step 8: Output the PR URL

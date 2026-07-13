@@ -55,7 +55,7 @@ Show the fully formatted issue:
 Create the issue using `gh`:
 
 ```bash
-gh issue create --title "<title>" --body "$(cat <<'EOF'
+__via_skill__=1 gh issue create --title "<title>" --body "$(cat <<'EOF'
 ## Description
 
 <description>

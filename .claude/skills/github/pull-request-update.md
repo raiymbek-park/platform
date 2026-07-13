@@ -52,7 +52,7 @@ Fill in each section based on the GitHub issue and branch analysis.
 **Confirmation gate:** Show the new PR title and summary of changes. If `-y` → proceed. Otherwise → ask "Update PR #<number>?" and wait.
 
 ```bash
-gh pr edit <pr-number> --title "<title>" --body "<description>"
+__via_skill__=1 gh pr edit <pr-number> --title "<title>" --body "<description>"
 ```
 
 ### Step 8: Output the PR URL

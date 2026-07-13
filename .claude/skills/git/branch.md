@@ -47,7 +47,7 @@ Validate description: 2-4 words, kebab-case. If longer → shorten, keep only ke
 ### Step 5: Create branch
 
 ```bash
-git switch -c <branch-name>
+__via_skill__=1 git switch -c <branch-name>
 ```
 
 If the branch already exists → error: "Branch `<branch-name>` already exists. Switch to it with `git switch <branch-name>` or choose a different name." and stop.

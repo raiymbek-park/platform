@@ -3,7 +3,7 @@ import { createHTTPHandler } from '@trpc/server/adapters/standalone'
 import { onRequest } from 'firebase-functions/v2/https'
 
 import { anthropicApiKey } from './anthropic-key'
-import { smscLogin, smscPassword, smscSender } from './smsc-secrets'
+import { smscLogin, smscPassword } from './smsc-secrets'
 
 export {
   translateIssueComments,
@@ -21,7 +21,7 @@ export const api = onRequest(
     region: 'europe-west1',
     minInstances: 0,
     cors: [pagesOrigin],
-    secrets: [anthropicApiKey, smscLogin, smscPassword, smscSender],
+    secrets: [anthropicApiKey, smscLogin, smscPassword],
   },
   (req, res) => handler(req, res),
 )
