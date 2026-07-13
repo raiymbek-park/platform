@@ -94,10 +94,16 @@ sign-in — attaching the ID token, `resident.register`, the route guards — is
 
 ### Credentials
 
-The smsc.kz `login` + `psw` (or `apikey`) and the sender name are held as Firebase Functions secrets via
-`defineSecret(...)`, mirroring `apps/functions/src/anthropic-key.ts`, and set with
-`firebase functions:secrets:set {NAME}`. They are never committed and never enter the web bundle. A
-deploy succeeds silently without them, so they must be set before the flow works.
+The smsc.kz `login` + `psw` (or `apikey`) are held as Firebase Functions secrets via `defineSecret(...)`,
+mirroring `apps/functions/src/anthropic-key.ts`, and set with `firebase functions:secrets:set {NAME}`.
+They are never committed and never enter the web bundle. Because the function **declares** these secrets,
+`firebase deploy` in CI **fails** until both exist in the project — they are required, not silently
+skipped.
+
+The **sender name is optional and is not a secret** (a sender name is not sensitive, and Secret Manager
+cannot store an empty value). When `SMSC_SENDER` is unset the gateway's default sender is used, which
+delivers to Kazakhstan numbers without a pre-approved alphanumeric sender; set it only once an approved
+sender name exists.
 
 ### Testing
 
