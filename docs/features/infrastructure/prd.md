@@ -79,8 +79,9 @@ the gateway and custom-token mechanics.
 - **smsc.kz gateway credentials** — the gateway `login` + password (or API key) are held as
   required Firebase Functions secrets and set out of band; deployment fails until they exist in
   the project. The sender name is optional (not a secret) — the gateway's default sender is used
-  when it is unset. None of these enter the repository or the web bundle. See ADR 013 for the
-  secret names and setup.
+  when it is unset, and if ever needed `SMSC_SENDER` is set as a plain env var on the deployed
+  function (an `apps/functions` dotenv entry or a Cloud Run env var), not via Secret Manager. None
+  of these enter the repository or the web bundle. See ADR 013 for the secret names and setup.
 - **Local-dev credentials without a service-account key** — the Admin SDK authenticates
   against the live project locally by building an `authorized_user` ADC file from the Firebase
   CLI's stored refresh token (the well-known firebase-tools OAuth client id/secret), written to
