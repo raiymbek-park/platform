@@ -4,18 +4,23 @@ import type {
 } from '@raiymbek-park/shared/validation-schemas'
 import type { z } from 'zod'
 
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { getResident, updateResident } from './resident-store'
+import {
+  createResidentIfAbsent,
+  getResident,
+  updateResident,
+} from './resident-store'
 import { residentRouter } from './router'
 
 vi.mock('./resident-store', () => ({
-  createResident: vi.fn(),
+  createResidentIfAbsent: vi.fn(),
   getResident: vi.fn(),
   markVisit: vi.fn(),
   updateResident: vi.fn(),
 }))
 
+const mockCreateResidentIfAbsent = vi.mocked(createResidentIfAbsent)
 const mockGetResident = vi.mocked(getResident)
 const mockUpdateResident = vi.mocked(updateResident)
 
@@ -41,6 +46,10 @@ const caller = residentRouter.createCaller({
   locale: 'ru',
   phone: '+77071234567',
   uid: 'uid-1',
+})
+
+beforeEach(() => {
+  vi.clearAllMocks()
 })
 
 describe('residentRouter — Firebase identity gate', () => {
@@ -74,6 +83,44 @@ describe('residentRouter — Firebase identity gate', () => {
     })
     await expect(anonymousCaller.update(validUpdate)).rejects.toMatchObject({
       code: 'UNAUTHORIZED',
+    })
+  })
+})
+
+describe('residentRouter.register — one record per identity', () => {
+  it('writes the form profile under the caller uid via an atomic create-if-absent', async () => {
+    mockCreateResidentIfAbsent.mockImplementationOnce(
+      async (_uid, input) => input,
+    )
+
+    await caller.register(validInput)
+
+    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
+      'uid-1',
+      expect.objectContaining({
+        avatarUrl: null,
+        cars: [],
+        name: 'Иван Петров',
+        phone: '+77071234567',
+      }),
+    )
+  })
+
+  it('returns the stored profile a returning identity already has, unchanged', async () => {
+    const existing = {
+      apartment: 60,
+      avatarUrl: 'https://example/avatar.webp',
+      block: 3,
+      cars: ['A123BC'],
+      isPhoneVisible: true,
+      name: 'Султан',
+      phone: '+77071234567',
+      role: 'administration',
+    }
+    mockCreateResidentIfAbsent.mockResolvedValueOnce(existing)
+
+    await expect(caller.register(validInput)).resolves.toEqual({
+      resident: existing,
     })
   })
 })

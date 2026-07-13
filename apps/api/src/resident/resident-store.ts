@@ -20,13 +20,6 @@ export type ResidentUpdate = Omit<Resident, 'phone'>
 
 const docRef = (uid: string) => getDb().collection('residents').doc(uid)
 
-export const createResident = async (
-  uid: string,
-  input: Resident,
-): Promise<void> => {
-  await docRef(uid).set(input)
-}
-
 export const updateResident = async (
   uid: string,
   input: ResidentUpdate,
@@ -59,6 +52,20 @@ export const getResident = async (uid: string): Promise<Resident | null> => {
   const snap = await docRef(uid).get()
   const data = snap.data()
   return data ? parseResident(data) : null
+}
+
+export const createResidentIfAbsent = async (
+  uid: string,
+  input: Resident,
+): Promise<Resident> => {
+  const ref = docRef(uid)
+  return getDb().runTransaction(async tx => {
+    const snap = await tx.get(ref)
+    const data = snap.data()
+    if (data) return parseResident(data)
+    tx.set(ref, input)
+    return input
+  })
 }
 
 export const getRole = async (uid: string): Promise<PermissionRole> =>

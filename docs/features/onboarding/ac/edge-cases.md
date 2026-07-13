@@ -70,3 +70,11 @@
   Given: there is no phone number in the in-progress registration draft (e.g. a direct visit)
   When:  the user navigates to the "Доступ заблокирован" (Access locked) screen
   Then:  the app redirects to the welcome screen
+
+## Scenario 10: Re-authenticating on an existing identity keeps a single resident record
+
+  Given: a resident record already exists under the caller's verified Firebase user id
+  When:  the resident completes the registration form and confirms an SMS code again
+  Then:  no new resident record is created
+         the stored profile (name, avatar, cars, role) is preserved and not overwritten by
+         the re-submitted form values
