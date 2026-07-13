@@ -4,9 +4,9 @@ import type {
 } from '@raiymbek-park/shared/validation-schemas'
 import type { z } from 'zod'
 
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { getResident, updateResident } from './resident-store'
+import { createResident, getResident, updateResident } from './resident-store'
 import { residentRouter } from './router'
 
 vi.mock('./resident-store', () => ({
@@ -16,6 +16,7 @@ vi.mock('./resident-store', () => ({
   updateResident: vi.fn(),
 }))
 
+const mockCreateResident = vi.mocked(createResident)
 const mockGetResident = vi.mocked(getResident)
 const mockUpdateResident = vi.mocked(updateResident)
 
@@ -41,6 +42,10 @@ const caller = residentRouter.createCaller({
   locale: 'ru',
   phone: '+77071234567',
   uid: 'uid-1',
+})
+
+beforeEach(() => {
+  vi.clearAllMocks()
 })
 
 describe('residentRouter — Firebase identity gate', () => {
@@ -75,6 +80,38 @@ describe('residentRouter — Firebase identity gate', () => {
     await expect(anonymousCaller.update(validUpdate)).rejects.toMatchObject({
       code: 'UNAUTHORIZED',
     })
+  })
+})
+
+describe('residentRouter.register — one record per identity', () => {
+  it('creates a resident when none exists for the caller uid', async () => {
+    mockGetResident.mockResolvedValueOnce(null)
+
+    await caller.register(validInput)
+
+    expect(mockCreateResident).toHaveBeenCalledWith(
+      'uid-1',
+      expect.objectContaining({ name: 'Иван Петров', phone: '+77071234567' }),
+    )
+  })
+
+  it('is idempotent — a returning uid keeps its stored profile and writes nothing', async () => {
+    const stored = {
+      apartment: 60,
+      avatarUrl: 'https://example/avatar.webp',
+      block: 3,
+      cars: ['A123BC'],
+      isPhoneVisible: true,
+      name: 'Султан',
+      phone: '+77071234567',
+      role: 'administration',
+    }
+    mockGetResident.mockResolvedValueOnce(stored)
+
+    await expect(caller.register(validInput)).resolves.toEqual({
+      resident: stored,
+    })
+    expect(mockCreateResident).not.toHaveBeenCalled()
   })
 })
 

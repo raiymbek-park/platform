@@ -53,6 +53,9 @@ export const residentRouter = router({
         })
       }
 
+      const existing = await getResident(ctx.uid)
+      if (existing) return { resident: existing }
+
       const stored = {
         ...resident,
         avatarUrl: null,
