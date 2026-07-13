@@ -21,10 +21,24 @@
   Then:  the request carries no identity (`uid` is null)
          any mutation requiring identity is rejected as `UNAUTHORIZED`
 
-## Scenario 4: Verification-code delivery fails at Firebase Phone Auth
+## Scenario 4: Verification-code delivery fails at the smsc.kz gateway
 
   Given: a resident requests a verification code
-  When:  Firebase Phone Authentication rejects the request (e.g. quota exhausted or an
-         invalid number)
-  Then:  the client surfaces the failure to the resident
-         no Firebase session is established and no API mutation is authorized
+  When:  the smsc.kz gateway returns an error (e.g. insufficient balance or an invalid number)
+  Then:  `otp.send` surfaces the failure to the client
+         no custom token is minted and no Firebase session is established
+
+## Scenario 5: Verify with an expired or exhausted code is rejected
+
+  Given: `otps/{phone}` has expired, or its failed-attempt cap has been reached
+  When:  the client calls `otp.verify`
+  Then:  the request is rejected as an expired/invalid code
+         no custom token is minted
+         the resident must request a new code
+
+## Scenario 6: Send rate limit returns a too-many-requests error
+
+  Given: the per-phone send rate limit for `otp.send` has been reached
+  When:  the client calls `otp.send` again for that phone
+  Then:  the request is rejected with a too-many-requests error
+         no new code is sent
