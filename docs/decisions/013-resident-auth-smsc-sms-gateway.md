@@ -103,9 +103,10 @@ skipped.
 The **sender name is optional and is not a secret** (a sender name is not sensitive, and Secret Manager
 cannot store an empty value). When `SMSC_SENDER` is unset the gateway's default sender is used, which
 delivers to Kazakhstan numbers without a pre-approved alphanumeric sender. To use an approved sender once
-one exists, set `SMSC_SENDER` as a **plain environment variable on the deployed `api` function** — an
-`apps/functions` dotenv entry (`.env` / `.env.{project}`, deployed and loaded by Firebase Functions) or a
-Cloud Run env var on the underlying gen2 service — **not** via `defineSecret` / Secret Manager.
+one exists, set `SMSC_SENDER` as a **plain environment variable on the deployed `api` function** — either
+an `apps/functions` dotenv entry (`.env` / `.env.{project}`, which the Firebase CLI reads at deploy time
+and applies as a function environment variable) or a Cloud Run env var on the underlying gen2 service —
+**not** via `defineSecret` / Secret Manager.
 
 ### Testing
 
