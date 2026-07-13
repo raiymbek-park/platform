@@ -1,3 +1,5 @@
+import type { OtpRecord } from './otp-store'
+
 import {
   normalizePhone,
   phoneSchema,
@@ -8,7 +10,7 @@ import { z } from 'zod'
 import { getAuthAdmin } from '../firestore'
 import { publicProcedure, router } from '../trpc'
 import { generateCode, hashCode, isCodeMatch, newSalt } from './generate-code'
-import { deleteOtp, getOtp, saveAttemptCount, upsertOtp } from './otp-store'
+import { deleteOtp, reserveSend, upsertOtp, verifyAttempt } from './otp-store'
 import { sendSms } from './smsc-client'
 import { testCodeFor } from './test-codes'
 
@@ -42,6 +44,9 @@ const deliverSms = async (to: string, code: string): Promise<void> => {
   if (result === null || !result.ok) throw smsSendFailed()
 }
 
+const restoreOtp = (phoneNumber: string, previous: OtpRecord | null) =>
+  previous ? upsertOtp(phoneNumber, previous) : deleteOtp(phoneNumber)
+
 const getOrCreateUid = async (phoneNumber: string): Promise<string> => {
   const auth = getAuthAdmin()
   const existing = await auth
@@ -56,51 +61,42 @@ export const otpRouter = router({
   send: publicProcedure
     .input(z.object({ phone }))
     .mutation(async ({ input }) => {
-      const now = Date.now()
-      const existing = await getOtp(input.phone)
-
-      if (existing && now - existing.lastSentAt < SEND_INTERVAL_MS) {
-        throw tooManyRequests()
-      }
-      const isWindowActive =
-        existing !== null && now - existing.windowStart < SEND_WINDOW_MS
-      const sendCount = isWindowActive ? existing.sendCount : 0
-      const windowStart = isWindowActive ? existing.windowStart : now
-      if (sendCount >= SENDS_PER_WINDOW) throw tooManyRequests()
-
       const testCode = testCodeFor(input.phone)
       const code = testCode ?? generateCode()
       const salt = newSalt()
-      await upsertOtp(input.phone, {
-        attemptCount: 0,
+      const reserved = await reserveSend({
         codeHash: hashCode(salt, code),
-        createdAt: now,
-        expiresAt: now + CODE_TTL_MS,
-        lastSentAt: now,
+        now: Date.now(),
+        phone: input.phone,
+        rules: {
+          intervalMs: SEND_INTERVAL_MS,
+          sendsPerWindow: SENDS_PER_WINDOW,
+          windowMs: SEND_WINDOW_MS,
+        },
         salt,
-        sendCount: sendCount + 1,
-        windowStart,
+        ttlMs: CODE_TTL_MS,
       })
+      if (reserved.isBlocked) throw tooManyRequests()
 
-      if (testCode === null) await deliverSms(input.phone, code)
+      if (testCode === null) {
+        await deliverSms(input.phone, code).catch(async error => {
+          await restoreOtp(input.phone, reserved.previous)
+          throw error
+        })
+      }
       return { ok: true }
     }),
   verify: publicProcedure
     .input(z.object({ code: z.string().regex(/^\d{6}$/), phone }))
     .mutation(async ({ input }) => {
-      const record = await getOtp(input.phone)
-      if (!record || Date.now() > record.expiresAt) throw invalidCode()
-
-      if (record.attemptCount >= MAX_VERIFY_ATTEMPTS) {
-        await deleteOtp(input.phone)
-        throw invalidCode()
-      }
-      if (!isCodeMatch(record.salt, record.codeHash, input.code)) {
-        const attemptCount = record.attemptCount + 1
-        if (attemptCount >= MAX_VERIFY_ATTEMPTS) await deleteOtp(input.phone)
-        else await saveAttemptCount(input.phone, attemptCount)
-        throw invalidCode()
-      }
+      const outcome = await verifyAttempt({
+        isMatch: record =>
+          isCodeMatch(record.salt, record.codeHash, input.code),
+        maxAttempts: MAX_VERIFY_ATTEMPTS,
+        now: Date.now(),
+        phone: input.phone,
+      })
+      if (outcome === 'invalid') throw invalidCode()
 
       const uid = await getOrCreateUid(input.phone)
       const token = await getAuthAdmin().createCustomToken(uid)

@@ -1,4 +1,8 @@
-import type { OtpRecord } from './otp-store'
+import type {
+  OtpRecord,
+  ReserveSendInput,
+  VerifyAttemptInput,
+} from './otp-store'
 
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
@@ -8,9 +12,9 @@ const store = vi.hoisted(() => ({
   records: {} as Record<string, OtpRecord>,
 }))
 
-const getOtpMock = vi.hoisted(() => vi.fn())
+const reserveSendMock = vi.hoisted(() => vi.fn())
+const verifyAttemptMock = vi.hoisted(() => vi.fn())
 const upsertOtpMock = vi.hoisted(() => vi.fn())
-const saveAttemptCountMock = vi.hoisted(() => vi.fn())
 const deleteOtpMock = vi.hoisted(() => vi.fn())
 const sendSmsMock = vi.hoisted(() => vi.fn())
 const auth = vi.hoisted(() => ({
@@ -23,18 +27,47 @@ vi.mock('./otp-store', () => ({
   deleteOtp: deleteOtpMock.mockImplementation(async (phone: string) => {
     delete store.records[phone]
   }),
-  getOtp: getOtpMock.mockImplementation(
-    async (phone: string) => store.records[phone] ?? null,
-  ),
-  saveAttemptCount: saveAttemptCountMock.mockImplementation(
-    async (phone: string, attemptCount: number) => {
-      const record = store.records[phone]
-      if (record) store.records[phone] = { ...record, attemptCount }
+  reserveSend: reserveSendMock.mockImplementation(
+    async ({ codeHash, now, phone, rules, salt, ttlMs }: ReserveSendInput) => {
+      const previous = store.records[phone] ?? null
+      if (previous && now - previous.lastSentAt < rules.intervalMs) {
+        return { isBlocked: true }
+      }
+      const isWindowActive =
+        previous !== null && now - previous.windowStart < rules.windowMs
+      const sendCount = isWindowActive ? previous.sendCount : 0
+      if (sendCount >= rules.sendsPerWindow) return { isBlocked: true }
+      store.records[phone] = {
+        attemptCount: 0,
+        codeHash,
+        createdAt: now,
+        expiresAt: now + ttlMs,
+        lastSentAt: now,
+        salt,
+        sendCount: sendCount + 1,
+        windowStart: isWindowActive ? previous.windowStart : now,
+      }
+      return { isBlocked: false, previous }
     },
   ),
   upsertOtp: upsertOtpMock.mockImplementation(
     async (phone: string, record: OtpRecord) => {
       store.records[phone] = record
+    },
+  ),
+  verifyAttempt: verifyAttemptMock.mockImplementation(
+    async ({ isMatch, maxAttempts, now, phone }: VerifyAttemptInput) => {
+      const record = store.records[phone]
+      if (!record || now > record.expiresAt) return 'invalid'
+      if (record.attemptCount >= maxAttempts) {
+        delete store.records[phone]
+        return 'invalid'
+      }
+      if (isMatch(record)) return 'ok'
+      const attemptCount = record.attemptCount + 1
+      if (attemptCount >= maxAttempts) delete store.records[phone]
+      else store.records[phone] = { ...record, attemptCount }
+      return 'invalid'
     },
   ),
 }))
@@ -67,6 +100,8 @@ const seedOtp = (record: Partial<OtpRecord>, phone = PHONE) => {
   }
 }
 
+const storedOtp = (phone = PHONE) => store.records[phone]
+
 const deliveredCode = () => {
   const [{ message }] = sendSmsMock.mock.calls.at(-1) ?? [{ message: '' }]
   return message.match(/\d{6}/)?.[0] ?? ''
@@ -76,9 +111,9 @@ beforeEach(() => {
   vi.useFakeTimers()
   vi.setSystemTime(new Date('2026-07-13T12:00:00Z'))
   store.records = {}
-  getOtpMock.mockClear()
+  reserveSendMock.mockClear()
+  verifyAttemptMock.mockClear()
   upsertOtpMock.mockClear()
-  saveAttemptCountMock.mockClear()
   deleteOtpMock.mockClear()
   sendSmsMock.mockReset()
   sendSmsMock.mockResolvedValue({ id: 1, ok: true })
@@ -104,17 +139,16 @@ describe('otp.send — issue and deliver a code (happy-path 7)', () => {
     const now = Date.now()
     await expect(caller.send({ phone: PHONE })).resolves.toEqual({ ok: true })
 
-    expect(upsertOtpMock).toHaveBeenCalledTimes(1)
-    const [, stored] = upsertOtpMock.mock.calls[0] ?? []
-    expect(stored).toMatchObject({
+    expect(reserveSendMock).toHaveBeenCalledTimes(1)
+    expect(storedOtp()).toMatchObject({
       attemptCount: 0,
       expiresAt: now + 5 * MINUTE,
       lastSentAt: now,
       sendCount: 1,
       windowStart: now,
     })
-    expect(stored.salt).toMatch(/^[0-9a-f]{32}$/)
-    expect(stored.codeHash).toMatch(/^[0-9a-f]{64}$/)
+    expect(storedOtp()?.salt).toMatch(/^[0-9a-f]{32}$/)
+    expect(storedOtp()?.codeHash).toMatch(/^[0-9a-f]{64}$/)
     expect(sendSmsMock).toHaveBeenCalledTimes(1)
   })
 
@@ -122,10 +156,9 @@ describe('otp.send — issue and deliver a code (happy-path 7)', () => {
     const result = await caller.send({ phone: PHONE })
     expect(result).not.toHaveProperty('code')
 
-    const [, stored] = upsertOtpMock.mock.calls[0] ?? []
     const code = deliveredCode()
-    expect(stored.codeHash).toBe(hashCode(stored.salt, code))
-    expect(stored.codeHash).not.toContain(code)
+    expect(storedOtp()?.codeHash).toBe(hashCode(storedOtp()?.salt ?? '', code))
+    expect(storedOtp()?.codeHash).not.toContain(code)
   })
 
   test('passes the configured smsc credentials and sender to the gateway', async () => {
@@ -164,17 +197,46 @@ describe('otp.send — gateway delivery failure (error-states 4)', () => {
     })
     expect(sendSmsMock).not.toHaveBeenCalled()
   })
+
+  test('a failed delivery with no prior record leaves no live code behind', async () => {
+    sendSmsMock.mockRejectedValue(new Error('network down'))
+    await expect(caller.send({ phone: PHONE })).rejects.toMatchObject({
+      code: 'BAD_GATEWAY',
+    })
+
+    expect(deleteOtpMock).toHaveBeenCalledWith(PHONE)
+    expect(storedOtp()).toBeUndefined()
+  })
+
+  test('a failed delivery restores the previous record so it consumes no rate-limit slot', async () => {
+    const now = Date.now()
+    seedOtp({
+      lastSentAt: now - 2 * MINUTE,
+      sendCount: 2,
+      windowStart: now - 10 * MINUTE,
+    })
+    const previous = storedOtp()
+    sendSmsMock.mockResolvedValue({ error: 'insufficient balance', ok: false })
+
+    await expect(caller.send({ phone: PHONE })).rejects.toMatchObject({
+      code: 'BAD_GATEWAY',
+    })
+
+    expect(upsertOtpMock).toHaveBeenCalledWith(PHONE, previous)
+    expect(storedOtp()).toEqual(previous)
+  })
 })
 
 describe('otp.send — per-phone rate limiting (error-states 6)', () => {
   test('rejects a second send within the 60-second interval and sends no new code', async () => {
     seedOtp({ lastSentAt: Date.now(), sendCount: 1 })
+    const previous = storedOtp()
     await expect(caller.send({ phone: PHONE })).rejects.toMatchObject({
       code: 'TOO_MANY_REQUESTS',
       message: 'tooManyRequests',
     })
     expect(sendSmsMock).not.toHaveBeenCalled()
-    expect(upsertOtpMock).not.toHaveBeenCalled()
+    expect(storedOtp()).toEqual(previous)
   })
 
   test('rejects once five sends have been made within the rolling hour', async () => {
@@ -202,9 +264,8 @@ describe('otp.send — recovery after the rate limit (edge-cases 9)', () => {
     })
     await expect(caller.send({ phone: PHONE })).resolves.toEqual({ ok: true })
 
-    const [, stored] = upsertOtpMock.mock.calls[0] ?? []
-    expect(stored.sendCount).toBe(2)
-    expect(stored.codeHash).not.toBe(previousHash)
+    expect(storedOtp()?.sendCount).toBe(2)
+    expect(storedOtp()?.codeHash).not.toBe(previousHash)
     expect(sendSmsMock).toHaveBeenCalledTimes(1)
   })
 
@@ -217,9 +278,8 @@ describe('otp.send — recovery after the rate limit (edge-cases 9)', () => {
     })
     await expect(caller.send({ phone: PHONE })).resolves.toEqual({ ok: true })
 
-    const [, stored] = upsertOtpMock.mock.calls[0] ?? []
-    expect(stored.sendCount).toBe(1)
-    expect(stored.windowStart).toBe(now)
+    expect(storedOtp()?.sendCount).toBe(1)
+    expect(storedOtp()?.windowStart).toBe(now)
   })
 })
 
@@ -230,8 +290,8 @@ describe('otp.send — e2e test-code bypass', () => {
       ok: true,
     })
 
-    const [, stored] = upsertOtpMock.mock.calls[0] ?? []
-    expect(stored.codeHash).toBe(hashCode(stored.salt, '123456'))
+    const stored = storedOtp(TEST_PHONE)
+    expect(stored?.codeHash).toBe(hashCode(stored?.salt ?? '', '123456'))
     expect(sendSmsMock).not.toHaveBeenCalled()
   })
 
@@ -266,6 +326,18 @@ describe('otp.verify — correct code mints a custom token (happy-path 8)', () =
     expect(auth.createUser).toHaveBeenCalledWith({ phoneNumber: PHONE })
     expect(auth.createCustomToken).toHaveBeenCalledWith('new-uid')
   })
+
+  test('keeps the record when token minting fails, so a retry is still possible', async () => {
+    auth.createCustomToken.mockRejectedValue(new Error('auth unavailable'))
+    seedOtp({ codeHash: hashCode('s', '654321'), salt: 's' })
+
+    await expect(
+      caller.verify({ code: '654321', phone: PHONE }),
+    ).rejects.toThrow()
+
+    expect(deleteOtpMock).not.toHaveBeenCalled()
+    expect(storedOtp()).toBeDefined()
+  })
 })
 
 describe('otp.verify — wrong or missing code (error-states 5)', () => {
@@ -282,8 +354,8 @@ describe('otp.verify — wrong or missing code (error-states 5)', () => {
       caller.verify({ code: '000000', phone: PHONE }),
     ).rejects.toMatchObject({ code: 'BAD_REQUEST' })
 
-    expect(saveAttemptCountMock).toHaveBeenCalledWith(PHONE, 2)
-    expect(deleteOtpMock).not.toHaveBeenCalled()
+    expect(verifyAttemptMock).toHaveBeenCalledTimes(1)
+    expect(storedOtp()?.attemptCount).toBe(2)
     expect(auth.createCustomToken).not.toHaveBeenCalled()
   })
 })
@@ -307,7 +379,7 @@ describe('otp.verify — expired or exhausted code (error-states 5)', () => {
       caller.verify({ code: '654321', phone: PHONE }),
     ).rejects.toMatchObject({ code: 'BAD_REQUEST' })
 
-    expect(deleteOtpMock).toHaveBeenCalledWith(PHONE)
+    expect(storedOtp()).toBeUndefined()
     expect(auth.createCustomToken).not.toHaveBeenCalled()
   })
 
@@ -317,7 +389,6 @@ describe('otp.verify — expired or exhausted code (error-states 5)', () => {
       caller.verify({ code: '000000', phone: PHONE }),
     ).rejects.toMatchObject({ code: 'BAD_REQUEST' })
 
-    expect(deleteOtpMock).toHaveBeenCalledWith(PHONE)
-    expect(saveAttemptCountMock).not.toHaveBeenCalled()
+    expect(storedOtp()).toBeUndefined()
   })
 })

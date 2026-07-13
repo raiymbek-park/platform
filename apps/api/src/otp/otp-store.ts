@@ -1,4 +1,4 @@
-import type { DocumentData } from 'firebase-admin/firestore'
+import type { DocumentData, Transaction } from 'firebase-admin/firestore'
 
 import { getDb } from '../firestore'
 
@@ -13,6 +13,34 @@ export type OtpRecord = {
   windowStart: number
 }
 
+export type SendRules = {
+  intervalMs: number
+  sendsPerWindow: number
+  windowMs: number
+}
+
+export type ReserveSendInput = {
+  codeHash: string
+  now: number
+  phone: string
+  rules: SendRules
+  salt: string
+  ttlMs: number
+}
+
+export type ReserveSendResult =
+  | { isBlocked: true }
+  | { isBlocked: false; previous: OtpRecord | null }
+
+export type VerifyAttemptInput = {
+  isMatch: (record: OtpRecord) => boolean
+  maxAttempts: number
+  now: number
+  phone: string
+}
+
+export type VerifyOutcome = 'invalid' | 'ok'
+
 const docRef = (phone: string) => getDb().collection('otps').doc(phone)
 
 const parseOtp = (data: DocumentData): OtpRecord => ({
@@ -26,24 +54,73 @@ const parseOtp = (data: DocumentData): OtpRecord => ({
   windowStart: typeof data.windowStart === 'number' ? data.windowStart : 0,
 })
 
-export const getOtp = async (phone: string): Promise<OtpRecord | null> => {
-  const snap = await docRef(phone).get()
+const readOtp = async (
+  transaction: Transaction,
+  phone: string,
+): Promise<OtpRecord | null> => {
+  const snap = await transaction.get(docRef(phone))
   const data = snap.data()
   return data ? parseOtp(data) : null
 }
+
+export const reserveSend = ({
+  codeHash,
+  now,
+  phone,
+  rules,
+  salt,
+  ttlMs,
+}: ReserveSendInput): Promise<ReserveSendResult> =>
+  getDb().runTransaction<ReserveSendResult>(async transaction => {
+    const previous = await readOtp(transaction, phone)
+    if (previous && now - previous.lastSentAt < rules.intervalMs) {
+      return { isBlocked: true }
+    }
+    const isWindowActive =
+      previous !== null && now - previous.windowStart < rules.windowMs
+    const sendCount = isWindowActive ? previous.sendCount : 0
+    if (sendCount >= rules.sendsPerWindow) return { isBlocked: true }
+
+    const record: OtpRecord = {
+      attemptCount: 0,
+      codeHash,
+      createdAt: now,
+      expiresAt: now + ttlMs,
+      lastSentAt: now,
+      salt,
+      sendCount: sendCount + 1,
+      windowStart: isWindowActive ? previous.windowStart : now,
+    }
+    transaction.set(docRef(phone), record)
+    return { isBlocked: false, previous }
+  })
+
+export const verifyAttempt = ({
+  isMatch,
+  maxAttempts,
+  now,
+  phone,
+}: VerifyAttemptInput): Promise<VerifyOutcome> =>
+  getDb().runTransaction<VerifyOutcome>(async transaction => {
+    const record = await readOtp(transaction, phone)
+    if (!record || now > record.expiresAt) return 'invalid'
+    if (record.attemptCount >= maxAttempts) {
+      transaction.delete(docRef(phone))
+      return 'invalid'
+    }
+    if (isMatch(record)) return 'ok'
+
+    const attemptCount = record.attemptCount + 1
+    if (attemptCount >= maxAttempts) transaction.delete(docRef(phone))
+    else transaction.update(docRef(phone), { attemptCount })
+    return 'invalid'
+  })
 
 export const upsertOtp = async (
   phone: string,
   record: OtpRecord,
 ): Promise<void> => {
   await docRef(phone).set(record)
-}
-
-export const saveAttemptCount = async (
-  phone: string,
-  attemptCount: number,
-): Promise<void> => {
-  await docRef(phone).set({ attemptCount }, { merge: true })
 }
 
 export const deleteOtp = async (phone: string): Promise<void> => {
