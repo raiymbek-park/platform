@@ -1,6 +1,6 @@
 export { formatPhoneDisplay } from './lib/format-phone-display'
-export { useConfirmationStore } from './model/use-confirmation-store'
 export { useOnboardingStore } from './model/use-onboarding-store'
+export { useOtpRequestStore } from './model/use-otp-request-store'
 export { AccountLocked } from './ui/account-locked'
 export { OtpVerification } from './ui/otp-verification'
 export { RegistrationForm } from './ui/registration-form'

@@ -1,20 +1,20 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Button, HeroImage, InfoCallout, Input } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
-import { useRef } from 'react'
 
 import { showToastMessage } from '@/shared/toast'
 
 import { logAuthError, sendCodeErrorText } from '../lib/auth-error'
 import { formatOtp, otpMask } from '../lib/format-otp'
+import { isSignInFailure } from '../lib/is-sign-in-failure'
 import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { isWrongCode } from '../lib/is-wrong-code'
 import { useOtpCode } from '../lib/use-otp-code'
 import { useResendCooldown } from '../lib/use-resend-cooldown'
-import { useConfirmCode } from '../model/use-confirm-code'
 import { useOnboardingStore } from '../model/use-onboarding-store'
 import { useRegisterResident } from '../model/use-register-resident'
-import { useResendVerification } from '../model/use-resend-verification'
+import { useSendOtp } from '../model/use-send-otp'
+import { useVerifyOtp } from '../model/use-verify-otp'
 import { OtpActions } from './otp-actions'
 import { OtpHeading } from './otp-heading'
 import css from './otp-verification.module.scss'
@@ -24,17 +24,17 @@ export const OtpVerification = () => {
   const navigate = useNavigate()
   const draft = useOnboardingStore(state => state.draft)
   const phone = draft.phone
-  const recaptchaRef = useRef<HTMLDivElement>(null)
 
-  const confirmCode = useConfirmCode()
-  const resend = useResendVerification()
+  const verifyOtp = useVerifyOtp()
+  const resend = useSendOtp()
   const registerResident = useRegisterResident()
   const cooldown = useResendCooldown()
 
-  const isChecking = confirmCode.isPending || registerResident.isPending
+  const isChecking = verifyOtp.isPending || registerResident.isPending
 
   const verifyError = t`Неверный код. Попробуйте ещё раз.`
   const networkError = t`Не удалось проверить код. Проверьте соединение.`
+  const signInError = t`Не удалось выполнить вход. Повторите попытку.`
   const registerError = t`Не удалось завершить регистрацию. Повторите попытку.`
 
   const register = () => {
@@ -49,35 +49,54 @@ export const OtpVerification = () => {
     )
   }
 
+  const handleVerifyError = (error: unknown, clear: () => void) => {
+    if (isTooManyRequests(error)) {
+      navigate({ to: '/onboarding/locked' })
+      return
+    }
+    if (isWrongCode(error)) {
+      clear()
+      showToastMessage({ kind: 'error', text: verifyError })
+      return
+    }
+    if (isSignInFailure(error)) {
+      logAuthError('sign-in', error)
+      showToastMessage({ kind: 'error', text: signInError })
+      return
+    }
+    clear()
+    logAuthError('verify-code', error)
+    showToastMessage({ kind: 'error', text: networkError })
+  }
+
   const verify = (code: string, { clear }: { clear: () => void }) => {
-    confirmCode.mutate(code, {
-      onSuccess: register,
-      onError: error => {
-        clear()
-        if (isTooManyRequests(error)) {
-          navigate({ to: '/onboarding/locked' })
-          return
-        }
-        if (isWrongCode(error)) {
-          showToastMessage({ kind: 'error', text: verifyError })
-          return
-        }
-        logAuthError('confirm-code', error)
-        showToastMessage({ kind: 'error', text: networkError })
+    verifyOtp.mutate(
+      { code, phone },
+      {
+        onSuccess: register,
+        onError: error => handleVerifyError(error, clear),
       },
-    })
+    )
   }
 
   const otp = useOtpCode({ disabled: isChecking, onComplete: verify })
 
+  const retrySignIn = () => {
+    const input = verifyOtp.variables
+    if (input === undefined) return
+    verifyOtp.mutate(input, {
+      onSuccess: register,
+      onError: error => handleVerifyError(error, otp.reset),
+    })
+  }
+
   const handleResend = () => {
-    const container = recaptchaRef.current
-    if (phone === '' || container === null || cooldown.secondsLeft > 0) return
+    if (phone === '' || cooldown.secondsLeft > 0) return
     otp.reset()
-    confirmCode.reset()
+    verifyOtp.reset()
     registerResident.reset()
     resend.mutate(
-      { container, phone },
+      { phone },
       {
         onSuccess: () => {
           otp.focus()
@@ -94,11 +113,11 @@ export const OtpVerification = () => {
     )
   }
 
+  const isSignInRetry = verifyOtp.isError && isSignInFailure(verifyOtp.error)
+
   return (
     <>
       <HeroImage src='images/otp-sms.png' />
-
-      <div ref={recaptchaRef} />
 
       <OtpHeading />
 
@@ -126,6 +145,17 @@ export const OtpVerification = () => {
           isLoading={registerResident.isPending}
           variant='secondary'
           onClick={register}
+        >
+          <Trans>Повторить попытку</Trans>
+        </Button>
+      )}
+
+      {isSignInRetry && (
+        <Button
+          className={css.action}
+          isLoading={verifyOtp.isPending}
+          variant='secondary'
+          onClick={retrySignIn}
         >
           <Trans>Повторить попытку</Trans>
         </Button>

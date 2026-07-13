@@ -45,15 +45,24 @@
   Then:  the updated content appears in the app on the next load
          no code deploy is required
 
-## Scenario 7: Verification code delivered by Firebase Phone Authentication
+## Scenario 7: `otp.send` issues a code and delivers it over the smsc.kz gateway
 
-  Given: a resident enters a phone number on the verification step
-  When:  the client requests a verification code
-  Then:  Firebase Phone Authentication sends an SMS code directly to that number
-         entering the correct code establishes a Firebase session for the resident
-         the resulting Firebase ID token authorizes subsequent API mutations
+  Given: a resident submits a valid phone number
+  When:  the client calls `otp.send`
+  Then:  a 6-digit code is generated and its salted hash is stored in `otps/{phone}` with an expiry
+         the code is delivered to that number through the smsc.kz SMS gateway
+         the plaintext code is never stored or returned to the client
 
-## Scenario 8: Visit timestamp is recorded under the resident's uid
+## Scenario 8: `otp.verify` with the correct code mints a Firebase custom token
+
+  Given: a code was sent and `otps/{phone}` holds its unexpired hash
+  When:  the client calls `otp.verify` with the matching code
+  Then:  a Firebase custom token is returned for the phone's user record
+         the `otps/{phone}` record is removed
+         exchanging the custom token yields a Firebase session whose ID token carries the phone,
+         so subsequent API mutations are authorized
+
+## Scenario 9: Visit timestamp is recorded under the resident's uid
 
   Given: a request carries a verifiable Firebase ID token whose `uid` is `U`
   When:  the resident's visit is marked

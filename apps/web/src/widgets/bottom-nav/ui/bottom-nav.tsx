@@ -30,7 +30,7 @@ export const BottomNav = ({ active }: BottomNavProps) => {
       search: { status: 'all' },
       to: '/issues',
     },
-    { glyph: 'settings', label: t`Настройки`, to: '/settings' },
+    { glyph: 'user-round', label: t`Настройки`, to: '/settings' },
   ]
 
   return (

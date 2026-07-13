@@ -1,11 +1,11 @@
 import { createFileRoute, redirect } from '@tanstack/react-router'
 
-import { useConfirmationStore } from '@/features/onboarding'
+import { useOtpRequestStore } from '@/features/onboarding'
 import { OtpVerificationPage } from '@/pages/onboarding'
 
 export const Route = createFileRoute('/onboarding/verification')({
   beforeLoad: () => {
-    if (useConfirmationStore.getState().confirmation === null) {
+    if (useOtpRequestStore.getState().sentPhone === null) {
       throw redirect({ to: '/onboarding/welcome' })
     }
   },

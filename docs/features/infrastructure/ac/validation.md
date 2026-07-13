@@ -32,7 +32,7 @@
 
   Given: the deny-all Firestore security rules are deployed
   When:  an unauthenticated client uses the client SDK to read or write `residents/*`,
-         `serviceContacts/*`, or `events/*` directly
+         `serviceContacts/*`, `events/*`, or `otps/*` directly
   Then:  every such read and write is denied
          the data is reachable only through the `api` function via the Admin SDK
 

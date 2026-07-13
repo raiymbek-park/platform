@@ -1,27 +1,24 @@
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Button, HeroImage } from '@raiymbek-park/ui'
 import { useNavigate } from '@tanstack/react-router'
-import { useRef } from 'react'
 
 import { showToastMessage } from '@/shared/toast'
 
 import { logAuthError } from '../lib/auth-error'
 import { useOnboardingStore } from '../model/use-onboarding-store'
-import { useSendVerification } from '../model/use-send-verification'
+import { useSendOtp } from '../model/use-send-otp'
 import css from './account-locked.module.scss'
 
 export const AccountLocked = () => {
   const { t } = useLingui()
   const navigate = useNavigate()
   const phone = useOnboardingStore(state => state.draft.phone)
-  const sendVerification = useSendVerification()
-  const recaptchaRef = useRef<HTMLSpanElement>(null)
+  const sendOtp = useSendOtp()
 
   const retry = () => {
-    const container = recaptchaRef.current
-    if (phone === '' || container === null) return
-    sendVerification.mutate(
-      { container, phone },
+    if (phone === '') return
+    sendOtp.mutate(
+      { phone },
       {
         onSuccess: () => navigate({ to: '/onboarding/verification' }),
         onError: error => {
@@ -38,7 +35,6 @@ export const AccountLocked = () => {
   return (
     <>
       <HeroImage src='images/account-locked.png' />
-      <span ref={recaptchaRef} />
 
       <header className={css.heading}>
         <h1 className={css.title}>
@@ -53,11 +49,7 @@ export const AccountLocked = () => {
 
       <div className={css.spacer} />
 
-      <Button
-        icon='refresh-cw'
-        isLoading={sendVerification.isPending}
-        onClick={retry}
-      >
+      <Button icon='refresh-cw' isLoading={sendOtp.isPending} onClick={retry}>
         <Trans>Повторить</Trans>
       </Button>
     </>

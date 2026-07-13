@@ -2,7 +2,6 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { Button, HeroCard, InfoCallout, SectionHeader } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
-import { useRef } from 'react'
 
 import {
   ApartmentField,
@@ -19,7 +18,7 @@ import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { normalizePhone } from '../lib/phone'
 import { registrationSchema } from '../lib/validators'
 import { useOnboardingStore } from '../model/use-onboarding-store'
-import { useSendVerification } from '../model/use-send-verification'
+import { useSendOtp } from '../model/use-send-otp'
 import css from './registration-form.module.scss'
 
 const fieldOrder = ['name', 'phone', 'block', 'apartment', 'role'] as const
@@ -36,10 +35,9 @@ const toMessage = (error: unknown): string | undefined => {
 export const RegistrationForm = () => {
   const { t } = useLingui()
   const navigate = useNavigate()
-  const sendVerification = useSendVerification()
+  const sendOtp = useSendOtp()
   const setDraft = useOnboardingStore(state => state.setDraft)
   const draft = useOnboardingStore(state => state.draft)
-  const recaptchaRef = useRef<HTMLSpanElement>(null)
 
   const form = useForm({
     defaultValues: { ...draft, phone: draft.phone || '+7' },
@@ -52,8 +50,6 @@ export const RegistrationForm = () => {
       if (text) showToastMessage({ kind: 'error', text })
     },
     onSubmit: ({ value }) => {
-      const container = recaptchaRef.current
-      if (container === null) return
       const phone = normalizePhone(value.phone)
       setDraft({
         name: value.name.trim(),
@@ -63,8 +59,8 @@ export const RegistrationForm = () => {
         role: value.role,
       })
 
-      sendVerification.mutate(
-        { container, phone },
+      sendOtp.mutate(
+        { phone },
         {
           onSuccess: () => navigate({ to: '/onboarding/verification' }),
           onError: error => {
@@ -79,7 +75,7 @@ export const RegistrationForm = () => {
     },
   })
 
-  const isPending = sendVerification.isPending
+  const isPending = sendOtp.isPending
 
   return (
     <form
@@ -175,21 +171,6 @@ export const RegistrationForm = () => {
           )}
         </form.Field>
       </div>
-
-      <InfoCallout icon='shield-check'>
-        <span ref={recaptchaRef} />
-        <a
-          className={css.notice}
-          href='https://policies.google.com/privacy'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          <Trans>
-            Эта форма защищена reCAPTCHA, применяются Политика
-            конфиденциальности и Условия Google
-          </Trans>
-        </a>
-      </InfoCallout>
 
       <div className={css.actions}>
         <Button

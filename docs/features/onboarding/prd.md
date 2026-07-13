@@ -8,8 +8,9 @@ entering a code delivered over SMS. On success they are registered, signed in, a
 screen; a returning resident who is already signed in skips onboarding entirely.
 
 The goal is to carry a new resident from the registration form to a verified phone number, a saved
-profile, and an authenticated session in a single pass, using Firebase Phone Authentication as the
-identity provider.
+profile, and an authenticated session in a single pass. The verification code is issued and checked by
+the API and delivered over an SMS gateway; a successful check establishes a Firebase session. See
+ADR 013 for the gateway and session mechanics.
 
 ## Users
 
@@ -30,7 +31,7 @@ onboarding and goes straight to home.
   interacted with it. The block selector presents all four blocks, each labelled with its residential
   floor count. A privacy notice states the resident's contact details are hidden from other residents
   and reachable only by administration; the phone field carries a closed-eye indicator reinforcing
-  this. A reCAPTCHA legal notice (a link to Google's Privacy Policy and Terms) is shown in the form.
+  this.
 - **Verification screen** (`/onboarding/verification`) — entry of the 6-digit SMS code in a single
   masked field (`xxx - xxx`) that accepts digits only. The entered phone number is shown in the format
   `+7 707 123 45 67`. The code is checked automatically the moment all six digits are present — no
@@ -49,15 +50,14 @@ onboarding and goes straight to home.
 - Signing out, changing the phone number, or editing registration data after sign-in.
 - Localization — Russian only; the UI language switcher is not part of this feature.
 - Keyboard accessibility (mobile-only).
-- The floating reCAPTCHA badge — it is suppressed in favour of the in-form reCAPTCHA notice.
 
 ## User Journey
 
 The resident opens the app. If already signed in, they go straight to home. Otherwise the
 registration form appears. They fill in their name and phone, pick a block and a role, and enter an
 apartment number. "Далее" stays enabled; tapping it validates the form and, on any error, surfaces it
-as a toast — otherwise it runs an invisible reCAPTCHA check and sends an SMS code to their number,
-then opens the verification screen. There they see their
+as a toast — otherwise it sends an SMS code to their number over the gateway, then opens the
+verification screen. There they see their
 number and a single masked code field and type the code; once all six digits are in, the code is
 checked automatically. With the correct code the resident's profile is saved and they are signed in,
 and the app moves to home. A wrong code shows an error and clears the field so the resident can
@@ -79,8 +79,8 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
 
 ## Verification and Resend Rules
 
-- **Code delivery.** Submitting the registration form sends a 6-digit SMS code to the entered number
-  via Firebase Phone Authentication (an invisible reCAPTCHA runs as part of sending).
+- **Code delivery.** Submitting the registration form asks the API to send a 6-digit SMS code to the
+  entered number; the API delivers it over the smsc.kz SMS gateway (see ADR 013).
 - **Automatic check.** The code is verified the moment all six digits are entered — without a separate
   confirm action. While the verification request is in flight, a progress notice ("Ваш код
   отправляется на проверку…") is shown and the field, the back control, and the resend control are
@@ -95,9 +95,11 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
 
 ## Registration and Session
 
-- After the SMS code is confirmed, the resident's profile (name, phone, block, apartment, role) is
-  saved under their Firebase user id via an authenticated request that carries the Firebase ID token.
-  The server requires a verified identity (a valid ID token) and rejects the request otherwise.
+- Confirming the SMS code establishes the Firebase session: the API returns a custom token that the
+  client exchanges for a session, yielding the Firebase ID token (see ADR 013).
+- With the session established, the resident's profile (name, phone, block, apartment, role) is saved
+  under their Firebase user id via an authenticated request that carries the Firebase ID token. The
+  server requires a verified identity (a valid ID token) and rejects the request otherwise.
 - On a successful save the resident is signed in and the app navigates to home.
 - The phone stored with the profile is the verified number tied to the signed-in identity.
 
@@ -126,12 +128,12 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
   save; the app stays on the verification screen.
 - **Resend failure** (verification): if requesting a new code fails, a connection error is shown and
   the resident can try the resend again.
-- **Too many attempts** (welcome, verification, or resend): when Firebase Phone Authentication rejects
-  a request with a rate-limit (too-many-requests) error, the resident is taken to a dedicated "Доступ
-  заблокирован" (Access locked) screen. It shows an illustration, an explanatory message, and a
-  "Повторить" (Retry) action that requests a fresh code — moving to the verification screen on success
-  and staying on the locked screen (with an error message) otherwise. The lock is enforced by Firebase;
-  the app keeps no countdown of its own.
+- **Too many attempts** (welcome, verification, or resend): when the API rejects a send with a
+  rate-limit (too-many-requests) error, the resident is taken to a dedicated "Доступ заблокирован"
+  (Access locked) screen. It shows an illustration, an explanatory message, and a "Повторить" (Retry)
+  action that requests a fresh code — moving to the verification screen on success and staying on the
+  locked screen (with an error message) otherwise. The lock is enforced by the server's send rate
+  limit; the app keeps no countdown of its own.
 
 ## Field Validation (welcome)
 
@@ -162,8 +164,9 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
 
 ## Dependencies
 
-- **Firebase Phone Authentication** — SMS code delivery, invisible reCAPTCHA, and the authenticated
-  session (Firebase ID token). See ADR 010 for the choice of identity provider.
+- **The API's `otp.send` / `otp.verify` procedures and the smsc.kz SMS gateway** — code delivery,
+  verification, and the custom token that establishes the Firebase session (Firebase ID token). See
+  ADR 013 for the delivery and session mechanics and ADR 010 for the retained ID-token identity model.
 - **libphonenumber-js** — phone parsing, normalization, and validation (default region `KZ`).
 - The profile-save API endpoint that persists the resident under their Firebase user id.
 

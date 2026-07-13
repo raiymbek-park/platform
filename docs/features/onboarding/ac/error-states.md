@@ -59,3 +59,15 @@
   When:  the user taps "Повторить" but requesting a new code fails
   Then:  the app stays on the locked screen
          an error message is shown
+
+## Scenario 7: Establishing the session after the correct code offers a retry
+
+  Given: the correct code has been confirmed on the verification screen
+  When:  establishing the signed-in session from the confirmed code fails
+  Then:  the app stays on the verification screen — it does not move to home
+         an error message is shown
+         a "Повторить попытку" (Retry) action is available
+
+  Given: the session sign-in previously failed and the retry action is shown
+  When:  the user taps "Повторить попытку" and the sign-in succeeds
+  Then:  the resident's profile is saved and the app moves to home

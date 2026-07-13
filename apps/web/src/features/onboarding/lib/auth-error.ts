@@ -1,5 +1,7 @@
 import { t } from '@lingui/core/macro'
 
+import { trpcErrorCode } from './trpc-error'
+
 export const authErrorCode = (error: unknown): string | undefined =>
   typeof error === 'object' &&
   error !== null &&
@@ -8,26 +10,21 @@ export const authErrorCode = (error: unknown): string | undefined =>
     ? error.code
     : undefined
 
+const errorCode = (error: unknown): string | undefined =>
+  trpcErrorCode(error) ?? authErrorCode(error)
+
 export const logAuthError = (context: string, error: unknown) => {
-  console.error(
-    `[phone-auth:${context}]`,
-    authErrorCode(error) ?? 'unknown',
-    error,
-  )
+  console.error(`[phone-auth:${context}]`, errorCode(error) ?? 'unknown', error)
 }
 
 const sendCodeMessages = (): Record<string, string> => ({
-  'auth/quota-exceeded': t`Сервис отправки кодов временно перегружен. Попробуйте через несколько минут.`,
-  'auth/invalid-phone-number': t`Проверьте правильность номера телефона.`,
-  'auth/missing-phone-number': t`Введите номер телефона.`,
-  'auth/network-request-failed': t`Нет связи с сервером. Проверьте интернет и попробуйте снова.`,
-  'auth/captcha-check-failed': t`Не удалось пройти проверку безопасности. Обновите страницу и попробуйте снова.`,
-  'auth/invalid-app-credential': t`Не удалось пройти проверку безопасности. Обновите страницу и попробуйте снова.`,
+  BAD_GATEWAY: t`Не удалось отправить SMS. Попробуйте через несколько минут.`,
+  BAD_REQUEST: t`Проверьте правильность номера телефона.`,
 })
 
 export const sendCodeErrorText = (error: unknown): string => {
   logAuthError('send-code', error)
-  const code = authErrorCode(error)
+  const code = errorCode(error)
   const message =
     (code && sendCodeMessages()[code]) ??
     t`Не удалось отправить код. Попробуйте снова.`

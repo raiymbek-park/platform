@@ -48,3 +48,26 @@
   When:  the home screen reads that document
   Then:  the glyph falls back to `megaphone` and the tone falls back to `brand`
          the item is still returned rather than dropped
+
+## Scenario 8: Verify reuses an existing user record for a returning phone
+
+  Given: `otp.verify` succeeds with the correct code and the phone already has a Firebase Auth
+         user record
+  When:  the custom token is minted
+  Then:  the token is issued for that existing `uid`
+         no duplicate user record is created, so the resident's existing `residents/{uid}`
+         profile stays associated with the same identity
+
+  Given: `otp.verify` succeeds with the correct code and the phone has no Firebase Auth user
+         record yet
+  When:  the custom token is minted
+  Then:  a user record carrying that phone is created
+         the token is issued for the new record's `uid`
+
+## Scenario 9: A send is accepted again once the rate-limit interval elapses
+
+  Given: a code was just sent for a phone, so the 60-second minimum send interval is in effect
+         and the hourly send count is below its cap
+  When:  the client calls `otp.send` again for that phone after the 60-second interval has elapsed
+  Then:  a new 6-digit code is generated and delivered over the smsc.kz SMS gateway
+         the previous `otps/{phone}` hash is replaced by the new code's salted hash

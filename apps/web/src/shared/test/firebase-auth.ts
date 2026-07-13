@@ -5,17 +5,6 @@ type FakeUser = {
   getIdToken: () => Promise<string>
 }
 
-type ConfirmOutcome =
-  | { kind: 'success' }
-  | { kind: 'wrong-code' }
-  | { kind: 'network' }
-  | { kind: 'too-many-requests' }
-
-type SendOutcome =
-  | { kind: 'success' }
-  | { kind: 'failure' }
-  | { kind: 'too-many-requests' }
-
 const fakeUser: FakeUser = {
   uid: 'resident-uid',
   getIdToken: () => Promise.resolve('fake-id-token'),
@@ -26,47 +15,16 @@ const authState = {
 }
 
 const scenario = {
-  send: { kind: 'success' } as SendOutcome,
-  confirm: { kind: 'success' } as ConfirmOutcome,
-  hold: null as { onStart: () => void; release: Promise<void> } | null,
+  isSignInFailing: false,
 }
 
-const confirmError = {
-  'wrong-code': { code: 'auth/invalid-verification-code' },
-  network: { code: 'auth/network-request-failed' },
-  'too-many-requests': { code: 'auth/too-many-requests' },
-}
-
-const confirm = (_code: string) => {
-  const { confirm: outcome } = scenario
-  if (outcome.kind === 'success') {
-    authState.currentUser = fakeUser
-    return Promise.resolve({ user: fakeUser })
+const signInWithCustomToken = vi.fn((_auth: unknown, _token: string) => {
+  if (scenario.isSignInFailing) {
+    return Promise.reject({ code: 'auth/network-request-failed' })
   }
-  return Promise.reject(confirmError[outcome.kind])
-}
-
-const sendError = {
-  failure: { code: 'auth/network-request-failed' },
-  'too-many-requests': { code: 'auth/too-many-requests' },
-}
-
-const signInWithPhoneNumber = vi.fn(async () => {
-  if (scenario.hold) {
-    scenario.hold.onStart()
-    await scenario.hold.release
-  }
-  if (scenario.send.kind !== 'success') {
-    return Promise.reject(sendError[scenario.send.kind])
-  }
-  return { confirm }
+  authState.currentUser = fakeUser
+  return Promise.resolve({ user: fakeUser })
 })
-
-class RecaptchaVerifier {
-  verify = () => Promise.resolve('recaptcha-token')
-  render = () => Promise.resolve(0)
-  clear = vi.fn()
-}
 
 const getAuth = () => ({
   get currentUser() {
@@ -82,9 +40,9 @@ const signOut = vi.fn(() => {
 })
 
 export const firebaseAuthModule = {
-  RecaptchaVerifier,
+  connectAuthEmulator: vi.fn(),
   getAuth,
-  signInWithPhoneNumber,
+  signInWithCustomToken,
   signOut,
 }
 
@@ -100,30 +58,13 @@ export const firebaseAuth = {
     authState.currentUser = null
   },
   isSignedIn: () => authState.currentUser !== null,
-  failSend: () => {
-    scenario.send = { kind: 'failure' }
-  },
-  failSendTooManyRequests: () => {
-    scenario.send = { kind: 'too-many-requests' }
-  },
-  holdSend: (onStart: () => void, release: Promise<void>) => {
-    scenario.hold = { onStart, release }
-  },
-  rejectCodeAsWrong: () => {
-    scenario.confirm = { kind: 'wrong-code' }
-  },
-  rejectCodeWithNetworkError: () => {
-    scenario.confirm = { kind: 'network' }
-  },
-  rejectCodeTooManyRequests: () => {
-    scenario.confirm = { kind: 'too-many-requests' }
+  failCustomTokenSignIn: () => {
+    scenario.isSignInFailing = true
   },
   reset: () => {
     authState.currentUser = null
-    scenario.send = { kind: 'success' }
-    scenario.confirm = { kind: 'success' }
-    scenario.hold = null
-    signInWithPhoneNumber.mockClear()
+    scenario.isSignInFailing = false
+    signInWithCustomToken.mockClear()
     signOut.mockClear()
   },
 }

@@ -18,6 +18,21 @@ const messages = {
     kk: 'Телефон расталмаған',
     en: 'Phone is not verified',
   },
+  tooManyRequests: {
+    ru: 'Слишком много попыток. Попробуйте позже',
+    kk: 'Әрекеттер тым көп. Кейінірек қайталап көріңіз',
+    en: 'Too many attempts. Try again later',
+  },
+  invalidCode: {
+    ru: 'Неверный или просроченный код',
+    kk: 'Код қате немесе мерзімі өткен',
+    en: 'Invalid or expired code',
+  },
+  smsSendFailed: {
+    ru: 'Не удалось отправить SMS. Попробуйте позже',
+    kk: 'SMS жіберілмеді. Кейінірек қайталап көріңіз',
+    en: 'Failed to send the SMS. Try again later',
+  },
   reactionForbidden: {
     ru: 'Недостаточно прав для реакции',
     kk: 'Реакция қою құқығы жеткіліксіз',
