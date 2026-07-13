@@ -1,3 +1,4 @@
+import type { Auth } from 'firebase-admin/auth'
 import type { Firestore } from 'firebase-admin/firestore'
 
 import { getApps, initializeApp } from 'firebase-admin/app'
@@ -19,6 +20,11 @@ export const getDb = (): Firestore => {
   ensureApp()
   db = getFirestore()
   return db
+}
+
+export const getAuthAdmin = (): Auth => {
+  ensureApp()
+  return getAuth()
 }
 
 export type Identity = {
