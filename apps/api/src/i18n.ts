@@ -70,3 +70,12 @@ const isMessageKey = (key: string): key is keyof typeof messages =>
 
 export const translate = (locale: Locale, message: string): string =>
   isMessageKey(message) ? messages[message][locale] : message
+
+const otpSmsLabel = {
+  ru: 'код подтверждения',
+  kk: 'растау коды',
+  en: 'verification code',
+} satisfies Record<Locale, string>
+
+export const otpSmsText = (locale: Locale, code: string): string =>
+  `Raiymbek Park: ${otpSmsLabel[locale]} ${code}`

@@ -1,3 +1,4 @@
+import type { Locale } from '../i18n'
 import type { OtpRecord } from './otp-store'
 
 import {
@@ -8,6 +9,7 @@ import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 
 import { getAuthAdmin } from '../firestore'
+import { otpSmsText } from '../i18n'
 import { publicProcedure, router } from '../trpc'
 import { generateCode, hashCode, isCodeMatch, newSalt } from './generate-code'
 import { deleteOtp, reserveSend, upsertOtp, verifyAttempt } from './otp-store'
@@ -31,12 +33,16 @@ const invalidCode = () =>
 const smsSendFailed = () =>
   new TRPCError({ code: 'BAD_GATEWAY', message: 'smsSendFailed' })
 
-const deliverSms = async (to: string, code: string): Promise<void> => {
+const deliverSms = async (
+  to: string,
+  code: string,
+  locale: Locale,
+): Promise<void> => {
   const { SMSC_LOGIN, SMSC_PASSWORD, SMSC_SENDER } = process.env
   if (!SMSC_LOGIN || !SMSC_PASSWORD) throw smsSendFailed()
   const result = await sendSms({
     login: SMSC_LOGIN,
-    message: `Raiymbek Park: код подтверждения ${code}`,
+    message: otpSmsText(locale, code),
     phone: to,
     psw: SMSC_PASSWORD,
     sender: SMSC_SENDER ?? '',
@@ -60,7 +66,7 @@ const getOrCreateUid = async (phoneNumber: string): Promise<string> => {
 export const otpRouter = router({
   send: publicProcedure
     .input(z.object({ phone }))
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       const testCode = testCodeFor(input.phone)
       const code = testCode ?? generateCode()
       const salt = newSalt()
@@ -79,7 +85,7 @@ export const otpRouter = router({
       if (reserved.isBlocked) throw tooManyRequests()
 
       if (testCode === null) {
-        await deliverSms(input.phone, code).catch(async error => {
+        await deliverSms(input.phone, code, ctx.locale).catch(async error => {
           await restoreOtp(input.phone, reserved.previous)
           throw error
         })
