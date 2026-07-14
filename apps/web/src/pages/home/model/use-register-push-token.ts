@@ -18,7 +18,15 @@ export const useRegisterPushToken = (ready: boolean) => {
     if (!ready || pushRegistration.isRequested) return
     pushRegistration.isRequested = true
     requestPushToken().then(token => {
-      if (token) mutate({ token })
+      if (!token) return
+      mutate(
+        { token },
+        {
+          onError: () => {
+            pushRegistration.isRequested = false
+          },
+        },
+      )
     })
   }, [ready, mutate])
 }

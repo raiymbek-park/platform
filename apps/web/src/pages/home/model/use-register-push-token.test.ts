@@ -185,8 +185,8 @@ test('error-states 9: a failed registration surfaces nothing and a later Home lo
     screen.queryByRole('button', { name: 'Закрыть' }),
   ).not.toBeInTheDocument()
 
+  await waitFor(() => expect(pushRegistration.isRequested).toBe(false))
   cleanup()
-  pushRegistration.isRequested = false
   renderApp('/home')
 
   await waitFor(() =>
