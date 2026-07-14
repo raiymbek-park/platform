@@ -69,3 +69,28 @@
   Then:  no error is shown
          `/home` renders normally
          a later Home load registers the device
+
+## Scenario 10: A registration whose resident no longer exists is skipped
+
+  Given: a registered device whose resident's record is gone, and two other residents due a digest
+  When:  the hourly run executes
+  Then:  no digest is sent for the missing resident
+         the two other residents receive their digests
+         the run completes
+
+## Scenario 11: A device that fails for any other reason keeps its registration
+
+  Given: a resident with two registered devices, and a run in which the delivery service accepts the
+         digest for the first device and rejects it for the second for a reason other than the
+         registration being unknown
+  When:  the hourly run sends their digest
+  Then:  the second device's registration is kept
+         the first device receives the digest
+
+## Scenario 12: A slow registration never blocks Home
+
+  Given: a resident who grants permission on `/home`
+  When:  obtaining and registering the device's token takes longer than the feed takes to render
+  Then:  the events feed, services, contacts, and navigation stay interactive throughout
+         no loading indicator and no blocked screen appears
+         the device is registered once the request completes

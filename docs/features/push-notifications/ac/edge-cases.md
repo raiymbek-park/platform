@@ -87,3 +87,30 @@
   When:  the hourly run computes their window
   Then:  the announcement is in their window
          the digest is delivered
+
+## Scenario 13: A resident opens Home while the run is building their digest
+
+  Given: a resident whose window holds one event, who opens Home — recording a visit — after the run
+         has computed their window and before the digest reaches their device
+  When:  the digest is delivered and the next hourly run executes with no further activity
+  Then:  the resident receives exactly one digest for that window
+         the next run sends no digest for the same event
+
+## Scenario 14: An event's post is deleted after the window is computed
+
+  Given: a resident whose window's newest event is an announcement titled "Отключение воды 15 июля",
+         deleted after the run computed their window
+  When:  the digest is sent and the resident taps it
+  Then:  the run does not fail
+         the app opens at `/home`
+         the feed lists the activity that still exists, without the deleted announcement
+         no error is shown
+
+## Scenario 15: Quiet hours follow the complex's time, not the device's
+
+  Given: a resident with a registered device whose own time zone is not Asia/Almaty, and one event in
+         the window
+  When:  the run at 23:00 Asia/Almaty executes
+  Then:  no digest is delivered
+  And when: the run at 09:00 Asia/Almaty executes
+  Then:  the digest is delivered, whatever hour the device's own clock reads

@@ -75,7 +75,6 @@
          follow, dated after their anchor
   When:  the hourly run builds the manager's digest
   Then:  the status change counts toward the digest
-         a resident who does not follow that issue receives no digest for it
 
 ## Scenario 11: Signing out de-registers that device
 
