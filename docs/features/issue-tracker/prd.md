@@ -40,7 +40,9 @@ Permissions are enforced **on the server** for every action, not merely hidden i
 
 Everyone sees the author's name, block, and apartment on an issue. The author's **phone** is shared
 only with Managers, Administration, and the issue's own author — no other role receives it, and the
-server omits it from the payload rather than hiding it in the interface.
+server omits it from the payload rather than hiding it in the interface. An **unverified** phone is
+still shared with that same audience, marked «Номер не подтверждён» — none of them are neighbours of
+the author (see the `onboarding` PRD, Phone Provenance and Disclosure).
 
 A Manager changes status only — never edits or deletes an issue. Editing and deletion are possible
 only while an issue is New: once a Manager takes it into work — the first status change away from

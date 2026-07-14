@@ -29,10 +29,14 @@ their own profile.
   file is compressed client-side by the shared media pipeline (longest edge 1600 px, WebP quality
   0.8) and uploaded as part of save. One avatar per resident — a new upload replaces the previous.
 - **Name** — editable; valid when 2–60 characters after trimming (registration rule).
-- **Phone** — read-only display of the verified number in `+7 707 123 45 67` format. Changing the
-  number is not offered.
+- **Phone** — read-only display of the resident's number in `+7 707 123 45 67` format. Changing the
+  number is not offered, on either sign-in channel. A number the resident did not prove over SMS — they
+  registered with Google — is marked «Номер не подтверждён» (see the `onboarding` PRD, Phone Provenance
+  and Disclosure).
 - **Phone visibility** — two options: «Открыть» (contact number visible to other residents) and
-  «Скрыть» (hidden). Profiles without a stored flag default to hidden.
+  «Скрыть» (hidden). Profiles without a stored flag default to hidden. The setting has no effect on an
+  unverified number: it is never disclosed to other residents whatever the setting says, and the
+  section states this.
 - **Block, apartment, role** — same options and validation as registration: block one of 1–4,
   apartment a positive integer within the selected block's range (block 1: 1–70, block 2: 71–139,
   block 3: 1–63, block 4: 64–126), role owner or tenant.

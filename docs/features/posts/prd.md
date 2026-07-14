@@ -98,6 +98,10 @@ create/edit form carries a notice that the phone will be visible to everyone. An
 only its source label and the staff author's name; no personal phone is exposed for announcements. The
 server includes the phone in the payload only for the audiences entitled to see it.
 
+An author whose phone is **unverified** is the exception: their phone is never disclosed to another
+resident, so their offer card carries name, block, and apartment and no phone, and the form tells them
+their number will not be shown. See the `onboarding` PRD, Phone Provenance and Disclosure.
+
 ## Content Kinds and Categories
 
 Each kind has a fixed category set. The category selects the card's leading icon and colour, and — for

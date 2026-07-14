@@ -78,3 +78,63 @@
   Then:  no new resident record is created
          the stored profile (name, avatar, cars, role) is preserved and not overwritten by
          the re-submitted form values
+
+## Scenario 11: A resident sees their own unverified phone marked as such
+
+  Given: a resident registered over the Google channel
+  When:  they open their own profile
+  Then:  their phone is shown
+         it is marked «Номер не подтверждён»
+
+  Given: a resident registered over the SMS channel
+  When:  they open their own profile
+  Then:  their phone is shown without the «Номер не подтверждён» marker
+
+## Scenario 12: An unverified phone never reaches another resident
+
+  Given: a resident with an unverified phone authored an offer
+  When:  another signed-in resident expands that offer card
+  Then:  the author's name, block, and apartment are shown
+         no phone is shown for the author
+         the phone is absent from the payload the server sends — it is not merely hidden in the
+         interface
+
+  Given: a resident with an unverified phone has phone visibility set to «Открыть»
+  When:  another signed-in resident views any surface carrying that author's contact
+  Then:  no phone is shown — the visibility setting does not disclose an unverified phone
+
+## Scenario 13: Managers and Administration receive an unverified phone, marked
+
+  Given: a resident with an unverified phone opened an issue
+  When:  a Manager or Administration views that issue
+  Then:  the author's phone is shown
+         it is marked «Номер не подтверждён»
+
+  Given: a resident with a verified phone opened an issue
+  When:  a Manager or Administration views that issue
+  Then:  the author's phone is shown without the «Номер не подтверждён» marker
+
+## Scenario 14: A resident with an existing SMS account who taps Google lands on a separate account
+
+  Given: a resident registered over SMS, has issues, offers, and car plates on that account, and is
+         signed out
+  When:  they fill in the registration form with the same phone, reach the verification screen, and
+         continue with Google
+  Then:  a new resident is registered under the Google identity
+         it carries none of the SMS account's issues, offers, comments, reactions, or car plates
+         its phone is recorded as unverified, while the SMS account keeps the same phone as verified
+         the SMS account is left untouched and is reached again by completing an SMS code on it
+
+## Scenario 15: The Google channel grants no elevated role
+
+  Given: a person whose SMS account holds the `manager` or `administration` role
+  When:  they register over the Google channel
+  Then:  the new resident holds only the role picked on the form (owner or tenant)
+         it resolves to a plain resident — no manager or administration permission is granted
+
+## Scenario 16: The Google control is unreachable without a registration draft
+
+  Given: there is no verification started from the registration form (e.g. a direct visit)
+  When:  the user navigates to the verification screen
+  Then:  the app redirects to the welcome screen
+         the Google control is not reachable, so no registration can start without form details
