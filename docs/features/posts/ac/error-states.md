@@ -57,4 +57,3 @@ External failures: network, API, storage.
   Then:  a failed send preserves the entered text and media selection in the input bar for retry
          a failed edit preserves the edited text in edit mode for retry
          a failed delete leaves the message visible in the thread
-</content>

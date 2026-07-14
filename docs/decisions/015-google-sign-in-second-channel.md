@@ -184,5 +184,3 @@ sign-in is a new uid with no such record. The Google channel cannot reach an ele
   app is ever submitted to the App Store, where the social-login rule does apply.
 - Relationship with ADR 001 (state boundaries): the Google session is client/SDK-owned like the
   custom-token session it sits beside, while the resident record stays server truth in Firestore.
-</content>
-</invoke>

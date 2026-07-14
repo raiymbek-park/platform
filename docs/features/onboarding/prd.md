@@ -96,8 +96,11 @@ Both channels are always offered — the Google control does not appear only aft
 channel is unaffected by the presence of the Google control. Both produce the same authenticated
 Firebase session and the same registered resident, with the same profile fields. Every resident has a
 phone on record — the form requires one — and the app displays and discloses it identically whichever
-channel the resident registered over. (The sign-in provider stays recoverable from the identity
-platform per uid, so nothing is recorded with the resident.)
+channel the resident registered over: no marker, no omission. A phone stored over the Google channel is
+**self-declared, not SMS-proven** — the form validates it as a real phone number, but no code has
+demonstrated the resident owns it — so a displayed phone carries no implication of SMS verification.
+(The sign-in provider stays recoverable from the identity platform per uid, so nothing is recorded
+with the resident.)
 
 **One Google account is one resident, separate from any SMS resident.** A resident who registered over
 SMS and later uses the Google control lands on a **different account**: a fresh resident with no
