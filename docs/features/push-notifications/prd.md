@@ -58,6 +58,9 @@ and each receives the same digest.
     therefore never pushed, and an event already pushed is never pushed twice.
   - **Content** — the digest names the newest event in the window and, when the window holds more,
     the number of remaining events. It carries no message body per event; `/home` holds the detail.
+  - **Identity** — the digest is identifiable as this app at a glance: it carries the app's own icon,
+    the same mark the app is installed and bookmarked under, at the **192×192** px the notification
+    surface renders — not the generic icon a browser falls back to for a sender it cannot identify.
   - **Cap** — a window carries at most **10** events, matching the Home feed's limit; a window with
     more reports the first 10 and the remainder rolls into the resident's next Home visit rather than
     a second push.
@@ -77,6 +80,16 @@ and each receives the same digest.
   (registering the same device twice leaves one registration), and carries the **locale** the app is
   running in, so the digest is written in the language that device reads. A device reporting a locale
   outside the supported set, or none at all, is registered with the default locale.
+- **Locale refresh** — a registration carries the language the resident reads **now**, not the one
+  they read when the device was first registered. A registered device refreshes its registration
+  whenever the resident changes the interface language (`docs/features/user-profile/prd.md`), so the
+  first digest sent after the change is already written in the newly chosen language — the resident
+  neither restarts nor reopens the app to be understood. The refresh is the same idempotent
+  registration, so the device keeps exactly one. A language change never asks for notification
+  permission: it registers only a device where notifications are already allowed, and a device
+  without that permission is left untouched. On an allowed device whose registration is missing —
+  one whose earlier registration attempt failed — the switch writes the registration anew, so the
+  device recovers without waiting for the next Home visit.
 - **Device reclaiming** — a device carries a registration for one resident at a time. Registering a
   device for a resident removes that same device's registration from every other resident it was
   registered against, so a digest never reaches a device that has changed hands. The reclaim happens
@@ -123,6 +136,10 @@ with no error and no degraded screen.
 
 - A resident with a registered device and new activity in the window receives exactly one digest for
   that window, naming the newest event and the count of the rest.
+- Every delivered digest shows the app's own icon, so the resident knows which app is speaking before
+  reading a word of it.
+- A resident who changes the interface language receives their next digest in that language, without
+  restarting or reloading the app.
 - A resident whose events were all already visible on their last Home visit receives no digest.
 - An event delivered in one digest never appears in a later one.
 - Activity arising between 22:00 and 08:00 produces no notification during that period and is carried
@@ -173,8 +190,13 @@ with no error and no degraded screen.
   the issues' activity timestamps scope issue events, exactly as they scope the Home feed.
 - **The resident's recorded last visit** (`docs/features/home/prd.md`) — one half of the window
   anchor.
-- **The existing session and route guard** — permission is requested and a device registered only for
-  a signed-in resident on `/home`.
+- **The existing session and route guard** — the notification-permission prompt is shown only to a
+  signed-in resident on `/home`. Registration is not bound to `/home`: it serves only a signed-in
+  resident, and a language change re-invokes it from whatever screen the switch happens on, without
+  prompting.
+- **The interface language switch** (`docs/features/user-profile/prd.md`) — the resident's choice of
+  reading language is the locale a registration carries, and a change to it refreshes that
+  registration.
 - **The server-side locale message catalogue** — the digest copy joins the existing server-authored
   message set, the same one the OTP text is written from.
 - **The delivery service and its scheduled run** — transport, credentials, and the operational

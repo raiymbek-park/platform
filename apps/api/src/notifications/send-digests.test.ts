@@ -135,7 +135,7 @@ describe('sendDigests — quiet hours short-circuit the run', () => {
 })
 
 describe('sendDigests — one digest per resident per window', () => {
-  test('sends one multicast naming the newest event and advances lastNotifiedAt to the window end', async () => {
+  test('happy-path 4+13: sends one multicast naming the newest event, carrying the app icon, and advances lastNotifiedAt to the window end', async () => {
     await sendDigests(noon)
 
     expect(sendSpy).toHaveBeenCalledTimes(1)
@@ -148,7 +148,10 @@ describe('sendDigests — one digest per resident per window', () => {
       webpush: {
         fcmOptions: { link: 'https://raiymbek-park.github.io/platform/home' },
         headers: { Topic: 'uid-a' },
-        notification: { tag: 'uid-a' },
+        notification: {
+          icon: 'https://raiymbek-park.github.io/platform/favicon-192.png',
+          tag: 'uid-a',
+        },
       },
     })
     expect(mockMarkNotified).toHaveBeenCalledTimes(1)

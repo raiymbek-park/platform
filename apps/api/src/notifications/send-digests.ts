@@ -15,7 +15,9 @@ import {
 } from './push-token-store'
 import { isQuietHour } from './quiet-hours'
 
-const HOME_LINK = 'https://raiymbek-park.github.io/platform/home'
+const APP_URL = 'https://raiymbek-park.github.io/platform'
+const HOME_LINK = `${APP_URL}/home`
+const ICON_URL = `${APP_URL}/favicon-192.png`
 const STALE_TOKEN_CODE = 'messaging/registration-token-not-registered'
 
 const laterOf = (
@@ -49,7 +51,7 @@ const sendLocaleGroup = async (
     webpush: {
       fcmOptions: { link: HOME_LINK },
       headers: { Topic: uid },
-      notification: { tag: uid },
+      notification: { icon: ICON_URL, tag: uid },
     },
   })
   const staleTokens = tokens.filter(

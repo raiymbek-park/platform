@@ -106,7 +106,15 @@
          the feed lists the activity that still exists, without the deleted announcement
          no error is shown
 
-## Scenario 15: Quiet hours follow the complex's time, not the device's
+## Scenario 15: A language change on a device without notification permission changes nothing
+
+  Given: a resident who declined the permission prompt
+  When:  they switch the interface language
+  Then:  no permission prompt is requested
+         no registration is written
+         no error is shown
+
+## Scenario 16: Quiet hours follow the complex's time, not the device's
 
   Given: a resident with a registered device whose own time zone is not Asia/Almaty, and one event in
          the window
@@ -114,3 +122,11 @@
   Then:  no digest is delivered
   And when: the run at 09:00 Asia/Almaty executes
   Then:  the digest is delivered, whatever hour the device's own clock reads
+
+## Scenario 17: A language change heals an allowed device whose registration is missing
+
+  Given: a resident whose device has notification permission granted but holds no registration —
+         its earlier registration attempt failed
+  When:  they switch the interface language
+  Then:  no permission prompt is requested
+         the device holds exactly one registration, recording the new locale

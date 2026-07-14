@@ -1,1 +1,1 @@
-export { requestPushToken } from './request-push-token'
+export { getGrantedPushToken, requestPushToken } from './request-push-token'
