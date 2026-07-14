@@ -203,6 +203,62 @@ describe('sendDigests — one digest per resident per window', () => {
     )
   })
 
+  test('happy-path 13: a Kazakh device’s digest names the event by the title projected for kk and frames it in Kazakh copy', async () => {
+    mockGetResidentTokens.mockResolvedValue([
+      { locale: 'kk', token: 'token-kk' },
+    ])
+    mockGetEvents.mockResolvedValue([{ ...announcement, title: 'Велосипед' }])
+
+    await sendDigests(noon)
+
+    expect(mockGetEvents).toHaveBeenCalledExactlyOnceWith(
+      'uid-a',
+      'resident',
+      null,
+      'kk',
+    )
+    expect(sendSpy).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        notification: {
+          body: 'Велосипед',
+          title: 'Raiymbek Park жаңалықтары',
+        },
+        tokens: ['token-kk'],
+      }),
+    )
+  })
+
+  test('happy-path 14: one resident’s ru and kk devices each name the event in their own language, computed once per locale group', async () => {
+    mockGetResidentTokens.mockResolvedValue([
+      { locale: 'ru', token: 'token-ru' },
+      { locale: 'kk', token: 'token-kk' },
+    ])
+    mockGetEvents.mockImplementation((_uid, _role, _since, locale) =>
+      Promise.resolve([
+        { ...announcement, title: locale === 'kk' ? 'Велосипед' : 'Велик' },
+      ]),
+    )
+
+    await sendDigests(noon)
+
+    expect(mockGetEvents).toHaveBeenCalledTimes(2)
+    expect(mockGetEvents).toHaveBeenCalledWith('uid-a', 'resident', null, 'ru')
+    expect(mockGetEvents).toHaveBeenCalledWith('uid-a', 'resident', null, 'kk')
+    expect(sendSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        notification: expect.objectContaining({ body: 'Велик' }),
+        tokens: ['token-ru'],
+      }),
+    )
+    expect(sendSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        notification: expect.objectContaining({ body: 'Велосипед' }),
+        tokens: ['token-kk'],
+      }),
+    )
+    expect(mockMarkNotified).toHaveBeenCalledTimes(1)
+  })
+
   test('a resident with no events in the window receives nothing and does not advance', async () => {
     mockGetEvents.mockResolvedValue([])
 
@@ -248,6 +304,7 @@ describe('sendDigests — window anchor', () => {
       'uid-a',
       'resident',
       lastNotifiedAt,
+      'ru',
     )
   })
 
@@ -261,7 +318,12 @@ describe('sendDigests — window anchor', () => {
 
     await sendDigests(noon)
 
-    expect(mockGetEvents).toHaveBeenCalledWith('uid-a', 'resident', lastVisit)
+    expect(mockGetEvents).toHaveBeenCalledWith(
+      'uid-a',
+      'resident',
+      lastVisit,
+      'ru',
+    )
   })
 
   test('edge-cases 4: a resident who has never opened Home is anchored on lastNotifiedAt alone', async () => {
@@ -278,13 +340,14 @@ describe('sendDigests — window anchor', () => {
       'uid-a',
       'resident',
       lastNotifiedAt,
+      'ru',
     )
   })
 
   test('a resident with neither marker is read from the beginning and still advances', async () => {
     await sendDigests(noon)
 
-    expect(mockGetEvents).toHaveBeenCalledWith('uid-a', 'resident', null)
+    expect(mockGetEvents).toHaveBeenCalledWith('uid-a', 'resident', null, 'ru')
     expect(mockMarkNotified).toHaveBeenCalledWith(
       'uid-a',
       Timestamp.fromDate(noon),
@@ -296,7 +359,7 @@ describe('sendDigests — window anchor', () => {
 
     await sendDigests(noon)
 
-    expect(mockGetEvents).toHaveBeenCalledWith('uid-a', 'manager', null)
+    expect(mockGetEvents).toHaveBeenCalledWith('uid-a', 'manager', null, 'ru')
   })
 })
 
@@ -404,7 +467,13 @@ describe('sendDigests — failure containment', () => {
 
     await sendDigests(almatyRun(13))
 
-    expect(mockGetEvents).toHaveBeenNthCalledWith(2, 'uid-a', 'resident', null)
+    expect(mockGetEvents).toHaveBeenNthCalledWith(
+      1,
+      'uid-a',
+      'resident',
+      null,
+      'ru',
+    )
     expect(sendSpy).toHaveBeenCalledTimes(1)
     expect(sendSpy).toHaveBeenCalledWith(
       expect.objectContaining({

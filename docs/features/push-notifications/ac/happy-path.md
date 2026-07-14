@@ -94,14 +94,31 @@
   Then:  the `ru` device's copy is Russian
          the `en` device's copy is English
 
-## Scenario 13: The digest carries the app's icon
+## Scenario 13: The digest names the event in the device's locale
+
+  Given: a device registered with locale `kk`, and a window holding one event — an announcement
+         written in Russian as "Велик", whose Kazakh translation "Велосипед" is stored
+  When:  the hourly run builds and sends the digest
+  Then:  the digest's body names "Велосипед"
+         it does not name "Велик"
+         the copy around the title is Kazakh
+
+## Scenario 14: One resident's two locales each name the event in their own language
+
+  Given: a resident with two registered devices — one `ru`, one `kk` — and one event in the window,
+         an announcement written in Russian as "Велик" whose Kazakh translation "Велосипед" is stored
+  When:  the hourly run sends the digest
+  Then:  the `ru` device's digest names "Велик"
+         the `kk` device's digest names "Велосипед"
+
+## Scenario 15: The digest carries the app's icon
 
   Given: a resident with a registered device and one event in the window
   When:  the hourly run sends the digest
   Then:  the delivered digest shows the app's own icon
          no generic browser icon stands in its place
 
-## Scenario 14: A language change reaches the next digest
+## Scenario 16: A language change reaches the next digest
 
   Given: a device registered for a resident with locale `ru`, and one event in the window
   When:  the resident switches the interface language to English without reloading the app, and the

@@ -171,9 +171,10 @@ the tests — the same split the translation triggers use. The run:
 
 1. Enumerates residents via `collectionGroup('pushTokens')`.
 2. Skips the run entirely when the current Asia/Almaty hour falls in **22:00–08:00**.
-3. Computes each resident's events with the existing `getEvents(uid, role, anchor)` where
+3. Computes each resident's events with the existing `getEvents(uid, role, anchor, locale)` where
    `anchor = max(lastVisit, lastNotifiedAt)` — **`getEvents`' third parameter is renamed from
-   `lastVisit` to `since`**, which is the whole extent of the change to the events module.
+   `lastVisit` to `since`, and it gains a fourth, `locale`**, which is the whole extent of the change
+   to the events module.
 4. Sends one multicast message per resident to that resident's tokens, with copy authored server-side
    per token locale via the existing `apps/api/src/i18n.ts` catalogue, `collapseKey`/`tag` set per
    resident so a newer digest replaces an unread one, `fcmOptions.link` pointing at the deployed
@@ -185,6 +186,29 @@ the tests — the same split the translation triggers use. The run:
    status-bar glyph Android would use has no asset in the repo, and without one Android keeps its own
    default there; adding the glyph is a design task, not a wiring decision.
 5. Advances `lastNotifiedAt` **only after** a send that FCM accepted for at least one token.
+
+**How the locale reaches the title projection.** `getEvents` composes `...localizedFields(data,
+locale)` for its post-backed events, exactly as `posts-store.ts` already does for the posts feed —
+the events module must not read `data.title` raw, or it leaks the source language to every caller.
+The `locale` argument comes from a different place on each of the two paths:
+
+- **Home** passes `ctx.locale`, the caller's `x-locale` header. The feed's change rows therefore read
+  in the viewer's language, which they must anyway and which the raw-title read denied them.
+- **The digest** passes the locale of the device group being sent to. The run already groups a
+  resident's tokens by locale (`sendLocaleGroup`) to pick the catalogue copy; that same group locale
+  now also selects the title, so one grouping decides the whole message.
+
+Because the locale is a parameter of the computation rather than of the send, a resident whose
+devices are registered under two different locales has their events computed **once per locale
+group** rather than once per resident. This is accepted: the case is rare (a resident must own two
+devices and read the app in two languages), the cost is one extra pass of an already-cheap read, and
+the alternative — computing once and re-projecting per group afterwards — would mean carrying the
+`translations` map out of the events module.
+
+The `Event` type therefore **keeps exposing a single projected `title` string and never the raw
+`translations` map**. ADR 012 forbids clients reading that map directly, and the digest is not a
+reason to widen the type: the projection stays server-side, and both callers receive a title already
+resolved for their locale.
 
 Serve the service worker as a **static file at `apps/web/public/firebase-messaging-sw.js`**, which
 Vite copies verbatim to `dist/`, publishing it at **`/platform/firebase-messaging-sw.js`** with scope
@@ -246,5 +270,9 @@ credentials, exactly as the existing Firestore access does.
 - Relationship to ADR 001 (state boundaries): a digest is a server-side projection over server truth;
   the client stores only the fact that permission was already requested on this device, which is
   device state and belongs in neither the query cache nor the router.
-- Relationship to ADR 012 (translation): digest copy is a fixed server-authored catalogue string, not
-  LLM-translated content; the event's own title, when named in a digest, is the stored original.
+- Relationship to ADR 012 (translation): the two halves of a digest's text come from different
+  places. The copy around the event is a fixed server-authored catalogue string, not LLM-translated
+  content. The event's own title is LLM-translated content and follows ADR 012's read-layer
+  projection unchanged — `localizedFields` picks the translation for the digest's locale and falls
+  back to the stored original when the source language already matches or no fresh translation
+  exists. Both halves are selected by the same locale, so a device receives one language.

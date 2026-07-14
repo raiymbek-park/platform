@@ -153,7 +153,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         })
 
       const { getEvents } = await import('./events/events-store')
-      const events = await getEvents(null, null, null)
+      const events = await getEvents(null, null, null, 'ru')
       expect(
         events.map(e =>
           e.type === 'announcement' || e.type === 'offer' ? e.id : '',
@@ -190,7 +190,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
 
       const { getEvents } = await import('./events/events-store')
       const lastVisit = Timestamp.fromDate(new Date('2026-06-10T09:00:00Z'))
-      const events = await getEvents(null, null, lastVisit)
+      const events = await getEvents(null, null, lastVisit, 'ru')
 
       expect(events.map(e => (e.type === 'announcement' ? e.id : ''))).toEqual([
         'fresh',
@@ -241,7 +241,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         })
 
       const { getEvents } = await import('./events/events-store')
-      const before = await getEvents(null, null, null)
+      const before = await getEvents(null, null, null, 'ru')
       expect(before[0]?.type === 'announcement' && before[0].title).toBe(
         'Original',
       )
@@ -256,7 +256,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
           createdAt: Timestamp.fromDate(new Date('2026-06-01T09:00:00Z')),
         })
 
-      const after = await getEvents(null, null, null)
+      const after = await getEvents(null, null, null, 'ru')
       expect(after[0]?.type === 'announcement' && after[0].title).toBe(
         'Updated',
       )
@@ -312,7 +312,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       )
       const { getEvents } = await import('./events/events-store')
       const contacts = await getServiceContacts()
-      const events = await getEvents(null, null, null)
+      const events = await getEvents(null, null, null, 'ru')
       expect(contacts).toEqual([])
       expect(events).toEqual([])
     })
@@ -343,7 +343,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         })
 
       const { getEvents } = await import('./events/events-store')
-      const events = await getEvents(null, null, null)
+      const events = await getEvents(null, null, null, 'ru')
       expect(
         events.map(e =>
           e.type === 'announcement' || e.type === 'offer' ? e.id : '',
@@ -372,7 +372,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       await batch.commit()
 
       const { getEvents } = await import('./events/events-store')
-      const events = await getEvents(null, null, null)
+      const events = await getEvents(null, null, null, 'ru')
       expect(events).toHaveLength(10)
     })
   })

@@ -130,3 +130,28 @@
   When:  they switch the interface language
   Then:  no permission prompt is requested
          the device holds exactly one registration, recording the new locale
+
+## Scenario 18: An untranslated event is named in the author's original wording
+
+  Given: a device registered with locale `kk`, and a window holding one event — an announcement
+         written in Russian as "Велик" with no Kazakh translation stored
+  When:  the hourly run builds and sends the digest
+  Then:  the digest's body names "Велик"
+         the copy around the title is Kazakh
+         the digest is delivered, rather than withheld or sent with an unnamed event
+
+## Scenario 19: An event authored in the device's own language is named as written
+
+  Given: a device registered with locale `ru`, and a window holding one event — an announcement
+         written in Russian as "Велик"
+  When:  the hourly run builds and sends the digest
+  Then:  the digest's body names "Велик"
+
+## Scenario 20: A stale translation is not preferred over the original
+
+  Given: a device registered with locale `kk`, and a window holding one announcement whose title was
+         edited after its Kazakh translation was stored, so the stored translation no longer matches
+         the current title
+  When:  the hourly run builds and sends the digest
+  Then:  the digest names the announcement's current title as its author wrote it
+         it does not name the superseded Kazakh translation

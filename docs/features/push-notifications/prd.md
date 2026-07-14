@@ -58,6 +58,13 @@ and each receives the same digest.
     therefore never pushed, and an event already pushed is never pushed twice.
   - **Content** — the digest names the newest event in the window and, when the window holds more,
     the number of remaining events. It carries no message body per event; `/home` holds the detail.
+  - **Language of the named event** — the event is named in the language the receiving device reads,
+    not the language its author wrote it in: a resident reading Kazakh is told the Kazakh title of a
+    Russian-authored announcement. The title a digest carries is the translated one
+    (`docs/features/content-translation/prd.md`), chosen for that device's locale. When no
+    translation exists for that locale — the source language is already the device's, or translation
+    has not landed — the digest names the title as its author wrote it. The surrounding copy and the
+    event's own title therefore reach a device in one language, never two.
   - **Identity** — the digest is identifiable as this app at a glance: it carries the app's own icon,
     the same mark the app is installed and bookmarked under, at the **192×192** px the notification
     surface renders — not the generic icon a browser falls back to for a sender it cannot identify.
@@ -99,7 +106,9 @@ and each receives the same digest.
   so a reinstalled or expired device stops accumulating dead registrations.
 - **Digest copy** — authored server-side (a scheduled run has no caller to take a locale from) and
   written in the device's registered locale, in each of the three **supported locales** the app
-  already serves: `ru`, `kk`, and `en`, with `ru` the **default locale**.
+  already serves: `ru`, `kk`, and `en`, with `ru` the **default locale**. The registered locale
+  governs the whole message: it selects both the server-authored wording around the event and the
+  event's own title, so a device is never sent one language framing another.
 
 ### What's NOT included
 
@@ -140,6 +149,9 @@ with no error and no degraded screen.
   reading a word of it.
 - A resident who changes the interface language receives their next digest in that language, without
   restarting or reloading the app.
+- A digest names its event in the device's own language whenever a translation for that language
+  exists, and in the author's original wording when none does — never in a language the device did
+  not ask for while a translation for it is available.
 - A resident whose events were all already visible on their last Home visit receives no digest.
 - An event delivered in one digest never appears in a later one.
 - Activity arising between 22:00 and 08:00 produces no notification during that period and is carried
@@ -199,6 +211,10 @@ with no error and no degraded screen.
   registration.
 - **The server-side locale message catalogue** — the digest copy joins the existing server-authored
   message set, the same one the OTP text is written from.
+- **Content translation** (`docs/features/content-translation/prd.md`) — the stored translations of a
+  post's title, and the rule for choosing one by locale and falling back to the original, are
+  consumed as-is to name an event. This is a reuse dependency: the digest reads the same projection
+  a resident's own screens read, so a title never differs between the two.
 - **The delivery service and its scheduled run** — transport, credentials, and the operational
   prerequisites are specified in `docs/decisions/014-push-notifications-fcm-hourly-digest.md`. The
   feature depends on a delivery credential provisioned out of band; without it the app degrades to
