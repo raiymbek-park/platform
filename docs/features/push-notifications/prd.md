@@ -37,8 +37,9 @@ Signed-in residents holding a valid session — the same audience `/home` serves
 roles (`viewer`, `resident`, `owner`, `manager`, `administration`). Roles do not gate the digest
 itself: a role decides which **events** a resident is entitled to, and that decision is already made
 by the Home feed and reused here unchanged. **Managers** and **Administration** are subscribed to
-every issue by default, so their digest carries issue activity across all issues; every other role
-receives issue activity only for issues they follow.
+every issue by default, so their digest carries newly opened issues and issue activity across all
+issues; every other role receives issue activity only for issues they follow and is never
+notified of a newly opened issue.
 
 Notifications reach a **device**, not an account: one resident may hold several registered devices,
 and each receives the same digest.
@@ -49,10 +50,11 @@ and each receives the same digest.
 
 - **Digest** — one push message per resident per hourly window, summarizing that window's events:
   - The digest is built from the **event** set defined by the Home feed
-    (`docs/features/home/prd.md`) — new announcement, new private offer, status change on a followed
-    issue, and new comment from someone else on a followed issue — including its exclusion of the
-    resident's own actions and its role-based issue subscription. The feed's definition is the only
-    definition; the digest reuses the computation rather than restating it.
+    (`docs/features/home/prd.md`) — new announcement, new private offer, newly opened issue for
+    Managers and Administration, status change on a followed issue, and new comment from someone else
+    on a followed issue — including its exclusion of the resident's own actions and its role-based
+    issue subscription. The feed's definition is the only definition; the digest reuses the
+    computation rather than restating it.
   - **Window anchor** — the digest covers events dated after the **later** of the resident's recorded
     last visit and the end of their last delivered digest window. An event already shown on Home is
     therefore never pushed, and an event already pushed is never pushed twice.
@@ -157,8 +159,8 @@ with no error and no degraded screen.
 - Activity arising between 22:00 and 08:00 produces no notification during that period and is carried
   in full by the first digest after 08:00.
 - The audience and exclusions of a digest match the Home feed exactly: a resident's own post,
-  comment, or issue never notifies them; issue activity reaches followers, and reaches Managers and
-  Administration across all issues.
+  comment, or issue never notifies them; issue activity reaches followers, and newly opened issues
+  and issue activity reach Managers and Administration across all issues.
 - Declining the permission prompt, or opening the app in a browser that cannot deliver push, leaves
   every screen fully functional and produces no visible error.
 - A device registered for one resident receives no other resident's digest from that registration
@@ -227,7 +229,8 @@ these identifiers are not. Do not introduce synonyms (notification-subscription,
 reminder, subscriber) in code.
 
 - **event** — one item of new activity. The existing union from the Home feed
-  (`announcement` | `offer` | `issue-status` | `issue-comment`); this feature adds no new kind.
+  (`announcement` | `offer` | `issue` | `issue-status` | `issue-comment`); this feature adds no new
+  kind and defines none — the union is Home's to change.
 - **digest** — one aggregated push message covering N events for one resident in one window.
 - **window** — the interval a digest covers: from the anchor to the moment the digest is built.
 - **pushToken** — the registration identifying one device; stored per resident with the device's

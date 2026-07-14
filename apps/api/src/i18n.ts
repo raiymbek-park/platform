@@ -102,6 +102,12 @@ const issueStatusLabel = {
   rejected: { ru: 'Отклонено', kk: 'Қабылданбады', en: 'Rejected' },
 } satisfies Record<IssueStatus, Record<Locale, string>>
 
+export const issueOpenedHeadline = {
+  ru: (number: number, title: string) => `Заявка №${number}: ${title}`,
+  kk: (number: number, title: string) => `Өтінім №${number}: ${title}`,
+  en: (number: number, title: string) => `Issue #${number}: ${title}`,
+} satisfies Record<Locale, (number: number, title: string) => string>
+
 export const issueStatusHeadline = {
   ru: (number: number, status: IssueStatus) =>
     `Заявка №${number}: ${issueStatusLabel[status].ru}`,

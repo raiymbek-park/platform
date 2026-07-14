@@ -501,3 +501,126 @@ test('edge-cases 20: a translation made from a superseded title yields the curre
     expect.objectContaining({ title: 'Велик' }),
   ])
 })
+
+const openedIssue = (overrides: Record<string, unknown> = {}): FakeDoc => ({
+  data: {
+    authorId: 'resident-uid',
+    createdAt: at(300),
+    description: 'Вода течёт с потолка подвала',
+    lang: 'ru',
+    number: 18,
+    status: 'new',
+    title: 'Протечка воды в подвале',
+    ...overrides,
+  },
+  id: 'issue-18',
+})
+
+test('home happy-path 13 + push happy-path 17: a newly opened issue reaches a manager’s and an administration member’s window, named by number and title', async () => {
+  state.issues = [openedIssue()]
+
+  const expected = [
+    {
+      createdAt: 300,
+      issueId: 'issue-18',
+      number: 18,
+      title: 'Протечка воды в подвале',
+      type: 'issue',
+    },
+  ]
+  await expect(
+    getEvents('manager-uid', 'manager', at(50), 'ru'),
+  ).resolves.toEqual(expected)
+  await expect(
+    getEvents('admin-uid', 'administration', at(50), 'ru'),
+  ).resolves.toEqual(expected)
+})
+
+test('home happy-path 14: a Kazakh-reading manager’s window names the new issue by its stored Kazakh title', async () => {
+  state.issues = [
+    openedIssue({
+      translatedRev: hashSource(
+        'Протечка воды в подвале',
+        'Вода течёт с потолка подвала',
+      ),
+      translations: {
+        kk: {
+          description: 'Жертөле төбесінен су ағып тұр',
+          title: 'Жертөледегі су ағуы',
+        },
+      },
+    }),
+  ]
+
+  await expect(
+    getEvents('manager-uid', 'manager', at(50), 'kk'),
+  ).resolves.toEqual([
+    expect.objectContaining({ title: 'Жертөледегі су ағуы', type: 'issue' }),
+  ])
+})
+
+test('home happy-path 14: without a stored Kazakh translation the new issue keeps the author’s original title', async () => {
+  state.issues = [openedIssue()]
+
+  await expect(
+    getEvents('manager-uid', 'manager', at(50), 'kk'),
+  ).resolves.toEqual([
+    expect.objectContaining({
+      title: 'Протечка воды в подвале',
+      type: 'issue',
+    }),
+  ])
+})
+
+test('home edge-cases 10 + push happy-path 17: a newly opened issue stays out of a resident’s, an owner’s and a viewer’s window', async () => {
+  state.issues = [openedIssue()]
+
+  await expect(getEvents('uid-a', 'resident', at(50), 'ru')).resolves.toEqual(
+    [],
+  )
+  await expect(getEvents('uid-b', 'owner', at(50), 'ru')).resolves.toEqual([])
+  await expect(getEvents('uid-c', 'viewer', at(50), 'ru')).resolves.toEqual([])
+})
+
+test('home edge-cases 10: a follower of the new issue receives its later status change but not the opening itself', async () => {
+  state.issues = [
+    openedIssue({ lastStatusAt: at(400), lastStatusBy: 'manager-uid' }),
+  ]
+  state.watches = { 'uid-a': ['issue-18'] }
+
+  await expect(getEvents('uid-a', 'resident', at(50), 'ru')).resolves.toEqual([
+    {
+      createdAt: 400,
+      issueId: 'issue-18',
+      number: 18,
+      status: 'new',
+      type: 'issue-status',
+    },
+  ])
+})
+
+test('home edge-cases 11: a manager who opened the issue is not notified, while other staff are', async () => {
+  state.issues = [openedIssue({ authorId: 'manager-a-uid' })]
+
+  await expect(
+    getEvents('manager-a-uid', 'manager', at(50), 'ru'),
+  ).resolves.toEqual([])
+  await expect(
+    getEvents('manager-b-uid', 'manager', at(50), 'ru'),
+  ).resolves.toEqual([
+    expect.objectContaining({ issueId: 'issue-18', type: 'issue' }),
+  ])
+  await expect(
+    getEvents('admin-uid', 'administration', at(50), 'ru'),
+  ).resolves.toEqual([
+    expect.objectContaining({ issueId: 'issue-18', type: 'issue' }),
+  ])
+})
+
+test('validation 3: a newly opened issue dated exactly at the anchor is not pushed again', async () => {
+  state.issues = [openedIssue({ createdAt: at(12_000) })]
+
+  await expect(
+    getEvents('manager-uid', 'manager', at(12_000), 'ru'),
+  ).resolves.toEqual([])
+})

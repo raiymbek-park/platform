@@ -79,3 +79,19 @@
   When:  the welcome card loads
   Then:  the new-comment activity appears as a change row showing the issue's number
          a comment the resident wrote themselves does not produce a change row
+
+## Scenario 13: A newly opened issue appears for Managers and Administration
+  Given: a resident opened issue №18 "Протечка воды в подвале" after a manager's and an
+         administration member's last visit, and neither of them follows it
+  When:  the welcome card loads for each of them
+  Then:  the new issue appears as a change row for both
+         the row names the issue by its number and title — "Заявка №18: Протечка воды в подвале"
+
+## Scenario 14: A new-issue change row names the title in the reader's reading language
+  Given: a manager reading the app in Kazakh, and an issue opened after their last visit, written in
+         Russian as "Протечка воды в подвале" whose Kazakh translation "Жертөледегі су ағуы" is stored
+  When:  the welcome card loads
+  Then:  the change row names "Жертөледегі су ағуы"
+         it does not name "Протечка воды в подвале"
+  And when: no Kazakh translation for that issue is stored
+  Then:  the change row names the author's original "Протечка воды в подвале"

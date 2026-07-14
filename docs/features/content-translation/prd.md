@@ -69,8 +69,9 @@ Supported locales are the three from the i18n feature: `ru`, `kk`, `en`.
 
 - **Admin-seeded content** — `service-contacts` stay in their stored language; their translations,
   when needed, are supplied at seed time by the seeding scripts. This does not cover the Home feed's
-  events: an event about a new announcement or offer carries that post's own title, which is
-  translated content and is read through this feature's projection like anywhere else (see
+  events: an event about a new announcement or offer carries that post's own title, and an event
+  about a newly opened issue carries that issue's own title — both are translated content and are
+  read through this feature's projection like anywhere else (see
   `docs/features/push-notifications/prd.md` and `docs/features/home/prd.md`). An event about issue
   activity carries no title — only the issue's number and its new status — so nothing there is
   translated.

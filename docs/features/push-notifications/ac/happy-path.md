@@ -126,3 +126,13 @@
   Then:  the device's registration records locale `en`
          the resident holds exactly one registration for that token
          the device's copy is English
+
+## Scenario 17: A newly opened issue reaches staff digests only
+
+  Given: a resident opened issue №18 "Протечка воды в подвале" after the anchor of a manager, an
+         administration member, and another resident — all with registered devices, none following it
+  When:  the hourly run builds and sends digests
+  Then:  the manager's and the administration member's digests count the new issue and name it by its
+         number and title
+         the other resident's digest does not count it
+         the issue's author receives no digest naming their own issue

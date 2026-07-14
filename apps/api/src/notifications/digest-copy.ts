@@ -4,10 +4,13 @@ import type { Locale } from '../i18n'
 import {
   digestRemainder,
   issueCommentHeadline,
+  issueOpenedHeadline,
   issueStatusHeadline,
 } from '../i18n'
 
 const headline = (locale: Locale, event: Event): string => {
+  if (event.type === 'issue')
+    return issueOpenedHeadline[locale](event.number, event.title)
   if (event.type === 'issue-status')
     return issueStatusHeadline[locale](event.number, event.status)
   if (event.type === 'issue-comment')

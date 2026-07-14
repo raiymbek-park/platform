@@ -318,8 +318,24 @@ msgid "Заявка №{0} · {label}"
 msgstr "Issue #{0} · {label}"
 
 #. placeholder {0}: event.number
+#. placeholder {1}: event.title
 #. placeholder {1}: statusLabel[event.status]
 #: src/pages/home/model/use-events-data.ts:50
+#: src/pages/home/model/use-events-data.ts:58
+#~ msgid "Заявка №{0}: {1}"
+#~ msgstr "Issue #{0}: {1}"
+
+#. placeholder {0}: event.number
+#. placeholder {1}: statusLabel[event.status]
+#: src/pages/home/model/use-events-data.ts:61
+msgctxt "issue status change, named by the new status"
+msgid "Заявка №{0}: {1}"
+msgstr "Issue #{0}: {1}"
+
+#. placeholder {0}: event.number
+#. placeholder {1}: event.title
+#: src/pages/home/model/use-events-data.ts:50
+msgctxt "newly opened issue, named by its title"
 msgid "Заявка №{0}: {1}"
 msgstr "Issue #{0}: {1}"
 
@@ -654,7 +670,7 @@ msgid "Новые"
 msgstr "New"
 
 #. placeholder {0}: event.number
-#: src/pages/home/model/use-events-data.ts:57
+#: src/pages/home/model/use-events-data.ts:71
 msgid "Новые сообщения по заявке №{0}"
 msgstr "New messages on issue #{0}"
 
