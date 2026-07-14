@@ -46,3 +46,15 @@
   When:  the app boots
   Then:  only the English translations are fetched
          the Russian and Kazakh translations are not downloaded at startup
+
+## Scenario 8: The document declares the active language from the first paint
+  Given: `localStorage` holds the choice `"kk"`
+  When:  the app boots
+  Then:  `document.documentElement.lang` is `"kk"` by the time the first screen paints
+         at no point does the document declare a language other than `ru` (the static default) or `kk`
+
+## Scenario 9: Switching the language re-declares the document language without a reload
+  Given: the interface renders in Russian and the document's `lang` is `"ru"`
+  When:  the resident switches the interface language to English
+  Then:  `document.documentElement.lang` becomes `"en"` as the UI re-renders
+         no page reload occurs
