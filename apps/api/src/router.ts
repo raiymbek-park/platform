@@ -1,6 +1,7 @@
 import { commentsRouter } from './comments/router'
 import { eventsRouter } from './events/router'
 import { issuesRouter } from './issues/router'
+import { notificationsRouter } from './notifications/router'
 import { otpRouter } from './otp/router'
 import { postsRouter } from './posts/router'
 import { residentRouter } from './resident/router'
@@ -30,6 +31,7 @@ export const appRouter = router({
   comments: commentsRouter,
   events: eventsRouter,
   issues: issuesRouter,
+  notifications: notificationsRouter,
   otp: otpRouter,
   posts: postsRouter,
   resident: residentRouter,
