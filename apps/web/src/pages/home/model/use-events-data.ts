@@ -47,7 +47,10 @@ export const useEventsData = () => {
       return {
         glyph: statusGlyphs.new,
         id: `issue-${event.issueId}`,
-        text: t`Заявка №${event.number}: ${event.title}`,
+        text: t({
+          context: 'newly opened issue, named by its title',
+          message: `Заявка №${event.number}: ${event.title}`,
+        }),
         tone: statusTones.new,
       }
     }
@@ -55,7 +58,10 @@ export const useEventsData = () => {
       return {
         glyph: statusGlyphs[event.status],
         id: `status-${event.issueId}`,
-        text: t`Заявка №${event.number}: ${statusLabel[event.status]}`,
+        text: t({
+          context: 'issue status change, named by the new status',
+          message: `Заявка №${event.number}: ${statusLabel[event.status]}`,
+        }),
         tone: statusTones[event.status],
       }
     }

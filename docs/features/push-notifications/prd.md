@@ -38,8 +38,8 @@ roles (`viewer`, `resident`, `owner`, `manager`, `administration`). Roles do not
 itself: a role decides which **events** a resident is entitled to, and that decision is already made
 by the Home feed and reused here unchanged. **Managers** and **Administration** are subscribed to
 every issue by default, so their digest carries newly opened issues and issue activity across all
-issues; every other role receives issue activity only for issues they follow and no newly opened
-issue of anyone else's.
+issues; every other role receives issue activity only for issues they follow and is never
+notified of a newly opened issue.
 
 Notifications reach a **device**, not an account: one resident may hold several registered devices,
 and each receives the same digest.
