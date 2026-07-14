@@ -6,9 +6,10 @@ type StoredToken = {
   data: Record<string, unknown>
 }
 
-const state = vi.hoisted(() => ({
-  docs: [] as StoredToken[],
-}))
+const state = vi.hoisted(() => {
+  const docs: StoredToken[] = []
+  return { docs }
+})
 
 const setSpy = vi.hoisted(() => vi.fn())
 
