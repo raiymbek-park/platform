@@ -45,10 +45,10 @@ const EVENT_LIMIT = 10
 const postEvents = async (
   kind: PostKind,
   uid: string | null,
-  lastVisit: Timestamp | null,
+  since: Timestamp | null,
 ): Promise<Event[]> => {
   const scoped = getDb().collection('posts').where('kind', '==', kind)
-  const fresh = lastVisit ? scoped.where('createdAt', '>', lastVisit) : scoped
+  const fresh = since ? scoped.where('createdAt', '>', since) : scoped
   const snap = await fresh.orderBy('createdAt', 'desc').limit(EVENT_LIMIT).get()
   return snap.docs
     .filter(doc => toText(doc.data().authorId) !== uid)
@@ -66,7 +66,7 @@ const postEvents = async (
 
 const issueEvents = async (
   uid: string,
-  lastVisit: Timestamp | null,
+  since: Timestamp | null,
 ): Promise<Event[]> => {
   const issueIds = await getWatchedIssueIds(uid)
   if (issueIds.length === 0) return []
@@ -74,7 +74,7 @@ const issueEvents = async (
   const snaps = await db.getAll(
     ...issueIds.map(id => db.collection('issues').doc(id)),
   )
-  const since = lastVisit ? lastVisit.toMillis() : 0
+  const sinceMillis = since ? since.toMillis() : 0
   return snaps.flatMap(snap => {
     const data = snap.data()
     if (!data) return []
@@ -83,7 +83,7 @@ const issueEvents = async (
     const lastCommentAt = toMillis(data.lastCommentAt)
     const lastCommentBy = toText(data.lastCommentBy)
     const statusEvents: Event[] =
-      lastStatusAt > since
+      lastStatusAt > sinceMillis
         ? [
             {
               createdAt: lastStatusAt,
@@ -95,7 +95,7 @@ const issueEvents = async (
           ]
         : []
     const commentEvents: Event[] =
-      lastCommentAt > since && lastCommentBy !== uid
+      lastCommentAt > sinceMillis && lastCommentBy !== uid
         ? [
             {
               createdAt: lastCommentAt,
@@ -114,16 +114,16 @@ const issueEvents = async (
 // ones — excluding activity they caused themselves.
 const staffIssueEvents = async (
   uid: string,
-  lastVisit: Timestamp | null,
+  since: Timestamp | null,
 ): Promise<Event[]> => {
   const issues = getDb().collection('issues')
   const statusQuery = (
-    lastVisit ? issues.where('lastStatusAt', '>', lastVisit) : issues
+    since ? issues.where('lastStatusAt', '>', since) : issues
   )
     .orderBy('lastStatusAt', 'desc')
     .limit(EVENT_LIMIT)
   const commentQuery = (
-    lastVisit ? issues.where('lastCommentAt', '>', lastVisit) : issues
+    since ? issues.where('lastCommentAt', '>', since) : issues
   )
     .orderBy('lastCommentAt', 'desc')
     .limit(EVENT_LIMIT)
@@ -160,24 +160,22 @@ const staffIssueEvents = async (
 const issueActivity = (
   uid: string | null,
   role: PermissionRole | null,
-  lastVisit: Timestamp | null,
+  since: Timestamp | null,
 ): Promise<Event[]> | Event[] => {
   if (!uid) return []
   const isStaff = role === 'manager' || role === 'administration'
-  return isStaff
-    ? staffIssueEvents(uid, lastVisit)
-    : issueEvents(uid, lastVisit)
+  return isStaff ? staffIssueEvents(uid, since) : issueEvents(uid, since)
 }
 
 export const getEvents = async (
   uid: string | null,
   role: PermissionRole | null,
-  lastVisit: Timestamp | null,
+  since: Timestamp | null,
 ): Promise<Event[]> => {
   const [announcements, offers, activity] = await Promise.all([
-    postEvents('announcement', uid, lastVisit),
-    postEvents('offer', uid, lastVisit),
-    issueActivity(uid, role, lastVisit),
+    postEvents('announcement', uid, since),
+    postEvents('offer', uid, since),
+    issueActivity(uid, role, since),
   ])
   return [...announcements, ...offers, ...activity]
     .sort((a, b) => b.createdAt - a.createdAt)
