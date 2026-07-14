@@ -1,0 +1,89 @@
+# Push Notifications — Edge Cases
+
+## Scenario 1: Quiet hours hold the digest
+
+  Given: a resident with a registered device and an event arising at 23:10 Asia/Almaty
+  When:  the runs at 00:00 through 07:00 execute
+  Then:  no digest is delivered
+
+## Scenario 2: The morning digest carries the whole night
+
+  Given: three events arising between 22:00 and 08:00 Asia/Almaty for a resident with a registered
+         device
+  When:  the first run after 08:00 executes
+  Then:  one digest is delivered
+         it covers all three events
+         none of the three is dropped
+
+## Scenario 3: The boundary hours are covered
+
+  Given: a resident with a registered device and one event in the window
+  When:  the run at 22:00 Asia/Almaty executes
+  Then:  no digest is delivered
+  And when: the run at 08:00 Asia/Almaty executes
+  Then:  the digest is delivered
+
+## Scenario 4: A resident with no recorded last visit
+
+  Given: a resident who has never opened Home, with a registered device and recent activity
+  When:  the hourly run computes their window
+  Then:  the window is anchored on `lastNotifiedAt` alone
+         the digest covers the most recent activity, capped at ten events
+
+## Scenario 5: A resident with neither marker
+
+  Given: a resident with a registered device, no recorded last visit, and no delivered digest
+  When:  the hourly run computes their window
+  Then:  the digest covers the most recent activity, capped at ten events
+         `lastNotifiedAt` advances, so the next run does not repeat it
+
+## Scenario 6: A newer digest replaces an unread one
+
+  Given: a device showing an undismissed digest from the previous hour
+  When:  a new digest is delivered to that device
+  Then:  the device shows one digest, not two
+         the shown digest is the newer one
+
+## Scenario 7: A resident opens Home between the send and the tap
+
+  Given: a delivered digest, and a resident who opens Home directly — recording a visit — before
+         tapping it
+  When:  the next hourly run executes with no further activity
+  Then:  no digest is sent
+
+## Scenario 8: The same device is reused by another resident
+
+  Given: a device registered for resident A, who signs out; resident B then signs in on that device
+         and grants permission
+  When:  the hourly run sends digests
+  Then:  the device receives resident B's digest
+         the device receives no digest for resident A
+
+## Scenario 9: The token rotates
+
+  Given: a registered device whose push token is replaced by the delivery service
+  When:  `/home` loads and the new token is registered
+  Then:  the resident holds a registration for the new token
+         the old token's registration is removed once the delivery service rejects it
+
+## Scenario 10: An event whose author is unknown
+
+  Given: a window whose newest event is a post whose author cannot be resolved
+  When:  the digest is built
+  Then:  the event still counts toward the digest's total
+         the digest names the post's title
+         the run does not fail
+
+## Scenario 11: Exactly ten events
+
+  Given: a resident whose window holds exactly ten events
+  When:  the digest is built
+  Then:  its remaining count is 9
+         no event is dropped from the count
+
+## Scenario 12: A resident downgraded to viewer keeps receiving the feed's events
+
+  Given: a viewer with a registered device and a new announcement after their anchor
+  When:  the hourly run computes their window
+  Then:  the announcement is in their window
+         the digest is delivered
