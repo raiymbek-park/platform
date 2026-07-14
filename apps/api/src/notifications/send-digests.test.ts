@@ -41,6 +41,8 @@ const mockUnregisterPushToken = vi.mocked(unregisterPushToken)
 const noon = new Date('2026-07-14T07:00:00Z')
 const quietEvening = new Date('2026-07-14T18:00:00Z')
 
+const almatyRun = (hour: number) => new Date(Date.UTC(2026, 6, 14, hour - 5))
+
 const announcement: Event = {
   category: 'complex',
   createdAt: 1_000,
@@ -90,6 +92,45 @@ describe('sendDigests — quiet hours short-circuit the run', () => {
     expect(mockResidentIdsWithTokens).not.toHaveBeenCalled()
     expect(sendSpy).not.toHaveBeenCalled()
     expect(mockMarkNotified).not.toHaveBeenCalled()
+  })
+
+  test('edge-cases 1+2+3: the night’s runs deliver nothing and the 08:00 run carries all three events in one digest', async () => {
+    mockGetEvents.mockResolvedValue([
+      {
+        ...announcement,
+        createdAt: 3_000,
+        id: 'post-3',
+        title: 'Лифт не работает',
+      },
+      { ...announcement, createdAt: 2_000, id: 'post-2' },
+      {
+        ...announcement,
+        createdAt: 1_000,
+        id: 'post-1',
+        title: 'Уборка двора',
+      },
+    ])
+
+    await sendDigests(almatyRun(23))
+    await sendDigests(almatyRun(0))
+    await sendDigests(almatyRun(7))
+
+    expect(sendSpy).not.toHaveBeenCalled()
+
+    await sendDigests(almatyRun(8))
+
+    expect(sendSpy).toHaveBeenCalledTimes(1)
+    expect(sendSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        notification: expect.objectContaining({
+          body: 'Лифт не работает · и ещё 2',
+        }),
+      }),
+    )
+    expect(mockMarkNotified).toHaveBeenCalledWith(
+      'uid-a',
+      Timestamp.fromDate(almatyRun(8)),
+    )
   })
 })
 
@@ -176,6 +217,16 @@ describe('sendDigests — one digest per resident per window', () => {
     expect(sendSpy).not.toHaveBeenCalled()
     expect(mockMarkNotified).not.toHaveBeenCalled()
   })
+
+  test('validation 6: a resident with no registered device is never considered', async () => {
+    mockResidentIdsWithTokens.mockResolvedValue([])
+
+    await sendDigests(noon)
+
+    expect(mockGetNotificationTarget).not.toHaveBeenCalled()
+    expect(sendSpy).not.toHaveBeenCalled()
+    expect(mockMarkNotified).not.toHaveBeenCalled()
+  })
 })
 
 describe('sendDigests — window anchor', () => {
@@ -208,6 +259,23 @@ describe('sendDigests — window anchor', () => {
     await sendDigests(noon)
 
     expect(mockGetEvents).toHaveBeenCalledWith('uid-a', 'resident', lastVisit)
+  })
+
+  test('edge-cases 4: a resident who has never opened Home is anchored on lastNotifiedAt alone', async () => {
+    const lastNotifiedAt = Timestamp.fromMillis(12_000)
+    mockGetNotificationTarget.mockResolvedValue({
+      lastNotifiedAt,
+      lastVisit: null,
+      role: 'resident',
+    })
+
+    await sendDigests(noon)
+
+    expect(mockGetEvents).toHaveBeenCalledWith(
+      'uid-a',
+      'resident',
+      lastNotifiedAt,
+    )
   })
 
   test('a resident with neither marker is read from the beginning and still advances', async () => {
@@ -311,6 +379,38 @@ describe('sendDigests — failure containment', () => {
       'uid-b',
       expect.anything(),
     )
+  })
+
+  test('error-states 7: a run failing before the send leaves the window to the next run, which delivers one digest', async () => {
+    mockGetResidentTokens.mockRejectedValueOnce(new Error('firestore down'))
+
+    await sendDigests(almatyRun(12))
+
+    expect(sendSpy).not.toHaveBeenCalled()
+    expect(mockMarkNotified).not.toHaveBeenCalled()
+
+    mockGetEvents.mockResolvedValue([
+      {
+        ...announcement,
+        createdAt: 2_000,
+        id: 'post-2',
+        title: 'Лифт не работает',
+      },
+      announcement,
+    ])
+
+    await sendDigests(almatyRun(13))
+
+    expect(mockGetEvents).toHaveBeenNthCalledWith(2, 'uid-a', 'resident', null)
+    expect(sendSpy).toHaveBeenCalledTimes(1)
+    expect(sendSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        notification: expect.objectContaining({
+          body: 'Лифт не работает · и ещё 1',
+        }),
+      }),
+    )
+    expect(mockMarkNotified).toHaveBeenCalledTimes(1)
   })
 
   test('a registration whose resident record is gone is skipped while others deliver', async () => {
