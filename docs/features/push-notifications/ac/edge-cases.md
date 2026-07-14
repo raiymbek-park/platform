@@ -53,8 +53,8 @@
 
 ## Scenario 8: The same device is reused by another resident
 
-  Given: a device registered for resident A, who signs out; resident B then signs in on that device
-         and grants permission
+  Given: a device registered for resident A that changes hands to resident B, who signs in on it and
+         grants permission
   When:  the hourly run sends digests
   Then:  the device receives resident B's digest
          the device receives no digest for resident A

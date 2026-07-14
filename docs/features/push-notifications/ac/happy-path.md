@@ -76,13 +76,15 @@
   When:  the hourly run builds the manager's digest
   Then:  the status change counts toward the digest
 
-## Scenario 11: Signing out de-registers that device
+## Scenario 11: Registering a device for a new resident ends the previous registration
 
-  Given: a resident signed in on a registered device
-  When:  the resident signs out
-  Then:  that device's registration is removed
-         a later run sends no digest to that device
-         the resident's other registered devices keep receiving digests
+  Given: a device registered for resident A, and resident B holding a valid session on that same
+         device
+  When:  `/home` loads for resident B and the device's token is registered
+  Then:  the token's registration under resident A is removed
+         resident B holds exactly one registration for that token
+         a later run sends resident A no digest on that device
+         resident A's other registered devices keep receiving digests
 
 ## Scenario 12: The digest is written in the device's locale
 

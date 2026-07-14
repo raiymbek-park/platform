@@ -150,8 +150,10 @@ language is captured at registration time and is available to a run that has no 
 
 Deliver via **FCM Web Push**. Register each device through a **tRPC mutation** that stores the token
 as the document id under **`residents/{uid}/pushTokens/{token}`** with the device's `locale` taken
-from `ctx.locale`; remove it on sign-out and prune it when FCM answers
-`messaging/registration-token-not-registered`.
+from `ctx.locale`; delete the same token from every other resident's `pushTokens` as part of that
+registration — a `collectionGroup('pushTokens')` query on the token id finds the stale documents —
+and prune it when FCM answers `messaging/registration-token-not-registered`. The
+`unregisterToken` mutation is the counterpart API and has no web caller in this iteration.
 
 Build and send digests from an **hourly `onSchedule` v2 function** in `europe-west1`, which is a thin
 wrapper over an exported `apps/api` function (`sendDigests`) holding all orchestration and carrying

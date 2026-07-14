@@ -77,8 +77,11 @@ and each receives the same digest.
   (registering the same device twice leaves one registration), and carries the **locale** the app is
   running in, so the digest is written in the language that device reads. A device reporting a locale
   outside the supported set, or none at all, is registered with the default locale.
-- **Device de-registration** — signing out removes that device's registration, so a digest never
-  reaches a device the resident has left.
+- **Device reclaiming** — a device carries a registration for one resident at a time. Registering a
+  device for a resident removes that same device's registration from every other resident it was
+  registered against, so a digest never reaches a device that has changed hands. The reclaim happens
+  at registration, without anyone having to act, and leaves the previous resident's other devices
+  registered.
 - **Pruning** — a registration the delivery service reports as no longer valid is removed on the spot,
   so a reinstalled or expired device stops accumulating dead registrations.
 - **Digest copy** — authored server-side (a scheduled run has no caller to take a locale from) and
@@ -90,6 +93,9 @@ and each receives the same digest.
 - **Notification settings** — no per-event-kind toggles, no notification section in `/settings`, no
   in-app switch. The device's own notification permission is the only control, and it lives in the
   browser or the operating system.
+- **An in-app control that ends a device's registration** — no screen, button, or flow removes a
+  registration. A registration ends when the device is registered for another resident, or when the
+  delivery service rejects it.
 - **Per-event, real-time push** — delivery is the hourly digest; an event never triggers an immediate
   message of its own.
 - **A notification centre or history screen** — a digest is not stored for later reading; `/home` is
@@ -126,7 +132,8 @@ with no error and no degraded screen.
   Administration across all issues.
 - Declining the permission prompt, or opening the app in a browser that cannot deliver push, leaves
   every screen fully functional and produces no visible error.
-- Signing out on a device stops digests reaching that device.
+- A device registered for one resident receives no other resident's digest from that registration
+  onwards, and the reclaim costs the previous resident none of their other devices.
 - A device the delivery service rejects as invalid is no longer registered after the run that
   observed the rejection.
 
@@ -186,7 +193,7 @@ reminder, subscriber) in code.
 - **digest** — one aggregated push message covering N events for one resident in one window.
 - **window** — the interval a digest covers: from the anchor to the moment the digest is built.
 - **pushToken** — the registration identifying one device; stored per resident with the device's
-  locale.
+  locale, and held by at most one resident at a time.
 - **locale** — the language a device reads, drawn from the supported set `ru` | `kk` | `en`; `ru` is
   the default, applied when a device reports anything else or nothing.
 - **lastNotifiedAt** — the marker on the resident closing the last delivered window; the anchor is
