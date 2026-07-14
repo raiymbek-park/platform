@@ -99,7 +99,10 @@ derived from their session.
   with onboarding).
 - Authentication / session logic — delivered by onboarding; home only consumes the existing session
   guard.
-- Pull-to-refresh, real-time updates, push notifications.
+- Pull-to-refresh and real-time updates.
+- Push delivery of the feed's events — the events computation defined here is consumed by
+  `docs/features/push-notifications/prd.md`, which owns the hourly digest, device registration, and
+  the notification permission prompt shown on this screen.
 
 ## User Journey
 

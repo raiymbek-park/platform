@@ -55,6 +55,20 @@ const resolveEntry = async (
   }
 }
 
+export const trpcMutations = (
+  resolvers: Record<string, (input: unknown) => unknown>,
+): HttpHandler =>
+  http.post(trpcUrl(':procedures'), async ({ params, request }) => {
+    const procedures = String(params.procedures).split(',')
+    const body = (await request.json()) as Record<string, unknown>
+    const results = await Promise.all(
+      procedures.map((procedure, index) =>
+        resolveEntry(resolvers, procedure, unwrap(body[String(index)])),
+      ),
+    )
+    return HttpResponse.json(results)
+  })
+
 export const trpcQueries = (
   resolvers: Record<string, (input: unknown) => unknown>,
 ): HttpHandler =>

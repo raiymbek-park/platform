@@ -90,8 +90,36 @@ export const residentSnapshot = (
   }
 }
 
+const toTimestamp = (value: unknown): Timestamp | null =>
+  value instanceof Timestamp ? value : null
+
 export const getLastVisit = async (uid: string): Promise<Timestamp | null> => {
   const snap = await docRef(uid).get()
-  const value = snap.data()?.lastVisit
-  return value instanceof Timestamp ? value : null
+  return toTimestamp(snap.data()?.lastVisit)
+}
+
+export type NotificationTarget = {
+  lastNotifiedAt: Timestamp | null
+  lastVisit: Timestamp | null
+  role: PermissionRole
+}
+
+export const getNotificationTarget = async (
+  uid: string,
+): Promise<NotificationTarget | null> => {
+  const snap = await docRef(uid).get()
+  const data = snap.data()
+  if (!data) return null
+  return {
+    lastNotifiedAt: toTimestamp(data.lastNotifiedAt),
+    lastVisit: toTimestamp(data.lastVisit),
+    role: resolveRole(data.role),
+  }
+}
+
+export const markNotified = async (
+  uid: string,
+  at: Timestamp,
+): Promise<void> => {
+  await docRef(uid).set({ lastNotifiedAt: at }, { merge: true })
 }

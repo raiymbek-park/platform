@@ -5,6 +5,7 @@ import { cleanup } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest'
 
 import { queryClient } from '@/shared/api'
+import { firebaseMessaging } from '@/shared/test/firebase-messaging'
 import { firebaseStorage } from '@/shared/test/firebase-storage'
 import {
   intersectionObserver,
@@ -31,6 +32,12 @@ vi.mock(
     (await import('@/shared/test/firebase-storage')).firebaseStorageModule,
 )
 
+vi.mock(
+  'firebase/messaging',
+  async () =>
+    (await import('@/shared/test/firebase-messaging')).firebaseMessagingModule,
+)
+
 vi.stubGlobal('IntersectionObserver', TestIntersectionObserver)
 
 if (!Element.prototype.scrollIntoView)
@@ -45,6 +52,7 @@ afterEach(() => {
   trpcServer.resetHandlers()
   queryClient.clear()
   intersectionObserver.reset()
+  firebaseMessaging.reset()
   firebaseStorage.reset()
   useToastStore.setState({ toasts: [] })
   localStorage.clear()

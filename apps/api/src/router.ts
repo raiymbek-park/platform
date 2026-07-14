@@ -1,6 +1,7 @@
 import { commentsRouter } from './comments/router'
 import { eventsRouter } from './events/router'
 import { issuesRouter } from './issues/router'
+import { notificationsRouter } from './notifications/router'
 import { otpRouter } from './otp/router'
 import { postsRouter } from './posts/router'
 import { residentRouter } from './resident/router'
@@ -18,6 +19,7 @@ export type { ServiceContact } from './service-contacts/service-contacts-store'
 
 export { createContext } from './context'
 export { buildKeywords as buildIssueKeywords } from './issues/keywords'
+export { sendDigests } from './notifications/send-digests'
 export { buildPostKeywords } from './posts/keywords'
 export { translateDocumentFields } from './translation/translate-document-fields'
 export { translateTextField } from './translation/translate-text-field'
@@ -30,6 +32,7 @@ export const appRouter = router({
   comments: commentsRouter,
   events: eventsRouter,
   issues: issuesRouter,
+  notifications: notificationsRouter,
   otp: otpRouter,
   posts: postsRouter,
   resident: residentRouter,

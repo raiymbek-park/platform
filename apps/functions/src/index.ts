@@ -5,6 +5,7 @@ import { onRequest } from 'firebase-functions/v2/https'
 import { anthropicApiKey } from './anthropic-key'
 import { smscLogin, smscPassword } from './smsc-secrets'
 
+export { sendDigestsHourly } from './send-digests'
 export {
   translateIssueComments,
   translatePostComments,
