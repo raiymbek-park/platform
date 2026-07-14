@@ -57,7 +57,11 @@ derived from their session.
     (others' posts, others' comments, and staff status changes) surfaces.
     The API returns each event as a **semantic type with its references** (kind, ids, the issue's
     number and new status, the announcement/offer category and title) — never a pre-rendered icon,
-    colour, or sentence. The screen maps each type to its icon, tone, and Russian text in client code.
+    colour, or sentence. An event's **title is returned in the resident's own reading language**,
+    falling back to the author's original wording when no translation for that language exists
+    (`docs/features/content-translation/prd.md`); a resident reads the change rows in the language
+    they read the rest of the app in.
+    The screen maps each type to its icon, tone, and Russian text in client code.
     When there are no new events, the card shows a fixed greeting by first name
     ("Привет, {name}! 👋", or "Привет! 👋" when the name is unavailable) plus a "no news" message
     chosen at random from a set of friendly variants.

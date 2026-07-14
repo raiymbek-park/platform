@@ -25,48 +25,55 @@
          API returns the type and its references (kind, ids, issue number and status, category, title),
          not a pre-rendered icon or sentence
 
-## Scenario 4: First-time resident sees recent activity
+## Scenario 4: A change row names the event in the resident's reading language
+  Given: a resident reading the app in Kazakh, and an announcement published after their last visit,
+         written in Russian as "Велик" whose Kazakh translation "Велосипед" is stored
+  When:  the welcome card loads
+  Then:  the change row names "Велосипед"
+         it does not name "Велик"
+
+## Scenario 5: First-time resident sees recent activity
   Given: the resident has no recorded last visit and recent activity exists
   When:  the welcome card loads
   Then:  the most recent events render as change rows, newest first
 
-## Scenario 5: Services list renders
+## Scenario 6: Services list renders
   Given: home loads
   When:  the services section renders
   Then:  five service items render — Объявления, Быстрая заявка, Заявка с медиа, Статус заявки, Чат дома в WhatsApp
          each item renders with its icon, title, and description
 
-## Scenario 6: Contacts render from the API
+## Scenario 7: Contacts render from the API
   Given: the contacts endpoint returns one or more contacts
   When:  the contacts section loads
   Then:  each contact renders with name, role, and icon
          contacts appear in the order returned by the API
          contacts are separated by dividers
 
-## Scenario 7: Bottom nav navigates between top-level destinations
+## Scenario 8: Bottom nav navigates between top-level destinations
   Given: home is shown with the Главная tab active
   When:  the resident taps Объявления or Настройки
   Then:  the app navigates to `/announcements` or `/settings` respectively
          the tapped tab is marked active
          tapping Главная returns to `/home`
 
-## Scenario 8: A new announcement appears for every resident
+## Scenario 9: A new announcement appears for every resident
   Given: an announcement was published after the resident's last visit
   When:  the welcome card loads
   Then:  it appears as a change row, whether or not the resident follows anything
          the row is rendered on the client from the announcement's category and title
 
-## Scenario 9: A new private offer appears for every resident
+## Scenario 10: A new private offer appears for every resident
   Given: a private offer was published after the resident's last visit
   When:  the welcome card loads
   Then:  it appears as a change row for the resident
 
-## Scenario 10: A status change on a followed issue appears
+## Scenario 11: A status change on a followed issue appears
   Given: the resident follows an issue whose status changed after their last visit
   When:  the welcome card loads
   Then:  the status change appears as a change row showing the issue's number and its new status
 
-## Scenario 11: A new comment from someone else on a followed issue appears
+## Scenario 12: A new comment from someone else on a followed issue appears
   Given: the resident follows an issue that received a new comment from another resident after their
          last visit
   When:  the welcome card loads
