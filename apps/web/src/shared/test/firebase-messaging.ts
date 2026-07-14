@@ -28,6 +28,7 @@ export const firebaseMessaging = {
   setToken: (token: string) => {
     state.token = token
   },
+  isSupportedCallCount: () => isSupported.mock.calls.length,
   tokenRequestCount: () => getToken.mock.calls.length,
   reset: () => {
     state.isPushSupported = false
