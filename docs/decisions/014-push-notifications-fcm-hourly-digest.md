@@ -155,6 +155,16 @@ registration — a `collectionGroup('pushTokens')` query on the token id finds t
 and prune it when FCM answers `messaging/registration-token-not-registered`. The
 `unregisterToken` mutation is the counterpart API and has no web caller in this iteration.
 
+The client invokes `registerToken` **once per Home load and again on every change of the app's active
+locale**. Keeping the registered locale current needs no server change: the tRPC client's `headers`
+is a function, not a snapshot (`apps/web/src/shared/api/trpc.ts`), so `x-locale` is computed from
+`i18n.locale` per request and a mutation invoked after a language switch already carries the new
+value into `ctx.locale`. Re-registration is therefore a client-only re-invoke, and it costs nothing
+extra because the token is the document id — the `set(..., { merge: true })` overwrites `locale` on
+the same document. The once-per-load latch guards the permission request, not the registration, so it
+must not swallow the locale-change re-invoke. The re-invoke does not request permission: it registers
+only a device that already yields a token.
+
 Build and send digests from an **hourly `onSchedule` v2 function** in `europe-west1`, which is a thin
 wrapper over an exported `apps/api` function (`sendDigests`) holding all orchestration and carrying
 the tests — the same split the translation triggers use. The run:
@@ -166,9 +176,14 @@ the tests — the same split the translation triggers use. The run:
    `lastVisit` to `since`**, which is the whole extent of the change to the events module.
 4. Sends one multicast message per resident to that resident's tokens, with copy authored server-side
    per token locale via the existing `apps/api/src/i18n.ts` catalogue, `collapseKey`/`tag` set per
-   resident so a newer digest replaces an unread one, and `fcmOptions.link` pointing at the deployed
+   resident so a newer digest replaces an unread one, `fcmOptions.link` pointing at the deployed
    Home URL — the Pages origin plus the `/platform/` base, since `fcmOptions.link` takes an absolute
-   HTTPS URL rather than a route path.
+   HTTPS URL rather than a route path — and `webpush.notification.icon` pointing at the deployed
+   `apps/web/public/favicon-192.png`, absolute for the same reason `link` is: the payload is resolved
+   by the service worker, not against the app's document base. 192×192 is the size the Web
+   Notification surface renders and the asset already ships. No `badge` is sent — the monochrome
+   status-bar glyph Android would use has no asset in the repo, and without one Android keeps its own
+   default there; adding the glyph is a design task, not a wiring decision.
 5. Advances `lastNotifiedAt` **only after** a send that FCM accepted for at least one token.
 
 Serve the service worker as a **static file at `apps/web/public/firebase-messaging-sw.js`**, which

@@ -93,3 +93,19 @@
   When:  the hourly run sends the digest
   Then:  the `ru` device's copy is Russian
          the `en` device's copy is English
+
+## Scenario 13: The digest carries the app's icon
+
+  Given: a resident with a registered device and one event in the window
+  When:  the hourly run sends the digest
+  Then:  the delivered digest shows the app's own icon
+         no generic browser icon stands in its place
+
+## Scenario 14: A language change reaches the next digest
+
+  Given: a device registered for a resident with locale `ru`, and one event in the window
+  When:  the resident switches the interface language to English without reloading the app, and the
+         next hourly run sends the digest
+  Then:  the device's registration records locale `en`
+         the resident holds exactly one registration for that token
+         the device's copy is English

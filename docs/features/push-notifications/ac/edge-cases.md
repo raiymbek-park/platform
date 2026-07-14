@@ -106,7 +106,15 @@
          the feed lists the activity that still exists, without the deleted announcement
          no error is shown
 
-## Scenario 15: Quiet hours follow the complex's time, not the device's
+## Scenario 15: A language change on a device with no registration changes nothing
+
+  Given: a resident who declined the permission prompt, on a device holding no registration
+  When:  they switch the interface language
+  Then:  no permission prompt is requested
+         no registration is written
+         no error is shown
+
+## Scenario 16: Quiet hours follow the complex's time, not the device's
 
   Given: a resident with a registered device whose own time zone is not Asia/Almaty, and one event in
          the window
