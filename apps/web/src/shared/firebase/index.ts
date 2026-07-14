@@ -4,7 +4,7 @@ import { connectStorageEmulator, getStorage } from 'firebase/storage'
 
 import { firebaseConfig } from './config'
 
-const app = initializeApp(firebaseConfig)
+export const app = initializeApp(firebaseConfig)
 
 export const auth = getAuth(app)
 auth.languageCode = navigator.language

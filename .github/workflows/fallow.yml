@@ -140,6 +140,7 @@ jobs:
         env:
           VITE_BASE: /platform/
           VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_FCM_VAPID_KEY: ${{ vars.VITE_FCM_VAPID_KEY }}
         run: npm --prefix apps/web run build
 
       - uses: actions/configure-pages@v6
