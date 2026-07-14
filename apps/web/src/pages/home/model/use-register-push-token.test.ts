@@ -2,14 +2,14 @@ import { waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 
 import { env } from '@/shared/config'
-import { firebaseAuth } from '@/shared/test/firebase-auth'
-import { firebaseMessaging } from '@/shared/test/firebase-messaging'
-import { renderApp } from '@/shared/test/render-app'
 import {
+  firebaseAuth,
+  firebaseMessaging,
+  renderApp,
   trpcMutations,
   trpcQueries,
   trpcServer,
-} from '@/shared/test/trpc-server'
+} from '@/shared/test'
 
 import { pushRegistration } from './use-register-push-token'
 
