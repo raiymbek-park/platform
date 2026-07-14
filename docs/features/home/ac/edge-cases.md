@@ -58,3 +58,16 @@
   Then:  none of those own actions appear as change rows
          only actions by others appear — others' posts, others' comments, and staff status changes
          (a manager changing the status of the resident's own issue does appear)
+
+## Scenario 10: A newly opened issue does not reach a resident, owner, or viewer
+  Given: another resident opened an issue after the last visit of a resident, an owner, and a viewer,
+         none of whom follows it
+  When:  the welcome card loads for each of them
+  Then:  the new issue does not appear as a change row for any of them
+         later status changes and comments on it still reach only those who follow it
+
+## Scenario 11: A manager who opens an issue is not notified about their own issue
+  Given: a manager opened an issue themselves after their own last visit
+  When:  the welcome card loads for that manager
+  Then:  their own new issue does not appear as a change row
+         the same issue does appear as a change row for every other manager and administration member

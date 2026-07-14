@@ -188,9 +188,11 @@ the tests — the same split the translation triggers use. The run:
 5. Advances `lastNotifiedAt` **only after** a send that FCM accepted for at least one token.
 
 **How the locale reaches the title projection.** `getEvents` composes `...localizedFields(data,
-locale)` for its post-backed events, exactly as `posts-store.ts` already does for the posts feed —
-the events module must not read `data.title` raw, or it leaks the source language to every caller.
-The `locale` argument comes from a different place on each of the two paths:
+locale)` for every event that carries a title — the post-backed ones and the newly opened issue —
+exactly as `posts-store.ts` already does for the posts feed; an issue's title is translated content
+on the same terms as a post's, so it rides the same projection rather than a second one. The events
+module must not read `data.title` raw, or it leaks the source language to every caller. The `locale`
+argument comes from a different place on each of the two paths:
 
 - **Home** passes `ctx.locale`, the caller's `x-locale` header. The feed's change rows therefore read
   in the viewer's language, which they must anyway and which the raw-title read denied them.

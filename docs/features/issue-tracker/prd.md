@@ -135,10 +135,12 @@ and is never shown to other residents.
 - **What following drives** — only the Home feed; following changes nothing in the issue list or
   detail beyond the toggle's own on/off state.
 
-**Managers and Administration are subscribed to every issue by default.** They receive all issue
-status changes and all new comments in their Home feed regardless of any explicit follow, and they have
-**no follow toggle** — there is nothing to opt into or out of. Activity a staff member caused themselves
-(their own status change or their own comment) is still excluded from their own feed.
+**Managers and Administration are subscribed to every issue by default.** They receive every newly
+opened issue, all issue status changes, and all new comments in their Home feed regardless of any
+explicit follow, and they have **no follow toggle** — there is nothing to opt into or out of. A newly
+opened issue reaches staff only: no other role receives another resident's new issue, and following
+governs everything else they receive. Activity a staff member caused themselves (their own issue,
+their own status change, or their own comment) is still excluded from their own feed.
 
 The subscription is stored per resident (`residents/{uid}/watches/{issueId}`), never as a follower
 array on the issue document, so a widely-followed issue's document does not grow with its audience.

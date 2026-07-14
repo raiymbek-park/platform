@@ -15,8 +15,9 @@ Requirements:
 - A scrollable home screen composed from the design system and wired to live data via real client
   queries.
 - A "what's new since your last visit" feed derived from real activity — new announcements, new
-  private offers, and status changes or new comments on issues the resident follows — dated after the
-  resident's recorded last visit, newest first; a friendly greeting when nothing is new.
+  private offers, newly opened issues for staff, and status changes or new comments on issues the
+  resident follows — dated after the resident's recorded last visit, newest first; a friendly greeting
+  when nothing is new.
 - A persistent bottom-nav shell linking the four top-level destinations, with the active internal tab
   reflecting the current route.
 - Per-block loading and error handling so a single failing query never blanks the screen.
@@ -42,22 +43,28 @@ derived from their session.
     ("За время вашего отсутствия появились изменения:") and lists the events as change rows
     (icon + text), newest first, up to **10**. The feed contains events dated **after** the resident's
     recorded last visit; a resident with no recorded last visit sees the most recent activity. Each
-    event is one of three kinds:
+    event is one of four kinds:
     - **New announcement** — an announcement published since the last visit; shown to every resident
       except its own author.
     - **New private offer** — a private offer published since the last visit; shown to every resident
       except its own author.
+    - **New issue** — an issue opened since the last visit; shown to **Managers and Administration
+      only**, and never to its own author. Residents, Owners, and Viewers do not receive other
+      residents' new issues; following an issue governs everything else they receive from it. The
+      event names the issue by its **number and title** ("Заявка №18: Протечка воды в подвале") —
+      a bare number does not say whether the issue needs acting on now.
     - **Issue activity** — a status change, or a **new comment from someone else**, on an issue the
       resident follows. Authoring an issue or commenting on one subscribes the resident to it, and a
       resident may also follow an issue by hand; activity on issues the resident does not follow never
       appears. **Managers and Administration** are subscribed to every issue by default, so they receive
       status changes and new comments across **all** issues, not only followed ones.
     The feed never notifies a resident about **their own actions** — their own posts, their own
-    comments, and the act of creating their own issue are all excluded; only later activity by others
-    (others' posts, others' comments, and staff status changes) surfaces.
+    comments, and their own issue are all excluded, including for a staff member who opens an issue
+    themselves; only activity by others (others' posts, others' comments, others' new issues, and
+    staff status changes) surfaces.
     The API returns each event as a **semantic type with its references** (kind, ids, the issue's
-    number and new status, the announcement/offer category and title) — never a pre-rendered icon,
-    colour, or sentence. An event's **title is returned in the resident's own reading language**,
+    number, title, and new status, the announcement/offer category and title) — never a pre-rendered
+    icon, colour, or sentence. An event's **title is returned in the resident's own reading language**,
     falling back to the author's original wording when no translation for that language exists
     (`docs/features/content-translation/prd.md`); a resident reads the change rows in the language
     they read the rest of the app in.
@@ -127,8 +134,9 @@ session the resident never reaches home — the guard redirects to welcome.
 - A resident with a valid session reaches a fully rendered home screen — header, hero with their
   block/apartment, the "what's new" feed (or a "no news" greeting), services, and contacts.
 - The feed lists only activity dated after the resident's recorded last visit, newest first — new
-  announcements and offers for every resident, and issue status changes or comments only for issues the
-  resident follows; after the visit is recorded, those events no longer appear on the next session.
+  announcements and offers for every resident, newly opened issues for Managers and Administration
+  only, and issue status changes or comments only for issues the resident follows; after the visit is
+  recorded, those events no longer appear on the next session.
 - The Объявления and Настройки tabs navigate to their screens and back to home with the nav intact and
   the correct internal tab marked active; the Заявки tab opens the external Trello board.
 - Tapping a service item opens its destination; tapping a contact invokes the device dialer with the
@@ -163,8 +171,8 @@ session the resident never reaches home — the guard redirects to welcome.
   procedure returns a discriminated union of event types, computed on read.
 - **Firestore** — the `residents` collection (profile, `lastVisit` per uid, and each resident's issue
   follows under `residents/{uid}/watches/{issueId}`), the `posts` collection (announcements and offers,
-  queried by `createdAt`), the `issues` collection (carrying `lastStatusAt` / `lastCommentAt` activity
-  timestamps), and the `serviceContacts` collection (contacts, ordered by their `order` field). The
+  queried by `createdAt`), the `issues` collection (carrying `createdAt` and the `lastStatusAt` /
+  `lastCommentAt` activity timestamps), and the `serviceContacts` collection (contacts, ordered by their `order` field). The
   events feed is derived from posts and issues on read; there is no stored `events` collection.
 - **Issue follows** (`issue-tracker`) — the per-resident issue-follow subscription and the issue
   `lastStatusAt` / `lastCommentAt` timestamps are owned by the issue-tracker feature and consumed here
