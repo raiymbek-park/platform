@@ -19,6 +19,7 @@ export type { ServiceContact } from './service-contacts/service-contacts-store'
 
 export { createContext } from './context'
 export { buildKeywords as buildIssueKeywords } from './issues/keywords'
+export { sendDigests } from './notifications/send-digests'
 export { buildPostKeywords } from './posts/keywords'
 export { translateDocumentFields } from './translation/translate-document-fields'
 export { translateTextField } from './translation/translate-text-field'

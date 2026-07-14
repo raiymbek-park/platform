@@ -7,7 +7,7 @@ import { FieldValue, getFirestore, Timestamp } from 'firebase-admin/firestore'
 
 import { ensureLocalDevCredentials } from './dev-credentials'
 
-const ensureApp = (): void => {
+export const ensureApp = (): void => {
   if (getApps().length > 0) return
   ensureLocalDevCredentials()
   initializeApp()

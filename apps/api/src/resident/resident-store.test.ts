@@ -8,13 +8,25 @@ const state = vi.hoisted(() => ({
 
 const txSetSpy = vi.hoisted(() => vi.fn())
 
-vi.mock('../firestore', () => {
-  const ref = { get: () => Promise.resolve({ data: () => state.data }) }
+const setSpy = vi.hoisted(() => vi.fn())
+
+vi.mock('../firestore', async () => {
+  const { Timestamp } = await vi.importActual<
+    typeof import('firebase-admin/firestore')
+  >('firebase-admin/firestore')
+  const ref = {
+    get: () => Promise.resolve({ data: () => state.data }),
+    set: (record: Record<string, unknown>, options: unknown) => {
+      setSpy(record, options)
+      return Promise.resolve()
+    },
+  }
   const transaction = {
     get: () => Promise.resolve({ data: () => state.data }),
     set: (_ref: unknown, record: Record<string, unknown>) => txSetSpy(record),
   }
   return {
+    Timestamp,
     getDb: () => ({
       collection: () => ({ doc: () => ref }),
       runTransaction: (run: (tx: typeof transaction) => Promise<unknown>) =>
@@ -23,10 +35,17 @@ vi.mock('../firestore', () => {
   }
 })
 
-const { createResidentIfAbsent, getResident } = await import('./resident-store')
+const { Timestamp } = await import('../firestore')
+const {
+  createResidentIfAbsent,
+  getNotificationTarget,
+  getResident,
+  markNotified,
+} = await import('./resident-store')
 
 beforeEach(() => {
   txSetSpy.mockClear()
+  setSpy.mockClear()
   state.data = {
     apartment: 42,
     block: 1,
@@ -111,5 +130,45 @@ describe('createResidentIfAbsent — atomic one-record-per-identity write', () =
       state.data,
     )
     expect(txSetSpy).not.toHaveBeenCalled()
+  })
+})
+
+describe('getNotificationTarget — one read for the digest run', () => {
+  test('returns null when the resident record is gone', async () => {
+    state.data = undefined
+    await expect(getNotificationTarget('uid-1')).resolves.toBeNull()
+  })
+
+  test('defaults missing markers to null and keeps the stored role', async () => {
+    await expect(getNotificationTarget('uid-1')).resolves.toEqual({
+      lastNotifiedAt: null,
+      lastVisit: null,
+      role: 'owner',
+    })
+  })
+
+  test('returns both markers and resolves a legacy role to the default', async () => {
+    const lastVisit = Timestamp.fromMillis(1_000)
+    const lastNotifiedAt = Timestamp.fromMillis(2_000)
+    state.data = { ...state.data, lastNotifiedAt, lastVisit, role: '' }
+
+    await expect(getNotificationTarget('uid-1')).resolves.toEqual({
+      lastNotifiedAt,
+      lastVisit,
+      role: 'resident',
+    })
+  })
+})
+
+describe('markNotified — the run is the only writer of the marker', () => {
+  test('writes lastNotifiedAt as the given window end with merge', async () => {
+    const windowEnd = Timestamp.fromMillis(5_000)
+
+    await markNotified('uid-1', windowEnd)
+
+    expect(setSpy).toHaveBeenCalledWith(
+      { lastNotifiedAt: windowEnd },
+      { merge: true },
+    )
   })
 })
