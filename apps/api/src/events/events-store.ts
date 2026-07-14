@@ -4,12 +4,14 @@ import type {
   PostCategory,
   PostKind,
 } from '@raiymbek-park/shared/validation-schemas'
+import type { Locale } from '../i18n'
 
 import { getDb, type Timestamp } from '../firestore'
 import { toStatus } from '../issues/issues-store'
 import { getWatchedIssueIds } from '../issues/watch-store'
 import { toCategory } from '../posts/posts-store'
 import { toMillis, toNumber, toText } from '../store-helpers'
+import { localizedFields } from '../translation/localized-fields'
 
 export type Event =
   | {
@@ -46,6 +48,7 @@ const postEvents = async (
   kind: PostKind,
   uid: string | null,
   since: Timestamp | null,
+  locale: Locale,
 ): Promise<Event[]> => {
   const scoped = getDb().collection('posts').where('kind', '==', kind)
   const fresh = since ? scoped.where('createdAt', '>', since) : scoped
@@ -58,7 +61,7 @@ const postEvents = async (
         category: toCategory(data.category),
         createdAt: toMillis(data.createdAt),
         id: doc.id,
-        title: toText(data.title),
+        title: localizedFields(data, locale).title,
         type: kind,
       }
     })
@@ -171,10 +174,11 @@ export const getEvents = async (
   uid: string | null,
   role: PermissionRole | null,
   since: Timestamp | null,
+  locale: Locale,
 ): Promise<Event[]> => {
   const [announcements, offers, activity] = await Promise.all([
-    postEvents('announcement', uid, since),
-    postEvents('offer', uid, since),
+    postEvents('announcement', uid, since, locale),
+    postEvents('offer', uid, since, locale),
     issueActivity(uid, role, since),
   ])
   return [...announcements, ...offers, ...activity]

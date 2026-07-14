@@ -100,6 +100,7 @@ vi.mock('../firestore', async () => {
 
 const { Timestamp } = await import('../firestore')
 const { getEvents } = await import('./events-store')
+const { hashSource } = await import('../translation/hash-source')
 
 const at = (millis: number) => Timestamp.fromMillis(millis)
 
@@ -165,7 +166,7 @@ test('happy-path 9: the window holds the announcement, the offer, the followed i
   ]
   state.watches = { 'uid-a': ['issue-14'] }
 
-  const events = await getEvents('uid-a', 'resident', at(50))
+  const events = await getEvents('uid-a', 'resident', at(50), 'ru')
 
   expect(events).toEqual([
     { createdAt: 400, issueId: 'issue-14', number: 14, type: 'issue-comment' },
@@ -203,7 +204,7 @@ test('happy-path 10: a manager’s window holds status changes and comments on i
     }),
   ]
 
-  const events = await getEvents('manager-uid', 'manager', at(50))
+  const events = await getEvents('manager-uid', 'manager', at(50), 'ru')
 
   expect(events).toEqual([
     { createdAt: 400, issueId: 'issue-14', number: 14, type: 'issue-comment' },
@@ -225,7 +226,9 @@ test('validation 5: a resident who does not follow the issue has its status chan
     }),
   ]
 
-  await expect(getEvents('uid-a', 'resident', at(50))).resolves.toEqual([])
+  await expect(getEvents('uid-a', 'resident', at(50), 'ru')).resolves.toEqual(
+    [],
+  )
 })
 
 test('validation 4: a resident’s own offer, own comment and the issue they opened leave their window empty', async () => {
@@ -236,7 +239,9 @@ test('validation 4: a resident’s own offer, own comment and the issue they ope
   ]
   state.watches = { 'uid-a': ['issue-14', 'issue-20'] }
 
-  await expect(getEvents('uid-a', 'resident', at(50))).resolves.toEqual([])
+  await expect(getEvents('uid-a', 'resident', at(50), 'ru')).resolves.toEqual(
+    [],
+  )
 })
 
 test('validation 4: a manager’s own status change and own comment are kept out of their own window', async () => {
@@ -249,7 +254,9 @@ test('validation 4: a manager’s own status change and own comment are kept out
     }),
   ]
 
-  await expect(getEvents('manager-uid', 'manager', at(50))).resolves.toEqual([])
+  await expect(
+    getEvents('manager-uid', 'manager', at(50), 'ru'),
+  ).resolves.toEqual([])
 })
 
 test('happy-path 10: administration receives issue activity across issues they do not follow', async () => {
@@ -261,7 +268,7 @@ test('happy-path 10: administration receives issue activity across issues they d
   ]
 
   await expect(
-    getEvents('admin-uid', 'administration', at(50)),
+    getEvents('admin-uid', 'administration', at(50), 'ru'),
   ).resolves.toEqual([
     {
       createdAt: 300,
@@ -279,7 +286,9 @@ test('validation 1: an announcement dated before the anchor stays out of the win
     announcement('post-new', 'Новое объявление', 13_000),
   ]
 
-  await expect(getEvents('uid-a', 'resident', at(12_000))).resolves.toEqual([
+  await expect(
+    getEvents('uid-a', 'resident', at(12_000), 'ru'),
+  ).resolves.toEqual([
     {
       category: 'complex',
       createdAt: 13_000,
@@ -301,7 +310,9 @@ test('validation 2: a comment on a followed issue dated before the anchor is not
   ]
   state.watches = { 'uid-a': ['issue-14'] }
 
-  await expect(getEvents('uid-a', 'resident', at(12_000))).resolves.toEqual([
+  await expect(
+    getEvents('uid-a', 'resident', at(12_000), 'ru'),
+  ).resolves.toEqual([
     {
       createdAt: 13_000,
       issueId: 'issue-14',
@@ -314,7 +325,9 @@ test('validation 2: a comment on a followed issue dated before the anchor is not
 test('validation 3: an announcement dated exactly at the anchor is not pushed again', async () => {
   state.posts = [announcement('post-1', 'Отключение воды 15 июля', 12_000)]
 
-  await expect(getEvents('uid-a', 'resident', at(12_000))).resolves.toEqual([])
+  await expect(
+    getEvents('uid-a', 'resident', at(12_000), 'ru'),
+  ).resolves.toEqual([])
 })
 
 test('validation 3: a status change and a comment dated exactly at the anchor are not pushed again', async () => {
@@ -328,7 +341,9 @@ test('validation 3: a status change and a comment dated exactly at the anchor ar
   ]
   state.watches = { 'uid-a': ['issue-14'] }
 
-  await expect(getEvents('uid-a', 'resident', at(12_000))).resolves.toEqual([])
+  await expect(
+    getEvents('uid-a', 'resident', at(12_000), 'ru'),
+  ).resolves.toEqual([])
 })
 
 test('validation 3: a manager’s issue activity dated exactly at the anchor is not pushed again', async () => {
@@ -342,7 +357,7 @@ test('validation 3: a manager’s issue activity dated exactly at the anchor is 
   ]
 
   await expect(
-    getEvents('manager-uid', 'manager', at(12_000)),
+    getEvents('manager-uid', 'manager', at(12_000), 'ru'),
   ).resolves.toEqual([])
 })
 
@@ -356,7 +371,7 @@ test('validation 7: announcements and offers together are capped at ten events',
     ),
   ]
 
-  const events = await getEvents('uid-a', 'resident', at(50))
+  const events = await getEvents('uid-a', 'resident', at(50), 'ru')
 
   expect(events).toHaveLength(10)
   expect(events[0]).toMatchObject({ title: 'Предложение 7' })
@@ -367,7 +382,7 @@ test('validation 7: a window of fourteen events reports the ten newest', async (
     announcement(`post-${index}`, `Событие ${index}`, 100 + index),
   )
 
-  const events = await getEvents('uid-a', 'resident', at(50))
+  const events = await getEvents('uid-a', 'resident', at(50), 'ru')
 
   expect(events).toHaveLength(10)
   expect(events[0]).toMatchObject({ title: 'Событие 13' })
@@ -379,7 +394,7 @@ test('edge-cases 5: a resident with no anchor reads the most recent activity, ca
     announcement(`post-${index}`, `Событие ${index}`, 100 + index),
   )
 
-  const events = await getEvents('uid-a', 'resident', null)
+  const events = await getEvents('uid-a', 'resident', null, 'ru')
 
   expect(events).toHaveLength(10)
   expect(events[0]).toMatchObject({ title: 'Событие 11' })
@@ -398,7 +413,7 @@ test('edge-cases 10: a post whose author cannot be resolved still counts and is 
     },
   ]
 
-  await expect(getEvents('uid-a', 'resident', at(50))).resolves.toEqual([
+  await expect(getEvents('uid-a', 'resident', at(50), 'ru')).resolves.toEqual([
     {
       category: 'complex',
       createdAt: 300,
@@ -412,7 +427,7 @@ test('edge-cases 10: a post whose author cannot be resolved still counts and is 
 test('edge-cases 12: a viewer’s window holds the new announcement', async () => {
   state.posts = [announcement('post-1', 'Отключение воды 15 июля', 300)]
 
-  await expect(getEvents('uid-a', 'viewer', at(50))).resolves.toEqual([
+  await expect(getEvents('uid-a', 'viewer', at(50), 'ru')).resolves.toEqual([
     {
       category: 'complex',
       createdAt: 300,
@@ -420,5 +435,69 @@ test('edge-cases 12: a viewer’s window holds the new announcement', async () =
       title: 'Отключение воды 15 июля',
       type: 'announcement',
     },
+  ])
+})
+
+const russianPost = (overrides: Record<string, unknown> = {}): FakeDoc => ({
+  data: {
+    authorId: 'author-uid',
+    category: 'complex',
+    createdAt: at(300),
+    description: 'Продаю велик',
+    kind: 'announcement',
+    lang: 'ru',
+    title: 'Велик',
+    ...overrides,
+  },
+  id: 'post-bike',
+})
+
+const kkTranslation = {
+  translatedRev: hashSource('Велик', 'Продаю велик'),
+  translations: {
+    kk: { description: 'Велосипед сатамын', title: 'Велосипед' },
+  },
+}
+
+test('happy-path 13 + home happy-path 4: a Kazakh reader’s window names the announcement by its stored Kazakh title', async () => {
+  state.posts = [russianPost(kkTranslation)]
+
+  await expect(getEvents('uid-a', 'resident', at(50), 'kk')).resolves.toEqual([
+    {
+      category: 'complex',
+      createdAt: 300,
+      id: 'post-bike',
+      title: 'Велосипед',
+      type: 'announcement',
+    },
+  ])
+})
+
+test('edge-cases 18: an announcement without a stored translation is named in the author’s original wording', async () => {
+  state.posts = [russianPost()]
+
+  await expect(getEvents('uid-a', 'resident', at(50), 'kk')).resolves.toEqual([
+    expect.objectContaining({ title: 'Велик' }),
+  ])
+})
+
+test('edge-cases 19: an announcement authored in the reader’s own language is named as written', async () => {
+  state.posts = [russianPost(kkTranslation)]
+
+  await expect(getEvents('uid-a', 'resident', at(50), 'ru')).resolves.toEqual([
+    expect.objectContaining({ title: 'Велик' }),
+  ])
+})
+
+test('edge-cases 20: a translation made from a superseded title yields the current original, not the stale translation', async () => {
+  state.posts = [
+    russianPost({
+      ...kkTranslation,
+      translatedRev: hashSource('Старый велик', 'Продаю велик'),
+    }),
+  ]
+
+  await expect(getEvents('uid-a', 'resident', at(50), 'kk')).resolves.toEqual([
+    expect.objectContaining({ title: 'Велик' }),
   ])
 })

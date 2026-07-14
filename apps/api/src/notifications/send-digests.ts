@@ -67,15 +67,15 @@ const sendResidentDigest = async (
 ): Promise<void> => {
   const target = await getNotificationTarget(uid)
   if (!target) return
-  const since = laterOf(target.lastVisit, target.lastNotifiedAt)
-  const events = await getEvents(uid, target.role, since)
-  if (events.length === 0) return
   const tokens = await getResidentTokens(uid)
   if (tokens.length === 0) return
+  const since = laterOf(target.lastVisit, target.lastNotifiedAt)
   const outcomes = await Promise.all(
-    [...byLocale(tokens)].map(([locale, group]) =>
-      sendLocaleGroup(uid, locale, group, events),
-    ),
+    [...byLocale(tokens)].map(async ([locale, group]) => {
+      const events = await getEvents(uid, target.role, since, locale)
+      if (events.length === 0) return false
+      return sendLocaleGroup(uid, locale, group, events)
+    }),
   )
   if (outcomes.some(Boolean)) await markNotified(uid, windowEnd)
 }
