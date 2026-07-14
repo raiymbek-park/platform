@@ -43,6 +43,14 @@ export const useEventsData = () => {
       const visual = offerVisuals[event.category] ?? fallbackVisual
       return { ...visual, id: event.id, text: event.title }
     }
+    if (event.type === 'issue') {
+      return {
+        glyph: statusGlyphs.new,
+        id: `issue-${event.issueId}`,
+        text: t`Заявка №${event.number}: ${event.title}`,
+        tone: statusTones.new,
+      }
+    }
     if (event.type === 'issue-status') {
       return {
         glyph: statusGlyphs[event.status],

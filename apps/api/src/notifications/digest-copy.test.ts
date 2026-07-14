@@ -35,6 +35,14 @@ const comment: Event = {
   type: 'issue-comment',
 }
 
+const opened = (title: string): Event => ({
+  createdAt: 500,
+  issueId: 'issue-18',
+  number: 18,
+  title,
+  type: 'issue',
+})
+
 describe('digestBody — single event names it with no remaining count', () => {
   test('an announcement is named by its stored title', () => {
     expect(digestBody('ru', [announcement('Отключение воды 15 июля', 1)])).toBe(
@@ -75,6 +83,12 @@ describe('digestBody — per-kind headlines', () => {
   test('an issue comment is named as new messages on the issue number, without the comment text', () => {
     expect(digestBody('ru', [comment])).toBe('Новые сообщения по заявке №14')
   })
+
+  test('push happy-path 17: a newly opened issue is named by its number and title', () => {
+    expect(digestBody('ru', [opened('Протечка воды в подвале')])).toBe(
+      'Заявка №18: Протечка воды в подвале',
+    )
+  })
 })
 
 describe('digestBody — written per locale', () => {
@@ -87,6 +101,18 @@ describe('digestBody — written per locale', () => {
   test('en copy is English', () => {
     expect(digestBody('en', [statusChange, comment])).toBe(
       'Issue #14: In progress · and 1 more',
+    )
+  })
+
+  test('a newly opened issue is framed in Kazakh around its projected Kazakh title', () => {
+    expect(digestBody('kk', [opened('Жертөледегі су ағуы')])).toBe(
+      'Өтінім №18: Жертөледегі су ағуы',
+    )
+  })
+
+  test('a newly opened issue is framed in English around its projected title', () => {
+    expect(digestBody('en', [opened('Basement water leak')])).toBe(
+      'Issue #18: Basement water leak',
     )
   })
 })

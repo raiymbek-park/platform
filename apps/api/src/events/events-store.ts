@@ -29,6 +29,13 @@ export type Event =
       title: string
     }
   | {
+      type: 'issue'
+      issueId: string
+      number: number
+      createdAt: number
+      title: string
+    }
+  | {
       type: 'issue-status'
       issueId: string
       number: number
@@ -113,13 +120,17 @@ const issueEvents = async (
 }
 
 // Managers and administration are subscribed to every issue by default, so their
-// feed draws status changes and new comments across all issues, not only followed
-// ones — excluding activity they caused themselves.
+// feed draws newly opened issues, status changes and new comments across all
+// issues, not only followed ones — excluding activity they caused themselves.
 const staffIssueEvents = async (
   uid: string,
   since: Timestamp | null,
+  locale: Locale,
 ): Promise<Event[]> => {
   const issues = getDb().collection('issues')
+  const openedQuery = (since ? issues.where('createdAt', '>', since) : issues)
+    .orderBy('createdAt', 'desc')
+    .limit(EVENT_LIMIT)
   const statusQuery = (
     since ? issues.where('lastStatusAt', '>', since) : issues
   )
@@ -130,10 +141,23 @@ const staffIssueEvents = async (
   )
     .orderBy('lastCommentAt', 'desc')
     .limit(EVENT_LIMIT)
-  const [statusSnap, commentSnap] = await Promise.all([
+  const [openedSnap, statusSnap, commentSnap] = await Promise.all([
+    openedQuery.get(),
     statusQuery.get(),
     commentQuery.get(),
   ])
+  const openedEvents: Event[] = openedSnap.docs
+    .filter(doc => toText(doc.data().authorId) !== uid)
+    .map(doc => {
+      const data = doc.data()
+      return {
+        createdAt: toMillis(data.createdAt),
+        issueId: doc.id,
+        number: toNumber(data.number),
+        title: localizedFields(data, locale).title,
+        type: 'issue',
+      }
+    })
   const statusEvents: Event[] = statusSnap.docs
     .filter(doc => toText(doc.data().lastStatusBy) !== uid)
     .map(doc => {
@@ -157,17 +181,20 @@ const staffIssueEvents = async (
         type: 'issue-comment',
       }
     })
-  return [...statusEvents, ...commentEvents]
+  return [...openedEvents, ...statusEvents, ...commentEvents]
 }
 
 const issueActivity = (
   uid: string | null,
   role: PermissionRole | null,
   since: Timestamp | null,
+  locale: Locale,
 ): Promise<Event[]> | Event[] => {
   if (!uid) return []
   const isStaff = role === 'manager' || role === 'administration'
-  return isStaff ? staffIssueEvents(uid, since) : issueEvents(uid, since)
+  return isStaff
+    ? staffIssueEvents(uid, since, locale)
+    : issueEvents(uid, since)
 }
 
 export const getEvents = async (
@@ -179,7 +206,7 @@ export const getEvents = async (
   const [announcements, offers, activity] = await Promise.all([
     postEvents('announcement', uid, since, locale),
     postEvents('offer', uid, since, locale),
-    issueActivity(uid, role, since),
+    issueActivity(uid, role, since, locale),
   ])
   return [...announcements, ...offers, ...activity]
     .sort((a, b) => b.createdAt - a.createdAt)
