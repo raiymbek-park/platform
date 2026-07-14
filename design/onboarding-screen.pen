@@ -189,8 +189,6 @@
               "height": 58,
               "justifyContent": "center",
               "width": "fill_container",
-              "x": 20,
-              "y": 435,
               "descendants": {
                 "ds:InputDefault-tx": {
                   "content": "1 2 3 - 4 5 6",
@@ -208,9 +206,48 @@
               "name": "Spacer"
             },
             {
-              "id": "y6aZO",
-              "type": "ref",
-              "ref": "ds:ButtonSecondary"
+              "type": "frame",
+              "id": "AkEBf",
+              "name": "buttons",
+              "width": "fit_content(350)",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "id": "Y3Hl2m",
+                  "type": "ref",
+                  "ref": "ds:ButtonSecondary",
+                  "descendants": {
+                    "ds:btn-sec-icon": {
+                      "type": "frame",
+                      "id": "gmk7Q2",
+                      "name": "google-mark",
+                      "width": 22,
+                      "height": 22,
+                      "fill": {
+                        "type": "image",
+                        "enabled": true,
+                        "url": "images/google-g.svg",
+                        "mode": "fill"
+                      },
+                      "children": []
+                    },
+                    "ds:btn-sec-text": {
+                      "content": "Продолжить с Google"
+                    }
+                  }
+                },
+                {
+                  "id": "lNapo",
+                  "type": "ref",
+                  "ref": "ds:ButtonSecondary",
+                  "descendants": {
+                    "ds:btn-sec-text": {
+                      "content": "Назад"
+                    }
+                  }
+                }
+              ]
             }
           ]
         }
@@ -564,8 +601,6 @@
                   "type": "ref",
                   "ref": "ds:ButtonIconRight",
                   "name": "Next Button",
-                  "x": 70,
-                  "y": 0,
                   "descendants": {
                     "ds:btn-primary-text": {
                       "content": "Далее"
@@ -668,8 +703,6 @@
                       "type": "ref",
                       "ref": "ds:SelectOptionDefault",
                       "name": "Option Арендатор",
-                      "x": 16,
-                      "y": 10,
                       "descendants": {
                         "ds:opt-icon-wrap": {
                           "fill": "$ds:info-soft"
@@ -701,8 +734,6 @@
                       "type": "ref",
                       "ref": "ds:SelectOptionSelected",
                       "name": "Option Собственник квартиры",
-                      "x": 16,
-                      "y": 78,
                       "descendants": {
                         "ds:opt-sel-icon-wrap": {
                           "fill": "$ds:accent-soft"
@@ -725,9 +756,7 @@
                       "id": "w4QG73",
                       "type": "ref",
                       "ref": "ds:Divider",
-                      "name": "Divider",
-                      "x": 16,
-                      "y": 139
+                      "name": "Divider"
                     },
                     {
                       "id": "Q5Vkf",
@@ -760,8 +789,6 @@
               "type": "ref",
               "ref": "ds:ButtonIconRight",
               "name": "Next Button",
-              "x": 20,
-              "y": 700,
               "descendants": {
                 "ds:btn-primary-text": {
                   "content": "Далее"

@@ -8,7 +8,7 @@ export const useSendOtp = () => {
   const trpc = useTRPC()
   return useMutation({
     ...trpc.otp.send.mutationOptions(),
-    onSuccess: (_data, { phone }) =>
-      useOtpRequestStore.getState().markSent(phone),
+    onSettled: (_data, _error, { phone }) =>
+      useOtpRequestStore.getState().markAttempted(phone),
   })
 }

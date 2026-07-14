@@ -69,6 +69,7 @@ export const RegistrationForm = () => {
               return
             }
             showToastMessage({ kind: 'error', text: sendCodeErrorText(error) })
+            navigate({ to: '/onboarding/verification' })
           },
         },
       )

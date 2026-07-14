@@ -5,7 +5,7 @@ import { OtpVerificationPage } from '@/pages/onboarding'
 
 export const Route = createFileRoute('/onboarding/verification')({
   beforeLoad: () => {
-    if (useOtpRequestStore.getState().sentPhone === null) {
+    if (useOtpRequestStore.getState().attemptedPhone === null) {
       throw redirect({ to: '/onboarding/welcome' })
     }
   },
