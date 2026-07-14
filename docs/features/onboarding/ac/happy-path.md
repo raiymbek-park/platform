@@ -75,3 +75,30 @@
   When:  the response has not yet arrived
   Then:  a progress notice ("Ваш код отправляется на проверку…") is shown
          the code field, the back control, and the resend control are disabled
+
+## Scenario 10: A resident whose carrier delivers no SMS registers with Google
+
+  Given: a resident on a Beeline number (`+7 705…`) filled in the registration form and reached the
+         verification screen, and no code arrives
+  When:  they tap "Продолжить с Google" and choose a Google account
+  Then:  the resident is signed in on that Google account
+         the resident's profile is saved with the details from the registration form — name, phone,
+         block, apartment, and role
+         the app moves to home
+
+  Given: the resident registered over the Google channel
+  When:  the profile is saved
+  Then:  the stored phone is the number entered on the registration form, in canonical E.164 form
+
+## Scenario 11: The Google control is available as soon as the verification screen opens
+
+  Given: the resident reached the verification screen
+  When:  the screen loads, before any code is entered and before the resend cooldown elapses
+  Then:  the Google control "Продолжить с Google" is shown and is enabled
+         it carries Google's official mark
+
+## Scenario 12: SMS stays the channel for a resident whose code arrives
+
+  Given: a resident on a Kcell number (`+7 701…`) reached the verification screen and the code arrived
+  When:  they enter the correct code
+  Then:  the resident is signed in and the app moves to home — the Google control is not involved

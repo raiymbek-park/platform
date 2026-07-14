@@ -129,4 +129,3 @@ Scenarios are grouped by the three task slices. Task 1 unblocks the others.
   Given: an Administration member is on a thread
   When:  they delete another member's message
   Then:  the message is removed regardless of authorship
-</content>

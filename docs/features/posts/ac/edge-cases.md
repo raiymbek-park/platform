@@ -98,4 +98,3 @@ Boundary conditions.
   Then:  tapping their own message opens its actions (edit and delete); others' messages are not
          actionable and tapping them opens nothing
          Administration can tap any message to open its actions, which include delete
-</content>

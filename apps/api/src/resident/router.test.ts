@@ -123,6 +123,37 @@ describe('residentRouter.register — one record per identity', () => {
       resident: existing,
     })
   })
+
+  it('happy-path 10: a Google session — a verified uid with no phone claim — stores the form phone', async () => {
+    mockCreateResidentIfAbsent.mockImplementationOnce(
+      async (_uid, input) => input,
+    )
+    const googleCaller = residentRouter.createCaller({
+      locale: 'ru',
+      phone: null,
+      uid: 'google-uid',
+    })
+
+    await googleCaller.register(validInput)
+
+    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
+      'google-uid',
+      expect.objectContaining({ phone: '+77071234567', role: 'owner' }),
+    )
+  })
+
+  it('prefers the token phone claim over the submitted form phone', async () => {
+    mockCreateResidentIfAbsent.mockImplementationOnce(
+      async (_uid, input) => input,
+    )
+
+    await caller.register({ ...validInput, phone: '+77050000000' })
+
+    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
+      'uid-1',
+      expect.objectContaining({ phone: '+77071234567' }),
+    )
+  })
 })
 
 describe('residentRouter.update — profile update', () => {

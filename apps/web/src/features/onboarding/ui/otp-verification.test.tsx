@@ -271,6 +271,102 @@ test('edge-cases 3: the resend cooldown escalates 60 → 120 across resends', as
   expect(resendButton()).toBeEnabled()
 })
 
+const googleButton = () =>
+  screen.getByRole('button', { name: /Продолжить с Google/ })
+
+test('happy-path 11: the Google control is enabled the moment the screen opens', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  await arriveAtVerification()
+
+  expect(resendButton()).toBeDisabled()
+  expect(googleButton()).toBeEnabled()
+})
+
+test('happy-path 10: continuing with Google registers the draft and lands on home', async () => {
+  const received: unknown[] = []
+  trpcServer.use(
+    trpcMutation('resident.register', input => {
+      received.push(input)
+      return { resident: input }
+    }),
+  )
+  const { user, currentPath } = await arriveAtVerification()
+
+  await user.click(googleButton())
+
+  await waitFor(() => expect(currentPath()).toBe('/home'))
+  expect(received[0]).toMatchObject({
+    apartment: 42,
+    block: 1,
+    name: 'Алиса',
+    phone,
+    role: 'owner',
+  })
+})
+
+test('error-states 8: dismissing the Google window leaves the screen untouched', async () => {
+  firebaseAuth.failGooglePopup('auth/popup-closed-by-user')
+  const { user, currentPath } = await arriveAtVerification()
+
+  await user.type(codeInput(), '123')
+  await user.click(googleButton())
+
+  await waitFor(() => expect(googleButton()).toBeEnabled())
+  expect(currentPath()).toBe('/onboarding/verification')
+  expect(codeInput()).toHaveValue('123')
+  expect(screen.queryByText(/Не удалось/)).not.toBeInTheDocument()
+  expect(resendButton()).toBeInTheDocument()
+})
+
+test('error-states 9: a blocked sign-in window says so and keeps both channels working', async () => {
+  firebaseAuth.failGooglePopup('auth/popup-blocked')
+  const { user, currentPath } = await arriveAtVerification()
+
+  await user.click(googleButton())
+
+  expect(
+    await screen.findByText(/Не удалось открыть окно входа Google/),
+  ).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/verification')
+  expect(googleButton()).toBeEnabled()
+  expect(codeInput()).toBeEnabled()
+})
+
+test('error-states 10: a Google network failure shows a connection error and a retry starts clean', async () => {
+  firebaseAuth.failGooglePopup('auth/network-request-failed')
+  const { user, currentPath } = await arriveAtVerification()
+
+  await user.click(googleButton())
+
+  expect(
+    await screen.findByText(/Не удалось войти через Google/),
+  ).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/verification')
+
+  firebaseAuth.recoverGooglePopup()
+  await user.click(googleButton())
+
+  await waitFor(() => expect(currentPath()).toBe('/home'))
+})
+
+test('error-states 11: a registration failure after Google offers a retry that reuses the session', async () => {
+  trpcServer.use(trpcMutationError('resident.register'))
+  const { user, currentPath } = await arriveAtVerification()
+
+  await user.click(googleButton())
+
+  expect(
+    await screen.findByText(/Не удалось завершить регистрацию/),
+  ).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/verification')
+
+  trpcServer.resetHandlers()
+  await user.click(screen.getByRole('button', { name: /Повторить попытку/ }))
+
+  await waitFor(() => expect(currentPath()).toBe('/home'))
+  expect(firebaseAuth.googlePopupCount()).toBe(1)
+})
+
 test('edge-cases 2: visiting verification without a pending code redirects to welcome', async () => {
   const { currentPath } = renderApp('/onboarding/verification')
 

@@ -370,7 +370,7 @@ test('inputs and block/role choices are disabled while the send is in flight', a
   release()
 })
 
-test('error-states 1: a send failure keeps the welcome screen and re-enables "Далее"', async () => {
+test('error-states 1: a send failure opens the verification screen with the error and both channels', async () => {
   trpcServer.use(trpcMutationError('otp.send', 'BAD_GATEWAY', 502))
   const { user, currentPath } = await renderWelcome()
   await fillValidForm(user)
@@ -378,11 +378,16 @@ test('error-states 1: a send failure keeps the welcome screen and re-enables "Д
 
   await user.click(next())
 
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/verification'))
   expect(
     await screen.findByText(/Не удалось отправить SMS/),
   ).toBeInTheDocument()
-  expect(currentPath()).toBe('/onboarding/welcome')
-  await waitFor(() => expect(next()).toBeEnabled())
+  expect(
+    screen.getByRole('button', { name: /Продолжить с Google/ }),
+  ).toBeEnabled()
+  expect(
+    screen.getByRole('button', { name: /Запросить код повторно/ }),
+  ).toBeInTheDocument()
 })
 
 test('error-states 6: a too-many-requests send routes to the locked screen', async () => {

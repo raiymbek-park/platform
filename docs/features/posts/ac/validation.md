@@ -97,4 +97,3 @@ Input rules and permission gating. Field limits reuse the issues conventions.
   When:  the member cancels instead of confirming
   Then:  no delete request is sent
          the message remains in the thread
-</content>

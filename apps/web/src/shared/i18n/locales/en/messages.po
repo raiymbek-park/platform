@@ -61,7 +61,7 @@ msgstr "Be the first to leave a comment."
 msgid "В работе"
 msgstr "In progress"
 
-#: src/features/onboarding/ui/otp-verification.tsx:138
+#: src/features/onboarding/ui/otp-verification.tsx:157
 msgid "Ваш код отправляется на проверку…"
 msgstr "Your code is being verified…"
 
@@ -77,11 +77,11 @@ msgstr "Your contact number is hidden from other residents."
 msgid "Ваш номер телефона будет виден всем пользователям."
 msgstr "Your phone number will be visible to everyone."
 
-#: src/features/onboarding/ui/registration-form.tsx:128
+#: src/features/onboarding/ui/registration-form.tsx:129
 msgid "Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только администрация — для быстрой связи в экстренных случаях (затопление, пожар)."
 msgstr "Your personal data is hidden from other residents. Only the administration has access to it — for quick contact in emergencies (flooding, fire)."
 
-#: src/features/onboarding/ui/registration-form.tsx:104
+#: src/features/onboarding/ui/registration-form.tsx:105
 #: src/pages/settings/ui/profile-form.tsx:145
 msgid "Введите ваше имя"
 msgstr "Enter your name"
@@ -126,7 +126,7 @@ msgid "Вчера"
 msgstr "Yesterday"
 
 #: src/features/onboarding/lib/validators.ts:30
-#: src/features/onboarding/ui/registration-form.tsx:136
+#: src/features/onboarding/ui/registration-form.tsx:137
 #: src/pages/settings/lib/profile-form-schema.ts:73
 #: src/pages/settings/ui/profile-form.tsx:195
 msgid "Выберите блок"
@@ -161,7 +161,7 @@ msgstr "City services"
 msgid "Городское управление"
 msgstr "City administration"
 
-#: src/features/onboarding/ui/registration-form.tsx:192
+#: src/features/onboarding/ui/registration-form.tsx:193
 #: src/pages/onboarding/ui/language-page.tsx:46
 msgid "Далее"
 msgstr "Next"
@@ -201,11 +201,11 @@ msgstr "Add a comment about the status change…"
 msgid "Добавьте номер автомобиля, чтобы соседи могли связаться с вами в случае перекрытия проезда. Для этого включите отображение номера телефона."
 msgstr "Add a car plate so neighbors can reach you if a vehicle blocks the driveway. To allow this, turn on phone number visibility."
 
-#: src/features/onboarding/ui/registration-form.tsx:89
+#: src/features/onboarding/ui/registration-form.tsx:90
 msgid "Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее."
 msgstr "Welcome to the personal space for residents and apartment owners of the Raiymbek Park complex. Everything important is gathered here: the latest announcements from the management company, a form to submit repair requests, contacts for on-duty services, and the history of your requests. We want every issue resolved quickly and clearly — so that living here is more comfortable and managing the building more transparent."
 
-#: src/features/onboarding/ui/registration-form.tsx:88
+#: src/features/onboarding/ui/registration-form.tsx:89
 msgid "Добро пожаловать!"
 msgstr "Welcome!"
 
@@ -405,7 +405,7 @@ msgstr "Edit the post and save your changes."
 msgid "Измените уведомление и сохраните изменения."
 msgstr "Edit the notice and save your changes."
 
-#: src/features/onboarding/ui/registration-form.tsx:103
+#: src/features/onboarding/ui/registration-form.tsx:104
 #: src/pages/settings/ui/profile-form.tsx:139
 #: src/pages/settings/ui/profile-form.tsx:144
 msgid "Имя"
@@ -425,7 +425,7 @@ msgstr "Category"
 msgid "Квартира вне диапазона выбранного блока"
 msgstr "Apartment is outside the selected block's range"
 
-#: src/features/onboarding/ui/otp-verification.tsx:126
+#: src/features/onboarding/ui/otp-verification.tsx:145
 msgid "Код подтверждения"
 msgstr "Verification code"
 
@@ -452,7 +452,7 @@ msgstr "Briefly describe your post"
 msgid "Кратко опишите проблему"
 msgstr "Briefly describe the problem"
 
-#: src/features/onboarding/ui/registration-form.tsx:163
+#: src/features/onboarding/ui/registration-form.tsx:164
 #: src/pages/settings/ui/profile-form.tsx:225
 msgid "Кто вы?"
 msgstr "Who are you?"
@@ -489,7 +489,7 @@ msgstr "Type a message"
 
 #: src/features/comments/ui/comments-screen.tsx:69
 #: src/features/onboarding/ui/otp-actions.tsx:32
-#: src/features/onboarding/ui/registration-form.tsx:177
+#: src/features/onboarding/ui/registration-form.tsx:178
 #: src/shared/form/form-dock.tsx:31
 msgid "Назад"
 msgstr "Back"
@@ -520,11 +520,15 @@ msgstr "Dislike"
 msgid "Не следить за заявкой"
 msgstr "Unfollow the issue"
 
-#: src/features/onboarding/ui/otp-verification.tsx:37
+#: src/features/onboarding/ui/otp-verification.tsx:43
+msgid "Не удалось войти через Google. Проверьте соединение."
+msgstr "Couldn't sign in with Google. Check your connection."
+
+#: src/features/onboarding/ui/otp-verification.tsx:40
 msgid "Не удалось выполнить вход. Повторите попытку."
 msgstr "Could not sign you in. Try again."
 
-#: src/features/onboarding/ui/otp-verification.tsx:38
+#: src/features/onboarding/ui/otp-verification.tsx:41
 msgid "Не удалось завершить регистрацию. Повторите попытку."
 msgstr "Couldn't complete registration. Please try again."
 
@@ -560,6 +564,10 @@ msgstr "Failed to load your profile. Please try again later."
 msgid "Не удалось опубликовать объявление. Попробуйте ещё раз."
 msgstr "Could not publish the post. Please try again."
 
+#: src/features/onboarding/ui/otp-verification.tsx:42
+msgid "Не удалось открыть окно входа Google. Попробуйте ещё раз."
+msgstr "Couldn't open the Google sign-in window. Try again."
+
 #: src/features/onboarding/lib/auth-error.ts:21
 msgid "Не удалось отправить SMS. Попробуйте через несколько минут."
 msgstr "Could not send the SMS. Try again in a few minutes."
@@ -576,7 +584,7 @@ msgstr "Failed to send the message. Please try again."
 #~ msgid "Не удалось перевести сообщение. Попробуйте ещё раз."
 #~ msgstr "Couldn't translate the message. Please try again."
 
-#: src/features/onboarding/ui/otp-verification.tsx:36
+#: src/features/onboarding/ui/otp-verification.tsx:39
 msgid "Не удалось проверить код. Проверьте соединение."
 msgstr "Couldn't verify the code. Check your connection."
 
@@ -615,7 +623,7 @@ msgstr "Failed to delete the post. Please try again."
 msgid "Не удалось удалить сообщение. Попробуйте ещё раз."
 msgstr "Failed to delete the message. Please try again."
 
-#: src/features/onboarding/ui/otp-verification.tsx:35
+#: src/features/onboarding/ui/otp-verification.tsx:38
 msgid "Неверный код. Попробуйте ещё раз."
 msgstr "Invalid code. Please try again."
 
@@ -698,7 +706,7 @@ msgstr "The plate must contain at least one letter"
 msgid "Номер должен содержать хотя бы одну цифру"
 msgstr "The plate must contain at least one digit"
 
-#: src/features/onboarding/ui/registration-form.tsx:152
+#: src/features/onboarding/ui/registration-form.tsx:153
 #: src/pages/settings/ui/profile-form.tsx:208
 #: src/pages/settings/ui/profile-form.tsx:213
 msgid "Номер квартиры"
@@ -851,8 +859,8 @@ msgstr "Under warranty"
 msgid "Повторить"
 msgstr "Retry"
 
-#: src/features/onboarding/ui/otp-verification.tsx:149
-#: src/features/onboarding/ui/otp-verification.tsx:160
+#: src/features/onboarding/ui/otp-verification.tsx:168
+#: src/features/onboarding/ui/otp-verification.tsx:179
 msgid "Повторить попытку"
 msgstr "Try again"
 
@@ -951,6 +959,10 @@ msgstr "Selling items"
 #: src/pages/posts/model/use-post-badges.ts:41
 msgid "Продам"
 msgstr "For sale"
+
+#: src/features/onboarding/ui/otp-verification.tsx:191
+msgid "Продолжить с Google"
+msgstr "Continue with Google"
 
 #: src/pages/settings/model/use-update-profile.ts:71
 msgid "Профиль сохранён."
@@ -1115,7 +1127,7 @@ msgstr "Status updated. Files not uploaded: {count}"
 msgid "Страница не найдена"
 msgstr "Page not found"
 
-#: src/features/onboarding/ui/registration-form.tsx:117
+#: src/features/onboarding/ui/registration-form.tsx:118
 #: src/pages/settings/ui/profile-form.tsx:156
 #: src/pages/settings/ui/profile-form.tsx:159
 msgid "Телефон"

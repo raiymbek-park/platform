@@ -2,6 +2,13 @@
   width: 100%;
 }
 
+.channels {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
 .code input {
   font-size: 26px;
   font-weight: var(--weight-bold);

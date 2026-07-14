@@ -78,3 +78,28 @@
   Then:  no new resident record is created
          the stored profile (name, avatar, cars, role) is preserved and not overwritten by
          the re-submitted form values
+
+## Scenario 11: A resident with an existing SMS account who taps Google lands on a separate account
+
+  Given: a resident registered over SMS, has issues, offers, and car plates on that account, and is
+         signed out
+  When:  they fill in the registration form with the same phone, reach the verification screen, and
+         continue with Google
+  Then:  a new resident is registered under the Google identity
+         it carries none of the SMS account's issues, offers, comments, reactions, or car plates
+         both accounts hold the same phone
+         the SMS account is left untouched and is reached again by completing an SMS code on it
+
+## Scenario 12: The Google channel grants no elevated role
+
+  Given: a person whose SMS account holds the `manager` or `administration` role
+  When:  they register over the Google channel
+  Then:  the new resident holds only the role picked on the form (owner or tenant)
+         it resolves to a plain resident — no manager or administration permission is granted
+
+## Scenario 13: The Google control is unreachable without a registration draft
+
+  Given: there is no verification started from the registration form (e.g. a direct visit)
+  When:  the user navigates to the verification screen
+  Then:  the app redirects to the welcome screen
+         the Google control is not reachable, so no registration can start without form details

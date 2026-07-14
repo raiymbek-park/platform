@@ -318,4 +318,3 @@ entity is a **post** and a thread message is a **comment**.
 ## Open Questions
 
 None.
-</content>

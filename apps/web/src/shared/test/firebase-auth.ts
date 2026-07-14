@@ -16,6 +16,7 @@ const authState = {
 
 const scenario = {
   isSignInFailing: false,
+  popupErrorCode: null as string | null,
 }
 
 const signInWithCustomToken = vi.fn((_auth: unknown, _token: string) => {
@@ -24,6 +25,21 @@ const signInWithCustomToken = vi.fn((_auth: unknown, _token: string) => {
   }
   authState.currentUser = fakeUser
   return Promise.resolve({ user: fakeUser })
+})
+
+const googleUser: FakeUser = {
+  uid: 'google-uid',
+  getIdToken: () => Promise.resolve('fake-google-id-token'),
+}
+
+class GoogleAuthProvider {}
+
+const signInWithPopup = vi.fn((_auth: unknown, _provider: unknown) => {
+  if (scenario.popupErrorCode) {
+    return Promise.reject({ code: scenario.popupErrorCode })
+  }
+  authState.currentUser = googleUser
+  return Promise.resolve({ user: googleUser })
 })
 
 const getAuth = () => ({
@@ -40,9 +56,11 @@ const signOut = vi.fn(() => {
 })
 
 export const firebaseAuthModule = {
+  GoogleAuthProvider,
   connectAuthEmulator: vi.fn(),
   getAuth,
   signInWithCustomToken,
+  signInWithPopup,
   signOut,
 }
 
@@ -61,10 +79,19 @@ export const firebaseAuth = {
   failCustomTokenSignIn: () => {
     scenario.isSignInFailing = true
   },
+  failGooglePopup: (code: string) => {
+    scenario.popupErrorCode = code
+  },
+  recoverGooglePopup: () => {
+    scenario.popupErrorCode = null
+  },
+  googlePopupCount: () => signInWithPopup.mock.calls.length,
   reset: () => {
     authState.currentUser = null
     scenario.isSignInFailing = false
+    scenario.popupErrorCode = null
     signInWithCustomToken.mockClear()
+    signInWithPopup.mockClear()
     signOut.mockClear()
   },
 }
