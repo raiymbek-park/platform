@@ -31,6 +31,15 @@ test('happy-path S9 — a later switch re-declares the new locale', async () => 
   expect(document.documentElement.lang).toBe('kk')
 })
 
+test('happy-path S9 — rapid re-selection settles on the last chosen locale even when an earlier catalog import resolves later', async () => {
+  await activateLocale('kk')
+
+  await Promise.all([activateLocale('ru'), activateLocale('kk')])
+
+  expect(document.documentElement.lang).toBe('kk')
+  expect(i18n.locale).toBe('kk')
+})
+
 test('edge-cases S7 — the static page shell declares the default locale', () => {
   expect(readShell()).toContain(`<html lang="${DEFAULT_LOCALE}"`)
 })
