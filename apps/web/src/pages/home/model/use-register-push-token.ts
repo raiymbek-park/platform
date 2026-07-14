@@ -4,11 +4,8 @@ import { useEffect } from 'react'
 import { useTRPC } from '@/shared/api'
 import { requestPushToken } from '@/shared/push'
 
-// Module-scoped for the same reason as use-mark-visit: one attempt per page
-// load, surviving SPA navigation and resetting on a full reload — which is
-// exactly when a rotated FCM token should be re-registered. A plain `let`
-// can't be reassigned from outside the module (ESM import bindings are
-// read-only for importers), so the flag lives on a mutable object instead.
+// An ESM import binding is read-only for the importer, so a plain `let` could
+// never be rearmed from outside this module — hence a mutable object.
 export const pushRegistration = { isRequested: false }
 
 export const useRegisterPushToken = (ready: boolean) => {
