@@ -28,7 +28,7 @@ const rules = [
   { re: /\bgit\s+commit\b/, skill: '/git commit create' },
   { re: /\bgit\s+push\b/, skill: '/git push' },
   { re: /\bgit\s+(switch\s+-c\b|switch\s+--create\b|checkout\s+-b\b|branch\s+[^\s-])/, skill: '/git branch create' },
-  { re: /\bgit\s+merge\b/, skill: '/git merge' },
+  { re: /\bgit\s+merge(?![-\w])/, skill: '/git merge' },
   { re: /\bgit\s+rebase\b/, skill: '/git rebase' },
   { re: /\bgh\s+pr\s+(create|merge|edit|comment|close|ready|review)\b/, skill: '/github pull-request create · /github code-review resolve' },
   { re: /\bgh\s+issue\s+(create|edit|comment|close)\b/, skill: '/github issue create · /github issue update' },
