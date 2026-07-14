@@ -211,7 +211,7 @@
               "name": "buttons",
               "width": "fit_content(350)",
               "layout": "vertical",
-              "gap": 8,
+              "gap": 12,
               "children": [
                 {
                   "id": "Y3Hl2m",
