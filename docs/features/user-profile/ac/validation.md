@@ -63,14 +63,3 @@
   When:  the resident enters apartment `0` (or a negative number) and taps «Сохранить»
   Then:  an error toast about the apartment is shown
          nothing is saved
-
-## Scenario 12: An unverified phone is marked and stays undisclosed
-  Given: the profile screen is open for a resident who registered with Google
-  When:  the phone section renders
-  Then:  the number is shown, marked «Номер не подтверждён»
-         it is still read-only
-
-  Given: the profile screen is open for a resident who registered with Google
-  When:  the resident sets phone visibility to «Открыть» and taps «Сохранить»
-  Then:  the setting saves
-         the section states the number stays hidden from other residents until it is verified

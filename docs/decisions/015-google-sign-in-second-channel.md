@@ -29,10 +29,9 @@ flyers directing them to the app are already posted. Constraints shaping the dec
   API derives `{ uid, phone }` per request from a verified Firebase ID token (`verifyIdToken`), and
   every identity-gated mutation (`resident.register`, `resident.update`, `resident.markVisit`) rejects
   a null `uid`.
-- **The phone is not only a credential.** It is how the management company reaches a resident, and it
-  is disclosed to other residents on the surfaces that exist to be answered (an offer card's author
-  contact — see the `posts` PRD). Any channel that does not prove the phone must not let an unproven
-  number inherit that authority.
+- **The phone is mandatory on every channel.** Registration validates it as a real Kazakhstan number
+  (`registerInputSchema`, libphonenumber-js with the `KZ` default region), so no resident gets past
+  the form without a usable phone — whichever channel signs them in.
 
 ## Options Considered
 
@@ -73,10 +72,9 @@ flyers directing them to the app are already posted. Constraints shaping the dec
   approval window. Firebase Auth already backs the session, so the ID token, `{ uid, phone }` context
   derivation, and every downstream identity gate keep working untouched. Ships now, and SMS OTP stays
   exactly as ADR 013 specifies for the residents it reaches.
-- **Cons:** A Google identity carries an email and **no phone**, so a resident registering this way has
-  a self-declared, unproven phone — a provenance distinction the product must now carry and honour on
-  every surface that discloses a phone. Two sign-in channels mean two ways into the app and, without
-  linking, two possible accounts per person.
+- **Cons:** A Google identity carries an email and **no phone**, so a resident registering this way
+  stores the phone they typed on the form — self-declared rather than SMS-proven. Two sign-in channels
+  mean two ways into the app and, without linking, two possible accounts per person.
 
 ## Decision
 
@@ -109,65 +107,35 @@ require no Google app verification to publish. Authorised origins must cover
 The client signs in with the Firebase Auth Google provider and receives the same Firebase session it
 gets from `signInWithCustomToken` on the SMS channel — so the ID token, `createContext`, and
 `verifyIdToken` are untouched. On a Google identity `ctx.phone` is `null`; on an SMS identity it carries
-the `phone_number` claim. That difference **is** the provenance signal, and it is the only source of it.
+the `phone_number` claim.
 
 Google and Apple both require their official marks on sign-in buttons. Lucide removed all brand logos in
 v1.0 and will not add them (`chromium` is the Chromium browser, not Google's "G"; `apple` is the fruit),
 so the official Google SVG is added to `packages/ui/src/icon/svg/` alongside the existing icons.
 
-### Phone provenance
+### Phone handling
 
-`resident.register` keeps its `ctx.uid` gate — an unauthenticated caller is still rejected — and stores
-the phone's provenance derived **server-side from the identity it verified**, never from anything the
-client sends:
+`resident.register` keeps its `ctx.uid` gate — an unauthenticated caller is still rejected — and keeps
+its existing phone resolution: the token's own number when the verified identity carries one
+(`ctx.phone`), otherwise the number from the registration form (`ctx.phone ?? resident.phone`). No code
+change is needed there for the Google channel.
 
-- `ctx.phone` present → the phone is the token's verified number; the resident's phone is **verified**.
-- `ctx.phone` null → the phone is the number from the registration form; the resident's phone is
-  **unverified**.
+A Google-registered resident's phone is displayed and disclosed **exactly like any other**: the form
+already requires a valid Kazakhstan number on every channel, so every resident holds a usable phone and
+there is no second class of phone to treat differently. No provenance flag is stored — a field that
+branches nothing would be denormalized onto every resident, post, and issue for no reader. If the
+sign-in channel is ever needed, it is recoverable per uid from Firebase Auth itself
+(`getUser(uid).providerData` — `google.com` vs `phone`), without any schema change.
 
-The resident record gains an explicit `isPhoneVerified` flag rather than inferring provenance later
-from the auth provider, so every reader — projection, trigger, export — sees the same answer without
-reaching back into Auth. A record written before this flag exists reads as **verified**: `register` was
-reachable only through the custom-token exchange, which mints its user from `getUserByPhoneNumber` /
-`createUser({ phoneNumber })`, so every pre-existing resident's phone is SMS-proven by construction.
-Defaulting those to unverified would strip the phone from surfaces across the whole complex and label
-honest data as doubtful — a worse failure than the one the default guards against.
-
-The phone stays non-editable on both channels (`ProfileUpdate` continues to omit it), so an unverified
-phone cannot be swapped for another one after registration, and no re-verification flow is introduced.
-
-### Disclosure of an unverified phone
-
-| Audience | Verified | Unverified |
-|---|---|---|
-| The resident themselves | Shown | Shown, marked «Номер не подтверждён» |
-| Other residents | Disclosed where that surface discloses it | **Never** — omitted from the payload |
-| Managers, Administration | Disclosed | Disclosed, marked «Номер не подтверждён» |
-
-Neighbours never receive it, rather than receiving it marked, because a marker addresses the wrong
-party. It warns the reader against trusting the number, but the harm falls on whoever owns the number:
-a resident can declare a neighbour's — or anyone's — number, and publishing it across the complex
-exposes a person who never consented and cannot retract it. A label cannot un-publish a number.
-Withholding removes the harm outright and costs an unverified resident only a disclosure they never
-had. The management company still receives it, marked, because they are a small accountable audience
-who must be able to reach residents and are the only ones who can correct a wrong record; nothing is
-published to the complex, and their failure mode — trusting the number too much — is exactly what a
-marker addresses.
-
-The omission is enforced where the payload is already assembled per viewer, not in the interface:
-`parsePost` (`posts-store.ts`) hands an offer author's phone to every signed-in viewer, and `parseIssue`
-(`issues-store.ts`) gates it behind `canSeePhone(role, uid, authorId)`. Both read the author from the
-**denormalized author snapshot stamped onto the post/issue document at creation** (`data.author.phone`),
-not from the resident record — so the provenance flag travels with the snapshot exactly as the phone
-itself does, rather than forcing a per-post lookup back into `residents`. The `isPhoneVisible` setting
-cannot override the omission.
+The phone stays non-editable on both channels (`ProfileUpdate` continues to omit it), so the stored
+phone cannot be swapped for another one after registration.
 
 ### Deferred: account linking
 
 A resident who registered over SMS and later takes the Google control lands on a **separate account** —
 a new uid, a fresh resident with none of their issues, offers, comments, reactions, or car plates, and
 the default role. Their SMS account is untouched and still reachable by completing an SMS code on it.
-Two resident records may hold the same phone, one verified and one not.
+Two resident records may hold the same phone.
 
 This is accepted, not overlooked. Linking means reconciling two uids and merging or re-pointing every
 record that references the old one, and doing it safely needs proof the same person owns both — which
@@ -194,19 +162,16 @@ sign-in is a new uid with no such record. The Google channel cannot reach an ele
   every `ctx.uid` gate is byte-for-byte the same.
 - SMS OTP is untouched for the residents it reaches; ADR 013 stands, and restoring the missing routes
   later requires no app change.
-- Phone provenance is now explicit rather than assumed, which the product needed regardless: the app
-  previously trusted every stored phone equally because every one of them happened to be verified.
+- No schema or payload change anywhere: `resident.register`, the resident record, and the post/issue
+  author snapshots are byte-for-byte what they were before this decision.
 
 ### Negative
 
 - Two accounts per person are possible, and the split is invisible until the resident notices their
   history is gone. Linking is deferred, so support has no in-app remedy.
-- A resident with an unverified phone is unreachable by neighbours on the surfaces that exist to be
-  answered — an offer they post carries no phone.
-- An unverified phone cannot be corrected: it is fixed at registration and non-editable, so a typo
-  leaves the management company with a wrong number until linking or a re-verification flow exists.
-- Every surface that discloses a phone must now consider provenance, not just role — a permanent
-  branch in the per-viewer projection.
+- A Google-registered resident's phone is self-declared: nobody has proven they own it. The form
+  guarantees it is a real, well-formed number, but a typo — or someone else's number — is stored and
+  disclosed with the same authority as an SMS-proven one, and it is non-editable after registration.
 - Google is a new dependency in the sign-in path, and a resident without a Google account gains
   nothing from it.
 
@@ -218,7 +183,6 @@ sign-in is a new uid with no such record. The Google channel cannot reach an ele
 - Apple is out of scope, not rejected forever — revisit only if Google proves insufficient, or if the
   app is ever submitted to the App Store, where the social-login rule does apply.
 - Relationship with ADR 001 (state boundaries): the Google session is client/SDK-owned like the
-  custom-token session it sits beside, while the resident record and its provenance flag are server
-  truth in Firestore.
+  custom-token session it sits beside, while the resident record stays server truth in Firestore.
 </content>
 </invoke>

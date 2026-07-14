@@ -19,9 +19,8 @@ channels and ADR 013 for the SMS gateway and session mechanics.
 ## Users
 
 New residents — owners and tenants of apartments in the complex — opening the app on a phone for the
-first time. One person equals one identity: a verified phone on the SMS channel, or a Google account
-on the Google channel. A returning resident who is already signed in skips onboarding and goes
-straight to home.
+first time. One person equals one identity: a phone proven over SMS, or a Google account. A returning
+resident who is already signed in skips onboarding and goes straight to home.
 
 ## Scope
 
@@ -57,8 +56,7 @@ straight to home.
 - Signing out, or editing registration data after sign-in.
 - **Linking a Google account to an existing SMS identity**, in either direction — the two are separate
   residents (see Sign-in Channels).
-- **Correcting an unverified phone, or verifying it later.** The phone is fixed at registration on both
-  channels; no re-verification flow exists.
+- **Changing the phone after registration** — it is fixed at registration on both channels.
 - Sign-in with Apple, or any identity provider other than Google.
 - Localization — Russian only; the UI language switcher is not part of this feature.
 - Keyboard accessibility (mobile-only).
@@ -79,8 +77,7 @@ elapses they can request a new code.
 A resident whose carrier never delivers the code — the code never arrives, or the send itself fails —
 takes the Google control on the same screen instead. They choose a Google account; the app signs them
 in on that account and registers them with the details they already filled in on the form, phone
-included. The app moves to home. Their phone is unverified from that point on, and the app treats it
-as such everywhere (see Phone Provenance and Disclosure).
+included. The app moves to home.
 
 A returning resident who is already signed in is taken to home and never sees the onboarding screens.
 
@@ -90,55 +87,29 @@ A resident registers over exactly one **sign-in channel**, chosen at registratio
 life of the account:
 
 - **SMS channel** — the resident enters the code delivered to the phone they typed on the form. The
-  phone is thereby proven to be theirs: it is a **verified phone**.
-- **Google channel** — the resident signs in with a Google account. It proves the Google account and
-  nothing else; it carries an email, never a phone. The phone stored with the resident is the one they
-  typed on the form, which no one has checked: an **unverified phone**.
+  phone is thereby proven to be theirs.
+- **Google channel** — the resident signs in with a Google account. It carries an email, never a
+  phone. The phone stored with the resident is the one they typed on the form — validated as a real
+  phone number by the same registration rules as on the SMS channel.
 
 Both channels are always offered — the Google control does not appear only after a failure, and the SMS
 channel is unaffected by the presence of the Google control. Both produce the same authenticated
-Firebase session and the same registered resident; **phone provenance** — verified or unverified — is
-the only difference between them, and it is recorded with the resident.
+Firebase session and the same registered resident, with the same profile fields. Every resident has a
+phone on record — the form requires one — and the app displays and discloses it identically whichever
+channel the resident registered over. (The sign-in provider stays recoverable from the identity
+platform per uid, so nothing is recorded with the resident.)
 
 **One Google account is one resident, separate from any SMS resident.** A resident who registered over
 SMS and later uses the Google control lands on a **different account**: a fresh resident with no
 history — none of their issues, offers, comments, reactions, or car plates — and the default resident
 role. Their SMS account is untouched and still reachable by completing an SMS code on it. Two accounts
-may hold the same phone, one verified and one not. This is a known limitation of the fixed channel;
-linking is not offered (see What's NOT included).
+may hold the same phone. This is a known limitation of the fixed channel; linking is not offered (see
+What's NOT included).
 
 **Neither channel grants a role.** Registration stores only the role the resident picked on the form —
 owner or tenant — and elevated roles (manager, administration) exist only as per-uid records written
 into the datastore outside the app. A Google account is a new uid with no such record, so it resolves
 to a plain resident. The Google channel cannot reach manager or administration, whoever uses it.
-
-## Phone Provenance and Disclosure
-
-The phone is not only a credential: it is how the management company reaches a resident, and it is
-disclosed to other residents on the surfaces that exist to be answered (see the `posts` and
-`issue-tracker` PRDs). An unverified phone is a number the resident typed about themselves — it may be
-a typo, or someone else's number entirely. It therefore never carries the authority of a verified one:
-
-| Audience | Verified phone | Unverified phone |
-|---|---|---|
-| The resident themselves | Shown | Shown, marked «Номер не подтверждён» |
-| Other residents (neighbours) | Disclosed where that surface already discloses it | **Never disclosed** — withheld by the server, not hidden in the interface |
-| Managers and Administration | Disclosed | Disclosed, marked «Номер не подтверждён» |
-
-**Why neighbours never see it, rather than seeing it marked.** A marker protects the reader from
-trusting the number too much. It does nothing for the person the harm actually lands on: a resident can
-declare a neighbour's number, and publishing it across the complex exposes someone who never consented
-and cannot retract it. A label cannot un-publish a number. Withholding it removes the harm outright,
-and costs an unverified resident only a disclosure they never had.
-
-**Why the management company still sees it, marked.** They are a small, accountable audience who must
-be able to reach a resident, and they are the only ones who can correct a wrong record. Nothing is
-published to the complex. Their failure mode is misplaced trust in the number — which is exactly what a
-marker addresses.
-
-**Phone visibility has no effect on an unverified phone.** A resident's phone-visibility setting (see
-the `user-profile` PRD) opens a verified phone to other residents. An unverified one stays undisclosed
-whatever the setting says, and the profile screen states this next to it.
 
 ## Phone Number Handling
 
@@ -178,9 +149,9 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
   server requires a verified identity (a valid ID token) and rejects the request otherwise. The form
   details are the same on both channels — the Google channel asks for nothing a second time.
 - On a successful save the resident is signed in and the app navigates to home.
-- The phone stored with the profile is the verified number tied to the signed-in identity on the SMS
-  channel, and the number entered on the form — unverified — on the Google channel. The server decides
-  the provenance from the identity it verified, never from anything the client sends.
+- The phone stored with the profile is the number tied to the signed-in identity on the SMS channel,
+  and the number entered on the form on the Google channel. The server takes the identity's own number
+  whenever the verified token carries one, never a client-sent substitute.
 
 ## Route Guards
 
@@ -266,8 +237,7 @@ with libphonenumber-js using Kazakhstan (`KZ`) as the default region:
   ADR 013 for the delivery and session mechanics and ADR 010 for the retained ID-token identity model.
 - **Google as an identity provider** — establishes the session on the Google channel. See ADR 015.
 - **libphonenumber-js** — phone parsing, normalization, and validation (default region `KZ`).
-- The profile-save API endpoint that persists the resident under their Firebase user id, together with
-  the phone's provenance.
+- The profile-save API endpoint that persists the resident under their Firebase user id.
 
 ## Open Questions
 

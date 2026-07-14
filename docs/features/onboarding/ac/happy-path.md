@@ -89,7 +89,6 @@
   Given: the resident registered over the Google channel
   When:  the profile is saved
   Then:  the stored phone is the number entered on the registration form, in canonical E.164 form
-         the phone is recorded as unverified
 
 ## Scenario 11: The Google control is available as soon as the verification screen opens
 
@@ -103,4 +102,3 @@
   Given: a resident on a Kcell number (`+7 701…`) reached the verification screen and the code arrived
   When:  they enter the correct code
   Then:  the resident is signed in and the app moves to home — the Google control is not involved
-         the stored phone is recorded as verified
