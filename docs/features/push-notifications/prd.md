@@ -85,9 +85,11 @@ and each receives the same digest.
   whenever the resident changes the interface language (`docs/features/user-profile/prd.md`), so the
   first digest sent after the change is already written in the newly chosen language — the resident
   neither restarts nor reopens the app to be understood. The refresh is the same idempotent
-  registration, so the device keeps exactly one. It reaches only a device that already holds a
-  registration: a language change never asks for notification permission and never registers a device
-  that has none.
+  registration, so the device keeps exactly one. A language change never asks for notification
+  permission: it registers only a device where notifications are already allowed, and a device
+  without that permission is left untouched. On an allowed device whose registration is missing —
+  one whose earlier registration attempt failed — the switch writes the registration anew, so the
+  device recovers without waiting for the next Home visit.
 - **Device reclaiming** — a device carries a registration for one resident at a time. Registering a
   device for a resident removes that same device's registration from every other resident it was
   registered against, so a digest never reaches a device that has changed hands. The reclaim happens
@@ -188,8 +190,10 @@ with no error and no degraded screen.
   the issues' activity timestamps scope issue events, exactly as they scope the Home feed.
 - **The resident's recorded last visit** (`docs/features/home/prd.md`) — one half of the window
   anchor.
-- **The existing session and route guard** — permission is requested and a device registered only for
-  a signed-in resident on `/home`.
+- **The existing session and route guard** — the notification-permission prompt is shown only to a
+  signed-in resident on `/home`. Registration is not bound to `/home`: it serves only a signed-in
+  resident, and a language change re-invokes it from whatever screen the switch happens on, without
+  prompting.
 - **The interface language switch** (`docs/features/user-profile/prd.md`) — the resident's choice of
   reading language is the locale a registration carries, and a change to it refreshes that
   registration.

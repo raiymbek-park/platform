@@ -76,7 +76,7 @@ afterEach(() => {
   i18n.loadAndActivate({ locale: 'ru', messages: {} })
 })
 
-test('happy-path 14: switching the language re-registers the same token under the new locale without prompting', async () => {
+test('happy-path 14 / edge-cases 17: switching the language registers the token under the new locale without prompting', async () => {
   firebaseMessaging.supportPush()
   const requestPermission = stubNotification('granted')
   stubServiceWorker()
