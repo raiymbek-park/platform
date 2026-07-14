@@ -19,6 +19,7 @@ The goal is a multilingual application supporting **Russian**, **Kazakh**, and *
 - Three supported languages — **Russian**, **Kazakh**, **English** — each shown in its native name ("Русский", "Қазақша", "English"), with Russian as the fallback.
 - **Language selection on first launch** — the resident picks one of the three languages on a dedicated screen (the first onboarding step); the browser language is resolved to a supported language and pre-selected as the default. The choice is remembered per device thereafter, and the screen is shown only until a choice is made.
 - Every static UI string across the app presented in the active language.
+- The page declares its actual interface language to the browser — from the first paint and through every language change. A page that misdeclares its language invites the browser's automatic page translation, which corrupts copy already written in the resident's language; declaring the truth prevents that while leaving the resident free to request a translation deliberately.
 - The backend receives the active language of each request and returns user-facing **error messages** in that language.
 
 ### What's NOT included
@@ -37,6 +38,7 @@ On first launch the app resolves the browser language to one of the three suppor
 - No static UI string appears in a language other than the active one — a resident on Kazakh or English sees no Russian leakage on any covered screen.
 - Every supported language has a complete set of translations — no missing or empty entries.
 - A backend-rejected request returns an error message in the active language.
+- A browser whose preferred language matches the active language neither offers nor performs an automatic page translation.
 
 ## Non-functional Requirements
 

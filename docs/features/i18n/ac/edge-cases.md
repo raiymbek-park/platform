@@ -32,3 +32,14 @@
   Given: no locale choice is stored in `localStorage`
   When:  the resident reaches a later onboarding step (e.g. the registration form) without having confirmed a language
   Then:  the app routes to the language-selection screen instead of showing that step
+
+## Scenario 7: The static page shell declares the default locale
+  Given: the served HTML document, before any script runs
+  When:  the browser parses the page
+  Then:  the root element's `lang` is `"ru"` (the default locale) — never a language the app is not rendering
+
+## Scenario 8: The page never opts out of browser translation
+  Given: any rendered screen
+  When:  the document is inspected
+  Then:  no `translate` opt-out or `notranslate` marker is present
+         a resident may still ask the browser to translate the page into an unsupported language

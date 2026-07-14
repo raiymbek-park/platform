@@ -39,6 +39,14 @@ test('happy-path S3 — a persisted locale wins over the browser language', asyn
   expect(i18n.locale).toBe('en')
 })
 
+test('happy-path S8 — bootstrap declares the active locale on the document', async () => {
+  localStorage.setItem('locale', 'kk')
+
+  await bootstrapLocale()
+
+  expect(document.documentElement.lang).toBe('kk')
+})
+
 test('validation S4 — an invalid stored value is ignored and the browser language is re-detected', async () => {
   localStorage.setItem('locale', 'de')
   setNavigatorLanguage('kk-KZ')
