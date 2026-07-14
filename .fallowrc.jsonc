@@ -16,6 +16,7 @@
   // which the static analyzer cannot trace — its exports are not actually dead.
   "dynamicallyLoaded": [
     "apps/web/src/shared/test/firebase-auth.ts",
+    "apps/web/src/shared/test/firebase-messaging.ts",
     "apps/web/src/shared/test/firebase-storage.ts"
   ],
   // Test double for the DOM IntersectionObserver: its members are dispatched at
