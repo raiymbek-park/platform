@@ -105,6 +105,19 @@ test('validation S4 — an invalid stored value is ignored, re-detected, and not
   expect(localStorage.getItem('locale')).toBe('de')
 })
 
+test('happy-path S9 — switching the language re-declares the document language without a reload', async () => {
+  await boot('ru-RU')
+  const { user } = renderApp('/onboarding/language')
+
+  await screen.findByRole('heading', { name: 'Выберите язык' })
+  expect(document.documentElement.lang).toBe('ru')
+
+  await user.click(screen.getByRole('button', { name: /English/ }))
+
+  await screen.findByRole('heading', { name: 'Select a language' })
+  expect(document.documentElement.lang).toBe('en')
+})
+
 test('validation S6 — tapping an option marks it selected and unmarks the previous one', async () => {
   await boot('ru-RU')
   const { user } = renderApp('/onboarding/language')
