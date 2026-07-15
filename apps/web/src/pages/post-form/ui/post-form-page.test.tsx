@@ -3,7 +3,13 @@ import type { PermissionRole } from '@raiymbek-park/shared/validation-schemas'
 import { screen, waitFor } from '@testing-library/react'
 import { beforeEach, expect, test } from 'vitest'
 
-import { firebaseAuth, renderApp, trpcQueries, trpcServer } from '@/shared/test'
+import {
+  firebaseAuth,
+  renderApp,
+  residentMe,
+  trpcQueries,
+  trpcServer,
+} from '@/shared/test'
 
 const serveRole = (
   role: PermissionRole,
@@ -11,12 +17,7 @@ const serveRole = (
 ) =>
   trpcServer.use(
     trpcQueries({
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role,
-      }),
+      'resident.me': () => residentMe({ role }),
       ...extraQueries,
     }),
   )

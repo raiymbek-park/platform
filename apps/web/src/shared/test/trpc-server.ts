@@ -5,6 +5,8 @@ import { setupServer } from 'msw/node'
 
 import { env } from '@/shared/config'
 
+import { residentMe } from './resident-me'
+
 const trpcUrl = (procedure: string) => `${env.apiUrl}/${procedure}`
 
 const batchData = (data: unknown) => HttpResponse.json([{ result: { data } }])
@@ -100,13 +102,7 @@ export const trpcQueriesError = (
   })
 
 const homeHandlers = [
-  trpcQuery('resident.me', {
-    apartment: 42,
-    block: 1,
-    id: 'resident-uid',
-    isRegistered: true,
-    name: 'Алиса',
-  }),
+  trpcQuery('resident.me', residentMe()),
   trpcQuery('events.list', []),
   trpcQuery('serviceContacts.list', []),
   trpcMutation('resident.markVisit', () => ({ ok: true })),

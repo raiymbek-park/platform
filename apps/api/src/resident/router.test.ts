@@ -154,6 +154,42 @@ describe('residentRouter.register — one record per identity', () => {
       expect.objectContaining({ phone: '+77071234567' }),
     )
   })
+
+  it('happy-path 12: a social session stores an empty phone when the form left it blank', async () => {
+    mockCreateResidentIfAbsent.mockImplementationOnce(
+      async (_uid, input) => input,
+    )
+    const googleCaller = residentRouter.createCaller({
+      locale: 'ru',
+      phone: null,
+      uid: 'google-uid',
+    })
+
+    await googleCaller.register({ ...validInput, phone: '' })
+
+    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
+      'google-uid',
+      expect.objectContaining({ name: 'Иван Петров', phone: '' }),
+    )
+  })
+
+  it('happy-path 13: a social-session phone is stored in canonical E.164 form', async () => {
+    mockCreateResidentIfAbsent.mockImplementationOnce(
+      async (_uid, input) => input,
+    )
+    const googleCaller = residentRouter.createCaller({
+      locale: 'ru',
+      phone: null,
+      uid: 'google-uid',
+    })
+
+    await googleCaller.register({ ...validInput, phone: '87071234567' })
+
+    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
+      'google-uid',
+      expect.objectContaining({ phone: '+77071234567' }),
+    )
+  })
 })
 
 describe('residentRouter.update — profile update', () => {
@@ -281,9 +317,20 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
       cars: [],
       id: null,
       isPhoneVisible: false,
+      isRegistered: false,
       name: '',
       phone: '',
       role: 'resident',
+    })
+  })
+
+  it('reports a signed-in caller with no stored record as not registered', async () => {
+    mockGetResident.mockResolvedValueOnce(null)
+
+    await expect(caller.me()).resolves.toMatchObject({
+      id: 'uid-1',
+      isRegistered: false,
+      name: '',
     })
   })
 
@@ -310,6 +357,7 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
       cars: [],
       id: 'uid-1',
       isPhoneVisible: false,
+      isRegistered: true,
       name: 'Иван Петров',
       phone: '+77071234567',
       role: 'owner',

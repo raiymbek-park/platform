@@ -18,6 +18,7 @@ import {
   firebaseAuth,
   intersectionObserver,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -181,12 +182,7 @@ const servePosts = (gate?: Promise<void>, role: PermissionRole = 'resident') =>
         if (gate && (input.search ?? '').length > 0) await gate
         return listPage(input)
       },
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role,
-      }),
+      'resident.me': () => residentMe({ role }),
     }),
     trpcMutation('posts.react', raw => {
       const { kind, postId } = postReactionInputSchema.parse(raw)
@@ -439,12 +435,7 @@ const serveTranslated = (post: Post) => {
         listCallCount += 1
         return { nextCursor: null, posts: [post] }
       },
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role: 'resident',
-      }),
+      'resident.me': () => residentMe(),
     }),
   )
 }

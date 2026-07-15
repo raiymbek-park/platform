@@ -9,6 +9,7 @@ import {
   firebaseAuth,
   firebaseStorage,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -61,12 +62,7 @@ const serve = () =>
   trpcServer.use(
     trpcQueries({
       'issues.list': () => ({ issues, nextCursor: null }),
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role: 'resident',
-      }),
+      'resident.me': () => residentMe(),
     }),
     trpcMutation('issues.create', raw => {
       const payload = issueCreatePayloadSchema.parse(raw)

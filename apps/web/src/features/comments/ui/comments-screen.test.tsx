@@ -14,6 +14,7 @@ import {
   firebaseAuth,
   firebaseStorage,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -111,7 +112,7 @@ const serve = (role: PermissionRole = 'resident') =>
       'issues.list': () => ({ issues: [issue()], nextCursor: null }),
       'posts.get': () => post(),
       'posts.list': () => ({ nextCursor: null, posts: [post()] }),
-      'resident.me': () => ({ apartment: 42, block: 1, name: 'Алиса', role }),
+      'resident.me': () => residentMe({ role }),
     }),
     trpcMutation('comments.create', raw => {
       const input = commentCreateInputSchema.parse(raw)
@@ -362,12 +363,7 @@ test('error-states 6: a failed thread query shows an error while the input bar a
       'issues.get': () => issue(),
       'posts.get': () => post(),
       'posts.list': () => ({ nextCursor: null, posts: [post()] }),
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role: 'resident',
-      }),
+      'resident.me': () => residentMe(),
     }),
   )
   const { currentPath, user } = renderApp('/posts?tab=all')

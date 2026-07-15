@@ -16,6 +16,7 @@ import {
   firebaseAuth,
   intersectionObserver,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -152,12 +153,7 @@ const serveIssues = (gate?: Promise<void>) =>
         if (gate && (input.search ?? '').length > 0) await gate
         return listPage(input)
       },
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role: 'resident',
-      }),
+      'resident.me': () => residentMe(),
     }),
     trpcMutation('issues.react', raw => {
       const { issueId, kind } = reactionInputSchema.parse(raw)
@@ -445,12 +441,7 @@ test('error-states 9: a slow list keeps skeletons and shows no error before it r
         await gate
         return listPage(issueListInputSchema.parse(raw))
       },
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role: 'resident',
-      }),
+      'resident.me': () => residentMe(),
     }),
   )
   renderApp('/issues?status=all')
@@ -493,12 +484,7 @@ const serveTranslatedIssue = (issue: Issue) =>
   trpcServer.use(
     trpcQueries({
       'issues.list': () => ({ issues: [issue], nextCursor: null }),
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role: 'resident',
-      }),
+      'resident.me': () => residentMe(),
     }),
   )
 
