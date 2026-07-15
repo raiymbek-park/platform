@@ -19,8 +19,8 @@ import { Route as PostsIndexRouteImport } from './routes/posts.index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding.index'
 import { Route as IssuesIndexRouteImport } from './routes/issues.index'
 import { Route as PostsNewRouteImport } from './routes/posts.new'
-import { Route as OnboardingWelcomeRouteImport } from './routes/onboarding.welcome'
 import { Route as OnboardingVerificationRouteImport } from './routes/onboarding.verification'
+import { Route as OnboardingRegistrationRouteImport } from './routes/onboarding.registration'
 import { Route as OnboardingLockedRouteImport } from './routes/onboarding.locked'
 import { Route as OnboardingLanguageRouteImport } from './routes/onboarding.language'
 import { Route as IssuesNewRouteImport } from './routes/issues.new'
@@ -80,14 +80,14 @@ const PostsNewRoute = PostsNewRouteImport.update({
   path: '/new',
   getParentRoute: () => PostsRoute,
 } as any)
-const OnboardingWelcomeRoute = OnboardingWelcomeRouteImport.update({
-  id: '/welcome',
-  path: '/welcome',
-  getParentRoute: () => OnboardingRoute,
-} as any)
 const OnboardingVerificationRoute = OnboardingVerificationRouteImport.update({
   id: '/verification',
   path: '/verification',
+  getParentRoute: () => OnboardingRoute,
+} as any)
+const OnboardingRegistrationRoute = OnboardingRegistrationRouteImport.update({
+  id: '/registration',
+  path: '/registration',
   getParentRoute: () => OnboardingRoute,
 } as any)
 const OnboardingLockedRoute = OnboardingLockedRouteImport.update({
@@ -141,8 +141,8 @@ export interface FileRoutesByFullPath {
   '/issues/new': typeof IssuesNewRoute
   '/onboarding/language': typeof OnboardingLanguageRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
+  '/onboarding/registration': typeof OnboardingRegistrationRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
-  '/onboarding/welcome': typeof OnboardingWelcomeRoute
   '/posts/new': typeof PostsNewRoute
   '/issues/': typeof IssuesIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
@@ -160,8 +160,8 @@ export interface FileRoutesByTo {
   '/issues/new': typeof IssuesNewRoute
   '/onboarding/language': typeof OnboardingLanguageRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
+  '/onboarding/registration': typeof OnboardingRegistrationRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
-  '/onboarding/welcome': typeof OnboardingWelcomeRoute
   '/posts/new': typeof PostsNewRoute
   '/issues': typeof IssuesIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
@@ -183,8 +183,8 @@ export interface FileRoutesById {
   '/issues/new': typeof IssuesNewRoute
   '/onboarding/language': typeof OnboardingLanguageRoute
   '/onboarding/locked': typeof OnboardingLockedRoute
+  '/onboarding/registration': typeof OnboardingRegistrationRoute
   '/onboarding/verification': typeof OnboardingVerificationRoute
-  '/onboarding/welcome': typeof OnboardingWelcomeRoute
   '/posts/new': typeof PostsNewRoute
   '/issues/': typeof IssuesIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
@@ -207,8 +207,8 @@ export interface FileRouteTypes {
     | '/issues/new'
     | '/onboarding/language'
     | '/onboarding/locked'
+    | '/onboarding/registration'
     | '/onboarding/verification'
-    | '/onboarding/welcome'
     | '/posts/new'
     | '/issues/'
     | '/onboarding/'
@@ -226,8 +226,8 @@ export interface FileRouteTypes {
     | '/issues/new'
     | '/onboarding/language'
     | '/onboarding/locked'
+    | '/onboarding/registration'
     | '/onboarding/verification'
-    | '/onboarding/welcome'
     | '/posts/new'
     | '/issues'
     | '/onboarding'
@@ -248,8 +248,8 @@ export interface FileRouteTypes {
     | '/issues/new'
     | '/onboarding/language'
     | '/onboarding/locked'
+    | '/onboarding/registration'
     | '/onboarding/verification'
-    | '/onboarding/welcome'
     | '/posts/new'
     | '/issues/'
     | '/onboarding/'
@@ -342,18 +342,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsNewRouteImport
       parentRoute: typeof PostsRoute
     }
-    '/onboarding/welcome': {
-      id: '/onboarding/welcome'
-      path: '/welcome'
-      fullPath: '/onboarding/welcome'
-      preLoaderRoute: typeof OnboardingWelcomeRouteImport
-      parentRoute: typeof OnboardingRoute
-    }
     '/onboarding/verification': {
       id: '/onboarding/verification'
       path: '/verification'
       fullPath: '/onboarding/verification'
       preLoaderRoute: typeof OnboardingVerificationRouteImport
+      parentRoute: typeof OnboardingRoute
+    }
+    '/onboarding/registration': {
+      id: '/onboarding/registration'
+      path: '/registration'
+      fullPath: '/onboarding/registration'
+      preLoaderRoute: typeof OnboardingRegistrationRouteImport
       parentRoute: typeof OnboardingRoute
     }
     '/onboarding/locked': {
@@ -437,16 +437,16 @@ const IssuesRouteWithChildren =
 interface OnboardingRouteChildren {
   OnboardingLanguageRoute: typeof OnboardingLanguageRoute
   OnboardingLockedRoute: typeof OnboardingLockedRoute
+  OnboardingRegistrationRoute: typeof OnboardingRegistrationRoute
   OnboardingVerificationRoute: typeof OnboardingVerificationRoute
-  OnboardingWelcomeRoute: typeof OnboardingWelcomeRoute
   OnboardingIndexRoute: typeof OnboardingIndexRoute
 }
 
 const OnboardingRouteChildren: OnboardingRouteChildren = {
   OnboardingLanguageRoute: OnboardingLanguageRoute,
   OnboardingLockedRoute: OnboardingLockedRoute,
+  OnboardingRegistrationRoute: OnboardingRegistrationRoute,
   OnboardingVerificationRoute: OnboardingVerificationRoute,
-  OnboardingWelcomeRoute: OnboardingWelcomeRoute,
   OnboardingIndexRoute: OnboardingIndexRoute,
 }
 

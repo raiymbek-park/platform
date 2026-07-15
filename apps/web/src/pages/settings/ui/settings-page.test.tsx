@@ -583,7 +583,7 @@ test('error-states 4: a visitor without a session is redirected away from settin
   firebaseAuth.reset()
   const { currentPath } = renderApp('/settings')
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/welcome'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
 })
 
 test('error-states 5: a failed profile load shows an error state instead of the form', async () => {

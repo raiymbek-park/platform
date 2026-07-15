@@ -28,7 +28,7 @@ test('edge-cases 6: the locked screen without a phone in the draft redirects to 
   const { currentPath } = renderApp('/onboarding/locked')
 
   await screen.findByLabelText('Имя')
-  expect(currentPath()).toBe('/onboarding/welcome')
+  expect(currentPath()).toBe('/onboarding/registration')
 })
 
 test('error-states 6: retrying from the locked screen with success reaches verification', async () => {

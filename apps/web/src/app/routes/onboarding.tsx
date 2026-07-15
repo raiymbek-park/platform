@@ -14,8 +14,8 @@ export const Route = createFileRoute('/onboarding')({
   beforeLoad: async ({ context, location }) => {
     if (!(await isSignedIn())) return
     if (await isRegistered(context)) throw redirect({ to: '/home' })
-    if (location.pathname !== '/onboarding/welcome') {
-      throw redirect({ to: '/onboarding/welcome' })
+    if (location.pathname !== '/onboarding/registration') {
+      throw redirect({ to: '/onboarding/registration' })
     }
   },
   component: OnboardingLayout,

@@ -26,7 +26,7 @@ const resendButton = () =>
   screen.getByRole('button', { name: /Запросить код повторно/ })
 
 const arriveAtVerification = async () => {
-  const app = renderApp('/onboarding/welcome')
+  const app = renderApp('/onboarding/registration')
   const { user } = app
 
   await user.type(await screen.findByLabelText('Имя'), 'Алиса')
@@ -371,12 +371,12 @@ test('edge-cases 2: visiting verification without a pending code redirects to we
   const { currentPath } = renderApp('/onboarding/verification')
 
   await screen.findByLabelText('Имя')
-  expect(currentPath()).toBe('/onboarding/welcome')
+  expect(currentPath()).toBe('/onboarding/registration')
 })
 
 test('edge-cases 4: a signed-in resident visiting onboarding lands on home', async () => {
   firebaseAuth.signIn()
-  const { currentPath } = renderApp('/onboarding/welcome')
+  const { currentPath } = renderApp('/onboarding/registration')
 
   await waitFor(() => expect(currentPath()).toBe('/home'))
   expect(await screen.findByText(/Привет/)).toBeInTheDocument()
@@ -386,5 +386,5 @@ test('edge-cases 3: unauthenticated direct navigation to home redirects to welco
   const { currentPath } = renderApp('/home')
 
   await screen.findByLabelText('Имя')
-  expect(currentPath()).toBe('/onboarding/welcome')
+  expect(currentPath()).toBe('/onboarding/registration')
 })

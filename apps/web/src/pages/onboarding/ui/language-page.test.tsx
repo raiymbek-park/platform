@@ -57,7 +57,7 @@ test('happy-path S3 — confirming the pre-selected default persists it and cont
 
   await user.click(await screen.findByRole('button', { name: 'Далее' }))
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/welcome'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
   expect(localStorage.getItem('locale')).toBe('ru')
 })
 
@@ -75,7 +75,7 @@ test('happy-path S4 — choosing a different language activates it live and pers
 
   await user.click(screen.getByRole('button', { name: 'Next' }))
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/welcome'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
   expect(localStorage.getItem('locale')).toBe('en')
 })
 
@@ -85,7 +85,7 @@ test('happy-path S5 — a stored choice skips the selection screen and renders i
 
   const { currentPath } = renderApp('/onboarding/')
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/welcome'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
   expect(await screen.findByLabelText('Name')).toBeInTheDocument()
 })
 
@@ -161,7 +161,7 @@ test('edge-cases S5 — navigator.language undefined pre-selects Russian', async
 })
 
 test('edge-cases S6 — reaching welcome with no stored language choice redirects to the language screen', async () => {
-  const { currentPath } = renderApp('/onboarding/welcome')
+  const { currentPath } = renderApp('/onboarding/registration')
 
   await waitFor(() => expect(currentPath()).toBe('/onboarding/language'))
 })
@@ -177,5 +177,5 @@ test('route guard — onboarding index routes to welcome when a choice is stored
 
   const { currentPath } = renderApp('/onboarding/')
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/welcome'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
 })

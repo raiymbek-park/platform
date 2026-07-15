@@ -23,7 +23,7 @@ export const LanguagePage = () => {
 
   const confirm = async () => {
     await switchLocale(selected)
-    navigate({ to: '/onboarding/welcome' })
+    navigate({ to: '/onboarding/registration' })
   }
 
   return (

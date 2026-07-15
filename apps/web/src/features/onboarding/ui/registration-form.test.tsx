@@ -61,7 +61,7 @@ const fillValidForm = async (
 }
 
 const renderWelcome = async () => {
-  const app = renderApp('/onboarding/welcome')
+  const app = renderApp('/onboarding/registration')
   await screen.findByLabelText('Имя')
   return app
 }
@@ -112,7 +112,7 @@ test('happy-path 1: an invalid field surfaces a toast and blocks navigation unti
   expect(
     await screen.findByText('Имя должно быть не короче 2 символов'),
   ).toBeInTheDocument()
-  expect(currentPath()).toBe('/onboarding/welcome')
+  expect(currentPath()).toBe('/onboarding/registration')
 
   await user.clear(screen.getByLabelText('Имя'))
   await fillName(user, 'Алиса')
@@ -188,7 +188,7 @@ test('validation 1: submitting without a role surfaces the role toast', async ()
   await user.click(next())
 
   expect(await screen.findByText('Выберите роль')).toBeInTheDocument()
-  expect(currentPath()).toBe('/onboarding/welcome')
+  expect(currentPath()).toBe('/onboarding/registration')
 })
 
 test('validation: submitting without a block shows the block toast and does not send', async () => {
@@ -203,7 +203,7 @@ test('validation: submitting without a block shows the block toast and does not 
   expect(
     await screen.findByText('Выберите блок', { selector: 'p' }),
   ).toBeInTheDocument()
-  expect(currentPath()).toBe('/onboarding/welcome')
+  expect(currentPath()).toBe('/onboarding/registration')
   expect(screen.queryByText('Введите код из SMS')).not.toBeInTheDocument()
 })
 
@@ -296,7 +296,7 @@ test('validation 12: switching block re-validates the apartment number', async (
   expect(
     await screen.findByText('Квартира вне диапазона выбранного блока'),
   ).toBeInTheDocument()
-  expect(currentPath()).toBe('/onboarding/welcome')
+  expect(currentPath()).toBe('/onboarding/registration')
 })
 
 test('validation 10: the apartment field keeps digits only', async () => {
