@@ -103,6 +103,8 @@ const homeHandlers = [
   trpcQuery('resident.me', {
     apartment: 42,
     block: 1,
+    id: 'resident-uid',
+    isRegistered: true,
     name: 'Алиса',
   }),
   trpcQuery('events.list', []),

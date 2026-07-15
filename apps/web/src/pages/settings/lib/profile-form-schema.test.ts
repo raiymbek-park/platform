@@ -11,6 +11,7 @@ const baseProfile: ResidentProfile = {
   cars: [],
   id: 'resident-uid',
   isPhoneVisible: false,
+  isRegistered: true,
   name: 'Алиса',
   phone: '+77071234567',
   role: 'owner',
@@ -21,6 +22,7 @@ const validValues = {
   block: 1 as const,
   cars: [] as string[],
   isPhoneVisible: false,
+  isRegistered: true,
   name: 'Алиса',
   role: 'owner' as const,
 }
