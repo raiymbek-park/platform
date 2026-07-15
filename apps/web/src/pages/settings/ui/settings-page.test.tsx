@@ -583,7 +583,8 @@ test('error-states 4: a visitor without a session is redirected away from settin
   firebaseAuth.reset()
   const { currentPath } = renderApp('/settings')
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
+  expect(screen.queryByRole('button', { name: 'Сохранить' })).toBeNull()
 })
 
 test('error-states 5: a failed profile load shows an error state instead of the form', async () => {
@@ -740,6 +741,15 @@ test('validation 10: the phone field is read-only and typing does not change it'
   await user.keyboard('9999')
 
   expect(phoneField()).toHaveValue('+7 707 123 45 67')
+})
+
+test('onboarding edge-cases 18: a resident registered without a phone shows an empty phone field', async () => {
+  serve({ ...baseProfile, phone: '' })
+  renderApp('/settings')
+  await ready()
+
+  expect(phoneField()).toHaveValue('')
+  expect(phoneField()).not.toHaveAttribute('placeholder')
 })
 
 test('validation 11: an apartment of 0 surfaces the apartment-range toast', async () => {

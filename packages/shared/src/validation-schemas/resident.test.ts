@@ -2,10 +2,12 @@ import { describe, expect, test } from 'vitest'
 
 import {
   CARS_MAX,
+  hasReliableCarrierPrefix,
   isApartmentInBlock,
   nameSchema,
   normalizePhone,
   normalizePlate,
+  optionalPhoneSchema,
   phoneSchema,
   plateSchema,
   profileUpdateSchema,
@@ -83,6 +85,55 @@ describe('phoneSchema — validates the dialled number', () => {
 
   test('rejects a bare digits string with no country prefix', () => {
     expect(phoneSchema.safeParse('12345').success).toBe(false)
+  })
+})
+
+describe('optionalPhoneSchema — validation 11,12: empty or valid', () => {
+  test('accepts an empty value — the social channels may omit the phone', () => {
+    expect(optionalPhoneSchema.safeParse('').success).toBe(true)
+  })
+
+  test('accepts a whitespace-only value as omitted', () => {
+    expect(optionalPhoneSchema.safeParse('   ').success).toBe(true)
+  })
+
+  test('accepts a valid number', () => {
+    expect(optionalPhoneSchema.safeParse('+77052266666').success).toBe(true)
+  })
+
+  test('rejects a non-empty invalid number — optional means "empty or valid"', () => {
+    expect(optionalPhoneSchema.safeParse('+7705').success).toBe(false)
+  })
+})
+
+describe('hasReliableCarrierPrefix — validation 13,14: Kcell/Activ SMS delivery', () => {
+  test.each([
+    '+77011234567',
+    '+77021234567',
+    '+77751234567',
+    '+77781234567',
+  ])('a %s number is a reliable Kcell/Activ prefix', value => {
+    expect(hasReliableCarrierPrefix(value)).toBe(true)
+  })
+
+  test('a Kazakhstan number outside 701/702/775/778 is unreliable', () => {
+    expect(hasReliableCarrierPrefix('+77051234567')).toBe(false)
+  })
+
+  test('a valid non-Kazakhstan number is unreliable — the gateway routes to KZ carriers only', () => {
+    expect(hasReliableCarrierPrefix('+14155552671')).toBe(false)
+  })
+
+  test('a domestic 8-prefix Kcell number is recognised as reliable', () => {
+    expect(hasReliableCarrierPrefix('87011234567')).toBe(true)
+  })
+
+  test('an incomplete number warns about nothing — the error state covers it', () => {
+    expect(hasReliableCarrierPrefix('+7705')).toBe(true)
+  })
+
+  test('an empty value warns about nothing', () => {
+    expect(hasReliableCarrierPrefix('')).toBe(true)
   })
 })
 
