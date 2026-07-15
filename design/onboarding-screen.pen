@@ -214,30 +214,6 @@
               "gap": 12,
               "children": [
                 {
-                  "id": "Y3Hl2m",
-                  "type": "ref",
-                  "ref": "ds:ButtonSecondary",
-                  "descendants": {
-                    "ds:btn-sec-icon": {
-                      "type": "frame",
-                      "id": "gmk7Q2",
-                      "name": "google-mark",
-                      "width": 22,
-                      "height": 22,
-                      "fill": {
-                        "type": "image",
-                        "enabled": true,
-                        "url": "images/google-g.svg",
-                        "mode": "fill"
-                      },
-                      "children": []
-                    },
-                    "ds:btn-sec-text": {
-                      "content": "Продолжить с Google"
-                    }
-                  }
-                },
-                {
                   "id": "lNapo",
                   "type": "ref",
                   "ref": "ds:ButtonSecondary",
@@ -258,7 +234,7 @@
       "id": "J7c6i",
       "x": 454,
       "y": 0,
-      "name": "Onboarding",
+      "name": "registration-form",
       "clip": true,
       "width": 390,
       "fill": "$ds:background",
@@ -279,20 +255,6 @@
           "gap": 24,
           "padding": 20,
           "children": [
-            {
-              "id": "X98Hq",
-              "type": "ref",
-              "ref": "ds:HeroCard",
-              "name": "hero-card",
-              "descendants": {
-                "ds:welcome-title": {
-                  "content": "Добро пожаловать!"
-                },
-                "ds:welcome-body": {
-                  "content": "Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее."
-                }
-              }
-            },
             {
               "id": "TWon0",
               "type": "ref",
@@ -572,17 +534,6 @@
               }
             },
             {
-              "id": "y09NF",
-              "type": "ref",
-              "ref": "ds:InfoCallout",
-              "name": "Privacy Notice",
-              "descendants": {
-                "ds:callout-text": {
-                  "content": "Эта форма защищена reCAPTCHA, применяются политика конфиденциальности и условия Google"
-                }
-              }
-            },
-            {
               "type": "frame",
               "id": "S3qSoc",
               "name": "Actions",
@@ -616,8 +567,8 @@
     {
       "type": "frame",
       "id": "eT7fh",
-      "x": 0,
-      "y": 0,
+      "x": -457,
+      "y": 2,
       "name": "Select Language",
       "clip": true,
       "width": 390,
@@ -794,6 +745,206 @@
                   "content": "Далее"
                 }
               }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "aB2Cd3",
+      "x": 2,
+      "y": 0,
+      "name": "Select Auth Method",
+      "clip": true,
+      "width": 390,
+      "height": 842,
+      "fill": "$ds:background",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "hdrSelAuth",
+          "type": "ref",
+          "ref": "ds:ScreenHeader",
+          "name": "Header"
+        },
+        {
+          "type": "frame",
+          "id": "cntSelAuth",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 20,
+          "children": [
+            {
+              "id": "X98Hq",
+              "type": "ref",
+              "ref": "ds:HeroCard",
+              "name": "hero-card",
+              "x": 20,
+              "y": 20,
+              "descendants": {
+                "ds:welcome-title": {
+                  "content": "Добро пожаловать!"
+                },
+                "ds:welcome-body": {
+                  "content": "Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее."
+                }
+              }
+            },
+            {
+              "id": "spacerSelAuth1",
+              "type": "ref",
+              "ref": "ds:Spacer",
+              "name": "Spacer"
+            },
+            {
+              "id": "sectionSelAuth",
+              "type": "ref",
+              "ref": "ds:Section",
+              "name": "Auth Method Section",
+              "gap": 10,
+              "descendants": {
+                "ds:section-title": {
+                  "content": "Выберите способ входа"
+                },
+                "ds:section-content": {
+                  "type": "frame",
+                  "id": "cardSelAuth",
+                  "name": "Auth Method Card",
+                  "width": "fill_container",
+                  "fill": "$ds:surface",
+                  "cornerRadius": 24,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$ds:shadow",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 20
+                  },
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": [
+                    10,
+                    16
+                  ],
+                  "children": [
+                    {
+                      "id": "optPhone",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionSelected",
+                      "name": "Option Phone",
+                      "descendants": {
+                        "ds:opt-sel-icon": {
+                          "library": "lucide",
+                          "icon": "phone"
+                        },
+                        "ds:opt-sel-name": {
+                          "content": "По номеру телефона"
+                        },
+                        "ds:opt-sel-role": {
+                          "content": "Только для операторов Kcell/Activ"
+                        }
+                      }
+                    },
+                    {
+                      "id": "dividerSelAuth1",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "optGoogle",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "Option Google",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "$ds:warning-soft"
+                        },
+                        "ds:opt-icon": {
+                          "id": "S36hg",
+                          "type": "ref",
+                          "ref": "ds:LlPdL",
+                          "name": "google-logo",
+                          "descendants": {
+                            "ds:C2KZe": {
+                              "stroke": "$ds:warning",
+                              "strokeWidth": 1.4
+                            }
+                          }
+                        },
+                        "ds:opt-name": {
+                          "content": "Google"
+                        },
+                        "ds:opt-role": {
+                          "content": "Быстрый вход с аккаунтом"
+                        }
+                      }
+                    },
+                    {
+                      "id": "dividerSelAuth2",
+                      "type": "ref",
+                      "ref": "ds:Divider",
+                      "name": "Divider"
+                    },
+                    {
+                      "id": "optFacebook",
+                      "type": "ref",
+                      "ref": "ds:SelectOptionDefault",
+                      "name": "Option Facebook",
+                      "descendants": {
+                        "ds:opt-icon-wrap": {
+                          "fill": "#e7f3ff"
+                        },
+                        "ds:opt-icon": {
+                          "fill": "$ds:info",
+                          "library": "lucide",
+                          "icon": "facebook"
+                        },
+                        "ds:opt-name": {
+                          "content": "Facebook"
+                        },
+                        "ds:opt-role": {
+                          "content": "Быстрый вход с аккаунтом"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "actionsSelAuth",
+              "name": "Actions",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "btnBackSelAuth",
+                  "type": "ref",
+                  "ref": "ds:ButtonIcon",
+                  "name": "Back Button"
+                },
+                {
+                  "id": "btnNextSelAuth",
+                  "type": "ref",
+                  "ref": "ds:ButtonIconRight",
+                  "name": "Next Button",
+                  "descendants": {
+                    "ds:btn-primary-text": {
+                      "content": "Выбрать"
+                    }
+                  }
+                }
+              ]
             }
           ]
         }
