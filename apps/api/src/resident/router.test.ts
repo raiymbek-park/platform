@@ -4,6 +4,7 @@ import type {
 } from '@raiymbek-park/shared/validation-schemas'
 import type { z } from 'zod'
 
+import { resolveRole } from '@raiymbek-park/shared/validation-schemas'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
@@ -106,7 +107,7 @@ describe('residentRouter.register — one record per identity', () => {
     )
   })
 
-  it('returns the stored profile a returning identity already has, unchanged', async () => {
+  it('edge-cases 14: returns the stored profile a returning identity already has, unchanged', async () => {
     const existing = {
       apartment: 60,
       avatarUrl: 'https://example/avatar.webp',
@@ -171,6 +172,42 @@ describe('residentRouter.register — one record per identity', () => {
       'google-uid',
       expect.objectContaining({ name: 'Иван Петров', phone: '' }),
     )
+  })
+
+  it('edge-cases 15,16: a social identity registers its own record, leaving another identity untouched', async () => {
+    mockCreateResidentIfAbsent.mockImplementationOnce(
+      async (_uid, input) => input,
+    )
+    const facebookCaller = residentRouter.createCaller({
+      locale: 'ru',
+      phone: null,
+      uid: 'facebook-uid',
+    })
+
+    await facebookCaller.register(validInput)
+
+    expect(mockCreateResidentIfAbsent).toHaveBeenCalledTimes(1)
+    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
+      'facebook-uid',
+      expect.objectContaining({ avatarUrl: null, cars: [] }),
+    )
+  })
+
+  it('edge-cases 17: a social channel grants only the role picked on the form', async () => {
+    mockCreateResidentIfAbsent.mockImplementationOnce(
+      async (_uid, input) => input,
+    )
+    const googleCaller = residentRouter.createCaller({
+      locale: 'ru',
+      phone: null,
+      uid: 'google-uid',
+    })
+
+    await googleCaller.register({ ...validInput, role: 'tenant' })
+
+    const [, written] = mockCreateResidentIfAbsent.mock.calls.at(-1) ?? []
+    expect(written).toMatchObject({ role: 'tenant' })
+    expect(resolveRole(written?.role)).toBe('resident')
   })
 
   it('happy-path 13: a social-session phone is stored in canonical E.164 form', async () => {
