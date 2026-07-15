@@ -1,5 +1,5 @@
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Button, HeroCard, InfoCallout, SectionHeader } from '@raiymbek-park/ui'
+import { Button, InfoCallout, SectionHeader } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useNavigate } from '@tanstack/react-router'
 
@@ -10,14 +10,20 @@ import {
   PhoneField,
   RolePicker,
 } from '@/entities/resident'
+import { auth } from '@/shared/firebase'
 import { inputState } from '@/shared/form'
 import { showToastMessage } from '@/shared/toast'
 
 import { sendCodeErrorText } from '../lib/auth-error'
+import { hasReliableCarrierPrefix } from '../lib/carrier-warning'
 import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { normalizePhone } from '../lib/phone'
-import { registrationSchema } from '../lib/validators'
+import {
+  smsRegistrationSchema,
+  socialRegistrationSchema,
+} from '../lib/validators'
 import { useOnboardingStore } from '../model/use-onboarding-store'
+import { useRegisterResident } from '../model/use-register-resident'
 import { useSendOtp } from '../model/use-send-otp'
 import css from './registration-form.module.scss'
 
@@ -36,12 +42,22 @@ export const RegistrationForm = () => {
   const { t } = useLingui()
   const navigate = useNavigate()
   const sendOtp = useSendOtp()
+  const registerResident = useRegisterResident()
   const setDraft = useOnboardingStore(state => state.setDraft)
   const draft = useOnboardingStore(state => state.draft)
 
+  const isSocialChannel = auth.currentUser !== null
+  const providerName = auth.currentUser?.displayName ?? ''
+
+  const registerError = t`Не удалось завершить регистрацию. Повторите попытку.`
+
   const form = useForm({
-    defaultValues: { ...draft, phone: draft.phone || '+7' },
-    validators: { onChange: registrationSchema },
+    defaultValues: { ...draft, name: draft.name || providerName },
+    validators: {
+      onChange: isSocialChannel
+        ? socialRegistrationSchema
+        : smsRegistrationSchema,
+    },
     onSubmitInvalid: ({ formApi }) => {
       const text = fieldOrder
         .flatMap(name => formApi.getFieldMeta(name)?.errors ?? [])
@@ -50,14 +66,23 @@ export const RegistrationForm = () => {
       if (text) showToastMessage({ kind: 'error', text })
     },
     onSubmit: ({ value }) => {
-      const phone = normalizePhone(value.phone)
-      setDraft({
-        name: value.name.trim(),
-        phone,
-        block: value.block,
-        apartment: value.apartment,
-        role: value.role,
-      })
+      const { block, role } = value
+      if (block === null || role === null) return
+      const name = value.name.trim()
+      const phone = value.phone.trim() === '' ? '' : normalizePhone(value.phone)
+      setDraft({ name, phone, block, apartment: value.apartment, role })
+
+      if (isSocialChannel) {
+        registerResident.mutate(
+          { name, phone, block, apartment: value.apartment, role },
+          {
+            onSuccess: () => navigate({ to: '/home' }),
+            onError: () =>
+              showToastMessage({ kind: 'error', text: registerError }),
+          },
+        )
+        return
+      }
 
       sendOtp.mutate(
         { phone },
@@ -76,7 +101,7 @@ export const RegistrationForm = () => {
     },
   })
 
-  const isPending = sendOtp.isPending
+  const isPending = sendOtp.isPending || registerResident.isPending
 
   return (
     <form
@@ -86,17 +111,6 @@ export const RegistrationForm = () => {
         form.handleSubmit()
       }}
     >
-      <HeroCard title={t`Добро пожаловать!`}>
-        <Trans>
-          Добро пожаловать в личное пространство жильцов и собственников квартир
-          ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления
-          от управляющей компании, форма для подачи заявок на устранение
-          неполадок, контакты дежурных служб и история ваших обращений. Мы
-          хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в
-          доме была удобнее, а управление домом — прозрачнее.
-        </Trans>
-      </HeroCard>
-
       <form.Field name='name'>
         {field => (
           <NameField
@@ -116,7 +130,7 @@ export const RegistrationForm = () => {
           <PhoneField
             disabled={isPending}
             label={t`Телефон`}
-            placeholder='+7 7xxx xxx xxxx'
+            placeholder='+7 701 123 44 55'
             state={inputState(field.state.meta)}
             value={field.state.value}
             onBlur={field.handleBlur}
@@ -124,6 +138,21 @@ export const RegistrationForm = () => {
           />
         )}
       </form.Field>
+
+      {!isSocialChannel && (
+        <form.Subscribe selector={state => state.values.phone}>
+          {phone =>
+            hasReliableCarrierPrefix(phone) ? null : (
+              <InfoCallout icon='circle-alert' variant='warning'>
+                <Trans>
+                  Код может не дойти до этого номера. Надёжнее войти через
+                  Google или Facebook.
+                </Trans>
+              </InfoCallout>
+            )
+          }
+        </form.Subscribe>
+      )}
 
       <InfoCallout icon='shield-check'>
         <Trans>
@@ -173,6 +202,16 @@ export const RegistrationForm = () => {
         </form.Field>
       </div>
 
+      {registerResident.isError && (
+        <Button
+          type='button'
+          variant='secondary'
+          onClick={() => form.handleSubmit()}
+        >
+          <Trans>Повторить попытку</Trans>
+        </Button>
+      )}
+
       <div className={css.actions}>
         <Button
           aria-label={t`Назад`}
@@ -180,7 +219,7 @@ export const RegistrationForm = () => {
           icon='arrow-left'
           type='button'
           variant='icon'
-          onClick={() => navigate({ to: '/onboarding/language' })}
+          onClick={() => navigate({ to: '/onboarding/auth-method' })}
         />
         <Button
           className={css.fill}

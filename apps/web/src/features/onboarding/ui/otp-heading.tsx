@@ -15,7 +15,7 @@ export const OtpHeading = () => {
       <p className={css.subtitle}>
         <Trans>Мы отправили 6-значный код подтверждения на ваш номер</Trans>
       </p>
-      <p className={css.phone}>{formatPhoneDisplay(phone)}</p>
+      {phone !== '' && <p className={css.phone}>{formatPhoneDisplay(phone)}</p>}
     </header>
   )
 }
