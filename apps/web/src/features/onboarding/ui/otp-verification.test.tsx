@@ -305,7 +305,7 @@ test('happy-path 10: continuing with Google registers the draft and lands on hom
 })
 
 test('error-states 8: dismissing the Google window leaves the screen untouched', async () => {
-  firebaseAuth.failGooglePopup('auth/popup-closed-by-user')
+  firebaseAuth.failPopup('auth/popup-closed-by-user')
   const { user, currentPath } = await arriveAtVerification()
 
   await user.type(codeInput(), '123')
@@ -319,7 +319,7 @@ test('error-states 8: dismissing the Google window leaves the screen untouched',
 })
 
 test('error-states 9: a blocked sign-in window says so and keeps both channels working', async () => {
-  firebaseAuth.failGooglePopup('auth/popup-blocked')
+  firebaseAuth.failPopup('auth/popup-blocked')
   const { user, currentPath } = await arriveAtVerification()
 
   await user.click(googleButton())
@@ -333,7 +333,7 @@ test('error-states 9: a blocked sign-in window says so and keeps both channels w
 })
 
 test('error-states 10: a Google network failure shows a connection error and a retry starts clean', async () => {
-  firebaseAuth.failGooglePopup('auth/network-request-failed')
+  firebaseAuth.failPopup('auth/network-request-failed')
   const { user, currentPath } = await arriveAtVerification()
 
   await user.click(googleButton())
@@ -343,7 +343,7 @@ test('error-states 10: a Google network failure shows a connection error and a r
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/onboarding/verification')
 
-  firebaseAuth.recoverGooglePopup()
+  firebaseAuth.recoverPopup()
   await user.click(googleButton())
 
   await waitFor(() => expect(currentPath()).toBe('/home'))
@@ -364,7 +364,7 @@ test('error-states 11: a registration failure after Google offers a retry that r
   await user.click(screen.getByRole('button', { name: /Повторить попытку/ }))
 
   await waitFor(() => expect(currentPath()).toBe('/home'))
-  expect(firebaseAuth.googlePopupCount()).toBe(1)
+  expect(firebaseAuth.popupCount()).toBe(1)
 })
 
 test('edge-cases 2: visiting verification without a pending code redirects to welcome', async () => {

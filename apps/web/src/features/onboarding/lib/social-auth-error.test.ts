@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
 
-import { isPopupBlocked, isPopupDismissed } from './google-auth-error'
+import { isPopupBlocked, isPopupDismissed } from './social-auth-error'
 
 test.each([
   'auth/cancelled-popup-request',

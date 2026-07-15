@@ -6,13 +6,11 @@ import { showToastMessage } from '@/shared/toast'
 
 import { logAuthError, sendCodeErrorText } from '../lib/auth-error'
 import { formatOtp, otpMask } from '../lib/format-otp'
-import { isPopupBlocked, isPopupDismissed } from '../lib/google-auth-error'
 import { isSignInFailure } from '../lib/is-sign-in-failure'
 import { isTooManyRequests } from '../lib/is-too-many-requests'
 import { isWrongCode } from '../lib/is-wrong-code'
 import { useOtpCode } from '../lib/use-otp-code'
 import { useResendCooldown } from '../lib/use-resend-cooldown'
-import { useGoogleSignIn } from '../model/use-google-sign-in'
 import { useOnboardingStore } from '../model/use-onboarding-store'
 import { useRegisterResident } from '../model/use-register-resident'
 import { useSendOtp } from '../model/use-send-otp'
@@ -30,7 +28,6 @@ export const OtpVerification = () => {
   const verifyOtp = useVerifyOtp()
   const resend = useSendOtp()
   const registerResident = useRegisterResident()
-  const googleSignIn = useGoogleSignIn()
   const cooldown = useResendCooldown()
 
   const isChecking = verifyOtp.isPending || registerResident.isPending
@@ -39,8 +36,6 @@ export const OtpVerification = () => {
   const networkError = t`Не удалось проверить код. Проверьте соединение.`
   const signInError = t`Не удалось выполнить вход. Повторите попытку.`
   const registerError = t`Не удалось завершить регистрацию. Повторите попытку.`
-  const googleBlockedError = t`Не удалось открыть окно входа Google. Попробуйте ещё раз.`
-  const googleNetworkError = t`Не удалось войти через Google. Проверьте соединение.`
 
   const register = () => {
     const { block, role } = draft
@@ -85,20 +80,6 @@ export const OtpVerification = () => {
   }
 
   const otp = useOtpCode({ disabled: isChecking, onComplete: verify })
-
-  const handleGoogleSignIn = () => {
-    googleSignIn.mutate(undefined, {
-      onSuccess: register,
-      onError: error => {
-        if (isPopupDismissed(error)) return
-        logAuthError('google-sign-in', error)
-        showToastMessage({
-          kind: 'error',
-          text: isPopupBlocked(error) ? googleBlockedError : googleNetworkError,
-        })
-      },
-    })
-  }
 
   const retrySignIn = () => {
     const input = verifyOtp.variables
@@ -180,24 +161,12 @@ export const OtpVerification = () => {
         </Button>
       )}
 
-      <div className={css.channels}>
-        <Button
-          disabled={isChecking}
-          icon='google'
-          isLoading={googleSignIn.isPending}
-          variant='secondary'
-          onClick={handleGoogleSignIn}
-        >
-          <Trans>Продолжить с Google</Trans>
-        </Button>
-
-        <OtpActions
-          isChecking={isChecking}
-          isResendPending={resend.isPending}
-          resendCooldown={cooldown.secondsLeft}
-          onResend={handleResend}
-        />
-      </div>
+      <OtpActions
+        isChecking={isChecking}
+        isResendPending={resend.isPending}
+        resendCooldown={cooldown.secondsLeft}
+        onResend={handleResend}
+      />
     </>
   )
 }
