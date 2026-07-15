@@ -118,8 +118,8 @@ msgid "Все"
 msgstr "Барлығы"
 
 #: src/pages/home/ui/services-section.tsx:79
-msgid "Вступить в общий чат жильцов"
-msgstr "Тұрғындардың ортақ чатына қосылу"
+#~ msgid "Вступить в общий чат жильцов"
+#~ msgstr "Тұрғындардың ортақ чатына қосылу"
 
 #: src/pages/posts/ui/post-card-item.tsx:57
 msgid "Вчера"
@@ -375,7 +375,7 @@ msgstr "Өтінім жойылды."
 msgid "Заявки"
 msgstr "Өтінімдер"
 
-#: src/pages/home/ui/services-section.tsx:33
+#: src/pages/home/ui/services-section.tsx:13
 msgid "Заявки, объявления и связь с управляющей компанией"
 msgstr "Өтінімдер, хабарландырулар және басқарушы компаниямен байланыс"
 
@@ -665,7 +665,7 @@ msgstr "Жаңа хабарлама"
 #~ msgid "Новое частное объявление: {0}"
 #~ msgstr "Жаңа жеке хабарландыру: {0}"
 
-#: src/pages/home/ui/services-section.tsx:40
+#: src/pages/home/ui/services-section.tsx:20
 msgid "Новости, уведомления и частные предложения"
 msgstr "Жаңалықтар, хабарламалар және жеке ұсыныстар"
 
@@ -760,7 +760,7 @@ msgstr "Хабарландыру жарияланды. Жүктелмеген ф
 msgid "Объявление удалено."
 msgstr "Хабарландыру жойылды."
 
-#: src/pages/home/ui/services-section.tsx:42
+#: src/pages/home/ui/services-section.tsx:22
 #: src/pages/posts/ui/posts-page.tsx:33
 #: src/widgets/bottom-nav/ui/bottom-nav.tsx:26
 msgid "Объявления"
@@ -812,7 +812,7 @@ msgstr "Бас тарту"
 msgid "Отправить"
 msgstr "Жіберу"
 
-#: src/pages/home/ui/services-section.tsx:60
+#: src/pages/home/ui/services-section.tsx:40
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Өтініштеріңіздің барысын қадағалаңыз"
 
@@ -868,7 +868,7 @@ msgstr "Қайталап көру"
 msgid "Повторяет другую заявку"
 msgstr "Басқа өтінімді қайталайды"
 
-#: src/pages/home/ui/services-section.tsx:50
+#: src/pages/home/ui/services-section.tsx:30
 msgid "Подайте обращение в УК"
 msgstr "Басқарушы компанияға өтініш жіберіңіз"
 
@@ -1045,7 +1045,7 @@ msgstr "Қызмет көрсету және пайдалану"
 #~ msgid "Сервис отправки кодов временно перегружен. Попробуйте через несколько минут."
 #~ msgstr "Код жіберу қызметі уақытша шамадан тыс жүктелген. Бірнеше минуттан кейін қайталап көріңіз."
 
-#: src/pages/home/ui/services-section.tsx:34
+#: src/pages/home/ui/services-section.tsx:14
 msgid "Сервисы"
 msgstr "Сервистер"
 
@@ -1082,11 +1082,11 @@ msgstr "Баспана жалдаймын"
 msgid "Собственник квартиры"
 msgstr "Пәтер иесі"
 
-#: src/pages/home/ui/services-section.tsx:52
+#: src/pages/home/ui/services-section.tsx:32
 msgid "Создать заявку"
 msgstr "Өтінім жасау"
 
-#: src/pages/home/ui/services-section.tsx:72
+#: src/pages/home/ui/services-section.tsx:52
 msgid "Создать объявление"
 msgstr "Хабарландыру жасау"
 
@@ -1111,7 +1111,7 @@ msgstr "Сақтау"
 msgid "Срочно"
 msgstr "Шұғыл"
 
-#: src/pages/home/ui/services-section.tsx:62
+#: src/pages/home/ui/services-section.tsx:42
 msgid "Статус заявки"
 msgstr "Өтінім күйі"
 
@@ -1159,7 +1159,7 @@ msgstr "Жөндеу қажет"
 msgid "Требуется уточнение"
 msgstr "Нақтылау қажет"
 
-#: src/pages/home/ui/services-section.tsx:70
+#: src/pages/home/ui/services-section.tsx:50
 msgid "У вас есть предложение или поиск, пишите сюда"
 msgstr "Ұсынысыңыз бар ма немесе бірдеңе іздеп жүрсіз бе — осында жазыңыз"
 
@@ -1254,8 +1254,8 @@ msgid "Частные объявления"
 msgstr "Жеке хабарландырулар"
 
 #: src/pages/home/ui/services-section.tsx:81
-msgid "Чат дома в WhatsApp"
-msgstr "Үй чаты WhatsApp-та"
+#~ msgid "Чат дома в WhatsApp"
+#~ msgstr "Үй чаты WhatsApp-та"
 
 #: src/pages/posts/ui/post-card-item.tsx:128
 msgid "Читать далее"

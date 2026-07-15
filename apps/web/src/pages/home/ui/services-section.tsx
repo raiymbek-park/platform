@@ -1,28 +1,8 @@
-import type { ReactNode } from 'react'
-
 import { useLingui } from '@lingui/react/macro'
 import { ActionCard, SectionHeader } from '@raiymbek-park/ui'
 import { Link } from '@tanstack/react-router'
 
 import css from './services-section.module.scss'
-
-type ExternalLinkProps = {
-  children: ReactNode
-  href: string
-}
-
-const ExternalLink = ({ children, href }: ExternalLinkProps) => (
-  <li>
-    <a
-      className={css.link}
-      href={href}
-      rel='noopener noreferrer'
-      target='_blank'
-    >
-      {children}
-    </a>
-  </li>
-)
 
 export const ServicesSection = () => {
   const { t } = useLingui()
@@ -74,14 +54,6 @@ export const ServicesSection = () => {
             />
           </Link>
         </li>
-        <ExternalLink href='https://chat.whatsapp.com/C9lxfazl3TH73LW7QtE2HI'>
-          <ActionCard
-            description={t`Вступить в общий чат жильцов`}
-            glyph='message-circle'
-            title={t`Чат дома в WhatsApp`}
-            tone='brand'
-          />
-        </ExternalLink>
       </ul>
     </section>
   )
