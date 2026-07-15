@@ -57,7 +57,7 @@ test('happy-path S3 — confirming the pre-selected default persists it and cont
 
   await user.click(await screen.findByRole('button', { name: 'Далее' }))
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
   expect(localStorage.getItem('locale')).toBe('ru')
 })
 
@@ -75,7 +75,7 @@ test('happy-path S4 — choosing a different language activates it live and pers
 
   await user.click(screen.getByRole('button', { name: 'Next' }))
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
   expect(localStorage.getItem('locale')).toBe('en')
 })
 
@@ -85,7 +85,7 @@ test('happy-path S5 — a stored choice skips the selection screen and renders i
 
   const { currentPath } = renderApp('/onboarding/')
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
   expect(await screen.findByLabelText('Name')).toBeInTheDocument()
 })
 
@@ -177,5 +177,5 @@ test('route guard — onboarding index routes to welcome when a choice is stored
 
   const { currentPath } = renderApp('/onboarding/')
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
 })
