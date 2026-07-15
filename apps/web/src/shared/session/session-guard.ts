@@ -15,11 +15,14 @@ export const isSignedIn = async () => {
   return auth.currentUser !== null
 }
 
-export const isRegistered = async (context: GuardContext) => {
-  if (!(await isSignedIn())) return false
-  const me = await context.queryClient
+const loadProfile = (context: GuardContext) =>
+  context.queryClient
     .ensureQueryData(context.trpc.resident.me.queryOptions())
     .catch(() => null)
+
+export const isRegistered = async (context: GuardContext) => {
+  if (!(await isSignedIn())) return false
+  const me = await loadProfile(context)
   return me?.isRegistered ?? false
 }
 
@@ -28,6 +31,8 @@ export const ensureRegisteredResident = async ({
 }: {
   context: GuardContext
 }) => {
-  if (await isRegistered(context)) return
-  throw redirect({ to: '/onboarding' })
+  if (!(await isSignedIn())) throw redirect({ to: '/onboarding' })
+  const me = await loadProfile(context)
+  if (me === null) return
+  if (!me.isRegistered) throw redirect({ to: '/onboarding' })
 }
