@@ -3,6 +3,7 @@
   "testRunner": "vitest",
   "coverageAnalysis": "perTest",
   "incremental": true,
+  "dryRunTimeoutMinutes": 20,
   "vitest": {
     "related": false,
     "configFile": "vitest.stryker.config.ts"
