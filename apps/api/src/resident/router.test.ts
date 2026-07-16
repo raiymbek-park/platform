@@ -107,6 +107,19 @@ describe('residentRouter.register — one record per identity', () => {
     )
   })
 
+  it('user-profile happy-path 11: stores the phone hidden so registration never exposes it', async () => {
+    mockCreateResidentIfAbsent.mockImplementationOnce(
+      async (_uid, input) => input,
+    )
+
+    await caller.register(validInput)
+
+    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
+      'uid-1',
+      expect.objectContaining({ isPhoneVisible: false }),
+    )
+  })
+
   it('edge-cases 14: returns the stored profile a returning identity already has, unchanged', async () => {
     const existing = {
       apartment: 60,

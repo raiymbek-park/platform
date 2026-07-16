@@ -64,3 +64,10 @@
   When:  the resident opens «Настройки», taps «English», and returns to the announcements feed
   Then:  the feed cards render their titles and descriptions in English
          they no longer show the previously loaded Russian text
+
+## Scenario 11: A newly registered resident starts with the phone hidden
+  Given: a resident who has just completed registration
+  When:  they open «Настройки» for the first time
+  Then:  visibility shows «Скрыть» selected
+         the profile stored at registration carries the phone as hidden — the resident's
+         number is never exposed to other residents until they choose «Открыть» themselves
