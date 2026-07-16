@@ -239,8 +239,10 @@ the phone is optional and no code is sent.
   registered and no session is established, so a retry starts clean.
 - **Send failure** (registration form, SMS channel): if sending the code fails, the app opens the
   verification screen and shows the failure there, where the resident can resend or go back and switch
-  to a social method. A carrier the gateway cannot route to fails at the send. A failed send consumes
-  no resend step and does not count towards the send rate limit.
+  to a social method. A carrier the gateway cannot route to fails at the send. A failed send does not
+  advance the resend schedule and does not count towards the hourly send allowance — but it still
+  respects the per-send interval, so a number that keeps failing cannot be resent faster than once per
+  interval and cannot drain the paid SMS budget.
 - **Wrong code** (verification): an invalid or expired code shows a wrong-code error and clears the
   field so the resident can retype.
 - **Network failure during the check** (verification): a failure that is not a wrong-code response
