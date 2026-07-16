@@ -53,6 +53,22 @@ npx stryker run --mutate 'a' --mutate 'b'     ❌ the second flag overrides the 
 npm run mutate                                ❌ full sweep — will not finish
 ```
 
+**Deriving the file list from git.** Rather than hand-typing the ticket's files, compute the
+branch's changed source files and pass them — this is StrykerJS's equivalent of .NET's `--diff`
+(**StrykerJS has no `--since` flag**):
+
+```bash
+FILES=$(git diff --name-only --diff-filter=d main...HEAD \
+  | grep -E '^(packages/shared/src|apps/api/src|apps/web/src/.*(model|lib))/.*\.ts$' \
+  | grep -vE '\.(test|spec|gen|d)\.ts$' | paste -sd,)
+npx stryker run --mutate "$FILES"
+```
+
+`main...HEAD` (three dots) diffs from the branch point, so the run mutates exactly what the branch
+touched. The config's `incremental: true` is the complementary auto-diff — it reuses the prior report
+so repeat local runs re-test only changed code/tests. The git recipe is deterministic against `main`;
+incremental is for cheap re-runs while iterating.
+
 **Mutate the rule, not its adapter.** Follow the AC's rule to the file that actually implements it, even across workspace boundaries. In a monorepo the slice a feature lives in often only re-exports logic that lives in a shared package — mutating the re-export tests nothing.
 
 Monitor for completion. **Do not abort on duration** — a correctly scoped run over a ticket's files has
