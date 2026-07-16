@@ -49,21 +49,40 @@ npm run mutate                                ❌ full sweep — will not finish
 
 **Mutate the rule, not its adapter.** Follow the AC's rule to the file that actually implements it, even across workspace boundaries. In a monorepo the slice a feature lives in often only re-exports logic that lives in a shared package — mutating the re-export tests nothing.
 
-Monitor for completion. If a scoped run exceeds ~10 minutes, stop it and report that rather than waiting — an over-long run means the scope or the config is wrong, and its output will not arrive.
+Monitor for completion. A correctly scoped run over a ticket's 3-4 files takes **~10 minutes** — a couple of minutes when the scope is one small package, longer when it reaches into a large UI suite. Don't abort on duration alone; abort when the tool reports it is mutating far more files than you named, which means the scope did not apply.
 
-### Step 5: Analyze Survivors
+### Step 5: Triage Survivors
 
-For each surviving mutant, provide a concrete recommendation:
+**Most survivors are not defects.** Expect roughly one genuine finding in four. Classify every
+survivor before recommending anything — a recommendation on an unkillable mutant sends the loop
+chasing a test that cannot exist, until it exhausts its retries.
+
+| Class | How to recognize it | Route to |
+|---|---|---|
+| **Missing test** | The rule is stated in the AC and the code runs under test, but nothing asserts the mutated value | `/arc:test write` — **this is the common case** |
+| **Missing AC** | No scenario describes this behavior at all | `/arc:ac update` → then `/arc:test write` |
+| **Equivalent** | The mutant cannot change observable behavior (e.g. a guard whose branch yields the same result anyway) | Nothing — record why, never "fix" it |
+| **Noise** | Error-message text, a zod `path`, a log string — asserted at a level this run did not execute, or not worth pinning | Nothing — record why |
+| **Other feature's AC** | The rule belongs to a different feature | Report it; do not widen this ticket |
+| **Dead code** | Nothing reaches it because nothing needs it | Propose deleting the code |
+
+Only the first two classes are work. For each, name the AC scenario and the assertion that should
+exist:
 
 ```
-Surviving mutant: `plan === 'pro'` → `plan !== 'pro'`
-File: src/lib/accessControl.ts:42
-Gap in AC: no scenario describes behavior for free-plan user
-           attempting to use a premium feature.
-Recommendation: add scenario to ac/edge-cases.md
+Surviving mutant: `isPhoneVisible: false` → `true`
+File: apps/api/src/resident/router.ts:62
+Class: missing test — AC states the phone is hidden from other residents;
+       registration runs this line under test but no test asserts the stored value.
+Route: /arc:test write — assert the persisted resident carries isPhoneVisible: false
 ```
 
-**Mutation score** = killed mutants / total mutants × 100%
+**Never weaken production code to kill a mutant.** If a mutant seems unkillable without changing
+behavior, it is equivalent — say so.
+
+**Read the survivor list, not the score.** The score counts timeouts as kills, and timeout
+classification shifts with machine load — the same code scored 83.78% and 88.51% on two runs.
+The list is stable; the percentage is not. Do not report the score as a quality measure or gate on it.
 
 ### Step 6: Write Report
 

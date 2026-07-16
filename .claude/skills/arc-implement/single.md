@@ -116,7 +116,10 @@ production code and test files for the feature.
 Run in order: test write → test review → test validate → test mutate → ac verify.
 If test review needs work → test write → test review (loop, max {--max-retries}).
 If test validate red → fix code or tests → test validate (loop, max {--max-retries}).
-If test mutate survivors → ac update → test write → test mutate (loop, max {--max-retries}).
+If test mutate survivors → triage them per mutate.md Step 5 first. Only "missing test" and
+"missing AC" survivors are work: missing test → test write; missing AC → ac update → test write.
+Then test mutate again (loop, max {--max-retries}). Equivalent/noise survivors are recorded and
+left alone — do NOT loop on them, and never weaken code to kill one.
 If ac verify partial → fix code → ac verify (loop, max {--max-retries}).
 If --skip=test-review → skip test review.
 If --skip=test-mutate → skip test mutate.
