@@ -33,16 +33,23 @@ Read AC to determine which files contain critical business logic. Only mutate bu
 
 ### Step 3: Configure Mutation Tool
 
-Check `.arcana/project-context.md` for the configured mutation testing tool. If example references exist → load the relevant example file for configuration patterns.
+Check `.arcana/project-context.md` for the configured mutation testing tool and its scope. If example references exist → load the relevant example file for configuration patterns.
 
-Generate a mutation config targeting only the identified files (2-3 files per ticket). Key performance settings:
-- Only run tests relevant to each mutation (not the full suite)
-- Only mutate files changed since last run
-- Combined: minutes instead of hours
+The project's config already carries the performance settings (run only the tests related to each mutation, mutate only what changed). Your job is the **scope of this run**, not the config.
 
 ### Step 4: Run Mutation Testing
 
-Execute mutation testing. Monitor for completion.
+**Pass the ticket's files explicitly — never run the tool bare.** An unscoped sweep mutates the whole codebase, takes hours, and gets killed before it reports anything; a run scoped to the 2-3 files identified in Step 2 takes minutes.
+
+```
+npx stryker run --mutate '<fileA>,<fileB>'    ✅ scoped to the ticket — comma-separated
+npx stryker run --mutate 'a' --mutate 'b'     ❌ the second flag overrides the first
+npm run mutate                                ❌ full sweep — will not finish
+```
+
+**Mutate the rule, not its adapter.** Follow the AC's rule to the file that actually implements it, even across workspace boundaries. In a monorepo the slice a feature lives in often only re-exports logic that lives in a shared package — mutating the re-export tests nothing.
+
+Monitor for completion. If a scoped run exceeds ~10 minutes, stop it and report that rather than waiting — an over-long run means the scope or the config is wrong, and its output will not arrive.
 
 ### Step 5: Analyze Survivors
 

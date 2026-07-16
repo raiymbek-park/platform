@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/@stryker-mutator/core/schema/stryker-schema.json",
+  "testRunner": "vitest",
+  "coverageAnalysis": "perTest",
+  "incremental": true,
+  "dryRunTimeoutMinutes": 20,
+  "vitest": {
+    "related": true,
+    "configFile": "vitest.config.ts"
+  },
+  "mutate": [
+    "apps/web/src/**/model/**/*.ts",
+    "apps/web/src/**/lib/**/*.ts",
+    "apps/api/src/**/*.ts",
+    "packages/shared/src/**/*.ts",
+    "!**/*.{test,spec}.{ts,tsx}",
+    "!**/*.gen.ts",
+    "!**/*.d.ts"
+  ]
+}
