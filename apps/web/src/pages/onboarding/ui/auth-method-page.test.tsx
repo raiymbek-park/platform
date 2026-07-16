@@ -11,6 +11,7 @@ import {
   renderApp,
   residentMe,
   trpcQueries,
+  trpcQueriesError,
   trpcServer,
 } from '@/shared/test'
 
@@ -221,6 +222,16 @@ test('edge-cases 8: a signed-in registered resident is kept out of the method sc
 
   await waitFor(() => expect(currentPath()).toBe('/home'))
   expect(screen.queryByText('Выберите способ входа')).not.toBeInTheDocument()
+})
+
+test('error-states 14: a profile that cannot be loaded keeps the resident in onboarding', async () => {
+  trpcServer.use(trpcQueriesError())
+  firebaseAuth.signIn()
+  const { currentPath } = renderApp('/onboarding/auth-method')
+
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/registration'), {
+    timeout: 4000,
+  })
 })
 
 test('the back control returns to the language screen', async () => {

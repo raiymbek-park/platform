@@ -359,6 +359,7 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
       phone: '',
       role: 'resident',
     })
+    expect(mockGetResident).not.toHaveBeenCalled()
   })
 
   it('reports a signed-in caller with no stored record as not registered', async () => {
