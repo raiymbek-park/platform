@@ -26,9 +26,17 @@ Two further forces shaped the timing:
   #95 refactored it into a `SocialProvider` parameter (`'google' | 'facebook'`) over Firebase
   `signInWithPopup`, so a third channel is a provider entry and an icon, not a new code path.
 
-Constraints are inherited from ADR 015 and unchanged: no legal entity, no БИН, and no fee may sit on the
-critical path; the phone stays mandatory on every channel (`registerInputSchema`, libphonenumber-js with
-the `KZ` region), so no channel produces a resident without a usable phone.
+The cost constraints are inherited from ADR 015 and unchanged: no legal entity, no БИН, and no fee may
+sit on the critical path.
+
+**One constraint from ADR 015 no longer holds, and it is worth stating plainly.** ADR 015 leaned on
+"the phone is mandatory on every channel", which was true when it was written. #95 deliberately changed
+that: the phone is required on the SMS channel — it *is* the identity there — and **optional** on the
+social channels (`socialRegistrationSchema` on the client; `registerInputSchema` takes
+`optionalPhoneSchema` on the server, and stores an omitted phone as an empty string rather than
+normalizing it to `"+"`). A number that *is* supplied is still validated as a real Kazakhstan number
+via libphonenumber-js with the `KZ` region. So a social channel can produce a resident with no phone at
+all, and Facebook inherits that property from Google rather than introducing it.
 
 ## Options Considered
 
@@ -97,9 +105,10 @@ Firebase Auth then returns the same session the other two channels produce, so `
 
 ### Phone handling, roles, and linking
 
-Unchanged from ADR 015, and for the same reasons. A Facebook identity carries no phone, so `ctx.phone`
-is `null` and `resident.register` stores the number from the form (`ctx.phone ?? resident.phone`) — a
-self-declared phone, exactly as on the Google channel. No provenance flag is stored; the channel is
+Unchanged from ADR 015's mechanism, and for the same reasons. A Facebook identity carries no phone, so
+`ctx.phone` is `null` and `resident.register` stores whatever the form carried
+(`ctx.phone ?? resident.phone`) — a self-declared number, or an empty string if the resident left the
+optional field blank. Exactly as on the Google channel. No provenance flag is stored; the channel is
 recoverable per uid from `getUser(uid).providerData` (`facebook.com`) if it is ever needed.
 
 `registerInputSchema` still accepts only `owner` or `tenant`, and elevated roles exist only as per-uid
@@ -127,8 +136,9 @@ account, as ADR 015 accepts and the onboarding PRD states.
   verification.
 - The business-portfolio trap above cost real time and is invisible until the sign-in dialog fails. It
   is recorded here so the next person does not rediscover it.
-- Facebook inherits ADR 015's negatives in full: a self-declared, non-editable phone stored with the
-  same authority as an SMS-proven one, and a possible second account per person with no in-app remedy.
+- Facebook inherits ADR 015's negatives in full: a phone that — when the resident supplies the optional
+  field at all — is self-declared and non-editable, yet stored and disclosed with the same authority as
+  an SMS-proven one, and a possible second account per person with no in-app remedy.
 - A third channel is a third surface to keep configured, and Meta changes its console and its review
   rules on its own schedule.
 
