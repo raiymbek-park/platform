@@ -14,9 +14,14 @@ Feature('Onboarding')
 Scenario(
   'a resident registers with a phone code and reaches home @happy',
   ({ I }) => {
-    I.amOnPage('/onboarding/welcome')
-    I.waitForText('Добро пожаловать!', 10)
+    I.amOnPage('/onboarding/')
+    I.waitForText('Выберите язык', 10)
+    I.click('Далее')
 
+    I.waitForText('Добро пожаловать!', 10)
+    I.click('Выбрать')
+
+    I.waitForText('Имя', 10)
     I.fillField('Имя', 'Тест Тестов')
     I.fillField('Телефон', '87052266666')
     I.click('Блок 1')

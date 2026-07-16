@@ -1,4 +1,5 @@
 export { AccountLockedPage } from './ui/account-locked'
+export { AuthMethodPage } from './ui/auth-method-page'
 export { LanguagePage } from './ui/language-page'
 export { OtpVerificationPage } from './ui/otp-verification'
-export { WelcomePage } from './ui/welcome-page'
+export { RegistrationPage } from './ui/registration-page'

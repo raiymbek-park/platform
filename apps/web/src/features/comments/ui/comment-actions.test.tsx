@@ -7,6 +7,7 @@ import { beforeEach, expect, test } from 'vitest'
 import {
   firebaseAuth,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -96,7 +97,7 @@ const serve = (role: PermissionRole = 'resident') =>
       'issues.list': () => ({ issues: [issue()], nextCursor: null }),
       'posts.get': () => post(),
       'posts.list': () => ({ nextCursor: null, posts: [post()] }),
-      'resident.me': () => ({ apartment: 42, block: 1, name: 'Алиса', role }),
+      'resident.me': () => residentMe({ role }),
     }),
     trpcMutation('comments.update', raw => {
       const { id, media, text } = raw as {

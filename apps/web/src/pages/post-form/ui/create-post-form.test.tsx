@@ -14,6 +14,7 @@ import {
   firebaseAuth,
   firebaseStorage,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -68,7 +69,7 @@ const serve = (role: PermissionRole = 'resident') =>
   trpcServer.use(
     trpcQueries({
       'posts.list': () => ({ nextCursor: null, posts }),
-      'resident.me': () => ({ apartment: 42, block: 1, name: 'Алиса', role }),
+      'resident.me': () => residentMe({ role }),
     }),
     trpcMutation('posts.create', raw => {
       const payload = postCreatePayloadSchema.parse(raw)

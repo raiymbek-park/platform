@@ -6,6 +6,7 @@ import {
   firebaseAuth,
   firebaseMessaging,
   renderApp,
+  residentMe,
   trpcMutations,
   trpcQueries,
   trpcServer,
@@ -66,7 +67,7 @@ beforeEach(() => {
   trpcServer.use(
     trpcQueries({
       'events.list': () => [],
-      'resident.me': () => ({ apartment: 42, block: 1, name: 'Алиса' }),
+      'resident.me': () => residentMe(),
       'serviceContacts.list': () => [],
     }),
   )

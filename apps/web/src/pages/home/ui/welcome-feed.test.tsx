@@ -1,7 +1,13 @@
 import { screen, waitFor } from '@testing-library/react'
 import { beforeEach, expect, test } from 'vitest'
 
-import { firebaseAuth, renderApp, trpcQueries, trpcServer } from '@/shared/test'
+import {
+  firebaseAuth,
+  renderApp,
+  residentMe,
+  trpcQueries,
+  trpcServer,
+} from '@/shared/test'
 
 beforeEach(() => {
   firebaseAuth.reset()
@@ -12,7 +18,7 @@ const serveEvents = (events: unknown[]) =>
   trpcServer.use(
     trpcQueries({
       'events.list': () => events,
-      'resident.me': () => ({ apartment: 42, block: 1, name: 'Алиса' }),
+      'resident.me': () => residentMe(),
       'serviceContacts.list': () => [],
     }),
   )

@@ -108,6 +108,19 @@ If `--skip=validate` → skip this step. Use only when validate was already run 
 
 ### Step 4: Test Phase (arc:mage)
 
+**Establish a baseline before attributing any failure to your own work.** This suite is load-flaky:
+at default parallelism `npm test` produces a shifting set of failures in timing-sensitive suites
+(waitFor/timers) that have nothing to do with the diff — measured at 14-16 failures both with and
+without the branch's changes, and 0 when run serially. A phase that assumes green-means-mine will
+conclude it broke unrelated features and "fix" production code that was never broken.
+
+Before treating a red test as yours:
+1. Re-run that file alone. Passing alone + failing in the full run = contention, not a defect.
+2. If still unsure, `git stash` and run the same scope. Same failures without your changes = baseline.
+3. Only failures that survive both checks are yours.
+
+Never report "npm test is green/red" as a bare fact — report it against the baseline you measured.
+
 ```
 /arc:mage
 Read .arcana/project-context.md, AC files for {ticket-id},
@@ -116,7 +129,13 @@ production code and test files for the feature.
 Run in order: test write → test review → test validate → test mutate → ac verify.
 If test review needs work → test write → test review (loop, max {--max-retries}).
 If test validate red → fix code or tests → test validate (loop, max {--max-retries}).
-If test mutate survivors → ac update → test write → test mutate (loop, max {--max-retries}).
+If test mutate survivors → triage every one per mutate.md Step 5 before acting. Route by class:
+  - missing test → test write (targeted mode) — the common case
+  - missing AC → ac update → test write. Add the scenario to THIS feature's AC only.
+  - other feature's AC → report it under that feature; do NOT widen this ticket or borrow the scenario
+  - equivalent / noise / defensive-unreachable → record why, change nothing, do NOT loop on them
+  - dead code → propose deletion; if deleting forces a construct the rules ban, it is defensive instead
+Then test mutate again (loop, max {--max-retries}). Never weaken production code to kill a mutant.
 If ac verify partial → fix code → ac verify (loop, max {--max-retries}).
 If --skip=test-review → skip test review.
 If --skip=test-mutate → skip test mutate.

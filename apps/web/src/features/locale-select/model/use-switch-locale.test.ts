@@ -8,6 +8,7 @@ import {
   firebaseAuth,
   firebaseMessaging,
   renderApp,
+  residentMe,
   trpcQueries,
   trpcServer,
 } from '@/shared/test'
@@ -54,17 +55,7 @@ beforeEach(() => {
   env.vapidKey = 'vapid-test-key'
   trpcServer.use(
     trpcQueries({
-      'resident.me': () => ({
-        apartment: 42,
-        avatarUrl: null,
-        block: 1,
-        cars: [],
-        id: 'resident-uid',
-        isPhoneVisible: false,
-        name: 'Алиса',
-        phone: '+77071234567',
-        role: 'owner',
-      }),
+      'resident.me': () => residentMe({ role: 'owner' }),
     }),
   )
 })

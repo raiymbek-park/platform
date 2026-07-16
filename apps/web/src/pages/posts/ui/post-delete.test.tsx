@@ -8,6 +8,7 @@ import { beforeEach, expect, test } from 'vitest'
 import {
   firebaseAuth,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -55,7 +56,7 @@ const serve = (role: PermissionRole = 'resident') =>
   trpcServer.use(
     trpcQueries({
       'posts.list': () => ({ nextCursor: null, posts }),
-      'resident.me': () => ({ apartment: 42, block: 1, name: 'Алиса', role }),
+      'resident.me': () => residentMe({ role }),
     }),
     trpcMutation('posts.delete', raw => {
       const { postId } = postRefInputSchema.parse(raw)

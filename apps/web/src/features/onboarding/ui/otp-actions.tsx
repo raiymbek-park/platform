@@ -33,7 +33,7 @@ export const OtpActions = ({
         disabled={isChecking}
         icon='arrow-left'
         variant='icon'
-        onClick={() => navigate({ to: '/onboarding/welcome' })}
+        onClick={() => navigate({ to: '/onboarding/registration' })}
       />
       <Button
         className={css.fill}

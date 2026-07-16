@@ -2,10 +2,12 @@ import { describe, expect, test } from 'vitest'
 
 import {
   CARS_MAX,
+  hasReliableCarrierPrefix,
   isApartmentInBlock,
   nameSchema,
   normalizePhone,
   normalizePlate,
+  optionalPhoneSchema,
   phoneSchema,
   plateSchema,
   profileUpdateSchema,
@@ -86,6 +88,67 @@ describe('phoneSchema — validates the dialled number', () => {
   })
 })
 
+describe('optionalPhoneSchema — validation 11,12: empty or valid', () => {
+  test('accepts an empty value — the social channels may omit the phone', () => {
+    expect(optionalPhoneSchema.safeParse('').success).toBe(true)
+  })
+
+  test('accepts a whitespace-only value as omitted', () => {
+    expect(optionalPhoneSchema.safeParse('   ').success).toBe(true)
+  })
+
+  test('accepts a valid number', () => {
+    expect(optionalPhoneSchema.safeParse('+77052266666').success).toBe(true)
+  })
+
+  test('validation 7,12: a domestic 8-prefix number is accepted on the social channels', () => {
+    expect(optionalPhoneSchema.safeParse('87052266666').success).toBe(true)
+  })
+
+  test('rejects a non-empty invalid number — optional means "empty or valid"', () => {
+    expect(optionalPhoneSchema.safeParse('+7705').success).toBe(false)
+  })
+})
+
+describe('hasReliableCarrierPrefix — validation 13,14: Kcell/Activ SMS delivery', () => {
+  test.each([
+    '+77011234567',
+    '+77021234567',
+    '+77751234567',
+    '+77781234567',
+  ])('a %s number is a reliable Kcell/Activ prefix', value => {
+    expect(hasReliableCarrierPrefix(value)).toBe(true)
+  })
+
+  test('a Kazakhstan number outside 701/702/775/778 is unreliable', () => {
+    expect(hasReliableCarrierPrefix('+77051234567')).toBe(false)
+  })
+
+  test('a valid non-Kazakhstan number is unreliable — the gateway routes to KZ carriers only', () => {
+    expect(hasReliableCarrierPrefix('+14155552671')).toBe(false)
+  })
+
+  test('a domestic 8-prefix Kcell number is recognised as reliable', () => {
+    expect(hasReliableCarrierPrefix('87011234567')).toBe(true)
+  })
+
+  test('validation 7,14: a domestic 8-prefix number outside 701/702/775/778 is unreliable', () => {
+    expect(hasReliableCarrierPrefix('87051234567')).toBe(false)
+  })
+
+  test('validation 9,14: a foreign number whose national prefix collides with Kcell is unreliable', () => {
+    expect(hasReliableCarrierPrefix('+447010123456')).toBe(false)
+  })
+
+  test('an incomplete number warns about nothing — the error state covers it', () => {
+    expect(hasReliableCarrierPrefix('+7705')).toBe(true)
+  })
+
+  test('an empty value warns about nothing', () => {
+    expect(hasReliableCarrierPrefix('')).toBe(true)
+  })
+})
+
 describe('isApartmentInBlock — apartment ranges per block', () => {
   test('block 1 covers 1..70 inclusive; 0 and 71 fall outside', () => {
     expect(isApartmentInBlock(1, 1)).toBe(true)
@@ -133,6 +196,10 @@ describe('nameSchema — length 2..60 after trimming', () => {
     expect(nameSchema.safeParse('я'.repeat(61)).success).toBe(false)
   })
 
+  test('validation 4: a padded 60-character name is valid — the bound is on the trimmed length', () => {
+    expect(nameSchema.safeParse(`  ${'я'.repeat(60)}  `).success).toBe(true)
+  })
+
   test('a whitespace-only name is invalid after trimming', () => {
     expect(nameSchema.safeParse('   ').success).toBe(false)
   })
@@ -141,6 +208,25 @@ describe('nameSchema — length 2..60 after trimming', () => {
 describe('registerInputSchema — input validation', () => {
   test('a fully valid resident is accepted and the phone is normalized to E.164', () => {
     expect(registerInputSchema.parse(validResident)).toEqual(validResident)
+  })
+
+  test('happy-path 12: an omitted phone stays empty instead of normalizing to "+"', () => {
+    expect(
+      registerInputSchema.parse({ ...validResident, phone: '' }).phone,
+    ).toBe('')
+  })
+
+  test('happy-path 12: a whitespace-only phone is stored as omitted', () => {
+    expect(
+      registerInputSchema.parse({ ...validResident, phone: '   ' }).phone,
+    ).toBe('')
+  })
+
+  test('happy-path 13: a domestic phone is stored in canonical E.164 form', () => {
+    expect(
+      registerInputSchema.parse({ ...validResident, phone: '87052266666' })
+        .phone,
+    ).toBe('+77052266666')
   })
 
   test('apartment supplied as a numeric string is coerced to a number', () => {

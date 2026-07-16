@@ -2,7 +2,7 @@ import type { RegistrationValues } from './validators'
 
 import { expect, test } from 'vitest'
 
-import { registrationSchema } from './validators'
+import { smsRegistrationSchema } from './validators'
 
 const baseValues: RegistrationValues = {
   name: 'Алиса',
@@ -13,7 +13,7 @@ const baseValues: RegistrationValues = {
 }
 
 const fieldError = (values: RegistrationValues, field: string) => {
-  const result = registrationSchema.safeParse(values)
+  const result = smsRegistrationSchema.safeParse(values)
   if (result.success) return undefined
   return result.error.issues.find(issue => issue.path[0] === field)?.message
 }

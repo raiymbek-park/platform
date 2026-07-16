@@ -4,6 +4,7 @@ import { t } from '@lingui/core/macro'
 import {
   isApartmentInBlock,
   nameSchema,
+  optionalPhoneSchema,
   phoneSchema,
   roles,
 } from '@raiymbek-park/shared/validation-schemas'
@@ -20,24 +21,30 @@ const apartmentMessage = (block: BlockId | null, apartment: number) => {
   return undefined
 }
 
-export const registrationSchema = z
-  .object({
-    name: nameSchema,
-    phone: phoneSchema,
-    block: z
-      .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-      .nullable()
-      .refine(v => v !== null, { error: () => t`Выберите блок` }),
-    apartment: z.number().or(z.nan()),
-    role: z
-      .enum(roles)
-      .nullable()
-      .refine(v => v !== null, { error: () => t`Выберите роль` }),
-  })
-  .superRefine((value, ctx) => {
-    const message = apartmentMessage(value.block, value.apartment)
-    if (!message) return
-    ctx.addIssue({ code: 'custom', message, path: ['apartment'] })
-  })
+const registrationSchemaWith = (phone: z.ZodString) =>
+  z
+    .object({
+      name: nameSchema,
+      phone,
+      block: z
+        .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+        .nullable()
+        .refine(v => v !== null, { error: () => t`Выберите блок` }),
+      apartment: z.number().or(z.nan()),
+      role: z
+        .enum(roles)
+        .nullable()
+        .refine(v => v !== null, { error: () => t`Выберите роль` }),
+    })
+    .superRefine((value, ctx) => {
+      const message = apartmentMessage(value.block, value.apartment)
+      if (!message) return
+      ctx.addIssue({ code: 'custom', message, path: ['apartment'] })
+    })
 
-export type RegistrationValues = z.input<typeof registrationSchema>
+export const smsRegistrationSchema = registrationSchemaWith(phoneSchema)
+
+export const socialRegistrationSchema =
+  registrationSchemaWith(optionalPhoneSchema)
+
+export type RegistrationValues = z.input<typeof smsRegistrationSchema>

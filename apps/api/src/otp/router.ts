@@ -50,8 +50,26 @@ const deliverSms = async (
   if (result === null || !result.ok) throw smsSendFailed()
 }
 
-const restoreOtp = (phoneNumber: string, previous: OtpRecord | null) =>
-  previous ? upsertOtp(phoneNumber, previous) : deleteOtp(phoneNumber)
+const throttleAfterFailedSend = (
+  phoneNumber: string,
+  previous: OtpRecord | null,
+  now: number,
+) =>
+  upsertOtp(
+    phoneNumber,
+    previous
+      ? { ...previous, lastSentAt: now }
+      : {
+          attemptCount: 0,
+          codeHash: '',
+          createdAt: now,
+          expiresAt: 0,
+          lastSentAt: now,
+          salt: '',
+          sendCount: 0,
+          windowStart: now,
+        },
+  )
 
 const getOrCreateUid = async (phoneNumber: string): Promise<string> => {
   const auth = getAuthAdmin()
@@ -67,12 +85,13 @@ export const otpRouter = router({
   send: publicProcedure
     .input(z.object({ phone }))
     .mutation(async ({ ctx, input }) => {
+      const now = Date.now()
       const testCode = testCodeFor(input.phone)
       const code = testCode ?? generateCode()
       const salt = newSalt()
       const reserved = await reserveSend({
         codeHash: hashCode(salt, code),
-        now: Date.now(),
+        now,
         phone: input.phone,
         rules: {
           intervalMs: SEND_INTERVAL_MS,
@@ -86,7 +105,7 @@ export const otpRouter = router({
 
       if (testCode === null) {
         await deliverSms(input.phone, code, ctx.locale).catch(async error => {
-          await restoreOtp(input.phone, reserved.previous)
+          await throttleAfterFailedSend(input.phone, reserved.previous, now)
           throw error
         })
       }

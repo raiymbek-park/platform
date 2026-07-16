@@ -54,6 +54,11 @@ msgstr "Block {block}"
 msgid "Будьте первым, кто оставит комментарий."
 msgstr "Be the first to leave a comment."
 
+#: src/features/onboarding/ui/auth-method-select.tsx:42
+#: src/features/onboarding/ui/auth-method-select.tsx:43
+msgid "Быстрый вход с аккаунтом"
+msgstr "Quick sign-in with your account"
+
 #: src/pages/home/model/use-events-data.ts:29
 #: src/pages/issue-status/model/use-status-options.ts:22
 #: src/pages/issues/model/use-issue-badges.ts:46
@@ -61,7 +66,7 @@ msgstr "Be the first to leave a comment."
 msgid "В работе"
 msgstr "In progress"
 
-#: src/features/onboarding/ui/otp-verification.tsx:157
+#: src/features/onboarding/ui/otp-verification.tsx:139
 msgid "Ваш код отправляется на проверку…"
 msgstr "Your code is being verified…"
 
@@ -77,11 +82,11 @@ msgstr "Your contact number is hidden from other residents."
 msgid "Ваш номер телефона будет виден всем пользователям."
 msgstr "Your phone number will be visible to everyone."
 
-#: src/features/onboarding/ui/registration-form.tsx:129
+#: src/features/onboarding/ui/registration-form.tsx:158
 msgid "Ваши личные данные скрыты от других жильцов. Доступ к ним имеет только администрация — для быстрой связи в экстренных случаях (затопление, пожар)."
 msgstr "Your personal data is hidden from other residents. Only the administration has access to it — for quick contact in emergencies (flooding, fire)."
 
-#: src/features/onboarding/ui/registration-form.tsx:105
+#: src/features/onboarding/ui/registration-form.tsx:119
 #: src/pages/settings/ui/profile-form.tsx:145
 msgid "Введите ваше имя"
 msgstr "Enter your name"
@@ -90,14 +95,10 @@ msgstr "Enter your name"
 msgid "Введите код из SMS"
 msgstr "Enter the code from the SMS"
 
-#: src/features/onboarding/lib/validators.ts:16
+#: src/features/onboarding/lib/validators.ts:17
 #: src/pages/settings/lib/profile-form-schema.ts:47
 msgid "Введите номер квартиры"
 msgstr "Enter the apartment number"
-
-#: src/features/onboarding/lib/auth-error.ts:22
-#~ msgid "Введите номер телефона."
-#~ msgstr "Enter your phone number."
 
 #: src/pages/settings/ui/profile-form.tsx:165
 #: src/pages/settings/ui/profile-form.tsx:170
@@ -117,29 +118,33 @@ msgstr "Questions about the complex"
 msgid "Все"
 msgstr "All"
 
-#: src/pages/home/ui/services-section.tsx:79
-#~ msgid "Вступить в общий чат жильцов"
-#~ msgstr "Join the residents' group chat"
-
 #: src/pages/posts/ui/post-card-item.tsx:57
 msgid "Вчера"
 msgstr "Yesterday"
 
-#: src/features/onboarding/lib/validators.ts:30
-#: src/features/onboarding/ui/registration-form.tsx:137
+#: src/features/onboarding/lib/validators.ts:32
+#: src/features/onboarding/ui/registration-form.tsx:166
 #: src/pages/settings/lib/profile-form-schema.ts:73
 #: src/pages/settings/ui/profile-form.tsx:195
 msgid "Выберите блок"
 msgstr "Select a block"
 
-#: src/features/onboarding/lib/validators.ts:35
+#: src/features/onboarding/lib/validators.ts:37
 msgid "Выберите роль"
 msgstr "Select a role"
+
+#: src/pages/onboarding/ui/auth-method-page.tsx:69
+msgid "Выберите способ входа"
+msgstr "Choose a sign-in method"
 
 #: src/pages/onboarding/ui/language-page.tsx:36
 #: src/pages/settings/ui/profile-form.tsx:270
 msgid "Выберите язык"
 msgstr "Select a language"
+
+#: src/pages/onboarding/ui/auth-method-page.tsx:91
+msgid "Выбрать"
+msgstr "Select"
 
 #: src/pages/home/model/use-events-data.ts:33
 #: src/pages/issue-status/model/use-status-options.ts:34
@@ -161,7 +166,7 @@ msgstr "City services"
 msgid "Городское управление"
 msgstr "City administration"
 
-#: src/features/onboarding/ui/registration-form.tsx:193
+#: src/features/onboarding/ui/registration-form.tsx:232
 #: src/pages/onboarding/ui/language-page.tsx:46
 msgid "Далее"
 msgstr "Next"
@@ -201,11 +206,11 @@ msgstr "Add a comment about the status change…"
 msgid "Добавьте номер автомобиля, чтобы соседи могли связаться с вами в случае перекрытия проезда. Для этого включите отображение номера телефона."
 msgstr "Add a car plate so neighbors can reach you if a vehicle blocks the driveway. To allow this, turn on phone number visibility."
 
-#: src/features/onboarding/ui/registration-form.tsx:90
+#: src/pages/onboarding/ui/auth-method-page.tsx:56
 msgid "Добро пожаловать в личное пространство жильцов и собственников квартир ЖК «Raiymbek Park». Здесь собрано всё самое важное: свежие объявления от управляющей компании, форма для подачи заявок на устранение неполадок, контакты дежурных служб и история ваших обращений. Мы хотим, чтобы каждый вопрос решался быстро и понятно — чтобы жизнь в доме была удобнее, а управление домом — прозрачнее."
 msgstr "Welcome to the personal space for residents and apartment owners of the Raiymbek Park complex. Everything important is gathered here: the latest announcements from the management company, a form to submit repair requests, contacts for on-duty services, and the history of your requests. We want every issue resolved quickly and clearly — so that living here is more comfortable and managing the building more transparent."
 
-#: src/features/onboarding/ui/registration-form.tsx:89
+#: src/pages/onboarding/ui/auth-method-page.tsx:55
 msgid "Добро пожаловать!"
 msgstr "Welcome!"
 
@@ -318,14 +323,6 @@ msgid "Заявка №{0} · {label}"
 msgstr "Issue #{0} · {label}"
 
 #. placeholder {0}: event.number
-#. placeholder {1}: event.title
-#. placeholder {1}: statusLabel[event.status]
-#: src/pages/home/model/use-events-data.ts:50
-#: src/pages/home/model/use-events-data.ts:58
-#~ msgid "Заявка №{0}: {1}"
-#~ msgstr "Issue #{0}: {1}"
-
-#. placeholder {0}: event.number
 #. placeholder {1}: statusLabel[event.status]
 #: src/pages/home/model/use-events-data.ts:61
 msgctxt "issue status change, named by the new status"
@@ -405,7 +402,7 @@ msgstr "Edit the post and save your changes."
 msgid "Измените уведомление и сохраните изменения."
 msgstr "Edit the notice and save your changes."
 
-#: src/features/onboarding/ui/registration-form.tsx:104
+#: src/features/onboarding/ui/registration-form.tsx:118
 #: src/pages/settings/ui/profile-form.tsx:139
 #: src/pages/settings/ui/profile-form.tsx:144
 msgid "Имя"
@@ -420,12 +417,16 @@ msgstr "Looking for or buying"
 msgid "Категория"
 msgstr "Category"
 
-#: src/features/onboarding/lib/validators.ts:18
+#: src/features/onboarding/lib/validators.ts:19
 #: src/pages/settings/lib/profile-form-schema.ts:49
 msgid "Квартира вне диапазона выбранного блока"
 msgstr "Apartment is outside the selected block's range"
 
-#: src/features/onboarding/ui/otp-verification.tsx:145
+#: src/features/onboarding/ui/registration-form.tsx:147
+msgid "Код может не дойти до этого номера. Надёжнее войти через Google или Facebook."
+msgstr "The code may not reach this number. Signing in with Google or Facebook is more reliable."
+
+#: src/features/onboarding/ui/otp-verification.tsx:127
 msgid "Код подтверждения"
 msgstr "Verification code"
 
@@ -452,7 +453,7 @@ msgstr "Briefly describe your post"
 msgid "Кратко опишите проблему"
 msgstr "Briefly describe the problem"
 
-#: src/features/onboarding/ui/registration-form.tsx:164
+#: src/features/onboarding/ui/registration-form.tsx:193
 #: src/pages/settings/ui/profile-form.tsx:225
 msgid "Кто вы?"
 msgstr "Who are you?"
@@ -489,7 +490,8 @@ msgstr "Type a message"
 
 #: src/features/comments/ui/comments-screen.tsx:69
 #: src/features/onboarding/ui/otp-actions.tsx:32
-#: src/features/onboarding/ui/registration-form.tsx:178
+#: src/features/onboarding/ui/registration-form.tsx:217
+#: src/pages/onboarding/ui/auth-method-page.tsx:75
 #: src/shared/form/form-dock.tsx:31
 msgid "Назад"
 msgstr "Back"
@@ -520,15 +522,16 @@ msgstr "Dislike"
 msgid "Не следить за заявкой"
 msgstr "Unfollow the issue"
 
-#: src/features/onboarding/ui/otp-verification.tsx:43
-msgid "Не удалось войти через Google. Проверьте соединение."
-msgstr "Couldn't sign in with Google. Check your connection."
-
-#: src/features/onboarding/ui/otp-verification.tsx:40
+#: src/features/onboarding/ui/otp-verification.tsx:37
 msgid "Не удалось выполнить вход. Повторите попытку."
 msgstr "Could not sign you in. Try again."
 
-#: src/features/onboarding/ui/otp-verification.tsx:41
+#: src/pages/onboarding/ui/auth-method-page.tsx:29
+msgid "Не удалось выполнить вход. Проверьте соединение."
+msgstr "Could not sign in. Check your connection."
+
+#: src/features/onboarding/ui/otp-verification.tsx:38
+#: src/features/onboarding/ui/registration-form.tsx:52
 msgid "Не удалось завершить регистрацию. Повторите попытку."
 msgstr "Couldn't complete registration. Please try again."
 
@@ -564,9 +567,9 @@ msgstr "Failed to load your profile. Please try again later."
 msgid "Не удалось опубликовать объявление. Попробуйте ещё раз."
 msgstr "Could not publish the post. Please try again."
 
-#: src/features/onboarding/ui/otp-verification.tsx:42
-msgid "Не удалось открыть окно входа Google. Попробуйте ещё раз."
-msgstr "Couldn't open the Google sign-in window. Try again."
+#: src/pages/onboarding/ui/auth-method-page.tsx:28
+msgid "Не удалось открыть окно входа. Попробуйте ещё раз."
+msgstr "Could not open the sign-in window. Try again."
 
 #: src/features/onboarding/lib/auth-error.ts:21
 msgid "Не удалось отправить SMS. Попробуйте через несколько минут."
@@ -580,18 +583,9 @@ msgstr "Couldn't send the code. Please try again."
 msgid "Не удалось отправить сообщение. Попробуйте ещё раз."
 msgstr "Failed to send the message. Please try again."
 
-#: src/features/comments/ui/comment-message.tsx:43
-#~ msgid "Не удалось перевести сообщение. Попробуйте ещё раз."
-#~ msgstr "Couldn't translate the message. Please try again."
-
-#: src/features/onboarding/ui/otp-verification.tsx:39
+#: src/features/onboarding/ui/otp-verification.tsx:36
 msgid "Не удалось проверить код. Проверьте соединение."
 msgstr "Couldn't verify the code. Check your connection."
-
-#: src/features/onboarding/lib/auth-error.ts:24
-#: src/features/onboarding/lib/auth-error.ts:25
-#~ msgid "Не удалось пройти проверку безопасности. Обновите страницу и попробуйте снова."
-#~ msgstr "Security check failed. Refresh the page and try again."
 
 #: src/pages/issue-status/model/use-change-status.ts:32
 msgid "Не удалось сменить статус. Попробуйте ещё раз."
@@ -623,7 +617,7 @@ msgstr "Failed to delete the post. Please try again."
 msgid "Не удалось удалить сообщение. Попробуйте ещё раз."
 msgstr "Failed to delete the message. Please try again."
 
-#: src/features/onboarding/ui/otp-verification.tsx:38
+#: src/features/onboarding/ui/otp-verification.tsx:35
 msgid "Неверный код. Попробуйте ещё раз."
 msgstr "Invalid code. Please try again."
 
@@ -631,10 +625,6 @@ msgstr "Invalid code. Please try again."
 #: src/pages/posts/ui/post-list.tsx:85
 msgid "Нет данных"
 msgstr "No data"
-
-#: src/features/onboarding/lib/auth-error.ts:23
-#~ msgid "Нет связи с сервером. Проверьте интернет и попробуйте снова."
-#~ msgstr "No connection to the server. Check your internet and try again."
 
 #: src/pages/home/model/use-events-data.ts:28
 msgid "Новая"
@@ -651,19 +641,9 @@ msgstr "New issue"
 msgid "Новое объявление"
 msgstr "New post"
 
-#. placeholder {0}: event.title
-#: src/pages/home/model/use-events-data.ts:43
-#~ msgid "Новое объявление: {0}"
-#~ msgstr "New announcement: {0}"
-
 #: src/pages/post-form/ui/create-post-form.tsx:54
 msgid "Новое уведомление"
 msgstr "New notice"
-
-#. placeholder {0}: event.title
-#: src/pages/home/model/use-events-data.ts:51
-#~ msgid "Новое частное объявление: {0}"
-#~ msgstr "New private ad: {0}"
 
 #: src/pages/home/ui/services-section.tsx:20
 msgid "Новости, уведомления и частные предложения"
@@ -706,7 +686,7 @@ msgstr "The plate must contain at least one letter"
 msgid "Номер должен содержать хотя бы одну цифру"
 msgstr "The plate must contain at least one digit"
 
-#: src/features/onboarding/ui/registration-form.tsx:153
+#: src/features/onboarding/ui/registration-form.tsx:182
 #: src/pages/settings/ui/profile-form.tsx:208
 #: src/pages/settings/ui/profile-form.tsx:213
 msgid "Номер квартиры"
@@ -825,30 +805,14 @@ msgstr "Security"
 msgid "Очистить поиск"
 msgstr "Clear search"
 
-#: src/shared/i18n/translation-note.tsx:20
-#~ msgid "Переведено с английского"
-#~ msgstr "Translated from English"
-
-#: src/shared/i18n/translation-note.tsx:21
-#~ msgid "Переведено с казахского"
-#~ msgstr "Translated from Kazakh"
-
-#: src/shared/i18n/translation-note.tsx:22
-#~ msgid "Переведено с русского"
-#~ msgstr "Translated from Russian"
-
-#: src/features/comments/ui/comment-message.tsx:61
-#~ msgid "Перевести"
-#~ msgstr "Translate"
-
-#: src/features/comments/ui/comment-message.tsx:59
-#~ msgid "Переводим…"
-#~ msgstr "Translating…"
-
 #: src/pages/issue-status/model/use-tag-options.ts:15
 #: src/pages/issues/model/use-issue-badges.ts:65
 msgid "По гарантии"
 msgstr "Under warranty"
+
+#: src/features/onboarding/ui/auth-method-select.tsx:38
+msgid "По номеру телефона"
+msgstr "By phone number"
 
 #: src/features/comments/ui/comment-thread.tsx:70
 #: src/features/onboarding/ui/account-locked.tsx:53
@@ -859,8 +823,9 @@ msgstr "Under warranty"
 msgid "Повторить"
 msgstr "Retry"
 
-#: src/features/onboarding/ui/otp-verification.tsx:168
-#: src/features/onboarding/ui/otp-verification.tsx:179
+#: src/features/onboarding/ui/otp-verification.tsx:150
+#: src/features/onboarding/ui/otp-verification.tsx:161
+#: src/features/onboarding/ui/registration-form.tsx:211
 msgid "Повторить попытку"
 msgstr "Try again"
 
@@ -917,10 +882,6 @@ msgstr "No comments yet"
 msgid "Пока нет ни одного объявления."
 msgstr "No posts yet."
 
-#: src/features/comments/ui/comment-message.tsx:60
-#~ msgid "Показать оригинал"
-#~ msgstr "Show original"
-
 #: src/features/comments/ui/comment-message.tsx:24
 #: src/shared/i18n/translation-note.tsx:19
 msgid "Показать оригинальный текст"
@@ -959,10 +920,6 @@ msgstr "Selling items"
 #: src/pages/posts/model/use-post-badges.ts:41
 msgid "Продам"
 msgstr "For sale"
-
-#: src/features/onboarding/ui/otp-verification.tsx:191
-msgid "Продолжить с Google"
-msgstr "Continue with Google"
 
 #: src/pages/settings/model/use-update-profile.ts:71
 msgid "Профиль сохранён."
@@ -1041,10 +998,6 @@ msgstr "Today"
 msgid "Сервис и эксплуатация"
 msgstr "Service and maintenance"
 
-#: src/features/onboarding/lib/auth-error.ts:20
-#~ msgid "Сервис отправки кодов временно перегружен. Попробуйте через несколько минут."
-#~ msgstr "The code service is temporarily overloaded. Try again in a few minutes."
-
 #: src/pages/home/ui/services-section.tsx:14
 msgid "Сервисы"
 msgstr "Services"
@@ -1069,7 +1022,7 @@ msgstr "Change status"
 msgid "Сменить статус"
 msgstr "Change status"
 
-#: src/features/onboarding/lib/validators.ts:15
+#: src/features/onboarding/lib/validators.ts:16
 #: src/pages/settings/lib/profile-form-schema.ts:46
 msgid "Сначала выберите блок"
 msgstr "Select a block first"
@@ -1106,6 +1059,10 @@ msgstr "Message deleted."
 msgid "Сохранить"
 msgstr "Save"
 
+#: src/features/onboarding/ui/auth-method-select.tsx:50
+msgid "Способ входа"
+msgstr "Sign-in method"
+
 #: src/pages/issue-form/ui/category-field.tsx:36
 #: src/pages/issues/model/use-issue-badges.ts:82
 msgid "Срочно"
@@ -1127,7 +1084,7 @@ msgstr "Status updated. Files not uploaded: {count}"
 msgid "Страница не найдена"
 msgstr "Page not found"
 
-#: src/features/onboarding/ui/registration-form.tsx:118
+#: src/features/onboarding/ui/registration-form.tsx:132
 #: src/pages/settings/ui/profile-form.tsx:156
 #: src/pages/settings/ui/profile-form.tsx:159
 msgid "Телефон"
@@ -1140,6 +1097,10 @@ msgstr "Issue title"
 #: src/pages/post-form/ui/kind-switcher.tsx:18
 msgid "Тип объявления"
 msgstr "Post type"
+
+#: src/features/onboarding/ui/auth-method-select.tsx:44
+msgid "Только для операторов Kcell/Activ"
+msgstr "Kcell/Activ operators only"
 
 #: src/pages/issue-form/ui/category-field.tsx:37
 msgid "Требует срочного решения"
@@ -1253,10 +1214,6 @@ msgstr "Private ad"
 msgid "Частные объявления"
 msgstr "Private ads"
 
-#: src/pages/home/ui/services-section.tsx:81
-#~ msgid "Чат дома в WhatsApp"
-#~ msgstr "Building chat on WhatsApp"
-
 #: src/pages/posts/ui/post-card-item.tsx:128
 msgid "Читать далее"
 msgstr "Read more"
@@ -1268,10 +1225,6 @@ msgstr "Something went wrong"
 #: src/pages/home/model/contact-roles.ts:27
 msgid "Электрослужба"
 msgstr "Electrical service"
-
-#: src/features/onboarding/ui/registration-form.tsx:187
-#~ msgid "Эта форма защищена reCAPTCHA, применяются Политика конфиденциальности и Условия Google"
-#~ msgstr "This form is protected by reCAPTCHA; the Google Privacy Policy and Terms of Service apply"
 
 #: src/pages/posts/ui/post-delete-confirm.tsx:26
 msgid "Это действие нельзя отменить. Запись будет удалена безвозвратно."

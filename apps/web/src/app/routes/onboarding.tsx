@@ -1,7 +1,7 @@
 import { ScreenHeader } from '@raiymbek-park/ui'
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
 
-import { isSignedIn } from '@/shared/session'
+import { isRegistered, isSignedIn } from '@/shared/session'
 
 const OnboardingLayout = () => (
   <>
@@ -11,8 +11,12 @@ const OnboardingLayout = () => (
 )
 
 export const Route = createFileRoute('/onboarding')({
-  beforeLoad: async () => {
-    if (await isSignedIn()) throw redirect({ to: '/home' })
+  beforeLoad: async ({ context, location }) => {
+    if (!(await isSignedIn())) return
+    if (await isRegistered(context)) throw redirect({ to: '/home' })
+    if (location.pathname !== '/onboarding/registration') {
+      throw redirect({ to: '/onboarding/registration' })
+    }
   },
   component: OnboardingLayout,
 })

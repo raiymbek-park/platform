@@ -5,18 +5,18 @@ import { useNavigate } from '@tanstack/react-router'
 import { showToastMessage } from '@/shared/toast'
 
 import { logAuthError } from '../lib/auth-error'
-import { useOnboardingStore } from '../model/use-onboarding-store'
+import { useOtpRequestStore } from '../model/use-otp-request-store'
 import { useSendOtp } from '../model/use-send-otp'
 import css from './account-locked.module.scss'
 
 export const AccountLocked = () => {
   const { t } = useLingui()
   const navigate = useNavigate()
-  const phone = useOnboardingStore(state => state.draft.phone)
+  const phone = useOtpRequestStore(state => state.attemptedPhone)
   const sendOtp = useSendOtp()
 
   const retry = () => {
-    if (phone === '') return
+    if (phone === null) return
     sendOtp.mutate(
       { phone },
       {

@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { SettingsPage } from '@/pages/settings'
-import { ensureResidentSession } from '@/shared/session'
+import { ensureRegisteredResident } from '@/shared/session'
 
 export const Route = createFileRoute('/settings')({
-  beforeLoad: ensureResidentSession,
+  beforeLoad: ensureRegisteredResident,
   component: SettingsPage,
   loader: ({ context }) =>
     context.queryClient

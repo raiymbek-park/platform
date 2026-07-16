@@ -7,6 +7,7 @@ import { beforeEach, expect, test } from 'vitest'
 import {
   firebaseAuth,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -47,12 +48,7 @@ let issues: Issue[] = [seedIssue]
 const serveList = (role: 'resident' | 'administration' = 'resident') =>
   trpcQueries({
     'issues.list': () => ({ issues, nextCursor: null }),
-    'resident.me': () => ({
-      apartment: 42,
-      block: 1,
-      name: 'Алиса',
-      role,
-    }),
+    'resident.me': () => residentMe({ role }),
   })
 
 const serve = (role: 'resident' | 'administration' = 'resident') =>

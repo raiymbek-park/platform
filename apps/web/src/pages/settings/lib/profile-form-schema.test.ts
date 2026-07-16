@@ -11,6 +11,7 @@ const baseProfile: ResidentProfile = {
   cars: [],
   id: 'resident-uid',
   isPhoneVisible: false,
+  isRegistered: true,
   name: 'Алиса',
   phone: '+77071234567',
   role: 'owner',

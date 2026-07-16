@@ -30,6 +30,7 @@ export type IconGlyph =
   | 'eye'
   | 'eye-closed'
   | 'eye-off'
+  | 'facebook'
   | 'gift'
   | 'google'
   | 'hammer'

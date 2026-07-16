@@ -1,6 +1,13 @@
+export type { AuthMethod } from './model/use-auth-method-store'
+
+export { logAuthError } from './lib/auth-error'
 export { formatPhoneDisplay } from './lib/format-phone-display'
+export { isPopupBlocked, isPopupDismissed } from './lib/social-auth-error'
+export { useAuthMethodStore } from './model/use-auth-method-store'
 export { useOnboardingStore } from './model/use-onboarding-store'
 export { useOtpRequestStore } from './model/use-otp-request-store'
+export { useSocialSignIn } from './model/use-social-sign-in'
 export { AccountLocked } from './ui/account-locked'
+export { AuthMethodSelect } from './ui/auth-method-select'
 export { OtpVerification } from './ui/otp-verification'
 export { RegistrationForm } from './ui/registration-form'

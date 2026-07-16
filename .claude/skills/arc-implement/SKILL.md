@@ -92,7 +92,9 @@ Quality does not drop in `--yes` mode. Analysis always happens — `--yes` is ab
 /arc:code validate → findings     → apply/commit mechanical fixes → /arc:code validate
 /arc:test review → needs work     → /arc:test write → /arc:test review
 /arc:test validate → red          → /arc:code or /arc:test write → /arc:test validate
-/arc:test mutate → survivors      → /arc:ac update → /arc:test write → /arc:test mutate
+/arc:test mutate → survivors      → triage → /arc:test write (missing test — the common case)
+                                          → /arc:ac update → /arc:test write (missing AC)
+                                          → record only (equivalent / noise — never loop on these)
 /arc:ac verify → partial          → /arc:code → /arc:ac verify
 /arc:code review-resolve → comments → fix/respond → push → /arc:code review-resolve
 ```

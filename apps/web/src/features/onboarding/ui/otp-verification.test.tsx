@@ -12,6 +12,7 @@ import {
   trpcServer,
 } from '@/shared/test'
 
+import { useAuthMethodStore } from '../model/use-auth-method-store'
 import { useOnboardingStore } from '../model/use-onboarding-store'
 import { useOtpRequestStore } from '../model/use-otp-request-store'
 
@@ -25,10 +26,9 @@ const typeCode = (user: UserEvent, code: string) => user.type(codeInput(), code)
 const resendButton = () =>
   screen.getByRole('button', { name: /Запросить код повторно/ })
 
-const arriveAtVerification = async () => {
-  const app = renderApp('/onboarding/welcome')
-  const { user } = app
+const backButton = () => screen.getByRole('button', { name: 'Назад' })
 
+const fillRegistrationForm = async (user: UserEvent) => {
   await user.type(await screen.findByLabelText('Имя'), 'Алиса')
   const phoneField = screen.getByLabelText('Телефон')
   await user.clear(phoneField)
@@ -40,7 +40,11 @@ const arriveAtVerification = async () => {
   const submit = screen.getByRole('button', { name: /Далее/ })
   await waitFor(() => expect(submit).toBeEnabled())
   await user.click(submit)
+}
 
+const arriveAtVerification = async () => {
+  const app = renderApp('/onboarding/registration')
+  await fillRegistrationForm(app.user)
   await screen.findByText('Введите код из SMS')
   return app
 }
@@ -49,6 +53,7 @@ beforeEach(() => {
   firebaseAuth.reset()
   useOnboardingStore.getState().reset()
   useOtpRequestStore.getState().clear()
+  useAuthMethodStore.setState({ method: 'phone' })
   sessionStorage.clear()
 })
 
@@ -56,17 +61,33 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-test('happy-path 4: the verification screen shows the number, an empty field, and a resend on cooldown', async () => {
+test('happy-path 5: the verification screen shows the number, an empty field, and a resend on cooldown', async () => {
   vi.useFakeTimers({ shouldAdvanceTime: true })
   await arriveAtVerification()
 
   expect(screen.getByText('+7 707 123 45 67')).toBeInTheDocument()
   expect(codeInput()).toHaveValue('')
+  expect(codeInput()).toHaveFocus()
   expect(resendButton()).toBeDisabled()
   expect(resendButton()).toHaveTextContent('1:00')
 })
 
-test('happy-path 5: the code field masks the digits as "xxx - xxx"', async () => {
+test('happy-path 6: the verification screen carries no social sign-in control', async () => {
+  await arriveAtVerification()
+
+  expect(
+    screen.queryByRole('button', { name: /Продолжить с Google/ }),
+  ).not.toBeInTheDocument()
+  expect(
+    screen.queryByRole('button', { name: /Google/ }),
+  ).not.toBeInTheDocument()
+  expect(
+    screen.queryByRole('button', { name: /Facebook/ }),
+  ).not.toBeInTheDocument()
+  expect(backButton()).toBeInTheDocument()
+})
+
+test('happy-path 7: the code field masks the digits as "xxx - xxx"', async () => {
   const { user } = await arriveAtVerification()
 
   await user.type(codeInput(), '12345')
@@ -74,7 +95,7 @@ test('happy-path 5: the code field masks the digits as "xxx - xxx"', async () =>
   expect(codeInput()).toHaveValue('123 - 45')
 })
 
-test('validation 14: the code field accepts digits only', async () => {
+test('validation 21: the code field accepts digits only, capped at six', async () => {
   const { user } = await arriveAtVerification()
 
   await user.type(codeInput(), '1a2b3')
@@ -82,7 +103,7 @@ test('validation 14: the code field accepts digits only', async () => {
   expect(codeInput()).toHaveValue('123')
 })
 
-test('happy-path 7: a correct code registers the resident and lands on home', async () => {
+test('happy-path 8: a correct code registers the resident and lands on home', async () => {
   const { user, currentPath } = await arriveAtVerification()
 
   await typeCode(user, '123456')
@@ -91,7 +112,26 @@ test('happy-path 7: a correct code registers the resident and lands on home', as
   expect(await screen.findByText(/Привет/)).toBeInTheDocument()
 })
 
-test('happy-path 7: the registered resident carries the draft details to the backend', async () => {
+test('happy-path 8: the sixth digit checks the code with no button tap', async () => {
+  const verifications: unknown[] = []
+  trpcServer.use(
+    trpcMutation('otp.verify', input => {
+      verifications.push(input)
+      return { token: 'custom-token' }
+    }),
+  )
+  const { user } = await arriveAtVerification()
+
+  await typeCode(user, '12345')
+  expect(verifications).toHaveLength(0)
+
+  await typeCode(user, '6')
+
+  await waitFor(() => expect(verifications).toHaveLength(1))
+  expect(verifications[0]).toMatchObject({ code: '123456', phone })
+})
+
+test('happy-path 8: the registered resident carries the form details to the backend', async () => {
   const received: unknown[] = []
   trpcServer.use(
     trpcMutation('resident.register', input => {
@@ -113,7 +153,7 @@ test('happy-path 7: the registered resident carries the draft details to the bac
   })
 })
 
-test('checking: a progress callout shows and the actions are disabled while the code is checked', async () => {
+test('happy-path 15: a progress notice shows and the actions are disabled while the code is checked', async () => {
   trpcServer.use(
     http.post('*/resident.register', async () => {
       await delay('infinite')
@@ -128,7 +168,7 @@ test('checking: a progress callout shows and the actions are disabled while the 
     await screen.findByText(/Ваш код отправляется на проверку/),
   ).toBeInTheDocument()
   expect(codeInput()).toBeDisabled()
-  expect(screen.getByRole('button', { name: 'Назад' })).toBeDisabled()
+  expect(backButton()).toBeDisabled()
   expect(resendButton()).toBeDisabled()
 })
 
@@ -140,7 +180,7 @@ test('the clipboard-paste affordance no longer exists', async () => {
   ).not.toBeInTheDocument()
 })
 
-test('error-states 2: a wrong code shows the wrong-code error and clears the field', async () => {
+test('error-states 6: a wrong code shows the wrong-code error and clears the field', async () => {
   trpcServer.use(trpcMutationError('otp.verify', 'BAD_REQUEST', 400))
   const { user, currentPath } = await arriveAtVerification()
 
@@ -151,7 +191,7 @@ test('error-states 2: a wrong code shows the wrong-code error and clears the fie
   expect(currentPath()).toBe('/onboarding/verification')
 })
 
-test('error-states 3: a network failure during the check shows the connection error and clears the field', async () => {
+test('error-states 7: a network failure during the check shows the connection error and clears the field', async () => {
   trpcServer.use(http.post('*/otp.verify', () => HttpResponse.error()))
   const { user } = await arriveAtVerification()
 
@@ -163,7 +203,7 @@ test('error-states 3: a network failure during the check shows the connection er
   await waitFor(() => expect(codeInput()).toHaveValue(''))
 })
 
-test('error-states 2: after a wrong code, re-entering a correct code confirms again', async () => {
+test('error-states 6: after a wrong code, re-entering a correct code confirms again', async () => {
   trpcServer.use(trpcMutationError('otp.verify', 'BAD_REQUEST', 400))
   const { user, currentPath } = await arriveAtVerification()
 
@@ -177,7 +217,24 @@ test('error-states 2: after a wrong code, re-entering a correct code confirms ag
   await waitFor(() => expect(currentPath()).toBe('/home'))
 })
 
-test('error-states 4: a registration failure keeps the verification screen with a retry that recovers', async () => {
+test('error-states 8: a failed session sign-in keeps the screen and retries into home', async () => {
+  firebaseAuth.failCustomTokenSignIn()
+  const { user, currentPath } = await arriveAtVerification()
+
+  await typeCode(user, '123456')
+
+  expect(
+    await screen.findByText(/Не удалось выполнить вход/),
+  ).toBeInTheDocument()
+  expect(currentPath()).toBe('/onboarding/verification')
+
+  firebaseAuth.reset()
+  await user.click(screen.getByRole('button', { name: /Повторить попытку/ }))
+
+  await waitFor(() => expect(currentPath()).toBe('/home'))
+})
+
+test('error-states 9: a registration failure keeps the verification screen with a retry that recovers', async () => {
   trpcServer.use(trpcMutationError('resident.register'))
   const { user, currentPath } = await arriveAtVerification()
 
@@ -194,7 +251,7 @@ test('error-states 4: a registration failure keeps the verification screen with 
   await waitFor(() => expect(currentPath()).toBe('/home'))
 })
 
-test('error-states 5: a resend failure keeps the screen and lets the user retry', async () => {
+test('error-states 11: a resend failure keeps the screen and lets the user retry', async () => {
   vi.useFakeTimers({ shouldAdvanceTime: true })
   const { user, currentPath } = await arriveAtVerification()
 
@@ -208,7 +265,7 @@ test('error-states 5: a resend failure keeps the screen and lets the user retry'
   expect(currentPath()).toBe('/onboarding/verification')
 })
 
-test('error-states 6: a too-many-requests resend routes to the locked screen', async () => {
+test('error-states 12: a too-many-requests resend routes to the locked screen', async () => {
   vi.useFakeTimers({ shouldAdvanceTime: true })
   const { user, currentPath } = await arriveAtVerification()
 
@@ -220,7 +277,7 @@ test('error-states 6: a too-many-requests resend routes to the locked screen', a
   expect(await screen.findByText('Доступ заблокирован')).toBeInTheDocument()
 })
 
-test('error-states 6: a too-many-requests code check routes to the locked screen', async () => {
+test('error-states 12: a too-many-requests code check routes to the locked screen', async () => {
   trpcServer.use(trpcMutationError('otp.verify', 'TOO_MANY_REQUESTS', 429))
   const { user, currentPath } = await arriveAtVerification()
 
@@ -230,7 +287,62 @@ test('error-states 6: a too-many-requests code check routes to the locked screen
   expect(await screen.findByText('Доступ заблокирован')).toBeInTheDocument()
 })
 
-test('edge-cases 1: a successful resend clears the entered code and returns focus', async () => {
+test('error-states 4: a failed send lands on verification and a later resend delivers a code', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  trpcServer.use(trpcMutationError('otp.send', 'BAD_GATEWAY', 502))
+  const app = renderApp('/onboarding/registration')
+  await fillRegistrationForm(app.user)
+
+  await screen.findByText('Введите код из SMS')
+  expect(
+    await screen.findByText(/Не удалось отправить SMS/),
+  ).toBeInTheDocument()
+  expect(resendButton()).toBeInTheDocument()
+  expect(backButton()).toBeEnabled()
+
+  trpcServer.resetHandlers()
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  await app.user.click(resendButton())
+
+  await waitFor(() =>
+    expect(app.currentPath()).toBe('/onboarding/verification'),
+  )
+  expect(codeInput()).toBeEnabled()
+})
+
+test('error-states 5: a failed send leaves the resend cooldown counting from 1:00', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  trpcServer.use(trpcMutationError('otp.send', 'BAD_GATEWAY', 502))
+  const app = renderApp('/onboarding/registration')
+  await fillRegistrationForm(app.user)
+  await screen.findByText('Введите код из SMS')
+
+  expect(resendButton()).toBeDisabled()
+  expect(resendButton()).toHaveTextContent('1:00')
+})
+
+test('error-states 13: a failed resend re-arms the cooldown at the same step without advancing or locking', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  const { user, currentPath } = await arriveAtVerification()
+
+  trpcServer.use(trpcMutationError('otp.send', 'BAD_GATEWAY', 502))
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  await user.click(resendButton())
+  await screen.findByText(/Не удалось отправить SMS/)
+
+  expect(currentPath()).toBe('/onboarding/verification')
+  expect(resendButton()).toBeDisabled()
+  expect(resendButton()).toHaveTextContent('1:00')
+
+  trpcServer.resetHandlers()
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  await user.click(resendButton())
+
+  await act(() => vi.advanceTimersByTimeAsync(0))
+  expect(resendButton()).toHaveTextContent('2:00')
+})
+
+test('edge-cases 3: a successful resend clears the entered code and returns focus', async () => {
   vi.useFakeTimers({ shouldAdvanceTime: true })
   const { user } = await arriveAtVerification()
 
@@ -242,7 +354,7 @@ test('edge-cases 1: a successful resend clears the entered code and returns focu
   await waitFor(() => expect(codeInput()).toHaveFocus())
 })
 
-test('edge-cases 2: the resend control is disabled during the cooldown and enables at 0:00', async () => {
+test('edge-cases 1: the resend control is disabled during the cooldown and enables at 0:00', async () => {
   vi.useFakeTimers({ shouldAdvanceTime: true })
   await arriveAtVerification()
 
@@ -254,137 +366,92 @@ test('edge-cases 2: the resend control is disabled during the cooldown and enabl
   expect(resendButton()).toBeEnabled()
 })
 
-test('edge-cases 3: the resend cooldown escalates 60 → 120 across resends', async () => {
+test('edge-cases 2: the resend cooldown escalates 60 → 120 → 300 → 600 and caps there', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  const { user } = await arriveAtVerification()
+
+  const resendAfter = async (seconds: number) => {
+    await act(() => vi.advanceTimersByTimeAsync(seconds * 1000))
+    expect(resendButton()).toBeEnabled()
+    await user.click(resendButton())
+    await act(() => vi.advanceTimersByTimeAsync(0))
+  }
+
+  await resendAfter(60)
+  expect(resendButton()).toHaveTextContent('2:00')
+
+  await resendAfter(120)
+  expect(resendButton()).toHaveTextContent('5:00')
+
+  await resendAfter(300)
+  expect(resendButton()).toHaveTextContent('10:00')
+
+  await resendAfter(600)
+  expect(resendButton()).toHaveTextContent('10:00')
+})
+
+test('validation 23: the resend control cannot be tapped twice while the request is in flight', async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true })
+  const { user } = await arriveAtVerification()
+
+  const resends: unknown[] = []
+  trpcServer.use(
+    http.post('*/otp.send', async () => {
+      resends.push('send')
+      await delay('infinite')
+      return HttpResponse.json([{ result: { data: { ok: true } } }])
+    }),
+  )
+
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
+  await user.click(resendButton())
+  await waitFor(() => expect(resendButton()).toBeDisabled())
+  await user.click(resendButton())
+
+  expect(resends).toHaveLength(1)
+  expect(resendButton()).toBeDisabled()
+})
+
+test('edge-cases 20: the cooldown restarts at 60 s each time the verification screen opens', async () => {
   vi.useFakeTimers({ shouldAdvanceTime: true })
   const { user } = await arriveAtVerification()
 
   await act(() => vi.advanceTimersByTimeAsync(60_000))
-  expect(resendButton()).toBeEnabled()
-
   await user.click(resendButton())
   await act(() => vi.advanceTimersByTimeAsync(0))
-  expect(resendButton()).toHaveTextContent('2:00')
+  await act(() => vi.advanceTimersByTimeAsync(120_000))
+  await user.click(resendButton())
+  await act(() => vi.advanceTimersByTimeAsync(0))
+  expect(resendButton()).toHaveTextContent('5:00')
 
-  await act(() => vi.advanceTimersByTimeAsync(60_000))
-  expect(resendButton()).toBeDisabled()
-  await act(() => vi.advanceTimersByTimeAsync(60_000))
-  expect(resendButton()).toBeEnabled()
-})
-
-const googleButton = () =>
-  screen.getByRole('button', { name: /Продолжить с Google/ })
-
-test('happy-path 11: the Google control is enabled the moment the screen opens', async () => {
-  vi.useFakeTimers({ shouldAdvanceTime: true })
-  await arriveAtVerification()
+  await user.click(backButton())
+  await screen.findByLabelText('Имя')
+  await user.click(screen.getByRole('button', { name: /Далее/ }))
+  await screen.findByText('Введите код из SMS')
 
   expect(resendButton()).toBeDisabled()
-  expect(googleButton()).toBeEnabled()
+  expect(resendButton()).toHaveTextContent('1:00')
 })
 
-test('happy-path 10: continuing with Google registers the draft and lands on home', async () => {
-  const received: unknown[] = []
-  trpcServer.use(
-    trpcMutation('resident.register', input => {
-      received.push(input)
-      return { resident: input }
-    }),
-  )
-  const { user, currentPath } = await arriveAtVerification()
-
-  await user.click(googleButton())
-
-  await waitFor(() => expect(currentPath()).toBe('/home'))
-  expect(received[0]).toMatchObject({
-    apartment: 42,
-    block: 1,
-    name: 'Алиса',
-    phone,
-    role: 'owner',
-  })
-})
-
-test('error-states 8: dismissing the Google window leaves the screen untouched', async () => {
-  firebaseAuth.failGooglePopup('auth/popup-closed-by-user')
-  const { user, currentPath } = await arriveAtVerification()
-
-  await user.type(codeInput(), '123')
-  await user.click(googleButton())
-
-  await waitFor(() => expect(googleButton()).toBeEnabled())
-  expect(currentPath()).toBe('/onboarding/verification')
-  expect(codeInput()).toHaveValue('123')
-  expect(screen.queryByText(/Не удалось/)).not.toBeInTheDocument()
-  expect(resendButton()).toBeInTheDocument()
-})
-
-test('error-states 9: a blocked sign-in window says so and keeps both channels working', async () => {
-  firebaseAuth.failGooglePopup('auth/popup-blocked')
-  const { user, currentPath } = await arriveAtVerification()
-
-  await user.click(googleButton())
-
-  expect(
-    await screen.findByText(/Не удалось открыть окно входа Google/),
-  ).toBeInTheDocument()
-  expect(currentPath()).toBe('/onboarding/verification')
-  expect(googleButton()).toBeEnabled()
-  expect(codeInput()).toBeEnabled()
-})
-
-test('error-states 10: a Google network failure shows a connection error and a retry starts clean', async () => {
-  firebaseAuth.failGooglePopup('auth/network-request-failed')
-  const { user, currentPath } = await arriveAtVerification()
-
-  await user.click(googleButton())
-
-  expect(
-    await screen.findByText(/Не удалось войти через Google/),
-  ).toBeInTheDocument()
-  expect(currentPath()).toBe('/onboarding/verification')
-
-  firebaseAuth.recoverGooglePopup()
-  await user.click(googleButton())
-
-  await waitFor(() => expect(currentPath()).toBe('/home'))
-})
-
-test('error-states 11: a registration failure after Google offers a retry that reuses the session', async () => {
-  trpcServer.use(trpcMutationError('resident.register'))
-  const { user, currentPath } = await arriveAtVerification()
-
-  await user.click(googleButton())
-
-  expect(
-    await screen.findByText(/Не удалось завершить регистрацию/),
-  ).toBeInTheDocument()
-  expect(currentPath()).toBe('/onboarding/verification')
-
-  trpcServer.resetHandlers()
-  await user.click(screen.getByRole('button', { name: /Повторить попытку/ }))
-
-  await waitFor(() => expect(currentPath()).toBe('/home'))
-  expect(firebaseAuth.googlePopupCount()).toBe(1)
-})
-
-test('edge-cases 2: visiting verification without a pending code redirects to welcome', async () => {
+test('edge-cases 7: visiting verification without a pending code redirects to the registration form', async () => {
   const { currentPath } = renderApp('/onboarding/verification')
 
   await screen.findByLabelText('Имя')
-  expect(currentPath()).toBe('/onboarding/welcome')
+  expect(currentPath()).toBe('/onboarding/registration')
 })
 
-test('edge-cases 4: a signed-in resident visiting onboarding lands on home', async () => {
+test('edge-cases 8: a signed-in registered resident visiting onboarding lands on home', async () => {
   firebaseAuth.signIn()
-  const { currentPath } = renderApp('/onboarding/welcome')
+  const { currentPath } = renderApp('/onboarding/registration')
 
   await waitFor(() => expect(currentPath()).toBe('/home'))
   expect(await screen.findByText(/Привет/)).toBeInTheDocument()
 })
 
-test('edge-cases 3: unauthenticated direct navigation to home redirects to welcome', async () => {
+test('edge-cases 10: unauthenticated direct navigation to home redirects into onboarding', async () => {
+  useAuthMethodStore.setState({ method: null })
   const { currentPath } = renderApp('/home')
 
-  await screen.findByLabelText('Имя')
-  expect(currentPath()).toBe('/onboarding/welcome')
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
+  expect(screen.queryByText(/Привет/)).not.toBeInTheDocument()
 })

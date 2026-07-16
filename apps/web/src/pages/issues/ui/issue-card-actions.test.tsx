@@ -3,7 +3,13 @@ import type { Issue } from '@raiymbek-park/api'
 import { screen, waitFor, within } from '@testing-library/react'
 import { beforeEach, expect, test } from 'vitest'
 
-import { firebaseAuth, renderApp, trpcQueries, trpcServer } from '@/shared/test'
+import {
+  firebaseAuth,
+  renderApp,
+  residentMe,
+  trpcQueries,
+  trpcServer,
+} from '@/shared/test'
 
 if (!URL.createObjectURL)
   Object.assign(URL, {
@@ -44,7 +50,7 @@ const serve = (role: Role) =>
     trpcQueries({
       'issues.get': () => issue,
       'issues.list': () => ({ issues: [issue], nextCursor: null }),
-      'resident.me': () => ({ apartment: 42, block: 1, name: 'Алиса', role }),
+      'resident.me': () => residentMe({ role }),
     }),
   )
 

@@ -228,32 +228,46 @@ describe('otp.send — gateway delivery failure (error-states 4)', () => {
     expect(sendSmsMock).not.toHaveBeenCalled()
   })
 
-  test('a failed delivery with no prior record leaves no live code behind', async () => {
+  test('a failed delivery with no prior record leaves a throttle marker but no live code', async () => {
     sendSmsMock.mockRejectedValue(new Error('network down'))
     await expect(caller.send({ phone: PHONE })).rejects.toMatchObject({
       code: 'BAD_GATEWAY',
     })
 
-    expect(deleteOtpMock).toHaveBeenCalledWith(PHONE)
-    expect(storedOtp()).toBeUndefined()
+    expect(storedOtp()).toMatchObject({
+      codeHash: '',
+      expiresAt: 0,
+      lastSentAt: Date.now(),
+      sendCount: 0,
+    })
   })
 
-  test('a failed delivery restores the previous record so it consumes no rate-limit slot', async () => {
+  test('a repeated failing send is throttled within the interval, so it cannot drain the SMS budget', async () => {
+    sendSmsMock.mockRejectedValue(new Error('network down'))
+    await expect(caller.send({ phone: PHONE })).rejects.toMatchObject({
+      code: 'BAD_GATEWAY',
+    })
+    await expect(caller.send({ phone: PHONE })).rejects.toMatchObject({
+      code: 'TOO_MANY_REQUESTS',
+    })
+    expect(sendSmsMock).toHaveBeenCalledTimes(1)
+  })
+
+  test('a failed delivery keeps the previous record and its rate-limit slot, only refreshing the throttle', async () => {
     const now = Date.now()
     seedOtp({
       lastSentAt: now - 2 * MINUTE,
       sendCount: 2,
       windowStart: now - 10 * MINUTE,
     })
-    const previous = storedOtp()
+    const previous = { ...storedOtp() }
     sendSmsMock.mockResolvedValue({ error: 'insufficient balance', ok: false })
 
     await expect(caller.send({ phone: PHONE })).rejects.toMatchObject({
       code: 'BAD_GATEWAY',
     })
 
-    expect(upsertOtpMock).toHaveBeenCalledWith(PHONE, previous)
-    expect(storedOtp()).toEqual(previous)
+    expect(storedOtp()).toEqual({ ...previous, lastSentAt: now })
   })
 })
 

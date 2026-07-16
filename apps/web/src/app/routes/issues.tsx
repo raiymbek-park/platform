@@ -1,8 +1,8 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
-import { ensureResidentSession } from '@/shared/session'
+import { ensureRegisteredResident } from '@/shared/session'
 
 export const Route = createFileRoute('/issues')({
-  beforeLoad: ensureResidentSession,
+  beforeLoad: ensureRegisteredResident,
   component: Outlet,
 })

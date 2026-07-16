@@ -51,13 +51,13 @@ test('happy-path S2 — an unsupported browser language pre-selects Russian', as
   expect(localStorage.getItem('locale')).toBeNull()
 })
 
-test('happy-path S3 — confirming the pre-selected default persists it and continues to welcome', async () => {
+test('happy-path S3 — confirming the pre-selected default persists it and continues to the sign-in method screen', async () => {
   await boot('ru-RU')
   const { user, currentPath } = renderApp('/onboarding/language')
 
   await user.click(await screen.findByRole('button', { name: 'Далее' }))
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/welcome'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
   expect(localStorage.getItem('locale')).toBe('ru')
 })
 
@@ -75,7 +75,7 @@ test('happy-path S4 — choosing a different language activates it live and pers
 
   await user.click(screen.getByRole('button', { name: 'Next' }))
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/welcome'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
   expect(localStorage.getItem('locale')).toBe('en')
 })
 
@@ -85,8 +85,11 @@ test('happy-path S5 — a stored choice skips the selection screen and renders i
 
   const { currentPath } = renderApp('/onboarding/')
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/welcome'))
-  expect(await screen.findByLabelText('Name')).toBeInTheDocument()
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
+  expect(await screen.findByText('Choose a sign-in method')).toBeInTheDocument()
+  expect(
+    screen.getByRole('button', { name: /By phone number/ }),
+  ).toBeInTheDocument()
 })
 
 test('validation S4 — an invalid stored value is ignored, re-detected, and not persisted', async () => {
@@ -160,8 +163,8 @@ test('edge-cases S5 — navigator.language undefined pre-selects Russian', async
   )
 })
 
-test('edge-cases S6 — reaching welcome with no stored language choice redirects to the language screen', async () => {
-  const { currentPath } = renderApp('/onboarding/welcome')
+test('edge-cases S6 — reaching the registration form with no stored language choice redirects to the language screen', async () => {
+  const { currentPath } = renderApp('/onboarding/registration')
 
   await waitFor(() => expect(currentPath()).toBe('/onboarding/language'))
 })
@@ -172,10 +175,10 @@ test('route guard — onboarding index routes to the language screen when no cho
   await waitFor(() => expect(currentPath()).toBe('/onboarding/language'))
 })
 
-test('route guard — onboarding index routes to welcome when a choice is stored', async () => {
+test('route guard — onboarding index routes to the sign-in method screen when a choice is stored', async () => {
   localStorage.setItem('locale', 'kk')
 
   const { currentPath } = renderApp('/onboarding/')
 
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/welcome'))
+  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
 })

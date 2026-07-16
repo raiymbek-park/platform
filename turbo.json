@@ -15,9 +15,6 @@
     "test:e2e": {
       "cache": false
     },
-    "mutate": {
-      "cache": false
-    },
     "dev": {
       "cache": false,
       "persistent": true

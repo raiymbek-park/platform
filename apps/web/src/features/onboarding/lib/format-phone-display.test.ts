@@ -10,8 +10,8 @@ test('happy S3 — formats another normalized phone correctly', () => {
   expect(formatPhoneDisplay('+79991234567')).toBe('+7 999 123 45 67')
 })
 
-test('happy S3 — empty string returns +7 with trailing whitespace trimmed', () => {
-  expect(formatPhoneDisplay('')).toBe('+7')
+test('happy S3 — empty string stays empty instead of a fabricated +7', () => {
+  expect(formatPhoneDisplay('')).toBe('')
 })
 
 test('happy S3 — strips non-digit characters from input', () => {

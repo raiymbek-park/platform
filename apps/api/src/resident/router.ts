@@ -25,6 +25,7 @@ export type ResidentProfile = {
   cars: string[]
   id: string | null
   isPhoneVisible: boolean
+  isRegistered: boolean
   name: string
   phone: string
   role: PermissionRole
@@ -37,6 +38,7 @@ const emptyProfile: ResidentProfile = {
   cars: [],
   id: null,
   isPhoneVisible: false,
+  isRegistered: false,
   name: '',
   phone: '',
   role: DEFAULT_PERMISSION_ROLE,
@@ -104,6 +106,7 @@ export const residentRouter = router({
       cars: resident.cars,
       id: ctx.uid,
       isPhoneVisible: resident.isPhoneVisible,
+      isRegistered: true,
       name: resident.name,
       phone: resident.phone,
       role: resolveRole(resident.role),

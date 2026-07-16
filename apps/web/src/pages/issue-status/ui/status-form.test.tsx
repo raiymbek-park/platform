@@ -6,6 +6,7 @@ import { beforeEach, expect, test } from 'vitest'
 import {
   firebaseAuth,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -63,12 +64,7 @@ const serve = () =>
         lastListStatus = (raw as { status?: string })?.status ?? null
         return { issues: [issue], nextCursor: null }
       },
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role: 'manager',
-      }),
+      'resident.me': () => residentMe({ role: 'manager' }),
     }),
     trpcMutation('issues.changeStatus', raw => {
       lastChange = raw as ChangePayload

@@ -80,9 +80,29 @@ export const phoneSchema = z
   .string()
   .refine(v => isValidPhoneNumber(v, 'KZ'), 'Введите корректный номер')
 
+export const optionalPhoneSchema = z
+  .string()
+  .refine(
+    v => v.trim() === '' || isValidPhoneNumber(v, 'KZ'),
+    'Введите корректный номер',
+  )
+
+export const reliableCarrierPrefixes = ['701', '702', '775', '778'] as const
+
+export const hasReliableCarrierPrefix = (value: string) => {
+  const parsed = parsePhoneNumberFromString(value, 'KZ')
+  if (!parsed?.isValid()) return true
+  if (parsed.country !== 'KZ') return false
+  return reliableCarrierPrefixes.some(prefix =>
+    parsed.nationalNumber.startsWith(prefix),
+  )
+}
+
 export const APARTMENT_RANGE_MESSAGE = 'Квартира вне диапазона выбранного блока'
 
-const phone = phoneSchema.transform(normalizePhone)
+const phone = optionalPhoneSchema.transform(v =>
+  v.trim() === '' ? '' : normalizePhone(v),
+)
 
 export const registerInputSchema = z
   .object({

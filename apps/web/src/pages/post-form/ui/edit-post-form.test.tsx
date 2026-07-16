@@ -9,6 +9,7 @@ import {
   firebaseAuth,
   firebaseStorage,
   renderApp,
+  residentMe,
   trpcMutation,
   trpcMutationError,
   trpcQueries,
@@ -57,12 +58,7 @@ const serve = () =>
     trpcQueries({
       'posts.get': () => currentPost,
       'posts.list': () => ({ nextCursor: null, posts: [currentPost] }),
-      'resident.me': () => ({
-        apartment: 42,
-        block: 1,
-        name: 'Алиса',
-        role: 'resident',
-      }),
+      'resident.me': () => residentMe(),
     }),
     trpcMutation('posts.update', raw => {
       const input = postUpdateInputSchema.parse(raw)
