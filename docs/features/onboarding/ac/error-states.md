@@ -134,3 +134,10 @@
   Then:  a new code is on its way and the app stays on the verification screen
          the app does not move to the "Доступ заблокирован" screen — the failed sends were never
          counted against the send rate limit
+
+## Scenario 14: A profile that cannot be loaded never unlocks home
+
+  Given: the resident is signed in and loading their profile fails with a connection error
+  When:  the resident navigates to an onboarding screen
+  Then:  the app keeps them in onboarding and opens the registration form
+         home is not reached — a profile that could not be read never counts as registered
