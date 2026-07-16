@@ -66,7 +66,7 @@ msgstr "Quick sign-in with your account"
 msgid "В работе"
 msgstr "In progress"
 
-#: src/features/onboarding/ui/otp-verification.tsx:138
+#: src/features/onboarding/ui/otp-verification.tsx:139
 msgid "Ваш код отправляется на проверку…"
 msgstr "Your code is being verified…"
 
@@ -426,7 +426,7 @@ msgstr "Apartment is outside the selected block's range"
 msgid "Код может не дойти до этого номера. Надёжнее войти через Google или Facebook."
 msgstr "The code may not reach this number. Signing in with Google or Facebook is more reliable."
 
-#: src/features/onboarding/ui/otp-verification.tsx:126
+#: src/features/onboarding/ui/otp-verification.tsx:127
 msgid "Код подтверждения"
 msgstr "Verification code"
 
@@ -823,8 +823,8 @@ msgstr "By phone number"
 msgid "Повторить"
 msgstr "Retry"
 
-#: src/features/onboarding/ui/otp-verification.tsx:149
-#: src/features/onboarding/ui/otp-verification.tsx:160
+#: src/features/onboarding/ui/otp-verification.tsx:150
+#: src/features/onboarding/ui/otp-verification.tsx:161
 #: src/features/onboarding/ui/registration-form.tsx:211
 msgid "Повторить попытку"
 msgstr "Try again"

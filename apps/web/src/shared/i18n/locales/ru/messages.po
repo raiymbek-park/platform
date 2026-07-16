@@ -66,7 +66,7 @@ msgstr "Быстрый вход с аккаунтом"
 msgid "В работе"
 msgstr "В работе"
 
-#: src/features/onboarding/ui/otp-verification.tsx:138
+#: src/features/onboarding/ui/otp-verification.tsx:139
 msgid "Ваш код отправляется на проверку…"
 msgstr "Ваш код отправляется на проверку…"
 
@@ -426,7 +426,7 @@ msgstr "Квартира вне диапазона выбранного блок
 msgid "Код может не дойти до этого номера. Надёжнее войти через Google или Facebook."
 msgstr "Код может не дойти до этого номера. Надёжнее войти через Google или Facebook."
 
-#: src/features/onboarding/ui/otp-verification.tsx:126
+#: src/features/onboarding/ui/otp-verification.tsx:127
 msgid "Код подтверждения"
 msgstr "Код подтверждения"
 
@@ -823,8 +823,8 @@ msgstr "По номеру телефона"
 msgid "Повторить"
 msgstr "Повторить"
 
-#: src/features/onboarding/ui/otp-verification.tsx:149
-#: src/features/onboarding/ui/otp-verification.tsx:160
+#: src/features/onboarding/ui/otp-verification.tsx:150
+#: src/features/onboarding/ui/otp-verification.tsx:161
 #: src/features/onboarding/ui/registration-form.tsx:211
 msgid "Повторить попытку"
 msgstr "Повторить попытку"

@@ -66,7 +66,7 @@ msgstr "Аккаунтпен жылдам кіру"
 msgid "В работе"
 msgstr "Жұмыста"
 
-#: src/features/onboarding/ui/otp-verification.tsx:138
+#: src/features/onboarding/ui/otp-verification.tsx:139
 msgid "Ваш код отправляется на проверку…"
 msgstr "Кодыңыз тексеруге жіберілуде…"
 
@@ -426,7 +426,7 @@ msgstr "Пәтер таңдалған блоктың ауқымынан тыс"
 msgid "Код может не дойти до этого номера. Надёжнее войти через Google или Facebook."
 msgstr "Код бұл нөмірге жетпеуі мүмкін. Google немесе Facebook арқылы кіру сенімдірек."
 
-#: src/features/onboarding/ui/otp-verification.tsx:126
+#: src/features/onboarding/ui/otp-verification.tsx:127
 msgid "Код подтверждения"
 msgstr "Растау коды"
 
@@ -823,8 +823,8 @@ msgstr "Телефон нөмірі арқылы"
 msgid "Повторить"
 msgstr "Қайталау"
 
-#: src/features/onboarding/ui/otp-verification.tsx:149
-#: src/features/onboarding/ui/otp-verification.tsx:160
+#: src/features/onboarding/ui/otp-verification.tsx:150
+#: src/features/onboarding/ui/otp-verification.tsx:161
 #: src/features/onboarding/ui/registration-form.tsx:211
 msgid "Повторить попытку"
 msgstr "Қайталап көру"
