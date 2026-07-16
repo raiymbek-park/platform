@@ -4,14 +4,20 @@ AI-driven mutation testing. Audits test quality — does not write tests, only i
 
 Mutation testing intentionally breaks code (changes `>` to `>=`, `&&` to `||`, removes lines) and checks whether tests catch the breakage. If tests stay green after a mutation — the test doesn't actually verify that behavior.
 
-**No contradiction with requirements-driven testing.** Mutation testing is not a tool for writing tests. It is an auditor of tests already written from requirements. A surviving mutant = a gap in AC.
+**No contradiction with requirements-driven testing.** Mutation testing is not a tool for writing tests. It is an auditor of tests already written from requirements.
+
+A surviving mutant is a **pointer, not a verdict** — most of them are not defects at all. Triage every
+one before acting (Step 5); the common outcome is "the AC states this rule, but no test asserts it",
+not "the AC is missing".
 
 ```
 Tests from AC → mutation tool mutates business logic
                       ↓
-             Surviving mutant = missing AC scenario
+              Surviving mutant → triage (Step 5)
                       ↓
-             Return to /arc:ac update → add scenario → /arc:test write
+   missing test → /arc:test write   ·   missing AC → /arc:ac update → /arc:test write
+   equivalent / noise / defensive → record why, change nothing
+   other feature's AC → report it, do not widen this ticket
 ```
 
 ## Steps
@@ -49,7 +55,14 @@ npm run mutate                                ❌ full sweep — will not finish
 
 **Mutate the rule, not its adapter.** Follow the AC's rule to the file that actually implements it, even across workspace boundaries. In a monorepo the slice a feature lives in often only re-exports logic that lives in a shared package — mutating the re-export tests nothing.
 
-Monitor for completion. A correctly scoped run over a ticket's 3-4 files takes **~10 minutes** — a couple of minutes when the scope is one small package, longer when it reaches into a large UI suite. Don't abort on duration alone; abort when the tool reports it is mutating far more files than you named, which means the scope did not apply.
+Monitor for completion. **Do not abort on duration** — a correctly scoped run over a ticket's files has
+measured anywhere from ~1 minute (one small package) to ~17 minutes (four files reaching into the web
+suite), and a "this is taking too long" rule has already killed correct runs twice. Abort only when the
+tool reports it is mutating far more files than you named, which means the scope did not apply.
+
+Add `--reporters json,html` (or configure `jsonReporter`) if the run does not emit a machine-readable
+list: Step 5 needs to read survivors, and `mutation.html` embeds its data un-greppably. Failing that,
+`reports/stryker-incremental.json` carries the same mutant list.
 
 ### Step 5: Triage Survivors
 
@@ -63,8 +76,18 @@ chasing a test that cannot exist, until it exhausts its retries.
 | **Missing AC** | No scenario describes this behavior at all | `/arc:ac update` → then `/arc:test write` |
 | **Equivalent** | The mutant cannot change observable behavior (e.g. a guard whose branch yields the same result anyway) | Nothing — record why, never "fix" it |
 | **Noise** | Error-message text, a zod `path`, a log string — asserted at a level this run did not execute, or not worth pinning | Nothing — record why |
-| **Other feature's AC** | The rule belongs to a different feature | Report it; do not widen this ticket |
-| **Dead code** | Nothing reaches it because nothing needs it | Propose deleting the code |
+| **Other feature's AC** | The rule belongs to a different feature | Report it under that feature; **do not widen this ticket** and do not add the scenario to this feature's AC |
+| **Defensive / unreachable** | A guard, fallback, or `??`/`?.` that nothing currently reaches, but that protects a real contract (a type, an exported helper's signature, a call site) | Leave it; record why. A guard is not dead just because a tool cannot reach it |
+| **Dead code** | Genuinely nothing needs it — removing it changes no type, no signature, no call site | Propose deleting the code |
+
+**If the only way to kill a mutant is a change the project's rules forbid, it is not a fix.** Deleting a
+`??` fallback that keeps a return type non-nullable forces `!` at the call sites — banned by
+`.claude/rules/coding.md`. Classify that mutant defensive and move on; never trade a rule for a score.
+
+**A recorded verdict is a claim, not a fact.** When you resume from an existing `mutate-report.md`,
+re-derive the verdict of every survivor you intend to act on. Reports are written confidently and are
+wrong often enough that trusting one is the natural failure mode — check the AC and `git log -S` for
+the line before you accept "genuine, in scope".
 
 Only the first two classes are work. For each, name the AC scenario and the assertion that should
 exist:
@@ -86,7 +109,10 @@ The list is stable; the percentage is not. Do not report the score as a quality 
 
 ### Step 6: Write Report
 
-Write mutation report to `.arcana/{feature}/{ticket-id}/mutate-report.md`.
+Write mutation report to `.arcana/{feature}/{ticket-id}/mutate-report.md`. **Overwrite it on a
+re-run** — including a verification re-run after the survivor loop, so the file always reflects the
+latest run rather than the state that triggered the fixes. Every survivor carries its Step 5 class as
+an explicit `Class:` field; a report without verdicts forces the next reader to invent a taxonomy.
 
 Report format:
 

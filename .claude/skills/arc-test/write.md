@@ -2,6 +2,33 @@
 
 Generate tests from AC scenarios. Does not run tests — only writes test files.
 
+## Two modes
+
+**Full** (default) — write the suite for every AC scenario of `ticket-id`. This is the pipeline's
+first pass, right after `arc:code`.
+
+**Targeted** — close specific gaps named by an upstream step, typically the survivor triage in
+[mutate.md](mutate.md) Step 5 (which names the AC scenario and the assertion that is missing), or a
+`test review` finding. In targeted mode:
+
+- Read `.arcana/{feature}/{ticket-id}/mutate-report.md` (or the finding you were handed) and work
+  **only** the gaps it lists. Do not regenerate the suite — it already exists and is green.
+- The AC scenario is still the source of truth. A survivor is a *pointer* to an under-asserted
+  scenario, not a spec of its own: find the scenario it violates and assert what that scenario
+  promises. Never write a test that encodes the mutant.
+- If the triage says a survivor is equivalent or noise, write nothing for it.
+- Prefer strengthening an existing test over adding a near-duplicate one. A survivor usually means a
+  test exercises the code but asserts too little — the fix is an assertion, not a new test.
+- **A mutant can be equivalent under a test double yet real in production** (a guard that only throws
+  against the real datastore, a branch the mock flattens). The AC's promise still holds under the mock
+  *with the bug present*, so no assertion on the AC's own wording will kill it. Assert the interaction
+  the AC implies instead — that the collaborator is or isn't reached — rather than the outcome the mock
+  fakes. If even that can't distinguish it, the mutant is equivalent *at this level*: say so and name
+  the level where it would be caught.
+
+Steps 1-5 below apply to both modes; in targeted mode read "each AC scenario" as "each scenario named
+in the report".
+
 ## Steps
 
 ### Step 0: Confirm Order

@@ -16,5 +16,6 @@
     "!**/*.{test,spec}.{ts,tsx}",
     "!**/*.gen.ts",
     "!**/*.d.ts"
-  ]
+  ],
+  "reporters": ["progress", "clear-text", "html", "json"]
 }
