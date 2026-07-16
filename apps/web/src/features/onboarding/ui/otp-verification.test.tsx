@@ -321,7 +321,7 @@ test('error-states 5: a failed send leaves the resend cooldown counting from 1:0
   expect(resendButton()).toHaveTextContent('1:00')
 })
 
-test('error-states 13: failed sends never advance the cooldown ladder or lock the screen', async () => {
+test('error-states 13: a failed resend re-arms the cooldown at the same step without advancing or locking', async () => {
   vi.useFakeTimers({ shouldAdvanceTime: true })
   const { user, currentPath } = await arriveAtVerification()
 
@@ -330,11 +330,15 @@ test('error-states 13: failed sends never advance the cooldown ladder or lock th
   await user.click(resendButton())
   await screen.findByText(/Не удалось отправить SMS/)
 
+  expect(currentPath()).toBe('/onboarding/verification')
+  expect(resendButton()).toBeDisabled()
+  expect(resendButton()).toHaveTextContent('1:00')
+
   trpcServer.resetHandlers()
+  await act(() => vi.advanceTimersByTimeAsync(60_000))
   await user.click(resendButton())
 
   await act(() => vi.advanceTimersByTimeAsync(0))
-  expect(currentPath()).toBe('/onboarding/verification')
   expect(resendButton()).toHaveTextContent('2:00')
 })
 

@@ -126,14 +126,20 @@
   Then:  the app stays on the locked screen
          an error message is shown
 
-## Scenario 13: Failed sends do not consume the send rate limit
+## Scenario 13: Failed sends keep the throttle but never consume the hourly allowance
 
   Given: the resident's code requests have failed to send several times over on the verification
          screen
   When:  the resident resends once more and the send succeeds
   Then:  a new code is on its way and the app stays on the verification screen
          the app does not move to the "Доступ заблокирован" screen — the failed sends were never
-         counted against the send rate limit
+         counted against the hourly send allowance
+
+  Given: a send has just failed
+  When:  the resident tries to resend right away
+  Then:  the resend is held back by the same per-minute interval that gates a successful send —
+         a failing number cannot be resent faster than once per interval, so a broken number or a
+         bot-driven resend loop cannot drain the paid SMS budget
 
 ## Scenario 14: A profile that cannot be loaded never unlocks home
 

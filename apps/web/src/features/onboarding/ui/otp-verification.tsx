@@ -107,6 +107,7 @@ export const OtpVerification = () => {
             navigate({ to: '/onboarding/locked' })
             return
           }
+          cooldown.restart(false)
           showToastMessage({ kind: 'error', text: sendCodeErrorText(error) })
         },
       },
