@@ -17,7 +17,7 @@ export const ServicesSection = () => {
         <li>
           <Link className={css.link} search={{ tab: 'all' }} to='/posts'>
             <ActionCard
-              description={t`Новости, уведомления и частные предложения`}
+              description={t`Новости и уведомления от УК`}
               glyph='megaphone'
               title={t`Объявления`}
               tone='accent'

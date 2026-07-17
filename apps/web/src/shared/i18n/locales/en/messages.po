@@ -646,8 +646,12 @@ msgid "Новое уведомление"
 msgstr "New notice"
 
 #: src/pages/home/ui/services-section.tsx:20
-msgid "Новости, уведомления и частные предложения"
-msgstr "News, notices, and private offers"
+msgid "Новости и уведомления от УК"
+msgstr "News and notices from the management company"
+
+#: src/pages/home/ui/services-section.tsx:20
+#~ msgid "Новости, уведомления и частные предложения"
+#~ msgstr "News, notices, and private offers"
 
 #: src/pages/posts/ui/posts-page.tsx:32
 msgid "Новостная лента и частные объявления от жильцов."
