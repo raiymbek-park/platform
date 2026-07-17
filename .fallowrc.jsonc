@@ -19,10 +19,14 @@
     "apps/web/src/shared/test/firebase-messaging.ts",
     "apps/web/src/shared/test/firebase-storage.ts"
   ],
-  // Test double for the DOM IntersectionObserver: its members are dispatched at
-  // runtime via globalThis.IntersectionObserver (vi.stubGlobal), which the static
-  // analyzer can't trace, so every member reads as unused.
-  "ignorePatterns": ["apps/web/src/shared/test/intersection-observer.ts"],
+  "ignorePatterns": [
+    // Test double for the DOM IntersectionObserver: its members are dispatched at
+    // runtime via globalThis.IntersectionObserver (vi.stubGlobal), which the static
+    // analyzer can't trace, so every member reads as unused.
+    "apps/web/src/shared/test/intersection-observer.ts",
+    // Linked from the static privacy pages, never in the JS import graph.
+    "apps/web/public/privacy/style.css"
+  ],
   // Used by the Lingui CLI macro extraction (i18n:extract) at build time via the
   // babel preset, not through a JS import, so the static graph can't see it.
   "ignoreDependencies": ["@lingui/babel-plugin-lingui-macro"],

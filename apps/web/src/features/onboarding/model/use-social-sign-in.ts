@@ -7,7 +7,7 @@ import {
 
 import { auth } from '@/shared/firebase'
 
-export type SocialProvider = 'google' | 'facebook'
+type SocialProvider = 'google' | 'facebook'
 
 const authProviders = {
   facebook: FacebookAuthProvider,
