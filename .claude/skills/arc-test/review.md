@@ -48,11 +48,29 @@ See `## Element Selection Strategy` in testing-strategy.md.
 
 #### D. Mocking Boundaries
 
-See `## Mocking Rules` in testing-strategy.md.
+See `## Mocking Rules` in testing-strategy.md — especially "The network is not automatically the boundary."
 
-- [ ] Mocking happens at the system boundary (network, external services), not module level
+**"Mocked at the network layer" is NOT sufficient on its own.** A network mock that hand-writes the server's responses fabricates the application's own backend: it satisfies a naive boundary check while exercising nothing below the client. Do not rubber-stamp it — detect it actively.
+
+**Procedure — classify every mock in the test.** For each mock, stub, or intercepted response, ask *what value it returns*:
+
+```
+Raw data an external dependency holds, or a third-party payload
+  → allowed boundary mock.
+
+The application's OWN server/business output — assigned ids, derived or aggregated
+fields, status codes, authorization allow/deny verdicts, localized/filtered projections
+  → CRITICAL finding: the server logic that produces that value never runs.
+```
+
+**Checklist:**
+
+- [ ] No mock re-implements or hard-codes what the application's own server/business logic would compute — the response is produced by real code, not authored by the test
+- [ ] Server-side rules the AC depends on (validation, authorization/roles, derivation, projection) run through the real code path, not asserted against a stand-in
+- [ ] The boundary sits at the true external edge (datastore, third-party services); the real server/business logic runs whenever the infrastructure allows it (widest-boundary rule)
 - [ ] No module-level mocking of business logic, components, hooks, or store
-- [ ] Mock boundary matches project infrastructure (containers → mock only external services; no containers → mock at network layer)
+- [ ] Canned server responses appear ONLY for behavior with no server logic (pure client rendering, form validation, disabled states) or for a genuinely external server
+- [ ] Assertions check real outputs — seed the external dependency, then assert the result the real logic produces — not fixtures that duplicate the server's computation
 
 #### E. Test Describes Behavior, Not Code
 

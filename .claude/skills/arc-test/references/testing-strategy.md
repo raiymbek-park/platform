@@ -109,13 +109,36 @@ Real dependencies (DB, cache, queue in containers)
   → everything inside the container stack is real
 
 Network mocking (intercept HTTP/GraphQL at the network layer)
-  → boundary = network edge — application code is real, server responses are mocked
+  → boundary = network edge — application code is real, responses are mocked
+  → LEGITIMATE ONLY when the server is genuinely external (a third party you
+    don't own). When the server is your OWN code, the network line is an
+    INTERNAL seam, not a boundary — mocking it fabricates your own backend.
 
 Module mocking (replace imports)
   → boundary = module boundary — AVOID, breaks integration confidence
 ```
 
 The principle is the same regardless of infrastructure: keep as much of the real stack as possible, mock only what's beyond your control. The closer the boundary is to the external world — the more confidence the test provides.
+
+### The network is not automatically the boundary
+
+"Mock the network" is not a licence to hand-write server responses. Draw the line by **ownership, not by protocol**:
+
+- The call between a client and a server you **both own** is an *internal seam*. Faking its responses swaps your own validation, authorization, derivation, and projection for a fixture — the very logic the test should exercise. The suite goes green while that logic rots untested (a textbook false-positive).
+- The **real external boundary** is what the server itself cannot control: the datastore, and third-party services (payment, email, SMS, LLM). Push the mock down to *there* and let the real server logic run to produce the response.
+
+**Litmus test for any mock — look at what it returns:**
+
+```
+Raw data an external dependency would hold (records, a gateway's ack, a 3rd-party payload)
+  → legitimate boundary mock. The code under test transforms it into the response.
+
+Your server's COMPUTED output (assigned ids, derived/aggregated fields, status codes,
+an authorization allow/deny verdict, a localized or filtered projection)
+  → fabricated backend. You mocked away the logic you meant to test.
+```
+
+**Widest-boundary rule:** if the real server / business logic *can* run inside the test — in-process, or against a disposable test datastore — it **must**. Stopping one layer higher (canned server responses) is a violation even when it is technically "at the network layer." Reserve canned server responses for behavior that involves no server logic at all (pure client-side rendering, form-field validation, disabled states), or for a genuinely external third-party server.
 
 For tool-specific patterns, consult the relevant example file from `project-context.md`.
 

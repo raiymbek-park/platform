@@ -79,13 +79,24 @@ For each AC scenario, determine the test level using the decision matrix (top-do
 See `## Mocking Rules` in [references/testing-strategy.md](references/testing-strategy.md).
 
 ```
-✅ Mock:     Network boundary, external services (email, payment), animations
-❌ Don't mock: Business logic, child components, hooks, store
+✅ Mock:     External edge (datastore, third-party services: email, payment, SMS, LLM), animations
+❌ Don't mock: Business logic, authorization, child components, hooks, store, your own server
 ```
 
-Mock at the network boundary, not at the module level. The entire application chain should be real — only the backend response is replaced.
+Mock at the true external boundary, not at the module level, and **not at the network line when the server is your own code** — see "The network is not automatically the boundary" in testing-strategy.md. The whole chain must run for real, down to and including the application's own server/business logic; replace only what the server itself cannot control (the datastore, third-party services). Do NOT hand-write the server's computed output (assigned ids, derived fields, status codes, authorization verdicts, projections) — seed the external dependency and let real code produce the response, so the test asserts real outputs.
 
-If `project-context.md` specifies a network mocking tool with example references → load the relevant example file for implementation patterns.
+**Self-check — mirror of `review.md` §D.** Before writing each mock, classify it by *what it returns*, applying the exact litmus the review step will use to grade it:
+
+```
+Raw data an external dependency holds, or a third-party payload  → keep.
+Your own server's computed output (ids, derived/aggregated fields, status codes,
+authorization allow/deny verdicts, localized/filtered projections)  → fabricated
+backend. Rewrite: seed the datastore and let real code produce it.
+```
+
+A test generated under this self-check is exactly what §D verifies — write and review apply one rule, so they can never diverge. If following it is impossible because the project has no way to run the real server logic in a test, do NOT fall back to fabricating the backend: surface that the in-process harness is a prerequisite (see below) and stop, rather than generating a test the review step will reject.
+
+If `project-context.md` specifies how the real server logic runs in tests (an in-process harness, a disposable test datastore) with example references → load the relevant example file for implementation patterns.
 
 ### Step 4: Apply Optional Layers
 
