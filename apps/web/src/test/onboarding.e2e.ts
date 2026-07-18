@@ -23,7 +23,7 @@ Scenario(
 
     I.waitForText('Имя', 10)
     I.fillField('Имя', 'Тест Тестов')
-    I.fillField('Телефон', '87052266666')
+    I.fillField('Телефон', '87781234455')
     I.click('Блок 1')
     I.fillField('Номер квартиры', '42')
     I.click('Собственник квартиры')

@@ -81,7 +81,7 @@ const { otpRouter } = await import('./router')
 const caller = otpRouter.createCaller({ locale: 'ru', phone: null, uid: null })
 
 const PHONE = '+77071234567'
-const TEST_PHONE = '+77052266666'
+const TEST_PHONE = '+77781234455'
 const MINUTE = 60 * 1000
 const HOUR = 60 * MINUTE
 

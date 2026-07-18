@@ -37,7 +37,7 @@ const makeFile = (
 }
 
 const seedComment = (overrides: Partial<Comment> = {}): Comment => ({
-  author: { apartment: 12, avatarUrl: null, block: 1, name: 'Тимур Ким' },
+  author: { apartment: 12, avatarUrl: null, block: 1, name: 'Джеки Чан' },
   createdAt: 1_700_000_000_000,
   editedAt: null,
   id: 'comment-1',
@@ -181,7 +181,7 @@ test('happy-path 13: opening a post’s comment thread shows the post’s title,
   expect(await screen.findByText('Продам горный велосипед')).toBeInTheDocument()
   expect(await screen.findByText('Отличное предложение')).toBeInTheDocument()
   expect(screen.getByText('Спасибо!')).toBeInTheDocument()
-  expect(screen.getByText('ТК')).toBeInTheDocument()
+  expect(screen.getByText('ДЧ')).toBeInTheDocument()
   expect(document.querySelectorAll('img').length).toBeGreaterThan(0)
 })
 

@@ -24,7 +24,7 @@ if (!HTMLDialogElement.prototype.close)
   }
 
 const seedComment = (overrides: Partial<Comment> = {}): Comment => ({
-  author: { apartment: 12, avatarUrl: null, block: 1, name: 'Тимур Ким' },
+  author: { apartment: 12, avatarUrl: null, block: 1, name: 'Джеки Чан' },
   createdAt: 1_700_000_000_000,
   editedAt: null,
   id: 'comment-1',

@@ -36,8 +36,8 @@ const getResident = vi.hoisted(() =>
   vi.fn(async () => ({
     apartment: 60,
     block: 1,
-    name: 'Султан Арзиев',
-    phone: '+77052266666',
+    name: 'Киану Ривз',
+    phone: '+77781234455',
     role: 'administration',
   })),
 )
@@ -71,7 +71,7 @@ test('a status change with a comment mirrors it into the comments thread and inc
   })
   const comment = state.writes.find(write => write.path === 'comments/new')
   expect(comment?.data).toEqual({
-    author: { apartment: 60, block: 1, name: 'Султан Арзиев' },
+    author: { apartment: 60, block: 1, name: 'Киану Ривз' },
     authorId: 'admin-uid',
     createdAt: 'server-time',
     media: ['https://example.com/photo.jpg'],

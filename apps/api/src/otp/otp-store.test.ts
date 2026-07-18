@@ -50,7 +50,7 @@ const { deleteOtp, reserveSend, upsertOtp, verifyAttempt } = await import(
   './otp-store'
 )
 
-const PHONE = '+77052266666'
+const PHONE = '+77781234455'
 const MINUTE = 60 * 1000
 const HOUR = 60 * MINUTE
 const NOW = 100 * HOUR

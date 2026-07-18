@@ -17,7 +17,7 @@ import {
 const validResident = {
   apartment: 42,
   block: 1,
-  name: 'Иван Петров',
+  name: 'Джордж Лукас',
   phone: '+77071234567',
   role: 'owner',
 }
@@ -28,17 +28,17 @@ const validProfileUpdate = {
   block: 1,
   cars: ['A123BC01'],
   isPhoneVisible: false,
-  name: 'Иван Петров',
+  name: 'Джордж Лукас',
   role: 'owner',
 }
 
 describe('normalizePhone — canonical E.164 form', () => {
   test('Kazakhstan 8-prefix number is stored in +7 E.164 form', () => {
-    expect(normalizePhone('87052266666')).toBe('+77052266666')
+    expect(normalizePhone('87781234455')).toBe('+77781234455')
   })
 
   test('formatted 8-prefix number becomes +7 E.164 form', () => {
-    expect(normalizePhone('8 (705) 226-66-66')).toBe('+77052266666')
+    expect(normalizePhone('8 (778) 123-44-55')).toBe('+77781234455')
   })
 
   test('formatted +7 number is stored in canonical E.164 form', () => {
@@ -64,11 +64,11 @@ describe('normalizePhone — canonical E.164 form', () => {
 
 describe('phoneSchema — validates the dialled number', () => {
   test('accepts a +7 Kazakhstan mobile number', () => {
-    expect(phoneSchema.safeParse('+77052266666').success).toBe(true)
+    expect(phoneSchema.safeParse('+77781234455').success).toBe(true)
   })
 
   test('accepts a Kazakhstan 8-prefix number', () => {
-    expect(phoneSchema.safeParse('87052266666').success).toBe(true)
+    expect(phoneSchema.safeParse('87781234455').success).toBe(true)
   })
 
   test('accepts a valid international number with explicit country code', () => {
@@ -80,7 +80,7 @@ describe('phoneSchema — validates the dialled number', () => {
   })
 
   test('rejects a too-long number', () => {
-    expect(phoneSchema.safeParse('8705226666666').success).toBe(false)
+    expect(phoneSchema.safeParse('8778123445566').success).toBe(false)
   })
 
   test('rejects a bare digits string with no country prefix', () => {
@@ -98,11 +98,11 @@ describe('optionalPhoneSchema — validation 11,12: empty or valid', () => {
   })
 
   test('accepts a valid number', () => {
-    expect(optionalPhoneSchema.safeParse('+77052266666').success).toBe(true)
+    expect(optionalPhoneSchema.safeParse('+77781234455').success).toBe(true)
   })
 
   test('validation 7,12: a domestic 8-prefix number is accepted on the social channels', () => {
-    expect(optionalPhoneSchema.safeParse('87052266666').success).toBe(true)
+    expect(optionalPhoneSchema.safeParse('87781234455').success).toBe(true)
   })
 
   test('rejects a non-empty invalid number — optional means "empty or valid"', () => {
@@ -224,9 +224,9 @@ describe('registerInputSchema — input validation', () => {
 
   test('happy-path 13: a domestic phone is stored in canonical E.164 form', () => {
     expect(
-      registerInputSchema.parse({ ...validResident, phone: '87052266666' })
+      registerInputSchema.parse({ ...validResident, phone: '87781234455' })
         .phone,
-    ).toBe('+77052266666')
+    ).toBe('+77781234455')
   })
 
   test('apartment supplied as a numeric string is coerced to a number', () => {

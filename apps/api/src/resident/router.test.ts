@@ -28,7 +28,7 @@ const mockUpdateResident = vi.mocked(updateResident)
 const validInput: z.input<typeof registerInputSchema> = {
   apartment: 42,
   block: 1,
-  name: 'Иван Петров',
+  name: 'Джордж Лукас',
   phone: '+77071234567',
   role: 'owner',
 }
@@ -39,7 +39,7 @@ const validUpdate: ProfileUpdate = {
   block: 1,
   cars: [],
   isPhoneVisible: true,
-  name: 'Иван Петров',
+  name: 'Джордж Лукас',
   role: 'owner',
 }
 
@@ -101,7 +101,7 @@ describe('residentRouter.register — one record per identity', () => {
       expect.objectContaining({
         avatarUrl: null,
         cars: [],
-        name: 'Иван Петров',
+        name: 'Джордж Лукас',
         phone: '+77071234567',
       }),
     )
@@ -127,7 +127,7 @@ describe('residentRouter.register — one record per identity', () => {
       block: 3,
       cars: ['A123BC'],
       isPhoneVisible: true,
-      name: 'Султан',
+      name: 'Джонни Депп',
       phone: '+77071234567',
       role: 'administration',
     }
@@ -183,7 +183,7 @@ describe('residentRouter.register — one record per identity', () => {
 
     expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
       'google-uid',
-      expect.objectContaining({ name: 'Иван Петров', phone: '' }),
+      expect.objectContaining({ name: 'Джордж Лукас', phone: '' }),
     )
   })
 
@@ -250,7 +250,7 @@ describe('residentRouter.update — profile update', () => {
       block: 1,
       cars: [],
       isPhoneVisible: false,
-      name: 'Иван Петров',
+      name: 'Джордж Лукас',
       phone: '+77071234567',
       role: 'owner',
     })
@@ -270,7 +270,7 @@ describe('residentRouter.update — profile update', () => {
       block: 1,
       cars: [],
       isPhoneVisible: false,
-      name: 'Иван Петров',
+      name: 'Джордж Лукас',
       phone: '+77071234567',
       role: '',
     })
@@ -290,7 +290,7 @@ describe('residentRouter.update — profile update', () => {
       block: 1,
       cars: [],
       isPhoneVisible: false,
-      name: 'Иван Петров',
+      name: 'Джордж Лукас',
       phone: '+77071234567',
       role: 'manager',
     })
@@ -310,7 +310,7 @@ describe('residentRouter.update — profile update', () => {
       block: 1,
       cars: [],
       isPhoneVisible: false,
-      name: 'Иван Петров',
+      name: 'Джордж Лукас',
       phone: '+77071234567',
       role: 'administration',
     })
@@ -341,7 +341,7 @@ describe('residentRouter.update — profile update', () => {
       block: 1,
       cars: [],
       isPhoneVisible: false,
-      name: 'Иван Петров',
+      name: 'Джордж Лукас',
       phone: '+77071234567',
       role: 'owner',
     })
@@ -392,7 +392,7 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
       block: 1,
       cars: [],
       isPhoneVisible: false,
-      name: 'Иван Петров',
+      name: 'Джордж Лукас',
       phone: '+77071234567',
       role: 'owner',
     })
@@ -409,7 +409,7 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
       id: 'uid-1',
       isPhoneVisible: false,
       isRegistered: true,
-      name: 'Иван Петров',
+      name: 'Джордж Лукас',
       phone: '+77071234567',
       role: 'owner',
     })

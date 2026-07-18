@@ -49,7 +49,7 @@ beforeEach(() => {
   state.data = {
     apartment: 42,
     block: 1,
-    name: 'Иван Петров',
+    name: 'Джордж Лукас',
     phone: '+77071234567',
     role: 'owner',
   }
@@ -63,7 +63,7 @@ describe('getResident — edge-cases 1: legacy documents default missing profile
       block: 1,
       cars: [],
       isPhoneVisible: false,
-      name: 'Иван Петров',
+      name: 'Джордж Лукас',
       phone: '+77071234567',
       role: 'owner',
     })
@@ -103,7 +103,7 @@ describe('createResidentIfAbsent — atomic one-record-per-identity write', () =
     block: 1,
     cars: [],
     isPhoneVisible: false,
-    name: 'Иван Петров',
+    name: 'Джордж Лукас',
     phone: '+77071234567',
     role: 'owner',
   }
@@ -121,8 +121,8 @@ describe('createResidentIfAbsent — atomic one-record-per-identity write', () =
       block: 3,
       cars: ['A123BC'],
       isPhoneVisible: true,
-      name: 'Султан',
-      phone: '+77052266666',
+      name: 'Джонни Депп',
+      phone: '+77781234455',
       role: 'administration',
     }
 

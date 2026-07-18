@@ -9,7 +9,7 @@ const jsonResponse = (body: unknown) => ({ json: () => Promise.resolve(body) })
 const validInput = {
   login: 'park-login',
   message: 'Raiymbek Park: код подтверждения 123456',
-  phone: '+77052266666',
+  phone: '+77781234455',
   psw: 'secret-psw',
   sender: 'Raiymbek',
 }
@@ -41,7 +41,7 @@ describe('sendSms — smsc.kz gateway request (happy-path 7)', () => {
       fmt: '3',
       login: 'park-login',
       mes: 'Raiymbek Park: код подтверждения 123456',
-      phones: '+77052266666',
+      phones: '+77781234455',
       psw: 'secret-psw',
       sender: 'Raiymbek',
     })

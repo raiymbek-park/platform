@@ -60,7 +60,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         block: 1,
         cars: [],
         isPhoneVisible: false,
-        name: 'Иван Петров',
+        name: 'Джордж Лукас',
         phone: '+77071234567',
         role: 'owner',
       }
@@ -84,7 +84,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         block: 2,
         cars: [],
         isPhoneVisible: false,
-        name: 'Айгерим Сатыбалды',
+        name: 'Джеки Чан',
         phone: '+77011112233',
         role: 'tenant',
       }
