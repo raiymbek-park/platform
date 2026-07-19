@@ -145,6 +145,37 @@ an authorization allow/deny verdict, a localized or filtered projection)
 
 **Carve-out — forcing an error / empty / loading response is NOT fabricating the backend.** Making a boundary return an error, an empty result, or hang — to check how the UI copes — is a legitimate mock: the subject under test is the client's *reaction*, and you assert on the UI, not on any business output the server computed. What the litmus forbids is a canned *success* payload that stands in for real server logic. So: canned error / empty / loading at the boundary → allowed; canned success output that encodes the server's computation → fabricated backend.
 
+### Assert the behaviour the requirement demands — not the plumbing
+
+A test earns its place only by failing when a real requirement breaks. Two smells mean it can't:
+
+- **Testing the mock.** You replace a collaborator with a mock, give it a fixed return, then
+  assert either that it was *called* or a value trivially echoed from what you configured. Nothing
+  about the system's own behaviour is verified — you've only confirmed the mock returns what you
+  told it to. Start from what the *requirement* says must be true and exercise it through real
+  code; mock only what is genuinely outside your control.
+- **Asserting intent, not outcome.** Asserting that the code *asked* for an effect — a recorded
+  call, an unresolved write token handed off to be applied later — proves the request, not the
+  result; the effect itself is faked away, so the assertion can stay green while the real outcome
+  is wrong. Assert the observable outcome the requirement describes, read back from wherever it
+  lands.
+
+**Name only the guarantee the test can prove — the break-the-mechanism check.** If you could
+delete the mechanism a test is named for (the transaction, the constraint, the retry) and the
+test would still pass, the test does not protect that property. Verify it at a level that can, or
+rename the test to what it actually checks.
+
+### Top-down spans the whole stack
+
+The top-down rule crosses the client↔server boundary too. When an end-to-end test drives the
+system through its real entry point (real server, real business logic, only the outside world
+substituted) and asserts the outcome, it already covers that logic — a separate lower-level test
+for the *same* behaviour is a duplicate; remove it. Keep lower-level tests only for what the top
+cannot reach: flows with no trigger a higher test can pull (schedulers, background jobs,
+webhooks), branches the entry point cannot produce (an input it rejects, a state it never emits),
+and shared pure logic. Push true persistence / atomicity / concurrency / rules guarantees to a
+real-infrastructure tier (containers or an emulator) — no mock or in-memory fake can prove them.
+
 For tool-specific patterns, consult the relevant example file from `project-context.md`.
 
 ## Element Selection Strategy

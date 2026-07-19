@@ -98,6 +98,8 @@ backend. Rewrite: seed the datastore and let real code produce it.
 
 Carve-out: a canned **error / empty / loading** response at the boundary is allowed even under this litmus — you are testing the UI's *reaction*, not fabricating server success. Only a canned *success* payload that stands in for server logic is a fabricated backend.
 
+**Assert the behaviour, not the plumbing** (see "Assert the behaviour the requirement demands" in testing-strategy.md). Avoid two things: (1) mocking a collaborator and then asserting it was called or a value echoed from its configured return — that tests the mock, not a requirement; (2) asserting the code *asked* for an effect (a recorded call, an unresolved write token) instead of the observable outcome it produces. Start from what the requirement must make true, exercise it through real code, and assert the outcome read back from where it lands. And **name only what the test proves**: apply the break-the-mechanism check before titling a test for a guarantee (delete the mechanism → the test must fail), else verify it at a tier that can, or rename.
+
 A test generated under this self-check is exactly what §D verifies — write and review apply one rule, so they can never diverge. If following it is impossible because the project has no way to run the real server logic in a test, do NOT fall back to fabricating the backend: surface that the in-process harness is a prerequisite (see below) and stop, rather than generating a test the review step will reject.
 
 If `project-context.md` specifies how the real server logic runs in tests (an in-process harness, a disposable test datastore) with example references → load the relevant example file for implementation patterns.

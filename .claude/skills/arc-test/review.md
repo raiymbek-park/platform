@@ -29,6 +29,7 @@ See `## Decision Matrix` in testing-strategy.md.
 - [ ] Top-down: each behavior is covered at the HIGHEST level that can exercise it — nothing a page/main-flow integration test drives is also (re)tested at component/unit level
 - [ ] One integration file per screen — a screen's UI-only and backend-touching behaviors are NOT split across a "narrow" and a "wide" file
 - [ ] Lower-level tests exist ONLY for what the top cannot reach (shared utilities, isolated multi-branch logic, states a full flow can't force)
+- [ ] Cross-level: a lower-level test is NOT a duplicate of a behaviour an end-to-end test (through the real entry point, only the outside world substituted) already drives and asserts. Lower-level tests remain only for what the top can't reach — externally-triggered flows, entry-point-unreachable branches, and shared pure logic
 
 #### B. Implementation Detail Coupling
 
@@ -67,6 +68,11 @@ fields, status codes, authorization allow/deny verdicts, localized/filtered proj
 ```
 
 **Carve-out — do NOT flag error / empty / loading injection.** A canned error, empty result, or hang at the boundary to test how the UI *reacts* is allowed (the subject is the client's reaction, asserted on the UI). Only a canned *success* payload standing in for server logic is the fabrication this rule targets — do not confuse the two.
+
+**Assert the behaviour, not the plumbing** (see testing-strategy.md). Flag as WEAK:
+- [ ] A test that mocks a collaborator, then asserts it was called or asserts a value echoed from its configured return — it verifies the mock, not a requirement.
+- [ ] An assertion on intent (a recorded call, an unresolved write token) used as a proxy for the outcome — require the observable result, read back from where it lands.
+- [ ] An over-claiming name: a test titled for a guarantee (atomicity, uniqueness, durability) a mock can't prove. Break-the-mechanism — delete the mechanism; if the test stays green the guarantee is untested, so move it to a real-infrastructure tier or rename.
 
 **Checklist:**
 
