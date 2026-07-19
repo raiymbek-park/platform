@@ -7,7 +7,7 @@ vi.mock('../firestore', async () => {
   const { Timestamp } = await import('firebase-admin/firestore')
   return {
     getDb: () => module.fake.db,
-    FieldValue: module.FieldValue,
+    FieldValue: module.fakeFieldValue,
     Timestamp,
   }
 })

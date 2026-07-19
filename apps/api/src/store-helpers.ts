@@ -31,7 +31,7 @@ export const toStringArray = (value: unknown): string[] =>
 const isReactionKind = (kind: string): kind is ReactionKind =>
   reactionKinds.some(x => x === kind)
 
-export const toReactions = (value: unknown): Record<string, ReactionKind> => {
+const toReactions = (value: unknown): Record<string, ReactionKind> => {
   if (typeof value !== 'object' || value === null) return {}
   return Object.fromEntries(
     Object.entries(value).flatMap(([uid, kind]) =>

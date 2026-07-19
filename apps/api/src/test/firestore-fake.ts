@@ -51,7 +51,7 @@ const isSentinel = (
 ): value is { __sentinel: string; by?: number } =>
   typeof value === 'object' && value !== null && '__sentinel' in value
 
-const FieldValue = {
+const fakeFieldValue = {
   serverTimestamp: () => ({ __sentinel: 'serverTimestamp' }),
   increment: (by: number) => ({ __sentinel: 'increment', by }),
 }
@@ -287,4 +287,4 @@ export const fake = {
 
 export const getFirestore = (): Firestore => db as unknown as Firestore
 
-export { FieldValue }
+export { fakeFieldValue }
