@@ -86,9 +86,12 @@ use** — ADR 017.
 - **MSW is retained** as the transport for the harness itself, and for the thin transport-contract set
   the in-process path cannot see (headers, serialization, batching, HTTP-error→TRPCError mapping — e.g.
   `apps/web/src/shared/api/request-headers.test.ts`).
-- Naming/lint: harness files use the `*.server.test.tsx` name; `apps/web/steiger.config.ts` has a scoped
-  `fsd/no-public-api-sidestep: off` for them so they can import `render-app-server` directly (keeping
-  `appRouter` out of the `@/shared/test` barrel and thus out of every other web test).
+- Naming/lint: harness files are plain `*.test.tsx` (no special suffix). They import
+  `render-app-server` **directly** (`@/shared/test/render-app-server`), NOT via the `@/shared/test`
+  barrel — a barrel re-export would eagerly pull the heavy `appRouter` (firebase-admin + Anthropic SDK)
+  into every web test that touches the barrel, thrashing the parallel run; the direct import confines
+  that load to harness files only. `apps/web/steiger.config.ts` excludes all test files from FSD, so the
+  direct import doesn't trip `fsd/no-public-api-sidestep`.
 - **Language: harness tests are authored in English.** `renderAppWithServer` activates the English lingui
   catalog and sets `createContext` locale to `en`, so the UI renders in English — assert English chrome
   (buttons/toasts/labels/category/status names, taken from `src/shared/i18n/locales/en/messages.po`), and
