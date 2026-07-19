@@ -1,11 +1,12 @@
-import type { IconGlyph, SelectOptionTone } from '@raiymbek-park/ui'
+import type {
+  IconGlyph,
+  SelectCardOption,
+  SelectOptionTone,
+} from '@raiymbek-park/ui'
 import type { AuthMethod } from '../model/use-auth-method-store'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import { Divider, SelectOption } from '@raiymbek-park/ui'
-import { Fragment } from 'react'
-
-import css from './auth-method-select.module.scss'
+import { SelectCard } from '@raiymbek-park/ui'
 
 const displayOrder: AuthMethod[] = ['phone', 'google', 'facebook']
 
@@ -45,23 +46,19 @@ export const AuthMethodSelect = ({
   }
 
   return (
-    <fieldset className={css.card}>
-      <legend className='sr-only'>
-        <Trans>Способ входа</Trans>
-      </legend>
-      {displayOrder.map((method, index) => (
-        <Fragment key={method}>
-          {index > 0 && <Divider />}
-          <SelectOption
-            icon={methodIcons[method]}
-            isSelected={value === method}
-            label={methodLabels[method]}
-            subtitle={methodSubtitles[method]}
-            tone={methodTones[method]}
-            onClick={() => onSelect(method)}
-          />
-        </Fragment>
-      ))}
-    </fieldset>
+    <SelectCard
+      legend={<Trans>Способ входа</Trans>}
+      options={displayOrder.map(
+        (method): SelectCardOption => ({
+          icon: methodIcons[method],
+          isSelected: value === method,
+          key: method,
+          label: methodLabels[method],
+          subtitle: methodSubtitles[method],
+          tone: methodTones[method],
+          onSelect: () => onSelect(method),
+        }),
+      )}
+    />
   )
 }
