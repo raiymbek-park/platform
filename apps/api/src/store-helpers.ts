@@ -31,13 +31,25 @@ export const toStringArray = (value: unknown): string[] =>
 const isReactionKind = (kind: string): kind is ReactionKind =>
   reactionKinds.some(x => x === kind)
 
-export const toReactions = (value: unknown): Record<string, ReactionKind> => {
+const toReactions = (value: unknown): Record<string, ReactionKind> => {
   if (typeof value !== 'object' || value === null) return {}
   return Object.fromEntries(
     Object.entries(value).flatMap(([uid, kind]) =>
       isReactionKind(kind) ? [[uid, kind]] : [],
     ),
   )
+}
+
+export const parseAuthorMeta = (data: DocumentData) => {
+  const reactions = toReactions(data.reactions)
+  const author: DocumentData =
+    typeof data.author === 'object' && data.author !== null ? data.author : {}
+  return {
+    author,
+    authorId: toText(data.authorId),
+    kinds: Object.values(reactions),
+    reactions,
+  }
 }
 
 export const toggleReaction = (

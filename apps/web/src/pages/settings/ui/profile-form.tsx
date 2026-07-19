@@ -3,7 +3,7 @@ import type { Locale } from '@/shared/i18n'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import { randomId } from '@raiymbek-park/shared'
-import { Button, Divider, SectionHeader, SelectOption } from '@raiymbek-park/ui'
+import { Button, SectionHeader, SelectCard } from '@raiymbek-park/ui'
 import { useForm } from '@tanstack/react-form'
 import { useEffect, useState } from 'react'
 
@@ -16,7 +16,7 @@ import {
 } from '@/entities/resident'
 import { LocaleSelect, useSwitchLocale } from '@/features/locale-select'
 import { formatPhoneDisplay } from '@/features/onboarding'
-import { inputState } from '@/shared/form'
+import { inputState, toErrorMessage } from '@/shared/form'
 import { i18n, resolveLocale } from '@/shared/i18n'
 import { showToastMessage } from '@/shared/toast'
 
@@ -28,15 +28,6 @@ import css from './profile-form.module.scss'
 
 const fieldOrder = ['name', 'block', 'apartment', 'role', 'cars'] as const
 
-const toMessage = (error: unknown): string | undefined => {
-  if (typeof error === 'string') return error
-  if (typeof error === 'object' && error !== null && 'message' in error) {
-    const { message } = error
-    return typeof message === 'string' ? message : undefined
-  }
-  return undefined
-}
-
 const firstInvalidMessage = (
   fields: Record<string, { errors: unknown[] }>,
 ): string | undefined =>
@@ -46,7 +37,7 @@ const firstInvalidMessage = (
         .filter(([key]) => key === name || key.startsWith(`${name}[`))
         .flatMap(([, field]) => field.errors),
     )
-    .map(toMessage)
+    .map(toErrorMessage)
     .find(message => Boolean(message))
 
 export type ProfileFormProps = {
@@ -165,28 +156,30 @@ export const ProfileForm = ({ profile }: ProfileFormProps) => {
         <SectionHeader title={t`Видимость номера`} />
         <form.Field name='isPhoneVisible'>
           {field => (
-            <fieldset className={css.card} disabled={isPending}>
-              <legend className='sr-only'>
-                <Trans>Видимость номера</Trans>
-              </legend>
-              <SelectOption
-                icon='eye'
-                isSelected={field.state.value}
-                label={t`Открыть`}
-                subtitle={t`Ваш контактный номер виден для других жильцов.`}
-                tone='brand'
-                onClick={() => field.handleChange(true)}
-              />
-              <Divider />
-              <SelectOption
-                icon='eye-off'
-                isSelected={!field.state.value}
-                label={t`Скрыть`}
-                subtitle={t`Ваш контактный номер скрыт от других жильцов.`}
-                tone='danger'
-                onClick={() => field.handleChange(false)}
-              />
-            </fieldset>
+            <SelectCard
+              disabled={isPending}
+              legend={<Trans>Видимость номера</Trans>}
+              options={[
+                {
+                  icon: 'eye',
+                  isSelected: field.state.value,
+                  key: 'open',
+                  label: t`Открыть`,
+                  subtitle: t`Ваш контактный номер виден для других жильцов.`,
+                  tone: 'brand',
+                  onSelect: () => field.handleChange(true),
+                },
+                {
+                  icon: 'eye-off',
+                  isSelected: !field.state.value,
+                  key: 'hide',
+                  label: t`Скрыть`,
+                  subtitle: t`Ваш контактный номер скрыт от других жильцов.`,
+                  tone: 'danger',
+                  onSelect: () => field.handleChange(false),
+                },
+              ]}
+            />
           )}
         </form.Field>
       </section>

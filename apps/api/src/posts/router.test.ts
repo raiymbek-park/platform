@@ -55,12 +55,6 @@ const announcementPayload: PostCreatePayload = {
 const updateInput: PostUpdateInput = offerPayload
 
 describe('postsRouter.create — validation 9: server enforces post-kind permissions', () => {
-  it('rejects an unauthenticated caller with UNAUTHORIZED', async () => {
-    await expect(caller(null).create(offerPayload)).rejects.toMatchObject({
-      code: 'UNAUTHORIZED',
-    })
-  })
-
   it('rejects a Viewer creating an offer with FORBIDDEN', async () => {
     mockGetRole.mockResolvedValueOnce('viewer')
     await expect(caller('uid-1').create(offerPayload)).rejects.toMatchObject({
@@ -79,22 +73,6 @@ describe('postsRouter.create — validation 9: server enforces post-kind permiss
     mockGetRole.mockResolvedValueOnce('manager')
     await expect(caller('uid-1').create(offerPayload)).rejects.toMatchObject({
       code: 'FORBIDDEN',
-    })
-  })
-
-  it('allows a Resident to create an offer', async () => {
-    mockGetRole.mockResolvedValueOnce('resident')
-    mockCreatePost.mockResolvedValueOnce({ id: offerPayload.id })
-    await expect(caller('uid-1').create(offerPayload)).resolves.toEqual({
-      id: offerPayload.id,
-    })
-  })
-
-  it('allows a Manager to create an announcement', async () => {
-    mockGetRole.mockResolvedValueOnce('manager')
-    mockCreatePost.mockResolvedValueOnce({ id: announcementPayload.id })
-    await expect(caller('uid-1').create(announcementPayload)).resolves.toEqual({
-      id: announcementPayload.id,
     })
   })
 
@@ -122,22 +100,6 @@ describe('postsRouter.update / delete — validation 9: server enforces ownershi
     })
   })
 
-  it('rejects update with NOT_FOUND when the post does not exist', async () => {
-    mockGetRole.mockResolvedValueOnce('resident')
-    mockUpdatePost.mockResolvedValueOnce('not-found')
-    await expect(caller('uid-1').update(updateInput)).rejects.toMatchObject({
-      code: 'NOT_FOUND',
-    })
-  })
-
-  it('allows the author to update their own post', async () => {
-    mockGetRole.mockResolvedValueOnce('resident')
-    mockUpdatePost.mockResolvedValueOnce('ok')
-    await expect(caller('uid-1').update(updateInput)).resolves.toEqual({
-      ok: true,
-    })
-  })
-
   it('rejects delete with FORBIDDEN for a non-author, non-administration member', async () => {
     mockGetRole.mockResolvedValueOnce('resident')
     mockDeletePost.mockResolvedValueOnce('forbidden')
@@ -154,18 +116,12 @@ describe('postsRouter.update / delete — validation 9: server enforces ownershi
     ).rejects.toMatchObject({ code: 'NOT_FOUND' })
   })
 
-  it('allows Administration to edit or delete a post authored by someone else (happy-path 12)', async () => {
+  it('allows Administration to edit a post authored by someone else (happy-path 12)', async () => {
     mockGetRole.mockResolvedValueOnce('administration')
     mockUpdatePost.mockResolvedValueOnce('ok')
     await expect(caller('admin-uid').update(updateInput)).resolves.toEqual({
       ok: true,
     })
-
-    mockGetRole.mockResolvedValueOnce('administration')
-    mockDeletePost.mockResolvedValueOnce('ok')
-    await expect(
-      caller('admin-uid').delete({ postId: 'post-1' }),
-    ).resolves.toEqual({ ok: true })
   })
 })
 

@@ -4,12 +4,13 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/router.ts"
+    ".": "./src/router.ts",
+    "./testing": "./src/test/index.ts"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "test:emulator": "firebase emulators:exec --only firestore \"vitest run\"",
+    "test:emulator": "npx -y firebase-tools@15 emulators:exec --only firestore \"vitest run\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

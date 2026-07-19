@@ -1,5 +1,5 @@
 const TEST_CODES: Record<string, string> = {
-  '+77052266666': '123456',
+  '+77781234455': '123456',
 }
 
 const isOtpTestMode = (): boolean => process.env.OTP_TEST_MODE === 'true'

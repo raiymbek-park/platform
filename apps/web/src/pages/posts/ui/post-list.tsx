@@ -1,12 +1,10 @@
 import type { PostTab } from '@raiymbek-park/shared/validation-schemas'
 
 import { useLingui } from '@lingui/react/macro'
-import { Button, EmptyState, SkeletonCard } from '@raiymbek-park/ui'
-import { useEffect } from 'react'
+import { SkeletonCard } from '@raiymbek-park/ui'
 
-import { useIntersectionObserver } from '@/shared/lib'
+import { InfiniteListStates, useInfiniteSentinel } from '@/shared/list'
 import { useReactionAccess } from '@/shared/session'
-import { showToastMessage } from '@/shared/toast'
 
 import { usePostActionsAccess } from '../model/use-post-actions-access'
 import { usePostDeletion } from '../model/use-post-deletion'
@@ -14,11 +12,6 @@ import { usePostsData } from '../model/use-posts-data'
 import { useUpdatePostReaction } from '../model/use-update-post-reaction'
 import { PostCardItem } from './post-card-item'
 import { PostDeleteConfirm } from './post-delete-confirm'
-import css from './post-list.module.scss'
-
-const SKELETON_KEYS = ['a', 'b', 'c', 'd']
-
-const emptyImage = `${import.meta.env.BASE_URL}images/no-data.png`
 
 export type PostListProps = {
   query: string
@@ -42,53 +35,27 @@ export const PostList = ({ query, search, tab }: PostListProps) => {
   const { react } = useUpdatePostReaction()
   const access = usePostActionsAccess()
   const deletion = usePostDeletion()
-  const sentinelRef = useIntersectionObserver<HTMLDivElement>({
-    enabled: hasNextPage,
-    onChange: isIntersecting => {
-      if (isIntersecting && !isFetchingNextPage) fetchNextPage()
-    },
+  const sentinelRef = useInfiniteSentinel({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   })
 
-  useEffect(() => {
-    if (isError)
-      showToastMessage({ kind: 'error', text: t`Не удалось загрузить ленту` })
-  }, [isError, t])
-
-  const skeletons = (
-    <div className={css.list} data-testid='post-skeletons'>
-      {SKELETON_KEYS.map(key => (
-        <SkeletonCard key={key} />
-      ))}
-    </div>
-  )
-
-  if (isPending) return skeletons
-
-  if (isError) {
-    return (
-      <div className={css.state} data-testid='post-error'>
-        <Button icon='refresh-cw' variant='secondary' onClick={() => refetch()}>
-          {t`Повторить`}
-        </Button>
-      </div>
-    )
-  }
-
-  if (posts.length === 0) {
-    return isFetching || query !== search ? (
-      skeletons
-    ) : (
-      <EmptyState
-        data-testid='post-empty'
-        image={emptyImage}
-        message={t`Пока нет ни одного объявления.`}
-        title={t`Нет данных`}
-      />
-    )
-  }
-
   return (
-    <div className={css.list}>
+    <InfiniteListStates
+      emptyMessage={t`Пока нет ни одного объявления.`}
+      errorToast={t`Не удалось загрузить ленту`}
+      isEmpty={posts.length === 0}
+      isError={isError}
+      isPending={isPending}
+      isSettling={isFetching || query !== search}
+      testIds={{
+        empty: 'post-empty',
+        error: 'post-error',
+        skeletons: 'post-skeletons',
+      }}
+      onRetry={() => refetch()}
+    >
       {posts.map(post => (
         <PostCardItem
           key={post.id}
@@ -107,6 +74,6 @@ export const PostList = ({ query, search, tab }: PostListProps) => {
         onCancel={deletion.cancel}
         onConfirm={deletion.confirm}
       />
-    </div>
+    </InfiniteListStates>
   )
 }

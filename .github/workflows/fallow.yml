@@ -30,6 +30,15 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Set up Java for the Firestore emulator
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Integration tests (Firestore emulator)
+        run: npm --prefix apps/api run test:emulator
+
       - name: i18n catalogs complete
         run: npm --prefix apps/web run i18n:compile
 

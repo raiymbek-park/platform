@@ -1,17 +1,14 @@
-import type { Issue } from '@raiymbek-park/api'
-
-import { screen, waitFor } from '@testing-library/react'
-import { beforeEach, expect, test } from 'vitest'
-
 import {
-  firebaseAuth,
-  renderApp,
-  residentMe,
-  trpcMutation,
-  trpcMutationError,
-  trpcQueries,
-  trpcServer,
-} from '@/shared/test'
+  fake,
+  injectFake,
+  resetFirestore,
+  Timestamp,
+} from '@raiymbek-park/api/testing'
+import { screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, expect, test } from 'vitest'
+
+import { firebaseAuth, trpcMutationError, trpcServer } from '@/shared/test'
+import { renderAppWithServer } from '@/shared/test/render-app-server'
 
 if (!URL.createObjectURL)
   Object.assign(URL, {
@@ -19,124 +16,121 @@ if (!URL.createObjectURL)
     revokeObjectURL: () => {},
   })
 
-const issue: Issue = {
-  author: { apartment: 42, block: 1, name: 'Алиса' },
-  category: 'repair',
-  commentCount: 0,
-  createdAt: 1_700_000_000_000,
-  description: 'Кран на кухне течёт уже неделю, нужен мастер',
-  dislikeCount: 0,
-  id: 'issue-1',
-  isMine: true,
-  isTranslated: false,
-  isWatching: false,
-  keywords: [],
-  likeCount: 0,
-  media: [],
-  myReaction: null,
-  number: 42,
-  original: null,
-  originalLang: 'ru',
-  status: 'new',
-  tags: [],
-  title: 'Течёт кран на кухне',
-  urgent: false,
-}
+const seedResident = () =>
+  fake.seed('residents/uid-1', {
+    apartment: 42,
+    avatarUrl: null,
+    block: 1,
+    cars: [],
+    isPhoneVisible: false,
+    name: 'Alice',
+    phone: '+77781234455',
+    role: 'resident',
+  })
 
-type UpdatePayload = {
-  category: string
-  description: string
-  id: string
-  media: string[]
-  title: string
-  urgent: boolean
-}
+const seedIssue = () =>
+  fake.seed('issues/issue-1', {
+    author: { apartment: 42, block: 1, name: 'Alice' },
+    authorId: 'uid-1',
+    category: 'repair',
+    commentCount: 0,
+    createdAt: Timestamp.fromMillis(1_700_000_000_000),
+    description: 'The kitchen tap has been dripping for a week, need a plumber',
+    keywords: [],
+    lang: 'ru',
+    media: [],
+    number: 42,
+    reactions: {},
+    status: 'new',
+    tags: [],
+    title: "Kitchen tap won't stop dripping",
+    urgent: false,
+  })
 
-let lastUpdate: UpdatePayload | null = null
+const titleField = () => screen.getByRole('textbox', { name: 'Issue title' })
 
-const serve = () =>
-  trpcServer.use(
-    trpcQueries({
-      'issues.get': () => issue,
-      'issues.list': () => ({ issues: [issue], nextCursor: null }),
-      'resident.me': () => residentMe(),
-    }),
-    trpcMutation('issues.update', raw => {
-      lastUpdate = raw as UpdatePayload
-      return { ...issue, ...(raw as object) }
-    }),
-  )
+const descriptionField = () =>
+  screen.getByRole('textbox', { name: 'Description' })
 
-const titleField = () => screen.getByRole('textbox', { name: 'Тема заявки' })
+const submit = () => screen.getByRole('button', { name: 'Save' })
 
-const descriptionField = () => screen.getByRole('textbox', { name: 'Описание' })
-
-const submit = () => screen.getByRole('button', { name: 'Сохранить' })
-
-const ready = () => screen.findByRole('textbox', { name: 'Тема заявки' })
+const ready = () => screen.findByRole('textbox', { name: 'Issue title' })
 
 beforeEach(() => {
   firebaseAuth.reset()
   firebaseAuth.signIn()
-  lastUpdate = null
+  fake.reset()
+  injectFake()
 })
 
+afterEach(resetFirestore)
+
 test('happy-path: the edit form is prefilled with the current issue values', async () => {
-  serve()
-  renderApp('/issues/edit/issue-1')
+  seedResident()
+  seedIssue()
+  renderAppWithServer('/issues/edit/issue-1', { uid: 'uid-1' })
 
   await ready()
-  expect(titleField()).toHaveValue('Течёт кран на кухне')
+  expect(titleField()).toHaveValue("Kitchen tap won't stop dripping")
   expect(descriptionField()).toHaveValue(
-    'Кран на кухне течёт уже неделю, нужен мастер',
+    'The kitchen tap has been dripping for a week, need a plumber',
   )
-  expect(screen.getByRole('button', { name: /Ремонт/ })).toHaveAttribute(
+  expect(screen.getByRole('button', { name: /Repair/ })).toHaveAttribute(
     'aria-pressed',
     'true',
   )
 })
 
-test('happy-path: editing the title and saving calls update and returns to the list with a toast', async () => {
-  serve()
-  const { currentPath, user } = renderApp('/issues/edit/issue-1')
+test('happy-path: editing the title and saving updates the stored issue and confirms in the list with a toast', async () => {
+  seedResident()
+  seedIssue()
+  const { currentPath, user } = renderAppWithServer('/issues/edit/issue-1', {
+    uid: 'uid-1',
+  })
 
   await ready()
   await user.clear(titleField())
-  await user.type(titleField(), 'Течёт кран в ванной')
+  await user.type(titleField(), "Bathroom tap won't stop dripping")
   await user.click(submit())
 
   await waitFor(() => expect(currentPath()).toBe('/issues'))
-  expect(await screen.findByText('Изменения сохранены.')).toBeInTheDocument()
-  expect(lastUpdate?.id).toBe('issue-1')
-  expect(lastUpdate?.title).toBe('Течёт кран в ванной')
+  expect(await screen.findByText('Changes saved.')).toBeInTheDocument()
+  expect(fake.getDoc('issues/issue-1')?.title).toBe(
+    "Bathroom tap won't stop dripping",
+  )
 })
 
 test('validation: clearing the title below three characters disables save', async () => {
-  serve()
-  const { user } = renderApp('/issues/edit/issue-1')
+  seedResident()
+  seedIssue()
+  const { user } = renderAppWithServer('/issues/edit/issue-1', { uid: 'uid-1' })
 
   await ready()
   await user.clear(titleField())
-  await user.type(titleField(), 'ав')
+  await user.type(titleField(), 'ab')
 
   expect(submit()).toBeDisabled()
 })
 
-test('error-states: a failed update shows an error toast and keeps the form', async () => {
-  serve()
-  trpcServer.use(trpcMutationError('issues.update'))
-  const { currentPath, user } = renderApp('/issues/edit/issue-1')
+test('error-states: a failed update shows an error toast, keeps the form, and stores nothing', async () => {
+  seedResident()
+  seedIssue()
+  const { currentPath, user } = renderAppWithServer('/issues/edit/issue-1', {
+    uid: 'uid-1',
+  })
 
   await ready()
+  trpcServer.use(trpcMutationError('issues.update'))
   await user.clear(titleField())
-  await user.type(titleField(), 'Течёт кран в ванной')
+  await user.type(titleField(), "Bathroom tap won't stop dripping")
   await user.click(submit())
 
   expect(
-    await screen.findByText(
-      'Не удалось сохранить изменения. Попробуйте ещё раз.',
-    ),
+    await screen.findByText('Could not save the changes. Please try again.'),
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/issues/edit/issue-1')
-  expect(titleField()).toHaveValue('Течёт кран в ванной')
+  expect(titleField()).toHaveValue("Bathroom tap won't stop dripping")
+  expect(fake.getDoc('issues/issue-1')?.title).toBe(
+    "Kitchen tap won't stop dripping",
+  )
 })

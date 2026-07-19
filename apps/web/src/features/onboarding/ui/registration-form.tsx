@@ -11,7 +11,7 @@ import {
   RolePicker,
 } from '@/entities/resident'
 import { auth } from '@/shared/firebase'
-import { inputState } from '@/shared/form'
+import { inputState, toErrorMessage } from '@/shared/form'
 import { showToastMessage } from '@/shared/toast'
 
 import { sendCodeErrorText } from '../lib/auth-error'
@@ -28,15 +28,6 @@ import { useSendOtp } from '../model/use-send-otp'
 import css from './registration-form.module.scss'
 
 const fieldOrder = ['name', 'phone', 'block', 'apartment', 'role'] as const
-
-const toMessage = (error: unknown): string | undefined => {
-  if (typeof error === 'string') return error
-  if (typeof error === 'object' && error !== null && 'message' in error) {
-    const { message } = error
-    return typeof message === 'string' ? message : undefined
-  }
-  return undefined
-}
 
 export const RegistrationForm = () => {
   const { t } = useLingui()
@@ -61,7 +52,7 @@ export const RegistrationForm = () => {
     onSubmitInvalid: ({ formApi }) => {
       const text = fieldOrder
         .flatMap(name => formApi.getFieldMeta(name)?.errors ?? [])
-        .map(toMessage)
+        .map(toErrorMessage)
         .find(message => Boolean(message))
       if (text) showToastMessage({ kind: 'error', text })
     },

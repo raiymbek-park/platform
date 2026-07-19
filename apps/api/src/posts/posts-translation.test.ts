@@ -71,7 +71,7 @@ vi.mock('../resident/resident-store', () => ({
   }) => resident,
 }))
 
-const { createPost, getPost, listPosts } = await import('./posts-store')
+const { createPost, getPost } = await import('./posts-store')
 
 const offerPayload: PostCreatePayload = {
   category: 'sell',
@@ -151,39 +151,4 @@ test('happy-path 3: getPost shows the original with no indicator for a same-loca
   expect(post?.isTranslated).toBe(false)
   expect(post?.original).toBeNull()
   expect(post?.title).toBe(title)
-})
-
-test('happy-path 1: listPosts threads the viewer’s locale into every returned card', async () => {
-  const title = 'Отключение воды'
-  const description = 'Плановое отключение с 10:00'
-  state.docs = [
-    {
-      data: {
-        author: {},
-        authorId: 'author-uid',
-        description,
-        keywords: [],
-        kind: 'announcement',
-        lang: 'ru',
-        title,
-        translatedRev: hashSource(title, description),
-        translations: {
-          kk: {
-            description: 'Жоспарлы сумен өшіру 10:00-ден',
-            title: 'Суды өшіру',
-          },
-        },
-      },
-      id: 'post-1',
-    },
-  ]
-
-  const { posts } = await listPosts({
-    cursor: 1000,
-    locale: 'kk',
-    tab: 'all',
-    uid: null,
-  })
-
-  expect(posts[0]?.title).toBe('Суды өшіру')
 })

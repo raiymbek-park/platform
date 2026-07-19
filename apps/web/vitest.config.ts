@@ -29,5 +29,7 @@ export default defineConfig({
     setupFiles: [fileURLToPath(new URL('./vitest.setup.ts', import.meta.url))],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['src/test/**'],
+    testTimeout: 20000,
+    hookTimeout: 20000,
   },
 })

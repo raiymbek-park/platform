@@ -3,12 +3,4 @@ export { firebaseMessaging } from './firebase-messaging'
 export { firebaseStorage } from './firebase-storage'
 export { intersectionObserver } from './intersection-observer'
 export { renderApp } from './render-app'
-export { residentMe } from './resident-me'
-export {
-  trpcMutation,
-  trpcMutationError,
-  trpcMutations,
-  trpcQueries,
-  trpcQueriesError,
-  trpcServer,
-} from './trpc-server'
+export { trpcMutationError, trpcServer } from './trpc-server'

@@ -42,6 +42,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       clearCollection(db, 'residents'),
       clearCollection(db, 'service-contacts'),
       clearCollection(db, 'posts'),
+      clearCollection(db, 'otps'),
     ])
   }
 
@@ -60,7 +61,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         block: 1,
         cars: [],
         isPhoneVisible: false,
-        name: 'Иван Петров',
+        name: 'Джордж Лукас',
         phone: '+77071234567',
         role: 'owner',
       }
@@ -84,7 +85,7 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
         block: 2,
         cars: [],
         isPhoneVisible: false,
-        name: 'Айгерим Сатыбалды',
+        name: 'Джеки Чан',
         phone: '+77011112233',
         role: 'tenant',
       }
@@ -97,6 +98,87 @@ describe.skipIf(!EMULATOR)('infra-2 integration — Firestore emulator', () => {
       expect(resident?.apartment).toBe(input.apartment)
       expect(resident?.role).toBe(input.role)
       expect(resident?.phone).toBe(input.phone)
+    })
+  })
+
+  describe('resident-store — createResidentIfAbsent is atomic (one record per identity)', () => {
+    it('two concurrent registrations for the same uid converge on a single stored record', async () => {
+      const { createResidentIfAbsent, getResident } = await import(
+        './resident/resident-store'
+      )
+      const uid = 'firebase-uid-race'
+      const a = {
+        apartment: 1,
+        avatarUrl: null,
+        block: 1,
+        cars: [],
+        isPhoneVisible: false,
+        name: 'Racer A',
+        phone: '+77001110001',
+        role: 'owner',
+      }
+      const b = { ...a, apartment: 2, name: 'Racer B', phone: '+77001110002' }
+
+      const [ra, rb] = await Promise.all([
+        createResidentIfAbsent(uid, a),
+        createResidentIfAbsent(uid, b),
+      ])
+
+      expect(ra).toEqual(rb)
+      const stored = await getResident(uid)
+      expect(stored).toEqual(ra)
+      expect([a, b]).toContainEqual(stored)
+    })
+  })
+
+  describe('otp-store — the real transaction applies and serialises attempt counting', () => {
+    const rules = { intervalMs: 60_000, sendsPerWindow: 5, windowMs: 3_600_000 }
+
+    it('a wrong verification increments attemptCount in the real store', async () => {
+      const { reserveSend, verifyAttempt } = await import('./otp/otp-store')
+      const phone = '+77001110099'
+      const now = Date.now()
+      await reserveSend({
+        codeHash: 'hash',
+        now,
+        phone,
+        rules,
+        salt: 'salt',
+        ttlMs: 300_000,
+      })
+
+      const outcome = await verifyAttempt({
+        isMatch: () => false,
+        maxAttempts: 5,
+        now,
+        phone,
+      })
+
+      expect(outcome).toBe('invalid')
+      const snap = await getDb().collection('otps').doc(phone).get()
+      expect(snap.data()?.attemptCount).toBe(1)
+    })
+
+    it('two concurrent wrong verifications both count — the transaction prevents a lost update', async () => {
+      const { reserveSend, verifyAttempt } = await import('./otp/otp-store')
+      const phone = '+77001110098'
+      const now = Date.now()
+      await reserveSend({
+        codeHash: 'hash',
+        now,
+        phone,
+        rules,
+        salt: 'salt',
+        ttlMs: 300_000,
+      })
+
+      await Promise.all([
+        verifyAttempt({ isMatch: () => false, maxAttempts: 5, now, phone }),
+        verifyAttempt({ isMatch: () => false, maxAttempts: 5, now, phone }),
+      ])
+
+      const snap = await getDb().collection('otps').doc(phone).get()
+      expect(snap.data()?.attemptCount).toBe(2)
     })
   })
 

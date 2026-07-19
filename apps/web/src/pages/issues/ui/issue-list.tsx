@@ -1,12 +1,10 @@
 import type { IssueFilter } from '@raiymbek-park/shared/validation-schemas'
 
 import { useLingui } from '@lingui/react/macro'
-import { Button, EmptyState, SkeletonCard } from '@raiymbek-park/ui'
-import { useEffect } from 'react'
+import { SkeletonCard } from '@raiymbek-park/ui'
 
-import { useIntersectionObserver } from '@/shared/lib'
+import { InfiniteListStates, useInfiniteSentinel } from '@/shared/list'
 import { useReactionAccess } from '@/shared/session'
-import { showToastMessage } from '@/shared/toast'
 
 import { useIssueActionsAccess } from '../model/use-issue-actions-access'
 import { useIssueDeletion } from '../model/use-issue-deletion'
@@ -15,11 +13,6 @@ import { useUpdateIssueReaction } from '../model/use-update-issue-reaction'
 import { useUpdateIssueWatch } from '../model/use-update-issue-watch'
 import { IssueCardItem } from './issue-card-item'
 import { IssueDeleteConfirm } from './issue-delete-confirm'
-import css from './issue-list.module.scss'
-
-const SKELETON_KEYS = ['a', 'b', 'c', 'd']
-
-const emptyImage = `${import.meta.env.BASE_URL}images/no-data.png`
 
 export type IssueListProps = {
   query: string
@@ -44,53 +37,27 @@ export const IssueList = ({ query, search, status }: IssueListProps) => {
   const { toggleWatch } = useUpdateIssueWatch()
   const access = useIssueActionsAccess()
   const deletion = useIssueDeletion()
-  const sentinelRef = useIntersectionObserver<HTMLDivElement>({
-    enabled: hasNextPage,
-    onChange: isIntersecting => {
-      if (isIntersecting && !isFetchingNextPage) fetchNextPage()
-    },
+  const sentinelRef = useInfiniteSentinel({
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   })
 
-  useEffect(() => {
-    if (isError)
-      showToastMessage({ kind: 'error', text: t`Не удалось загрузить заявки` })
-  }, [isError, t])
-
-  const skeletons = (
-    <div className={css.list} data-testid='issue-skeletons'>
-      {SKELETON_KEYS.map(key => (
-        <SkeletonCard key={key} />
-      ))}
-    </div>
-  )
-
-  if (isPending) return skeletons
-
-  if (isError) {
-    return (
-      <div className={css.state} data-testid='issue-error'>
-        <Button icon='refresh-cw' variant='secondary' onClick={() => refetch()}>
-          {t`Повторить`}
-        </Button>
-      </div>
-    )
-  }
-
-  if (issues.length === 0) {
-    return isFetching || query !== search ? (
-      skeletons
-    ) : (
-      <EmptyState
-        data-testid='issue-empty'
-        image={emptyImage}
-        message={t`Не найдено ни одной заявки.`}
-        title={t`Нет данных`}
-      />
-    )
-  }
-
   return (
-    <div className={css.list}>
+    <InfiniteListStates
+      emptyMessage={t`Не найдено ни одной заявки.`}
+      errorToast={t`Не удалось загрузить заявки`}
+      isEmpty={issues.length === 0}
+      isError={isError}
+      isPending={isPending}
+      isSettling={isFetching || query !== search}
+      testIds={{
+        empty: 'issue-empty',
+        error: 'issue-error',
+        skeletons: 'issue-skeletons',
+      }}
+      onRetry={() => refetch()}
+    >
       {issues.map(issue => (
         <IssueCardItem
           key={issue.id}
@@ -112,6 +79,6 @@ export const IssueList = ({ query, search, status }: IssueListProps) => {
         onCancel={deletion.cancel}
         onConfirm={deletion.confirm}
       />
-    </div>
+    </InfiniteListStates>
   )
 }

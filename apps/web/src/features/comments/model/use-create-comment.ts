@@ -2,10 +2,12 @@ import type { CommentTarget } from '@raiymbek-park/shared/validation-schemas'
 
 import { randomId } from '@raiymbek-park/shared'
 import { commentCreateInputSchema } from '@raiymbek-park/shared/validation-schemas'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
-import { trpcClient, useTRPC } from '@/shared/api'
+import { trpcClient } from '@/shared/api'
 import { uploadCommentMedia } from '@/shared/media'
+
+import { useInvalidateCommentQueries } from './use-invalidate-comment-queries'
 
 type CreateArgs = {
   files: File[]
@@ -18,11 +20,7 @@ type Callbacks = {
 }
 
 export const useCreateComment = ({ parent, parentId }: CommentTarget) => {
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
-  const listKey = trpc.comments.list.pathKey()
-  const parentKey =
-    parent === 'post' ? trpc.posts.list.pathKey() : trpc.issues.list.pathKey()
+  const { invalidateAll } = useInvalidateCommentQueries(parent)
 
   const mutation = useMutation({
     mutationFn: async ({ files, text }: CreateArgs) => {
@@ -43,17 +41,7 @@ export const useCreateComment = ({ parent, parentId }: CommentTarget) => {
       await trpcClient.comments.create.mutate(payload)
       return failedCount
     },
-    onSettled: () =>
-      Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: listKey,
-          refetchType: 'all',
-        }),
-        queryClient.invalidateQueries({
-          queryKey: parentKey,
-          refetchType: 'all',
-        }),
-      ]),
+    onSettled: invalidateAll,
   })
 
   const createComment = (

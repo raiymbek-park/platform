@@ -1,18 +1,17 @@
-import type { Comment } from '@raiymbek-park/api'
-import type { PermissionRole } from '@raiymbek-park/shared/validation-schemas'
-
-import { screen, waitFor, within } from '@testing-library/react'
-import { beforeEach, expect, test } from 'vitest'
-
 import {
-  firebaseAuth,
-  renderApp,
-  residentMe,
-  trpcMutation,
-  trpcMutationError,
-  trpcQueries,
-  trpcServer,
-} from '@/shared/test'
+  fake,
+  injectFake,
+  resetFirestore,
+  Timestamp,
+} from '@raiymbek-park/api/testing'
+import { screen, waitFor, within } from '@testing-library/react'
+import { afterEach, beforeEach, expect, test } from 'vitest'
+
+import { firebaseAuth, trpcMutationError, trpcServer } from '@/shared/test'
+import { renderAppWithServer } from '@/shared/test/render-app-server'
+
+import { useStoreDeletedComments } from '../model/use-store-deleted-comments'
+import { useStoreEditedComments } from '../model/use-store-edited-comments'
 
 if (!HTMLDialogElement.prototype.showModal)
   HTMLDialogElement.prototype.showModal = function showModal() {
@@ -23,107 +22,83 @@ if (!HTMLDialogElement.prototype.close)
     this.removeAttribute('open')
   }
 
-const seedComment = (overrides: Partial<Comment> = {}): Comment => ({
-  author: { apartment: 12, avatarUrl: null, block: 1, name: 'Тимур Ким' },
-  createdAt: 1_700_000_000_000,
-  editedAt: null,
-  id: 'comment-1',
-  isMine: false,
-  isTranslated: false,
-  lang: 'ru',
-  media: [],
-  original: null,
-  text: 'Отличное предложение',
-  ...overrides,
-})
-
-const post = () => ({
-  author: {
+const seedResident = (role = 'resident') =>
+  fake.seed('residents/uid-1', {
     apartment: 42,
+    avatarUrl: null,
     block: 1,
-    name: 'Алиса',
-    phone: '+7 700 000 00 00',
-  },
-  category: 'sell' as const,
-  commentCount: postComments.length,
-  createdAt: 1000,
-  description: 'Описание объявления для проверки треда комментариев.',
-  dislikeCount: 0,
-  id: 'post-1',
-  isMine: false,
-  isPinned: false,
-  keywords: [],
-  kind: 'offer' as const,
-  likeCount: 0,
-  media: [],
-  myReaction: null,
-  title: 'Продам горный велосипед',
-})
+    cars: [],
+    isPhoneVisible: false,
+    name: 'Alice',
+    phone: '+77781234455',
+    role,
+  })
 
-const issue = () => ({
-  author: { apartment: 12, block: 1, name: 'Житель' },
-  category: 'other' as const,
-  commentCount: issueComments.length,
-  createdAt: 1_700_000_000_000,
-  description: 'Домофон у подъезда не открывает дверь по ключу',
-  dislikeCount: 0,
-  id: 'issue-1',
-  isMine: false,
-  keywords: [],
-  likeCount: 0,
-  media: [],
-  myReaction: null,
-  number: 301,
-  status: 'in-progress' as const,
-  tags: [],
-  title: 'Не работает домофон',
-  urgent: false,
-})
+const seedPost = (overrides: Record<string, unknown> = {}) =>
+  fake.seed('posts/post-1', {
+    author: {
+      apartment: 42,
+      block: 1,
+      name: 'Alice',
+      phone: '+7 700 000 00 00',
+    },
+    authorId: 'author-uid',
+    category: 'sell',
+    commentCount: 0,
+    createdAt: Timestamp.fromMillis(1000),
+    description: 'Post description for testing the comment thread.',
+    keywords: ['bike'],
+    kind: 'offer',
+    lang: 'ru',
+    media: [],
+    reactions: {},
+    title: 'Selling a mountain bike',
+    ...overrides,
+  })
 
-let postComments: Comment[] = []
-let issueComments: Comment[] = []
+const seedIssue = (overrides: Record<string, unknown> = {}) =>
+  fake.seed('issues/issue-1', {
+    author: { apartment: 12, block: 1, name: 'George Lucas' },
+    authorId: 'author-uid',
+    category: 'other',
+    commentCount: 0,
+    createdAt: Timestamp.fromMillis(1000),
+    description: "The entrance intercom won't open the door with a key",
+    keywords: ['intercom'],
+    lang: 'ru',
+    media: [],
+    number: 301,
+    reactions: {},
+    status: 'in-progress',
+    tags: [],
+    title: 'The intercom is broken',
+    urgent: false,
+    ...overrides,
+  })
 
-const serve = (role: PermissionRole = 'resident') =>
-  trpcServer.use(
-    trpcQueries({
-      'comments.list': (raw: unknown) => {
-        const { parent } = raw as { parent: 'post' | 'issue' }
-        return {
-          comments: parent === 'post' ? postComments : issueComments,
-          nextCursor: null,
-        }
-      },
-      'issues.get': () => issue(),
-      'issues.list': () => ({ issues: [issue()], nextCursor: null }),
-      'posts.get': () => post(),
-      'posts.list': () => ({ nextCursor: null, posts: [post()] }),
-      'resident.me': () => residentMe({ role }),
-    }),
-    trpcMutation('comments.update', raw => {
-      const { id, media, text } = raw as {
-        id: string
-        media: string[]
-        text: string
-      }
-      postComments = postComments.map(comment =>
-        comment.id === id
-          ? { ...comment, editedAt: Date.now(), media, text }
-          : comment,
-      )
-      return { ok: true }
-    }),
-    trpcMutation('comments.delete', raw => {
-      const { id, parent } = raw as { id: string; parent: 'post' | 'issue' }
-      if (parent === 'post')
-        postComments = postComments.filter(comment => comment.id !== id)
-      else issueComments = issueComments.filter(comment => comment.id !== id)
-      return { ok: true }
-    }),
-  )
+const seedMine = (path: string, text: string, createdAt = 1000) =>
+  fake.seed(path, {
+    author: { apartment: 42, block: 1, name: 'Alice' },
+    authorId: 'uid-1',
+    createdAt: Timestamp.fromMillis(createdAt),
+    lang: 'ru',
+    media: [],
+    text,
+  })
 
-const commentButton = () => screen.getByRole('button', { name: /Комментарии/ })
+const seedOther = (path: string, text: string, createdAt = 2000) =>
+  fake.seed(path, {
+    author: { apartment: 12, block: 1, name: 'Jackie Chan' },
+    authorId: 'author-uid',
+    createdAt: Timestamp.fromMillis(createdAt),
+    lang: 'ru',
+    media: [],
+    text,
+  })
 
-const commentField = () => screen.getByPlaceholderText('Наберите текст')
+const commentButton = () => screen.getByRole('button', { name: /Comments/ })
+
+const commentField = () => screen.getByPlaceholderText('Type a message')
 
 const messageRow = (text: string) => {
   const row = screen.getByText(text).parentElement?.parentElement?.parentElement
@@ -132,10 +107,10 @@ const messageRow = (text: string) => {
 }
 
 const messageActions = (text: string) =>
-  within(messageRow(text)).queryByTitle('Действия с сообщением')
+  within(messageRow(text)).queryByTitle('Message actions')
 
 const openActions = async (
-  user: ReturnType<typeof renderApp>['user'],
+  user: ReturnType<typeof renderAppWithServer>['user'],
   text: string,
 ) => {
   const trigger = messageActions(text)
@@ -147,268 +122,247 @@ const openActions = async (
 beforeEach(() => {
   firebaseAuth.reset()
   firebaseAuth.signIn()
-  postComments = []
-  issueComments = []
+  fake.reset()
+  injectFake()
+  useStoreDeletedComments.setState({ deletedIds: new Set() })
+  useStoreEditedComments.setState({ edited: {} })
 })
 
+afterEach(resetFirestore)
+
 test('happy-path 15: opening edit on your own message loads its text into the input bar', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Исходный текст',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
-  await screen.findByText('Исходный текст')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Original text')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
+  await screen.findByText('Original text')
 
-  const sheet = await openActions(user, 'Исходный текст')
-  await user.click(within(sheet).getByRole('button', { name: 'Редактировать' }))
+  const sheet = await openActions(user, 'Original text')
+  await user.click(within(sheet).getByRole('button', { name: 'Edit' }))
 
-  expect(commentField()).toHaveValue('Исходный текст')
-  expect(screen.getByRole('button', { name: 'Отмена' })).toBeInTheDocument()
+  expect(commentField()).toHaveValue('Original text')
+  expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
 })
 
 test('happy-path 15a: saving an edited comment updates the message in place', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Исходный текст',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
-  await screen.findByText('Исходный текст')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Original text')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
+  await screen.findByText('Original text')
 
-  const sheet = await openActions(user, 'Исходный текст')
-  await user.click(within(sheet).getByRole('button', { name: 'Редактировать' }))
+  const sheet = await openActions(user, 'Original text')
+  await user.click(within(sheet).getByRole('button', { name: 'Edit' }))
   await user.clear(commentField())
-  await user.type(commentField(), 'Обновлённый текст')
-  await user.click(screen.getByRole('button', { name: 'Сохранить' }))
+  await user.type(commentField(), 'Updated text')
+  await user.click(screen.getByRole('button', { name: 'Save' }))
 
-  expect(await screen.findByText('Обновлённый текст')).toBeInTheDocument()
-  expect(screen.queryByText('Исходный текст')).not.toBeInTheDocument()
+  expect(await screen.findByText('Updated text')).toBeInTheDocument()
+  expect(screen.queryByText('Original text')).not.toBeInTheDocument()
+  await waitFor(() =>
+    expect(fake.getDoc('posts/post-1/comments/c1')?.text).toBe('Updated text'),
+  )
 })
 
 test('happy-path 16: the author deletes their own comment and the count decreases by one', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Удалить меня',
-    }),
-  ]
-  serve()
-  const { currentPath, user } = renderApp('/posts?tab=all')
-  await screen.findByText('Продам горный велосипед')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Delete me')
+  const { currentPath, user } = renderAppWithServer('/posts?tab=all', {
+    uid: 'uid-1',
+  })
+  await screen.findByText('Selling a mountain bike')
   expect(within(commentButton()).getByText('1')).toBeInTheDocument()
 
   await user.click(commentButton())
-  await screen.findByText('Удалить меня')
+  await screen.findByText('Delete me')
 
-  const sheet = await openActions(user, 'Удалить меня')
+  const sheet = await openActions(user, 'Delete me')
   await user.click(
-    within(sheet).getByRole('button', { name: 'Удалить сообщение' }),
+    within(sheet).getByRole('button', { name: 'Delete message' }),
   )
   const confirmDialog = await screen.findByRole('dialog')
   await user.click(
-    within(confirmDialog).getByRole('button', { name: 'Удалить' }),
+    within(confirmDialog).getByRole('button', { name: 'Delete' }),
   )
 
-  expect(await screen.findByText('Сообщение удалено.')).toBeInTheDocument()
+  expect(await screen.findByText('Message deleted.')).toBeInTheDocument()
   await waitFor(() =>
-    expect(screen.queryByText('Удалить меня')).not.toBeInTheDocument(),
+    expect(screen.queryByText('Delete me')).not.toBeInTheDocument(),
   )
 
-  await user.click(screen.getByRole('button', { name: 'Назад' }))
+  await user.click(screen.getByRole('button', { name: 'Back' }))
   await waitFor(() => expect(currentPath()).toBe('/posts'))
   await waitFor(() =>
     expect(within(commentButton()).getByText('0')).toBeInTheDocument(),
   )
+  expect(fake.getDoc('posts/post-1')?.commentCount).toBe(0)
+  expect(fake.getDoc('posts/post-1/comments/c1')).toBeUndefined()
 })
 
 test('happy-path 17: Administration deletes another member’s comment regardless of authorship', async () => {
-  postComments = [
-    seedComment({ id: 'c1', isMine: false, text: 'Чужое сообщение' }),
-  ]
-  serve('administration')
-  const { user } = renderApp('/posts/post-1/comments')
-  await screen.findByText('Чужое сообщение')
+  seedResident('administration')
+  seedPost({ commentCount: 1 })
+  seedOther('posts/post-1/comments/c1', "Someone else's message")
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
+  await screen.findByText("Someone else's message")
 
-  const sheet = await openActions(user, 'Чужое сообщение')
+  const sheet = await openActions(user, "Someone else's message")
   expect(
-    within(sheet).queryByRole('button', { name: 'Редактировать' }),
+    within(sheet).queryByRole('button', { name: 'Edit' }),
   ).not.toBeInTheDocument()
   await user.click(
-    within(sheet).getByRole('button', { name: 'Удалить сообщение' }),
+    within(sheet).getByRole('button', { name: 'Delete message' }),
   )
   const confirmDialog = await screen.findByRole('dialog')
   await user.click(
-    within(confirmDialog).getByRole('button', { name: 'Удалить' }),
+    within(confirmDialog).getByRole('button', { name: 'Delete' }),
   )
 
-  expect(await screen.findByText('Сообщение удалено.')).toBeInTheDocument()
+  expect(await screen.findByText('Message deleted.')).toBeInTheDocument()
   await waitFor(() =>
-    expect(screen.queryByText('Чужое сообщение')).not.toBeInTheDocument(),
+    expect(
+      screen.queryByText("Someone else's message"),
+    ).not.toBeInTheDocument(),
   )
+  expect(fake.getDoc('posts/post-1/comments/c1')).toBeUndefined()
 })
 
 test('validation 15: canceling the delete confirmation leaves the comment in the thread', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Не удаляй меня',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
-  await screen.findByText('Не удаляй меня')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', "Don't delete me")
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
+  await screen.findByText("Don't delete me")
 
-  const sheet = await openActions(user, 'Не удаляй меня')
+  const sheet = await openActions(user, "Don't delete me")
   await user.click(
-    within(sheet).getByRole('button', { name: 'Удалить сообщение' }),
+    within(sheet).getByRole('button', { name: 'Delete message' }),
   )
   const dialog = await screen.findByRole('dialog')
-  await user.click(within(dialog).getByRole('button', { name: 'Отмена' }))
+  await user.click(within(dialog).getByRole('button', { name: 'Cancel' }))
 
   await waitFor(() =>
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
   )
-  expect(screen.getByText('Не удаляй меня')).toBeInTheDocument()
+  expect(screen.getByText("Don't delete me")).toBeInTheDocument()
+  expect(fake.getDoc('posts/post-1/comments/c1')).toBeDefined()
 })
 
 test('edge-cases 17: a member sees actions only on their own comment', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'own',
-      isMine: true,
-      text: 'Моё сообщение',
-    }),
-    seedComment({ id: 'other', isMine: false, text: 'Чужое сообщение' }),
-  ]
-  serve('resident')
-  renderApp('/posts/post-1/comments')
-  await screen.findByText('Моё сообщение')
+  seedResident('resident')
+  seedPost({ commentCount: 2 })
+  seedMine('posts/post-1/comments/own', 'My message', 1000)
+  seedOther('posts/post-1/comments/other', "Someone else's message", 2000)
+  renderAppWithServer('/posts/post-1/comments', { uid: 'uid-1' })
+  await screen.findByText('My message')
 
-  expect(messageActions('Моё сообщение')).not.toBeNull()
-  expect(messageActions('Чужое сообщение')).toBeNull()
+  expect(messageActions('My message')).not.toBeNull()
+  expect(messageActions("Someone else's message")).toBeNull()
 })
 
 test('edge-cases 17: Administration sees the delete action on every comment', async () => {
-  postComments = [
-    seedComment({ id: 'other', isMine: false, text: 'Чужое сообщение' }),
-  ]
-  serve('administration')
-  const { user } = renderApp('/posts/post-1/comments')
-  await screen.findByText('Чужое сообщение')
+  seedResident('administration')
+  seedPost({ commentCount: 1 })
+  seedOther('posts/post-1/comments/other', "Someone else's message")
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
+  await screen.findByText("Someone else's message")
 
-  const sheet = await openActions(user, 'Чужое сообщение')
+  const sheet = await openActions(user, "Someone else's message")
   expect(
-    within(sheet).getByRole('button', { name: 'Удалить сообщение' }),
+    within(sheet).getByRole('button', { name: 'Delete message' }),
   ).toBeInTheDocument()
 })
 
 test('error-states 7 / error-states 9: a failed edit surfaces an error and keeps the edited text in edit mode', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Исходный текст',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
-  await screen.findByText('Исходный текст')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Original text')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
+  await screen.findByText('Original text')
 
-  const sheet = await openActions(user, 'Исходный текст')
-  await user.click(within(sheet).getByRole('button', { name: 'Редактировать' }))
+  const sheet = await openActions(user, 'Original text')
+  await user.click(within(sheet).getByRole('button', { name: 'Edit' }))
   await user.clear(commentField())
-  await user.type(commentField(), 'Изменённый текст')
+  await user.type(commentField(), 'Edited text')
   trpcServer.use(trpcMutationError('comments.update'))
-  await user.click(screen.getByRole('button', { name: 'Сохранить' }))
+  await user.click(screen.getByRole('button', { name: 'Save' }))
 
   expect(
-    await screen.findByText(
-      'Не удалось сохранить изменения. Попробуйте ещё раз.',
-    ),
+    await screen.findByText('Could not save the changes. Please try again.'),
   ).toBeInTheDocument()
-  expect(commentField()).toHaveValue('Изменённый текст')
-  expect(screen.getByRole('button', { name: 'Отмена' })).toBeInTheDocument()
+  expect(commentField()).toHaveValue('Edited text')
+  expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
 })
 
 test('error-states 7 / error-states 9: a failed delete leaves the message visible in the thread', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Останься на месте',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
-  await screen.findByText('Останься на месте')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Stay put')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
+  await screen.findByText('Stay put')
 
-  const sheet = await openActions(user, 'Останься на месте')
+  const sheet = await openActions(user, 'Stay put')
   await user.click(
-    within(sheet).getByRole('button', { name: 'Удалить сообщение' }),
+    within(sheet).getByRole('button', { name: 'Delete message' }),
   )
   const confirmDialog = await screen.findByRole('dialog')
   trpcServer.use(trpcMutationError('comments.delete'))
   await user.click(
-    within(confirmDialog).getByRole('button', { name: 'Удалить' }),
+    within(confirmDialog).getByRole('button', { name: 'Delete' }),
   )
 
   expect(
-    await screen.findByText(
-      'Не удалось удалить сообщение. Попробуйте ещё раз.',
-    ),
+    await screen.findByText('Failed to delete the message. Please try again.'),
   ).toBeInTheDocument()
-  expect(screen.getByText('Останься на месте')).toBeInTheDocument()
+  expect(screen.getByText('Stay put')).toBeInTheDocument()
+  expect(fake.getDoc('posts/post-1/comments/c1')).toBeDefined()
 })
 
 test('edge-cases 7: deleting a comment on an issue decrements the issue’s comment count identically to a post', async () => {
-  issueComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'i1',
-      isMine: true,
-      text: 'Удалить меня',
-    }),
-  ]
-  serve()
-  const { currentPath, user } = renderApp('/issues?status=all')
-  await screen.findByText('Не работает домофон')
+  seedResident()
+  seedIssue({ commentCount: 1 })
+  seedMine('issues/issue-1/comments/i1', 'Delete me')
+  const { currentPath, user } = renderAppWithServer('/issues?status=all', {
+    uid: 'uid-1',
+  })
+  await screen.findByText('The intercom is broken')
   const issueCommentButton = () =>
-    screen.getByRole('button', { name: /Комментарии/ })
+    screen.getByRole('button', { name: /Comments/ })
   expect(within(issueCommentButton()).getByText('1')).toBeInTheDocument()
 
   await user.click(issueCommentButton())
-  await screen.findByText('Удалить меня')
+  await screen.findByText('Delete me')
 
-  const sheet = await openActions(user, 'Удалить меня')
+  const sheet = await openActions(user, 'Delete me')
   await user.click(
-    within(sheet).getByRole('button', { name: 'Удалить сообщение' }),
+    within(sheet).getByRole('button', { name: 'Delete message' }),
   )
   const confirmDialog = await screen.findByRole('dialog')
   await user.click(
-    within(confirmDialog).getByRole('button', { name: 'Удалить' }),
+    within(confirmDialog).getByRole('button', { name: 'Delete' }),
   )
 
-  expect(await screen.findByText('Сообщение удалено.')).toBeInTheDocument()
+  expect(await screen.findByText('Message deleted.')).toBeInTheDocument()
 
-  await user.click(screen.getByRole('button', { name: 'Назад' }))
+  await user.click(screen.getByRole('button', { name: 'Back' }))
   await waitFor(() => expect(currentPath()).toBe('/issues'))
   await waitFor(() =>
     expect(within(issueCommentButton()).getByText('0')).toBeInTheDocument(),
   )
+  expect(fake.getDoc('issues/issue-1')?.commentCount).toBe(0)
 })

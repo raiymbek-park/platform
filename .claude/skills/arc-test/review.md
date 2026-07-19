@@ -26,6 +26,10 @@ See `## Decision Matrix` in testing-strategy.md.
 - [ ] Shared utilities covered by unit tests
 - [ ] No duplication between levels — E2E happy path is NOT repeated in integration
 - [ ] No unit tests for things already covered by integration (unless shared utility)
+- [ ] Top-down: each behavior is covered at the HIGHEST level that can exercise it — nothing a page/main-flow integration test drives is also (re)tested at component/unit level
+- [ ] One integration file per screen — a screen's UI-only and backend-touching behaviors are NOT split across a "narrow" and a "wide" file
+- [ ] Lower-level tests exist ONLY for what the top cannot reach (shared utilities, isolated multi-branch logic, states a full flow can't force)
+- [ ] Cross-level: a lower-level test is NOT a duplicate of a behaviour an end-to-end test (through the real entry point, only the outside world substituted) already drives and asserts. Lower-level tests remain only for what the top can't reach — externally-triggered flows, entry-point-unreachable branches, and shared pure logic
 
 #### B. Implementation Detail Coupling
 
@@ -48,11 +52,36 @@ See `## Element Selection Strategy` in testing-strategy.md.
 
 #### D. Mocking Boundaries
 
-See `## Mocking Rules` in testing-strategy.md.
+See `## Mocking Rules` in testing-strategy.md — especially "The network is not automatically the boundary."
 
-- [ ] Mocking happens at the system boundary (network, external services), not module level
+**"Mocked at the network layer" is NOT sufficient on its own.** A network mock that hand-writes the server's responses fabricates the application's own backend: it satisfies a naive boundary check while exercising nothing below the client. Do not rubber-stamp it — detect it actively.
+
+**Procedure — classify every mock in the test.** For each mock, stub, or intercepted response, ask *what value it returns*:
+
+```
+Raw data an external dependency holds, or a third-party payload
+  → allowed boundary mock.
+
+The application's OWN server/business output — assigned ids, derived or aggregated
+fields, status codes, authorization allow/deny verdicts, localized/filtered projections
+  → CRITICAL finding: the server logic that produces that value never runs.
+```
+
+**Carve-out — do NOT flag error / empty / loading injection.** A canned error, empty result, or hang at the boundary to test how the UI *reacts* is allowed (the subject is the client's reaction, asserted on the UI). Only a canned *success* payload standing in for server logic is the fabrication this rule targets — do not confuse the two.
+
+**Assert the behaviour, not the plumbing** (see testing-strategy.md). Flag as WEAK:
+- [ ] A test that mocks a collaborator, then asserts it was called or asserts a value echoed from its configured return — it verifies the mock, not a requirement.
+- [ ] An assertion on intent (a recorded call, an unresolved write token) used as a proxy for the outcome — require the observable result, read back from where it lands.
+- [ ] An over-claiming name: a test titled for a guarantee (atomicity, uniqueness, durability) a mock can't prove. Break-the-mechanism — delete the mechanism; if the test stays green the guarantee is untested, so move it to a real-infrastructure tier or rename.
+
+**Checklist:**
+
+- [ ] No mock re-implements or hard-codes what the application's own server/business logic would compute — the response is produced by real code, not authored by the test
+- [ ] Server-side rules the AC depends on (validation, authorization/roles, derivation, projection) run through the real code path, not asserted against a stand-in
+- [ ] The boundary sits at the true external edge (datastore, third-party services); the real server/business logic runs whenever the infrastructure allows it (widest-boundary rule)
 - [ ] No module-level mocking of business logic, components, hooks, or store
-- [ ] Mock boundary matches project infrastructure (containers → mock only external services; no containers → mock at network layer)
+- [ ] Canned server responses appear ONLY for behavior with no server logic (pure client rendering, form validation, disabled states) or for a genuinely external server
+- [ ] Assertions check real outputs — seed the external dependency, then assert the result the real logic produces — not fixtures that duplicate the server's computation
 
 #### E. Test Describes Behavior, Not Code
 

@@ -50,6 +50,10 @@ export type { ScreenHeaderProps } from './screen-header/screen-header'
 export type { ScreenTitleProps } from './screen-title/screen-title'
 export type { SectionHeaderProps } from './section-header/section-header'
 export type {
+  SelectCardOption,
+  SelectCardProps,
+} from './select-card/select-card'
+export type {
   SelectOptionProps,
   SelectOptionTone,
 } from './select-option/select-option'
@@ -94,6 +98,7 @@ export { ScreenFooter } from './screen-footer/screen-footer'
 export { ScreenHeader } from './screen-header/screen-header'
 export { ScreenTitle } from './screen-title/screen-title'
 export { SectionHeader } from './section-header/section-header'
+export { SelectCard } from './select-card/select-card'
 export { SelectOption } from './select-option/select-option'
 export { SkeletonCard } from './skeleton-card/skeleton-card'
 export { Spinner } from './spinner/spinner'

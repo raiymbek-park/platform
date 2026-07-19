@@ -1,19 +1,16 @@
-import type { Post } from '@raiymbek-park/api'
 import type { PermissionRole } from '@raiymbek-park/shared/validation-schemas'
 
-import { postRefInputSchema } from '@raiymbek-park/shared/validation-schemas'
-import { screen, waitFor, within } from '@testing-library/react'
-import { beforeEach, expect, test } from 'vitest'
-
 import {
-  firebaseAuth,
-  renderApp,
-  residentMe,
-  trpcMutation,
-  trpcMutationError,
-  trpcQueries,
-  trpcServer,
-} from '@/shared/test'
+  fake,
+  injectFake,
+  resetFirestore,
+  Timestamp,
+} from '@raiymbek-park/api/testing'
+import { screen, waitFor, within } from '@testing-library/react'
+import { afterEach, beforeEach, expect, test } from 'vitest'
+
+import { firebaseAuth, trpcMutationError, trpcServer } from '@/shared/test'
+import { renderAppWithServer } from '@/shared/test/render-app-server'
 
 if (!HTMLDialogElement.prototype.showModal)
   HTMLDialogElement.prototype.showModal = function showModal() {
@@ -24,46 +21,39 @@ if (!HTMLDialogElement.prototype.close)
     this.removeAttribute('open')
   }
 
-const seedPost: Post = {
-  author: {
-    apartment: 12,
-    block: 3,
-    name: 'Алиса',
-    phone: '+7 700 000 00 00',
-  },
-  category: 'sell',
-  commentCount: 0,
-  createdAt: 1000,
-  description: 'Продаю велосипед в отличном состоянии',
-  dislikeCount: 0,
-  id: 'post-201',
-  isMine: true,
-  isPinned: false,
-  isTranslated: false,
-  keywords: ['велосипед'],
-  kind: 'offer',
-  likeCount: 0,
-  media: [],
-  myReaction: null,
-  original: null,
-  originalLang: 'ru',
-  title: 'Продам горный велосипед',
-}
+const seedResident = (role: PermissionRole = 'resident') =>
+  fake.seed('residents/uid-1', {
+    apartment: 42,
+    avatarUrl: null,
+    block: 1,
+    cars: [],
+    isPhoneVisible: false,
+    name: 'Alice',
+    phone: '+77781234455',
+    role,
+  })
 
-let posts: Post[] = [seedPost]
-
-const serve = (role: PermissionRole = 'resident') =>
-  trpcServer.use(
-    trpcQueries({
-      'posts.list': () => ({ nextCursor: null, posts }),
-      'resident.me': () => residentMe({ role }),
-    }),
-    trpcMutation('posts.delete', raw => {
-      const { postId } = postRefInputSchema.parse(raw)
-      posts = posts.filter(post => post.id !== postId)
-      return { ok: true }
-    }),
-  )
+const seedPost = (overrides: Record<string, unknown> = {}) =>
+  fake.seed('posts/post-201', {
+    author: {
+      apartment: 12,
+      block: 3,
+      name: 'Alice',
+      phone: '+7 700 000 00 00',
+    },
+    authorId: 'uid-1',
+    category: 'sell',
+    commentCount: 0,
+    createdAt: Timestamp.fromMillis(1000),
+    description: 'Selling a bike in excellent condition',
+    keywords: ['bike'],
+    kind: 'offer',
+    lang: 'ru',
+    media: [],
+    reactions: {},
+    title: 'Selling a mountain bike',
+    ...overrides,
+  })
 
 const card = async () => {
   const [element] = await screen.findAllByRole('article')
@@ -72,117 +62,125 @@ const card = async () => {
 }
 
 const expandCard = async (
-  user: ReturnType<typeof renderApp>['user'],
+  user: ReturnType<typeof renderAppWithServer>['user'],
   cardElement: HTMLElement,
-) => user.click(within(cardElement).getByRole('button', { name: /Подробнее/ }))
+) => user.click(within(cardElement).getByRole('button', { name: /Details/ }))
 
 const openDeleteConfirm = async (
-  user: ReturnType<typeof renderApp>['user'],
+  user: ReturnType<typeof renderAppWithServer>['user'],
 ) => {
   const cardElement = await card()
   await expandCard(user, cardElement)
-  await user.click(within(cardElement).getByRole('button', { name: 'Удалить' }))
+  await user.click(within(cardElement).getByRole('button', { name: 'Delete' }))
   return within(await screen.findByRole('dialog')).getByRole('button', {
-    name: 'Удалить',
+    name: 'Delete',
   })
 }
 
 beforeEach(() => {
   firebaseAuth.reset()
   firebaseAuth.signIn()
-  posts = [{ ...seedPost }]
+  fake.reset()
+  injectFake()
 })
 
-test('happy-path 11: the author deletes their own post and it is removed from the feed', async () => {
-  serve()
-  const { user } = renderApp('/posts?tab=all')
-  await screen.findByText('Продам горный велосипед')
+afterEach(resetFirestore)
+
+test('happy-path 11: the author confirms delete and the post disappears from the feed', async () => {
+  seedResident()
+  seedPost()
+  const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
+  await screen.findByText('Selling a mountain bike')
 
   const confirmButton = await openDeleteConfirm(user)
   await user.click(confirmButton)
 
-  expect(await screen.findByText('Объявление удалено.')).toBeInTheDocument()
+  expect(await screen.findByText('Post deleted.')).toBeInTheDocument()
   await waitFor(() =>
     expect(
-      screen.queryByText('Продам горный велосипед'),
+      screen.queryByText('Selling a mountain bike'),
     ).not.toBeInTheDocument(),
   )
+  expect(fake.getDoc('posts/post-201')).toBeUndefined()
 })
 
-test('validation 12: canceling the delete confirmation leaves the post in the feed', async () => {
-  serve()
-  const { user } = renderApp('/posts?tab=all')
-  await screen.findByText('Продам горный велосипед')
+test('validation 12: canceling the delete confirmation leaves the post stored and in the feed', async () => {
+  seedResident()
+  seedPost()
+  const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
+  await screen.findByText('Selling a mountain bike')
 
   const cardElement = await card()
   await expandCard(user, cardElement)
-  await user.click(within(cardElement).getByRole('button', { name: 'Удалить' }))
+  await user.click(within(cardElement).getByRole('button', { name: 'Delete' }))
   const dialog = await screen.findByRole('dialog')
-  await user.click(within(dialog).getByRole('button', { name: 'Отмена' }))
+  await user.click(within(dialog).getByRole('button', { name: 'Cancel' }))
 
   await waitFor(() =>
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
   )
-  expect(screen.getByText('Продам горный велосипед')).toBeInTheDocument()
+  expect(screen.getByText('Selling a mountain bike')).toBeInTheDocument()
+  expect(fake.getDoc('posts/post-201')).toBeDefined()
 })
 
-test('error-states 4: a failed delete shows an error toast and keeps the post in the feed', async () => {
-  serve()
-  const { user } = renderApp('/posts?tab=all')
-  await screen.findByText('Продам горный велосипед')
+test('error-states 4: a failed delete shows an error toast and keeps the post stored and in the feed', async () => {
+  seedResident()
+  seedPost()
+  const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
+  await screen.findByText('Selling a mountain bike')
 
   const confirmButton = await openDeleteConfirm(user)
   trpcServer.use(trpcMutationError('posts.delete'))
   await user.click(confirmButton)
 
   expect(
-    await screen.findByText(
-      'Не удалось удалить объявление. Попробуйте ещё раз.',
-    ),
+    await screen.findByText('Failed to delete the post. Please try again.'),
   ).toBeInTheDocument()
-  expect(screen.getByText('Продам горный велосипед')).toBeInTheDocument()
+  expect(screen.getByText('Selling a mountain bike')).toBeInTheDocument()
+  expect(fake.getDoc('posts/post-201')).toBeDefined()
 })
 
-test('happy-path 12: Administration deletes a post authored by someone else', async () => {
-  posts = [{ ...seedPost, isMine: false }]
-  serve('administration')
-  const { user } = renderApp('/posts?tab=all')
-  await screen.findByText('Продам горный велосипед')
+test('happy-path 12: an Administration user deletes a post authored by someone else', async () => {
+  seedResident('administration')
+  seedPost({ authorId: 'author-uid' })
+  const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
+  await screen.findByText('Selling a mountain bike')
 
   const confirmButton = await openDeleteConfirm(user)
   await user.click(confirmButton)
 
-  expect(await screen.findByText('Объявление удалено.')).toBeInTheDocument()
+  expect(await screen.findByText('Post deleted.')).toBeInTheDocument()
+  expect(fake.getDoc('posts/post-201')).toBeUndefined()
 })
 
-test('happy-path 12: Administration can reach edit for a post authored by someone else', async () => {
-  posts = [{ ...seedPost, isMine: false }]
-  serve('administration')
-  const { currentPath, user } = renderApp('/posts?tab=all')
-  await screen.findByText('Продам горный велосипед')
+test('happy-path 12: an Administration user can reach edit for a post authored by someone else', async () => {
+  seedResident('administration')
+  seedPost({ authorId: 'author-uid' })
+  const { currentPath, user } = renderAppWithServer('/posts?tab=all', {
+    uid: 'uid-1',
+  })
+  await screen.findByText('Selling a mountain bike')
 
   const cardElement = await card()
   await expandCard(user, cardElement)
-  await user.click(
-    within(cardElement).getByRole('button', { name: 'Редактировать' }),
-  )
+  await user.click(within(cardElement).getByRole('button', { name: 'Edit' }))
 
   expect(currentPath()).toBe('/posts/edit/post-201')
 })
 
 test('edge-cases 6: a Resident sees no edit or delete action on a post authored by someone else', async () => {
-  posts = [{ ...seedPost, isMine: false }]
-  serve('resident')
-  const { user } = renderApp('/posts?tab=all')
-  await screen.findByText('Продам горный велосипед')
+  seedResident('resident')
+  seedPost({ authorId: 'author-uid' })
+  const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
+  await screen.findByText('Selling a mountain bike')
 
   const cardElement = await card()
   await expandCard(user, cardElement)
 
   expect(
-    within(cardElement).queryByRole('button', { name: 'Удалить' }),
+    within(cardElement).queryByRole('button', { name: 'Delete' }),
   ).not.toBeInTheDocument()
   expect(
-    within(cardElement).queryByRole('button', { name: 'Редактировать' }),
+    within(cardElement).queryByRole('button', { name: 'Edit' }),
   ).not.toBeInTheDocument()
 })

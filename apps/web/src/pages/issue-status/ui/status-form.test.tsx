@@ -1,17 +1,14 @@
-import type { Issue } from '@raiymbek-park/api'
-
-import { screen, waitFor } from '@testing-library/react'
-import { beforeEach, expect, test } from 'vitest'
-
 import {
-  firebaseAuth,
-  renderApp,
-  residentMe,
-  trpcMutation,
-  trpcMutationError,
-  trpcQueries,
-  trpcServer,
-} from '@/shared/test'
+  fake,
+  injectFake,
+  resetFirestore,
+  Timestamp,
+} from '@raiymbek-park/api/testing'
+import { screen, waitFor } from '@testing-library/react'
+import { afterEach, beforeEach, expect, test } from 'vitest'
+
+import { firebaseAuth, trpcMutationError, trpcServer } from '@/shared/test'
+import { renderAppWithServer } from '@/shared/test/render-app-server'
 
 if (!URL.createObjectURL)
   Object.assign(URL, {
@@ -21,129 +18,130 @@ if (!URL.createObjectURL)
 
 const makeFile = (name: string) => new File(['x'], name, { type: 'image/jpeg' })
 
-const issue: Issue = {
-  author: { apartment: 12, block: 1, name: 'Житель' },
-  category: 'replacement',
-  commentCount: 0,
-  createdAt: 1_700_000_000_000,
-  description: 'Изношены тросы лифта в первом блоке',
-  dislikeCount: 0,
-  id: 'issue-115',
-  isMine: false,
-  isTranslated: false,
-  isWatching: false,
-  keywords: [],
-  likeCount: 0,
-  media: [],
-  myReaction: null,
-  number: 115,
-  original: null,
-  originalLang: 'ru',
-  status: 'in-progress',
-  tags: ['warranty'],
-  title: 'Замена тросов лифта',
-  urgent: false,
-}
+const seedManager = () =>
+  fake.seed('residents/uid-1', {
+    apartment: 42,
+    avatarUrl: null,
+    block: 1,
+    cars: [],
+    isPhoneVisible: false,
+    name: 'Johnny Depp',
+    phone: '+77781234455',
+    role: 'manager',
+  })
 
-type ChangePayload = {
-  comment: string
-  issueId: string
-  media: string[]
-  status: string
-  tags: string[]
-}
+const seedIssue = () =>
+  fake.seed('issues/issue-115', {
+    author: { apartment: 12, block: 1, name: 'George Lucas' },
+    authorId: 'author-uid',
+    category: 'replacement',
+    commentCount: 0,
+    createdAt: Timestamp.fromMillis(1_700_000_000_000),
+    description: 'The elevator cables in block one are worn',
+    keywords: [],
+    lang: 'ru',
+    media: [],
+    number: 115,
+    reactions: {},
+    status: 'in-progress',
+    tags: ['warranty'],
+    title: 'Elevator cable replacement',
+    urgent: false,
+  })
 
-let lastChange: ChangePayload | null = null
-let lastListStatus: string | null = null
+const submit = () => screen.getByRole('button', { name: 'Save' })
 
-const serve = () =>
-  trpcServer.use(
-    trpcQueries({
-      'issues.get': () => issue,
-      'issues.list': (raw: unknown) => {
-        lastListStatus = (raw as { status?: string })?.status ?? null
-        return { issues: [issue], nextCursor: null }
-      },
-      'resident.me': () => residentMe({ role: 'manager' }),
-    }),
-    trpcMutation('issues.changeStatus', raw => {
-      lastChange = raw as ChangePayload
-      return { ...issue }
-    }),
-  )
-
-const submit = () => screen.getByRole('button', { name: 'Сохранить' })
-
-const ready = () => screen.findByText('Смена статуса')
+const ready = () => screen.findByText('Change status')
 
 beforeEach(() => {
   firebaseAuth.reset()
   firebaseAuth.signIn()
-  lastChange = null
-  lastListStatus = null
+  fake.reset()
+  injectFake()
 })
+
+afterEach(resetFirestore)
 
 test('happy-path: the form preselects the current status and existing tags', async () => {
-  serve()
-  renderApp('/issues/status/issue-115')
+  seedManager()
+  seedIssue()
+  renderAppWithServer('/issues/status/issue-115', { uid: 'uid-1' })
 
   await ready()
-  expect(screen.getByRole('button', { name: /В работе/ })).toHaveAttribute(
+  expect(screen.getByRole('button', { name: /In progress/ })).toHaveAttribute(
     'aria-pressed',
     'true',
   )
-  expect(screen.getByRole('button', { name: /По гарантии/ })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
+  expect(
+    screen.getByRole('button', { name: /Under warranty/ }),
+  ).toHaveAttribute('aria-pressed', 'true')
 })
 
-test('happy-path: changing the status saves, returns to the matching filter, and confirms with a toast', async () => {
-  serve()
-  const { currentPath, user } = renderApp('/issues/status/issue-115')
+test('happy-path: a Manager changes the status — it stores the new status, returns to the matching filter, and confirms with a toast', async () => {
+  seedManager()
+  seedIssue()
+  const { currentPath, user } = renderAppWithServer(
+    '/issues/status/issue-115',
+    {
+      uid: 'uid-1',
+    },
+  )
 
   await ready()
-  await user.click(screen.getByRole('button', { name: /Выполнено/ }))
+  await user.click(screen.getByRole('button', { name: /Done/ }))
   await user.click(submit())
 
   await waitFor(() => expect(currentPath()).toBe('/issues'))
-  expect(await screen.findByText('Статус обновлён.')).toBeInTheDocument()
-  expect(lastChange).toMatchObject({ issueId: 'issue-115', status: 'done' })
-  await waitFor(() => expect(lastListStatus).toBe('done'))
+  expect(await screen.findByText('Status updated.')).toBeInTheDocument()
+  expect(fake.getDoc('issues/issue-115')?.status).toBe('done')
 })
 
-test('happy-path: a comment, a tag change, and a photo are included in the payload', async () => {
-  serve()
-  const { user } = renderApp('/issues/status/issue-115')
+test('happy-path: a comment, a tag change, and a photo are persisted as a status change', async () => {
+  seedManager()
+  seedIssue()
+  const { user } = renderAppWithServer('/issues/status/issue-115', {
+    uid: 'uid-1',
+  })
 
   await ready()
-  await user.click(screen.getByRole('button', { name: /Дубликат/ }))
+  await user.click(screen.getByRole('button', { name: /Duplicate/ }))
   await user.type(
-    screen.getByRole('textbox', { name: 'Комментарий' }),
-    'Работы выполнены',
+    screen.getByRole('textbox', { name: 'Comment' }),
+    'Work completed',
   )
-  await user.upload(screen.getByLabelText('Добавить'), makeFile('fix.jpg'))
+  await user.upload(screen.getByLabelText('Add'), makeFile('fix.jpg'))
   await user.click(submit())
 
-  await waitFor(() => expect(lastChange).not.toBeNull())
-  expect(lastChange?.comment).toBe('Работы выполнены')
-  expect(lastChange?.tags).toEqual(
+  await waitFor(() =>
+    expect(fake.listDocs('issues/issue-115/statusChanges')).toHaveLength(1),
+  )
+  const [change] = fake.listDocs('issues/issue-115/statusChanges')
+  expect(change?.comment).toBe('Work completed')
+  expect(change?.tags).toEqual(
     expect.arrayContaining(['warranty', 'duplicate']),
   )
-  expect(lastChange?.media).toHaveLength(1)
+  expect(change?.media).toHaveLength(1)
+  expect(fake.listDocs('issues/issue-115/comments')).toHaveLength(1)
 })
 
-test('error-states: a failed status change shows an error toast and keeps the form', async () => {
-  serve()
-  trpcServer.use(trpcMutationError('issues.changeStatus'))
-  const { currentPath, user } = renderApp('/issues/status/issue-115')
+test('error-states: a failed status change shows an error toast, keeps the form, and leaves the status unchanged', async () => {
+  seedManager()
+  seedIssue()
+  const { currentPath, user } = renderAppWithServer(
+    '/issues/status/issue-115',
+    {
+      uid: 'uid-1',
+    },
+  )
 
   await ready()
-  await user.click(screen.getByRole('button', { name: /Выполнено/ }))
+  trpcServer.use(trpcMutationError('issues.changeStatus'))
+  await user.click(screen.getByRole('button', { name: /Done/ }))
   await user.click(submit())
 
   expect(
-    await screen.findByText('Не удалось сменить статус. Попробуйте ещё раз.'),
+    await screen.findByText('Could not change the status. Please try again.'),
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/issues/status/issue-115')
+  expect(fake.getDoc('issues/issue-115')?.status).toBe('in-progress')
 })

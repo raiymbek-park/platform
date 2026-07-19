@@ -80,10 +80,13 @@ Top-down — from most expensive to cheapest. Levels do NOT duplicate each other
 | Error/Empty/Loading state | — | ✅ with network mocking | — |
 | Visual bug (spacing, color) | — | — | — |
 
+**Assign top-down — cover at the highest level that can exercise the behavior, push only the remainder lower.** Start from the top (a full flow / page / main form). Whatever that level can drive end-to-end is covered there and nowhere else. Drop to a lower level (component, hook, pure function) ONLY for what the top cannot reach or cannot exercise economically: a shared utility, isolated logic with many branches, a state a full flow can't force. **One integration file per screen** — a single integration test that renders the screen exercises its client-side behavior (field validation, disabled states, limits) AND its backend-touching behavior; never split one screen into a "narrow/UI-only" file and a "wide" file.
+
 **Rules:**
 1. E2E covered happy path → Integration does NOT repeat it, covers edge cases
 2. Integration covered behavior → Unit does NOT duplicate, only covers isolated logic
 3. Shared utilities used across project → Unit test mandatory regardless of integration coverage
+4. A behavior the page/main-flow test already drives → NOT re-tested at component/unit level
 
 **Three properties of a good test:**
 ```
@@ -109,13 +112,69 @@ Real dependencies (DB, cache, queue in containers)
   → everything inside the container stack is real
 
 Network mocking (intercept HTTP/GraphQL at the network layer)
-  → boundary = network edge — application code is real, server responses are mocked
+  → boundary = network edge — application code is real, responses are mocked
+  → LEGITIMATE ONLY when the server is genuinely external (a third party you
+    don't own). When the server is your OWN code, the network line is an
+    INTERNAL seam, not a boundary — mocking it fabricates your own backend.
 
 Module mocking (replace imports)
   → boundary = module boundary — AVOID, breaks integration confidence
 ```
 
 The principle is the same regardless of infrastructure: keep as much of the real stack as possible, mock only what's beyond your control. The closer the boundary is to the external world — the more confidence the test provides.
+
+### The network is not automatically the boundary
+
+"Mock the network" is not a licence to hand-write server responses. Draw the line by **ownership, not by protocol**:
+
+- The call between a client and a server you **both own** is an *internal seam*. Faking its responses swaps your own validation, authorization, derivation, and projection for a fixture — the very logic the test should exercise. The suite goes green while that logic rots untested (a textbook false-positive).
+- The **real external boundary** is what the server itself cannot control: the datastore, and third-party services (payment, email, SMS, LLM). Push the mock down to *there* and let the real server logic run to produce the response.
+
+**Litmus test for any mock — look at what it returns:**
+
+```
+Raw data an external dependency would hold (records, a gateway's ack, a 3rd-party payload)
+  → legitimate boundary mock. The code under test transforms it into the response.
+
+Your server's COMPUTED output (assigned ids, derived/aggregated fields, status codes,
+an authorization allow/deny verdict, a localized or filtered projection)
+  → fabricated backend. You mocked away the logic you meant to test.
+```
+
+**Widest-boundary rule:** if the real server / business logic *can* run inside the test — in-process, or against a disposable test datastore — it **must**. Stopping one layer higher (canned server responses) is a violation even when it is technically "at the network layer." Reserve canned server responses for behavior that involves no server logic at all (pure client-side rendering, form-field validation, disabled states), or for a genuinely external third-party server.
+
+**Carve-out — forcing an error / empty / loading response is NOT fabricating the backend.** Making a boundary return an error, an empty result, or hang — to check how the UI copes — is a legitimate mock: the subject under test is the client's *reaction*, and you assert on the UI, not on any business output the server computed. What the litmus forbids is a canned *success* payload that stands in for real server logic. So: canned error / empty / loading at the boundary → allowed; canned success output that encodes the server's computation → fabricated backend.
+
+### Assert the behaviour the requirement demands — not the plumbing
+
+A test earns its place only by failing when a real requirement breaks. Two smells mean it can't:
+
+- **Testing the mock.** You replace a collaborator with a mock, give it a fixed return, then
+  assert either that it was *called* or a value trivially echoed from what you configured. Nothing
+  about the system's own behaviour is verified — you've only confirmed the mock returns what you
+  told it to. Start from what the *requirement* says must be true and exercise it through real
+  code; mock only what is genuinely outside your control.
+- **Asserting intent, not outcome.** Asserting that the code *asked* for an effect — a recorded
+  call, an unresolved write token handed off to be applied later — proves the request, not the
+  result; the effect itself is faked away, so the assertion can stay green while the real outcome
+  is wrong. Assert the observable outcome the requirement describes, read back from wherever it
+  lands.
+
+**Name only the guarantee the test can prove — the break-the-mechanism check.** If you could
+delete the mechanism a test is named for (the transaction, the constraint, the retry) and the
+test would still pass, the test does not protect that property. Verify it at a level that can, or
+rename the test to what it actually checks.
+
+### Top-down spans the whole stack
+
+The top-down rule crosses the client↔server boundary too. When an end-to-end test drives the
+system through its real entry point (real server, real business logic, only the outside world
+substituted) and asserts the outcome, it already covers that logic — a separate lower-level test
+for the *same* behaviour is a duplicate; remove it. Keep lower-level tests only for what the top
+cannot reach: flows with no trigger a higher test can pull (schedulers, background jobs,
+webhooks), branches the entry point cannot produce (an input it rejects, a state it never emits),
+and shared pure logic. Push true persistence / atomicity / concurrency / rules guarantees to a
+real-infrastructure tier (containers or an emulator) — no mock or in-memory fake can prove them.
 
 For tool-specific patterns, consult the relevant example file from `project-context.md`.
 

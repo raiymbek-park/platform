@@ -1,20 +1,14 @@
-import type { Issue } from '@raiymbek-park/api'
-import type { IssueCreatePayload } from '@raiymbek-park/shared/validation-schemas'
-
-import { issueCreatePayloadSchema } from '@raiymbek-park/shared/validation-schemas'
+import { fake, injectFake, resetFirestore } from '@raiymbek-park/api/testing'
 import { screen, waitFor } from '@testing-library/react'
-import { beforeEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test } from 'vitest'
 
 import {
   firebaseAuth,
   firebaseStorage,
-  renderApp,
-  residentMe,
-  trpcMutation,
   trpcMutationError,
-  trpcQueries,
   trpcServer,
 } from '@/shared/test'
+import { renderAppWithServer } from '@/shared/test/render-app-server'
 
 if (!URL.createObjectURL)
   Object.assign(URL, {
@@ -27,69 +21,40 @@ const makeFile = (
   { size, type = 'image/jpeg' }: { size?: number; type?: string } = {},
 ) => {
   const file = new File(['x'], name, { type })
-  if (size) Object.defineProperty(file, 'size', { value: size })
+  if (size !== undefined) Object.defineProperty(file, 'size', { value: size })
   return file
 }
 
-let issues: Issue[] = []
-let lastCreatePayload: IssueCreatePayload | null = null
+const submit = () => screen.getByRole('button', { name: 'Submit' })
 
-const toIssue = (payload: IssueCreatePayload, number: number): Issue => ({
-  author: { apartment: 42, block: 1, name: 'Алиса' },
-  category: payload.category,
-  commentCount: 0,
-  createdAt: Date.now(),
-  description: payload.description,
-  dislikeCount: 0,
-  id: payload.id,
-  isMine: true,
-  isTranslated: false,
-  isWatching: false,
-  keywords: [],
-  likeCount: 0,
-  media: payload.media,
-  myReaction: null,
-  number,
-  original: null,
-  originalLang: 'ru',
-  status: 'new',
-  tags: [],
-  title: payload.title,
-  urgent: payload.urgent,
-})
+const selectCategory = () => screen.getByRole('button', { name: /Repair/ })
 
-const serve = () =>
-  trpcServer.use(
-    trpcQueries({
-      'issues.list': () => ({ issues, nextCursor: null }),
-      'resident.me': () => residentMe(),
-    }),
-    trpcMutation('issues.create', raw => {
-      const payload = issueCreatePayloadSchema.parse(raw)
-      lastCreatePayload = payload
-      const issue = toIssue(payload, issues.length + 1)
-      issues = [...issues, issue]
-      return issue
-    }),
-  )
+const titleField = () => screen.getByRole('textbox', { name: 'Issue title' })
 
-const submit = () => screen.getByRole('button', { name: 'Отправить' })
+const descriptionField = () =>
+  screen.getByRole('textbox', { name: 'Description' })
 
-const selectCategory = () => screen.getByRole('button', { name: /Ремонт/ })
+const fileInput = () => screen.getByLabelText('Add')
 
-const titleField = () => screen.getByRole('textbox', { name: 'Тема заявки' })
+const ready = () => screen.findByRole('textbox', { name: 'Issue title' })
 
-const descriptionField = () => screen.getByRole('textbox', { name: 'Описание' })
-
-const fileInput = () => screen.getByLabelText('Добавить')
-
-const ready = () => screen.findByRole('textbox', { name: 'Тема заявки' })
+const seedResident = (role = 'resident') =>
+  fake.seed('residents/uid-1', {
+    apartment: 42,
+    avatarUrl: null,
+    block: 1,
+    cars: [],
+    isPhoneVisible: false,
+    name: 'Alice',
+    phone: '+77781234455',
+    role,
+  })
 
 const fillValidForm = async (
-  user: ReturnType<typeof renderApp>['user'],
+  user: ReturnType<typeof renderAppWithServer>['user'],
   {
-    title = 'Течёт кран на кухне',
-    description = 'Кран течёт уже неделю, нужен мастер',
+    title = "Kitchen tap won't stop dripping",
+    description = 'The tap has been dripping for a week, need a plumber',
   } = {},
 ) => {
   await ready()
@@ -101,92 +66,138 @@ const fillValidForm = async (
 beforeEach(() => {
   firebaseAuth.reset()
   firebaseAuth.signIn()
-  issues = []
-  lastCreatePayload = null
+  fake.reset()
+  injectFake()
 })
 
-test('happy-path 4 / validation 4: submitting a valid issue navigates to the list, shows the new issue, and confirms with a toast', async () => {
-  serve()
-  const { currentPath, user } = renderApp('/issues/new')
+afterEach(resetFirestore)
+
+test('happy-path 4: submitting a valid issue lists it with a server-assigned number and a confirmation toast', async () => {
+  seedResident()
+  const { currentPath, user } = renderAppWithServer('/issues/new', {
+    uid: 'uid-1',
+  })
 
   await fillValidForm(user)
   await user.click(submit())
 
   await waitFor(() => expect(currentPath()).toBe('/issues'))
-  expect(await screen.findByText('Течёт кран на кухне')).toBeInTheDocument()
-  expect(await screen.findByText('Заявка отправлена.')).toBeInTheDocument()
+  expect(
+    await screen.findByText("Kitchen tap won't stop dripping"),
+  ).toBeInTheDocument()
+  expect(await screen.findByText('Issue submitted.')).toBeInTheDocument()
+
+  const stored = fake.listDocs('issues')
+  expect(stored).toHaveLength(1)
+  expect(stored[0]).toMatchObject({
+    author: { apartment: 42, block: 1, name: 'Alice' },
+    authorId: 'uid-1',
+    number: 1,
+    status: 'new',
+    title: "Kitchen tap won't stop dripping",
+    urgent: false,
+  })
+})
+
+test('happy-path 5: marking urgent and attaching a photo stores urgent true with the uploaded media', async () => {
+  seedResident()
+  const { currentPath, user } = renderAppWithServer('/issues/new', {
+    uid: 'uid-1',
+  })
+
+  await fillValidForm(user)
+  await user.click(screen.getByRole('button', { name: /Urgent/ }))
+  await user.upload(fileInput(), makeFile('photo.jpg'))
+  await user.click(submit())
+
+  await waitFor(() => expect(currentPath()).toBe('/issues'))
+  await screen.findByText('Issue submitted.')
+
+  const stored = fake.listDocs('issues')
+  expect(stored).toHaveLength(1)
+  expect(stored[0]?.urgent).toBe(true)
+  expect(stored[0]?.media).toHaveLength(1)
 })
 
 test('validation 1: no category selected keeps the submit button disabled', async () => {
-  serve()
-  const { user } = renderApp('/issues/new')
+  seedResident()
+  const { user } = renderAppWithServer('/issues/new', { uid: 'uid-1' })
 
   await ready()
-  await user.type(titleField(), 'Течёт кран на кухне')
-  await user.type(descriptionField(), 'Кран течёт уже неделю, нужен мастер')
+  await user.type(titleField(), "Kitchen tap won't stop dripping")
+  await user.type(
+    descriptionField(),
+    'The tap has been dripping for a week, need a plumber',
+  )
 
   expect(submit()).toBeDisabled()
 })
 
 test('validation 2 / edge-cases 1: a title under 3 characters blocks submit, 3 and 80 characters are accepted', async () => {
-  serve()
-  const { user } = renderApp('/issues/new')
+  seedResident()
+  const { user } = renderAppWithServer('/issues/new', { uid: 'uid-1' })
 
   await ready()
   await user.click(selectCategory())
-  await user.type(descriptionField(), 'Кран течёт уже неделю, нужен мастер')
+  await user.type(
+    descriptionField(),
+    'The tap has been dripping for a week, need a plumber',
+  )
 
-  await user.type(titleField(), 'ав')
+  await user.type(titleField(), 'ab')
   expect(submit()).toBeDisabled()
 
   await user.clear(titleField())
   await user.click(titleField())
-  await user.paste('а'.repeat(3))
+  await user.paste('a'.repeat(3))
   await waitFor(() => expect(submit()).toBeEnabled())
 
   await user.clear(titleField())
   await user.click(titleField())
-  await user.paste('а'.repeat(80))
+  await user.paste('a'.repeat(80))
   await waitFor(() => expect(submit()).toBeEnabled())
 })
 
 test('validation 3 / edge-cases 2: a description under 10 characters blocks submit, 10 and 1000 characters are accepted', async () => {
-  serve()
-  const { user } = renderApp('/issues/new')
+  seedResident()
+  const { user } = renderAppWithServer('/issues/new', { uid: 'uid-1' })
 
   await ready()
   await user.click(selectCategory())
-  await user.type(titleField(), 'Течёт кран на кухне')
+  await user.type(titleField(), "Kitchen tap won't stop dripping")
 
-  await user.type(descriptionField(), 'а'.repeat(9))
+  await user.type(descriptionField(), 'a'.repeat(9))
   expect(submit()).toBeDisabled()
 
   await user.clear(descriptionField())
   await user.click(descriptionField())
-  await user.paste('а'.repeat(10))
+  await user.paste('a'.repeat(10))
   await waitFor(() => expect(submit()).toBeEnabled())
 
   await user.clear(descriptionField())
   await user.click(descriptionField())
-  await user.paste('а'.repeat(1000))
+  await user.paste('a'.repeat(1000))
   await waitFor(() => expect(submit()).toBeEnabled())
 })
 
 test('edge-cases 3: a whitespace-only title is treated as empty and blocks submit', async () => {
-  serve()
-  const { user } = renderApp('/issues/new')
+  seedResident()
+  const { user } = renderAppWithServer('/issues/new', { uid: 'uid-1' })
 
   await ready()
   await user.click(selectCategory())
   await user.type(titleField(), '   ')
-  await user.type(descriptionField(), 'Кран течёт уже неделю, нужен мастер')
+  await user.type(
+    descriptionField(),
+    'The tap has been dripping for a week, need a plumber',
+  )
 
   expect(submit()).toBeDisabled()
 })
 
 test('validation 5 / edge-cases 14: attaching more than 10 files is rejected with a toast and no photo is added', async () => {
-  serve()
-  const { user } = renderApp('/issues/new')
+  seedResident()
+  const { user } = renderAppWithServer('/issues/new', { uid: 'uid-1' })
 
   await ready()
   const files = Array.from({ length: 11 }, (_, index) =>
@@ -195,16 +206,16 @@ test('validation 5 / edge-cases 14: attaching more than 10 files is rejected wit
   await user.upload(fileInput(), files)
 
   expect(
-    await screen.findByText('Можно прикрепить не более 10 файлов'),
+    await screen.findByText('You can attach at most 10 files'),
   ).toBeInTheDocument()
   expect(
-    screen.queryByRole('button', { name: 'Удалить' }),
+    screen.queryByRole('button', { name: 'Delete' }),
   ).not.toBeInTheDocument()
 })
 
 test('validation 5 / edge-cases 14: attaching a file over 200 MB is rejected with a toast and no photo is added', async () => {
-  serve()
-  const { user } = renderApp('/issues/new')
+  seedResident()
+  const { user } = renderAppWithServer('/issues/new', { uid: 'uid-1' })
 
   await ready()
   const big = makeFile('big.mp4', {
@@ -215,17 +226,17 @@ test('validation 5 / edge-cases 14: attaching a file over 200 MB is rejected wit
 
   expect(
     await screen.findByText(
-      'Файл слишком большой: суммарный размер вложений не должен превышать 200 МБ',
+      'File too large: the total size of attachments must not exceed 200 MB',
     ),
   ).toBeInTheDocument()
   expect(
-    screen.queryByRole('button', { name: 'Удалить' }),
+    screen.queryByRole('button', { name: 'Delete' }),
   ).not.toBeInTheDocument()
 })
 
 test('edge-cases 14: attaching exactly 10 files is accepted and adds the photos', async () => {
-  serve()
-  const { user } = renderApp('/issues/new')
+  seedResident()
+  const { user } = renderAppWithServer('/issues/new', { uid: 'uid-1' })
 
   await ready()
   const files = Array.from({ length: 10 }, (_, index) =>
@@ -234,51 +245,57 @@ test('edge-cases 14: attaching exactly 10 files is accepted and adds the photos'
   await user.upload(fileInput(), files)
 
   expect(
-    await screen.findByRole('button', { name: 'Удалить' }),
+    await screen.findByRole('button', { name: 'Delete' }),
   ).toBeInTheDocument()
   expect(
-    screen.queryByText('Можно прикрепить не более 10 файлов'),
+    screen.queryByText('You can attach at most 10 files'),
   ).not.toBeInTheDocument()
 })
 
 test('edge-cases 14: attaching a file at exactly 200 MB is accepted and adds the photo', async () => {
-  serve()
-  const { user } = renderApp('/issues/new')
+  seedResident()
+  const { user } = renderAppWithServer('/issues/new', { uid: 'uid-1' })
 
   await ready()
   const atLimit = makeFile('at-limit.jpg', { size: 200 * 1024 * 1024 })
   await user.upload(fileInput(), atLimit)
 
   expect(
-    await screen.findByRole('button', { name: 'Удалить' }),
+    await screen.findByRole('button', { name: 'Delete' }),
   ).toBeInTheDocument()
   expect(
     screen.queryByText(
-      'Файл слишком большой: суммарный размер вложений не должен превышать 200 МБ',
+      'File too large: the total size of attachments must not exceed 200 MB',
     ),
   ).not.toBeInTheDocument()
 })
 
-test('error-states 2: a failed create shows an error toast and keeps the form for retry', async () => {
-  serve()
+test('error-states 2: a failed create shows an error toast, keeps the form for retry, and stores nothing', async () => {
+  seedResident()
+  const { currentPath, user } = renderAppWithServer('/issues/new', {
+    uid: 'uid-1',
+  })
+
   trpcServer.use(trpcMutationError('issues.create'))
-  const { currentPath, user } = renderApp('/issues/new')
 
   await fillValidForm(user)
   await user.click(submit())
 
   expect(
-    await screen.findByText('Не удалось сохранить заявку. Попробуйте ещё раз.'),
+    await screen.findByText('Could not save the issue. Please try again.'),
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/issues/new')
-  expect(titleField()).toHaveValue('Течёт кран на кухне')
+  expect(titleField()).toHaveValue("Kitchen tap won't stop dripping")
   expect(submit()).toBeEnabled()
+  expect(fake.listDocs('issues')).toHaveLength(0)
 })
 
-test('error-states 7: a partially failed upload still creates the issue and reports the failed count', async () => {
-  serve()
+test('error-states 7: a partially failed upload still creates the issue and stores only the media that uploaded', async () => {
+  seedResident()
   firebaseStorage.failUploadsNamed('bad.jpg')
-  const { currentPath, user } = renderApp('/issues/new')
+  const { currentPath, user } = renderAppWithServer('/issues/new', {
+    uid: 'uid-1',
+  })
 
   await fillValidForm(user)
   await user.upload(fileInput(), [makeFile('ok.jpg'), makeFile('bad.jpg')])
@@ -286,15 +303,20 @@ test('error-states 7: a partially failed upload still creates the issue and repo
 
   await waitFor(() => expect(currentPath()).toBe('/issues'))
   expect(
-    await screen.findByText('Заявка создана. Файлов не загрузилось: 1'),
+    await screen.findByText('Issue created. Files not uploaded: 1'),
   ).toBeInTheDocument()
-  expect(lastCreatePayload?.media).toHaveLength(1)
+
+  const stored = fake.listDocs('issues')
+  expect(stored).toHaveLength(1)
+  expect(stored[0]?.media).toHaveLength(1)
 })
 
 test('error-states 7: an entirely failed upload still creates the issue with no media', async () => {
-  serve()
+  seedResident()
   firebaseStorage.failUploadsNamed('bad.jpg')
-  const { currentPath, user } = renderApp('/issues/new')
+  const { currentPath, user } = renderAppWithServer('/issues/new', {
+    uid: 'uid-1',
+  })
 
   await fillValidForm(user)
   await user.upload(fileInput(), makeFile('bad.jpg'))
@@ -302,22 +324,10 @@ test('error-states 7: an entirely failed upload still creates the issue with no 
 
   await waitFor(() => expect(currentPath()).toBe('/issues'))
   expect(
-    await screen.findByText('Заявка создана. Файлов не загрузилось: 1'),
+    await screen.findByText('Issue created. Files not uploaded: 1'),
   ).toBeInTheDocument()
-  expect(lastCreatePayload?.media).toEqual([])
-})
 
-test('happy-path 5: marking urgent and attaching a photo submits urgent true with the uploaded media', async () => {
-  serve()
-  const { currentPath, user } = renderApp('/issues/new')
-
-  await fillValidForm(user)
-  await user.click(screen.getByRole('button', { name: /Срочно/ }))
-  await user.upload(fileInput(), makeFile('photo.jpg'))
-  await user.click(submit())
-
-  await waitFor(() => expect(currentPath()).toBe('/issues'))
-  await screen.findByText('Заявка отправлена.')
-  expect(lastCreatePayload?.urgent).toBe(true)
-  expect(lastCreatePayload?.media).toHaveLength(1)
+  const stored = fake.listDocs('issues')
+  expect(stored).toHaveLength(1)
+  expect(stored[0]?.media).toEqual([])
 })
