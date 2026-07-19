@@ -86,7 +86,7 @@ beforeEach(() => {
 
 afterEach(resetFirestore)
 
-test('happy-path 11: the author confirms delete and the post leaves the datastore and the feed', async () => {
+test('happy-path 11: the author confirms delete and the post disappears from the feed', async () => {
   seedResident()
   seedPost()
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })

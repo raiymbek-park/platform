@@ -22,6 +22,7 @@ type Constraints = {
 
 type Write =
   | { data: Data; merge?: boolean; op: 'set'; path: string }
+  | { data: Data; op: 'create'; path: string }
   | { data: Data; op: 'update'; path: string }
   | { op: 'delete'; path: string }
 
@@ -73,8 +74,21 @@ const applyWrite = (write: Write): void => {
     return
   }
   const existing = store.get(write.path)
+  if (write.op === 'create' && existing !== undefined)
+    throw new Error(`ALREADY_EXISTS: ${write.path}`)
+  if (write.op === 'update' && existing === undefined)
+    throw new Error(`NOT_FOUND: ${write.path}`)
   const base = write.op === 'set' && !write.merge ? {} : { ...(existing ?? {}) }
   store.set(write.path, { ...base, ...resolveData(write.data, existing) })
+}
+
+const tryWrite = (write: Write): Promise<void> => {
+  try {
+    applyWrite(write)
+    return Promise.resolve()
+  } catch (error) {
+    return Promise.reject(error)
+  }
 }
 
 const lastSegment = (path: string): string =>
@@ -175,24 +189,11 @@ const makeDoc = (docPath: string) => ({
   },
   collection: (name: string) => makeCollection(`${docPath}/${name}`),
   get: () => Promise.resolve(snapshot(docPath)),
-  create: (data: Data) => {
-    if (store.has(docPath))
-      return Promise.reject(new Error(`ALREADY_EXISTS: ${docPath}`))
-    applyWrite({ op: 'set', path: docPath, data, merge: false })
-    return Promise.resolve()
-  },
-  set: (data: Data, options?: { merge?: boolean }) => {
-    applyWrite({ op: 'set', path: docPath, data, merge: options?.merge })
-    return Promise.resolve()
-  },
-  update: (data: Data) => {
-    applyWrite({ op: 'update', path: docPath, data })
-    return Promise.resolve()
-  },
-  delete: () => {
-    applyWrite({ op: 'delete', path: docPath })
-    return Promise.resolve()
-  },
+  create: (data: Data) => tryWrite({ op: 'create', path: docPath, data }),
+  set: (data: Data, options?: { merge?: boolean }) =>
+    tryWrite({ op: 'set', path: docPath, data, merge: options?.merge }),
+  update: (data: Data) => tryWrite({ op: 'update', path: docPath, data }),
+  delete: () => tryWrite({ op: 'delete', path: docPath }),
 })
 
 const makeCollection = (collPath: string) => ({
@@ -211,7 +212,7 @@ const runTransaction = <T>(run: (tx: TxApi) => Promise<T>): Promise<T> => {
       staged.push({ op: 'set', path: ref.path, data, merge: options?.merge })
     },
     create: (ref: Ref, data: Data) => {
-      staged.push({ op: 'set', path: ref.path, data, merge: false })
+      staged.push({ op: 'create', path: ref.path, data })
     },
     update: (ref: Ref, data: Data) => {
       staged.push({ op: 'update', path: ref.path, data })

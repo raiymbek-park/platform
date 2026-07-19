@@ -78,7 +78,7 @@ beforeEach(() => {
 
 afterEach(resetFirestore)
 
-test('happy-path 10: confirming delete on an own new issue removes it from the datastore and the list with a success toast', async () => {
+test('happy-path 10: confirming delete on an own new issue removes it from the list with a success toast', async () => {
   seedResident()
   seedIssue()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
