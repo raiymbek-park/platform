@@ -13,6 +13,7 @@ type Where = {
 }
 
 type Constraints = {
+  group?: string
   limit?: number
   orderBy?: { dir: 'asc' | 'desc'; field: string }
   startAfter?: unknown
@@ -108,9 +109,18 @@ const matchesWhere = (data: Data, where: Where): boolean => {
   return Array.isArray(field) && field.some(item => values.includes(item))
 }
 
+const inCollection = (
+  path: string,
+  collPath: string,
+  group: string | undefined,
+): boolean =>
+  group
+    ? lastSegment(parentCollection(path)) === group
+    : parentCollection(path) === collPath
+
 const runQuery = (collPath: string, constraints: Constraints) => {
   const rows = [...store.entries()]
-    .filter(([path]) => parentCollection(path) === collPath)
+    .filter(([path]) => inCollection(path, collPath, constraints.group))
     .filter(([, data]) => constraints.wheres.every(w => matchesWhere(data, w)))
 
   const ordered = constraints.orderBy
@@ -154,9 +164,15 @@ const makeQuery = (collPath: string, constraints: Constraints) => ({
   get: () => Promise.resolve(runQuery(collPath, constraints)),
 })
 
+type DocParent = { id: string; parent: CollParent }
+type CollParent = { parent: DocParent | null }
+
 const makeDoc = (docPath: string) => ({
   id: lastSegment(docPath),
   path: docPath,
+  get parent(): CollParent {
+    return makeCollection(parentCollection(docPath))
+  },
   collection: (name: string) => makeCollection(`${docPath}/${name}`),
   get: () => Promise.resolve(snapshot(docPath)),
   create: (data: Data) => {
@@ -182,6 +198,9 @@ const makeDoc = (docPath: string) => ({
 const makeCollection = (collPath: string) => ({
   ...makeQuery(collPath, { wheres: [] }),
   doc: (id?: string) => makeDoc(`${collPath}/${id ?? autoId()}`),
+  get parent(): DocParent | null {
+    return collPath.includes('/') ? makeDoc(parentCollection(collPath)) : null
+  },
 })
 
 const runTransaction = <T>(run: (tx: TxApi) => Promise<T>): Promise<T> => {
@@ -240,6 +259,8 @@ const batch = () => {
 
 const db = {
   collection: (name: string) => makeCollection(name),
+  collectionGroup: (name: string) =>
+    makeQuery(name, { group: name, wheres: [] }),
   getAll: (...refs: Ref[]) =>
     Promise.resolve(refs.map(ref => snapshot(ref.path))),
   runTransaction,

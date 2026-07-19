@@ -96,6 +96,20 @@ test('the real status-change path mirrors a comment and increments the count thr
   expect(comments[0]).toMatchObject({ text: 'Взяли в работу, назначен мастер' })
 })
 
+test('a collection-group query spans subcollections and its docs expose the owning parent', async () => {
+  const { registerPushToken, getResidentTokens } = await import(
+    '../notifications/push-token-store'
+  )
+
+  await registerPushToken('uid-1', 'token-a', 'ru')
+  await registerPushToken('uid-2', 'token-a', 'kk')
+
+  expect(fake.getDoc('residents/uid-1/pushTokens/token-a')).toBeUndefined()
+  expect(await getResidentTokens('uid-2')).toEqual([
+    { locale: 'kk', token: 'token-a' },
+  ])
+})
+
 test('a status change with no comment leaves the comment thread empty and the count at zero', async () => {
   await createIssue('uid-1', 'ru', createPayload)
 
