@@ -105,10 +105,26 @@ use** — ADR 017.
 token → `UNAUTHORIZED`) is NOT reachable through the harness. Cover such 401 paths at the api layer, or fall
 back to a canned boundary error for the UI-reaction half.
 
-**STATUS (2026-07-19): harness built and green; rolling out incrementally.** Pilot: issues create
-(`create-issue-form.server.test.tsx`); posts create migrated to variant A. Remaining: retire the
-fabricated-backend `serve()` resolvers in `apps/web/src/shared/test/trpc-server.ts` as each vertical
-(issues, comments, settings, …) moves onto the harness; keep unit tests only for pure functions.
+**Test tiers (the layered model).**
+- **Unit** — pure functions (validation, projection, tokenization, formatting). `npm test`.
+- **Integration (in-memory fake)** — the web harness above, plus api store tests that seed the fake, run the
+  real code, and assert the read-back result. Fast, parallel, `npm test`. This is the bulk.
+- **Emulator (real Firestore)** — `apps/api/src/infra-2.test.ts`, gated by `describe.skipIf(!FIRESTORE_EMULATOR_HOST)`,
+  run via `npm --prefix apps/api run test:emulator` (`npx firebase-tools@15 emulators:exec --only firestore …`,
+  **needs Java 21**). Reserved for what a fake can't prove — transaction atomicity/concurrency, real `increment`/
+  `merge`, query/index correctness, and `firestore.rules` (via `@firebase/rules-unit-testing`). Each test does
+  `clearAll` + seed (so order-independent); run serially (or per-`projectId`), never in the fast parallel pool.
+  Wired into CI as a step in the `checks` job (with a Java 21 setup); NOT part of the default `npm test`. Keep it THIN.
+
+Assign top-down (arc-test `testing-strategy.md`): cover a behaviour at the highest tier that reaches it — a web
+harness test that drives the real router+store already covers that server logic, so don't duplicate it in an api
+store/router test. Keep api tests for server-only flows (digests, triggers), UI-unreachable branches (non-author
+authorization, identity gates, legacy/malformed data), pure utilities, and the emulator-grade guarantees above.
+
+**STATUS (2026-07-19): rollout complete.** All web screens are on the harness (English); the fabricated-backend
+`serve()` resolvers in `apps/web/src/shared/test/trpc-server.ts` remain only for error-injection carve-outs and
+the transport-contract set. Api tests duplicated by harness coverage were removed; two atomicity guarantees
+(`createResidentIfAbsent`, `otp-store`) moved to the emulator tier.
 
 ## API
 - Type: tRPC (v11) — `apps/api` exports `./src/router.ts`; web consumes via `@trpc/client` + `@trpc/tanstack-react-query`. Types flow end-to-end (no codegen needed).
