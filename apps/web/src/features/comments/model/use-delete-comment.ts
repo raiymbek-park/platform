@@ -1,9 +1,10 @@
 import type { CommentTarget } from '@raiymbek-park/shared/validation-schemas'
 
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
-import { isNotFoundError, trpcClient, useTRPC } from '@/shared/api'
+import { isNotFoundError, trpcClient } from '@/shared/api'
 
+import { useInvalidateCommentQueries } from './use-invalidate-comment-queries'
 import { useStoreDeletedComments } from './use-store-deleted-comments'
 
 type Callbacks = {
@@ -12,11 +13,7 @@ type Callbacks = {
 }
 
 export const useDeleteComment = ({ parent, parentId }: CommentTarget) => {
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
-  const listKey = trpc.comments.list.pathKey()
-  const parentKey =
-    parent === 'post' ? trpc.posts.list.pathKey() : trpc.issues.list.pathKey()
+  const { invalidateAll } = useInvalidateCommentQueries(parent)
   const remove = useStoreDeletedComments(store => store.remove)
   const restore = useStoreDeletedComments(store => store.restore)
 
@@ -38,16 +35,7 @@ export const useDeleteComment = ({ parent, parentId }: CommentTarget) => {
       },
       onSuccess,
       onSettled: async () => {
-        await Promise.all([
-          queryClient.invalidateQueries({
-            queryKey: listKey,
-            refetchType: 'all',
-          }),
-          queryClient.invalidateQueries({
-            queryKey: parentKey,
-            refetchType: 'all',
-          }),
-        ])
+        await invalidateAll()
         restore(id)
       },
     })

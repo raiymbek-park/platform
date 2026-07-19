@@ -1,10 +1,11 @@
 import type { CommentTarget } from '@raiymbek-park/shared/validation-schemas'
 
 import { commentUpdateInputSchema } from '@raiymbek-park/shared/validation-schemas'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
-import { trpcClient, useTRPC } from '@/shared/api'
+import { trpcClient } from '@/shared/api'
 
+import { useInvalidateCommentQueries } from './use-invalidate-comment-queries'
 import { useStoreEditedComments } from './use-store-edited-comments'
 
 type UpdateArgs = {
@@ -19,9 +20,7 @@ type Callbacks = {
 }
 
 export const useUpdateComment = ({ parent, parentId }: CommentTarget) => {
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
-  const listKey = trpc.comments.list.pathKey()
+  const { invalidateList } = useInvalidateCommentQueries(parent)
   const apply = useStoreEditedComments(store => store.apply)
   const clear = useStoreEditedComments(store => store.clear)
 
@@ -52,10 +51,7 @@ export const useUpdateComment = ({ parent, parentId }: CommentTarget) => {
         },
         onSuccess,
         onSettled: async () => {
-          await queryClient.invalidateQueries({
-            queryKey: listKey,
-            refetchType: 'all',
-          })
+          await invalidateList()
           clear(id)
         },
       },
