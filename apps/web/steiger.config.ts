@@ -6,4 +6,10 @@ export default defineConfig([
   {
     ignores: ['./src/test/**', './src/**/*.gen.ts', './src/**/*.d.ts'],
   },
+  {
+    files: ['./src/**/*.server.test.tsx'],
+    rules: {
+      'fsd/no-public-api-sidestep': 'off',
+    },
+  },
 ])

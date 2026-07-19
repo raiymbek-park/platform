@@ -1,3 +1,7 @@
+import type { Firestore } from 'firebase-admin/firestore'
+
+import { Timestamp } from 'firebase-admin/firestore'
+
 type Data = Record<string, unknown>
 
 type Ref = { path: string }
@@ -18,31 +22,23 @@ type Write =
 
 const CLOCK_BASE = 1_700_000_000_000
 
-const store = new Map<string, Data>()
-let clock = CLOCK_BASE
-let autoCounter = 0
-
-const tick = (): Timestamp => new Timestamp(clock++)
-const autoId = (): string => `auto_${++autoCounter}`
-
-class Timestamp {
-  constructor(private readonly millis: number) {}
-  toMillis(): number {
-    return this.millis
-  }
-  toDate(): Date {
-    return new Date(this.millis)
-  }
-  static fromMillis(millis: number): Timestamp {
-    return new Timestamp(millis)
-  }
-  static fromDate(date: Date): Timestamp {
-    return new Timestamp(date.getTime())
-  }
-  static now(): Timestamp {
-    return tick()
-  }
+declare global {
+  var __firestoreFake:
+    | { autoCounter: number; clock: number; store: Map<string, Data> }
+    | undefined
 }
+
+const state = globalThis.__firestoreFake ?? {
+  autoCounter: 0,
+  clock: CLOCK_BASE,
+  store: new Map<string, Data>(),
+}
+globalThis.__firestoreFake = state
+
+const store = state.store
+
+const tick = (): Timestamp => Timestamp.fromMillis(state.clock++)
+const autoId = (): string => `auto_${++state.autoCounter}`
 
 const isSentinel = (
   value: unknown,
@@ -242,9 +238,9 @@ export const fake = {
     store.set(path, { ...data })
   },
   reset: (): void => {
-    store.clear()
-    clock = CLOCK_BASE
-    autoCounter = 0
+    state.store.clear()
+    state.clock = CLOCK_BASE
+    state.autoCounter = 0
   },
   getDoc: (path: string): Data | undefined => store.get(path),
   listDocs: (collPath: string): Array<{ id: string } & Data> =>
@@ -252,5 +248,7 @@ export const fake = {
       .filter(([path]) => parentCollection(path) === collPath)
       .map(([path, data]) => ({ id: lastSegment(path), ...data })),
 }
+
+export const getFirestore = (): Firestore => db as unknown as Firestore
 
 export { FieldValue, Timestamp }

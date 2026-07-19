@@ -3,7 +3,11 @@ import type { Firestore } from 'firebase-admin/firestore'
 
 import { getApps, initializeApp } from 'firebase-admin/app'
 import { getAuth } from 'firebase-admin/auth'
-import { FieldValue, getFirestore, Timestamp } from 'firebase-admin/firestore'
+import {
+  FieldValue as adminFieldValue,
+  getFirestore,
+  Timestamp,
+} from 'firebase-admin/firestore'
 
 import { ensureLocalDevCredentials } from './dev-credentials'
 
@@ -13,9 +17,27 @@ export const ensureApp = (): void => {
   initializeApp()
 }
 
+export type FieldValueApi = {
+  increment(by: number): unknown
+  serverTimestamp(): unknown
+}
+
 let db: Firestore | null = null
+let injectedDb: Firestore | null = null
+
+export let FieldValue: FieldValueApi = adminFieldValue
+
+export const injectFirestore = (
+  parts: { db: Firestore; fieldValue: FieldValueApi } | null,
+): void => {
+  injectedDb = parts?.db ?? null
+  FieldValue = parts?.fieldValue ?? adminFieldValue
+}
+
+export const resetFirestore = (): void => injectFirestore(null)
 
 export const getDb = (): Firestore => {
+  if (injectedDb) return injectedDb
   if (db) return db
   ensureApp()
   db = getFirestore()
@@ -44,4 +66,4 @@ export const verifyIdToken = async (
   }
 }
 
-export { FieldValue, Timestamp }
+export { Timestamp }
