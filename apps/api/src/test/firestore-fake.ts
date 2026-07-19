@@ -240,6 +240,8 @@ const batch = () => {
 
 const db = {
   collection: (name: string) => makeCollection(name),
+  getAll: (...refs: Ref[]) =>
+    Promise.resolve(refs.map(ref => snapshot(ref.path))),
   runTransaction,
   batch,
 }

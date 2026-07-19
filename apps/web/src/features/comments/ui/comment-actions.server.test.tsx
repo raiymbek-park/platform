@@ -1,18 +1,17 @@
-import type { Comment } from '@raiymbek-park/api'
-import type { PermissionRole } from '@raiymbek-park/shared/validation-schemas'
-
-import { screen, waitFor, within } from '@testing-library/react'
-import { beforeEach, expect, test } from 'vitest'
-
 import {
-  firebaseAuth,
-  renderApp,
-  residentMe,
-  trpcMutation,
-  trpcMutationError,
-  trpcQueries,
-  trpcServer,
-} from '@/shared/test'
+  fake,
+  injectFake,
+  resetFirestore,
+  Timestamp,
+} from '@raiymbek-park/api/testing'
+import { screen, waitFor, within } from '@testing-library/react'
+import { afterEach, beforeEach, expect, test } from 'vitest'
+
+import { firebaseAuth, trpcMutationError, trpcServer } from '@/shared/test'
+import { renderAppWithServer } from '@/shared/test/render-app-server'
+
+import { useStoreDeletedComments } from '../model/use-store-deleted-comments'
+import { useStoreEditedComments } from '../model/use-store-edited-comments'
 
 if (!HTMLDialogElement.prototype.showModal)
   HTMLDialogElement.prototype.showModal = function showModal() {
@@ -23,103 +22,79 @@ if (!HTMLDialogElement.prototype.close)
     this.removeAttribute('open')
   }
 
-const seedComment = (overrides: Partial<Comment> = {}): Comment => ({
-  author: { apartment: 12, avatarUrl: null, block: 1, name: 'Джеки Чан' },
-  createdAt: 1_700_000_000_000,
-  editedAt: null,
-  id: 'comment-1',
-  isMine: false,
-  isTranslated: false,
-  lang: 'ru',
-  media: [],
-  original: null,
-  text: 'Отличное предложение',
-  ...overrides,
-})
-
-const post = () => ({
-  author: {
+const seedResident = (role = 'resident') =>
+  fake.seed('residents/uid-1', {
     apartment: 42,
+    avatarUrl: null,
     block: 1,
+    cars: [],
+    isPhoneVisible: false,
     name: 'Алиса',
-    phone: '+7 700 000 00 00',
-  },
-  category: 'sell' as const,
-  commentCount: postComments.length,
-  createdAt: 1000,
-  description: 'Описание объявления для проверки треда комментариев.',
-  dislikeCount: 0,
-  id: 'post-1',
-  isMine: false,
-  isPinned: false,
-  keywords: [],
-  kind: 'offer' as const,
-  likeCount: 0,
-  media: [],
-  myReaction: null,
-  title: 'Продам горный велосипед',
-})
+    phone: '+77781234455',
+    role,
+  })
 
-const issue = () => ({
-  author: { apartment: 12, block: 1, name: 'Житель' },
-  category: 'other' as const,
-  commentCount: issueComments.length,
-  createdAt: 1_700_000_000_000,
-  description: 'Домофон у подъезда не открывает дверь по ключу',
-  dislikeCount: 0,
-  id: 'issue-1',
-  isMine: false,
-  keywords: [],
-  likeCount: 0,
-  media: [],
-  myReaction: null,
-  number: 301,
-  status: 'in-progress' as const,
-  tags: [],
-  title: 'Не работает домофон',
-  urgent: false,
-})
+const seedPost = (overrides: Record<string, unknown> = {}) =>
+  fake.seed('posts/post-1', {
+    author: {
+      apartment: 42,
+      block: 1,
+      name: 'Алиса',
+      phone: '+7 700 000 00 00',
+    },
+    authorId: 'author-uid',
+    category: 'sell',
+    commentCount: 0,
+    createdAt: Timestamp.fromMillis(1000),
+    description: 'Описание объявления для проверки треда комментариев.',
+    keywords: ['велосипед'],
+    kind: 'offer',
+    lang: 'ru',
+    media: [],
+    reactions: {},
+    title: 'Продам горный велосипед',
+    ...overrides,
+  })
 
-let postComments: Comment[] = []
-let issueComments: Comment[] = []
+const seedIssue = (overrides: Record<string, unknown> = {}) =>
+  fake.seed('issues/issue-1', {
+    author: { apartment: 12, block: 1, name: 'Житель' },
+    authorId: 'author-uid',
+    category: 'other',
+    commentCount: 0,
+    createdAt: Timestamp.fromMillis(1000),
+    description: 'Домофон у подъезда не открывает дверь по ключу',
+    keywords: ['домофон'],
+    lang: 'ru',
+    media: [],
+    number: 301,
+    reactions: {},
+    status: 'in-progress',
+    tags: [],
+    title: 'Не работает домофон',
+    urgent: false,
+    ...overrides,
+  })
 
-const serve = (role: PermissionRole = 'resident') =>
-  trpcServer.use(
-    trpcQueries({
-      'comments.list': (raw: unknown) => {
-        const { parent } = raw as { parent: 'post' | 'issue' }
-        return {
-          comments: parent === 'post' ? postComments : issueComments,
-          nextCursor: null,
-        }
-      },
-      'issues.get': () => issue(),
-      'issues.list': () => ({ issues: [issue()], nextCursor: null }),
-      'posts.get': () => post(),
-      'posts.list': () => ({ nextCursor: null, posts: [post()] }),
-      'resident.me': () => residentMe({ role }),
-    }),
-    trpcMutation('comments.update', raw => {
-      const { id, media, text } = raw as {
-        id: string
-        media: string[]
-        text: string
-      }
-      postComments = postComments.map(comment =>
-        comment.id === id
-          ? { ...comment, editedAt: Date.now(), media, text }
-          : comment,
-      )
-      return { ok: true }
-    }),
-    trpcMutation('comments.delete', raw => {
-      const { id, parent } = raw as { id: string; parent: 'post' | 'issue' }
-      if (parent === 'post')
-        postComments = postComments.filter(comment => comment.id !== id)
-      else issueComments = issueComments.filter(comment => comment.id !== id)
-      return { ok: true }
-    }),
-  )
+const seedMine = (path: string, text: string, createdAt = 1000) =>
+  fake.seed(path, {
+    author: { apartment: 42, block: 1, name: 'Алиса' },
+    authorId: 'uid-1',
+    createdAt: Timestamp.fromMillis(createdAt),
+    lang: 'ru',
+    media: [],
+    text,
+  })
+
+const seedOther = (path: string, text: string, createdAt = 2000) =>
+  fake.seed(path, {
+    author: { apartment: 12, block: 1, name: 'Джеки Чан' },
+    authorId: 'author-uid',
+    createdAt: Timestamp.fromMillis(createdAt),
+    lang: 'ru',
+    media: [],
+    text,
+  })
 
 const commentButton = () => screen.getByRole('button', { name: /Комментарии/ })
 
@@ -135,7 +110,7 @@ const messageActions = (text: string) =>
   within(messageRow(text)).queryByTitle('Действия с сообщением')
 
 const openActions = async (
-  user: ReturnType<typeof renderApp>['user'],
+  user: ReturnType<typeof renderAppWithServer>['user'],
   text: string,
 ) => {
   const trigger = messageActions(text)
@@ -147,21 +122,21 @@ const openActions = async (
 beforeEach(() => {
   firebaseAuth.reset()
   firebaseAuth.signIn()
-  postComments = []
-  issueComments = []
+  fake.reset()
+  injectFake()
+  useStoreDeletedComments.setState({ deletedIds: new Set() })
+  useStoreEditedComments.setState({ edited: {} })
 })
 
+afterEach(resetFirestore)
+
 test('happy-path 15: opening edit on your own message loads its text into the input bar', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Исходный текст',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Исходный текст')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
   await screen.findByText('Исходный текст')
 
   const sheet = await openActions(user, 'Исходный текст')
@@ -172,16 +147,12 @@ test('happy-path 15: opening edit on your own message loads its text into the in
 })
 
 test('happy-path 15a: saving an edited comment updates the message in place', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Исходный текст',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Исходный текст')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
   await screen.findByText('Исходный текст')
 
   const sheet = await openActions(user, 'Исходный текст')
@@ -192,19 +163,20 @@ test('happy-path 15a: saving an edited comment updates the message in place', as
 
   expect(await screen.findByText('Обновлённый текст')).toBeInTheDocument()
   expect(screen.queryByText('Исходный текст')).not.toBeInTheDocument()
+  await waitFor(() =>
+    expect(fake.getDoc('posts/post-1/comments/c1')?.text).toBe(
+      'Обновлённый текст',
+    ),
+  )
 })
 
 test('happy-path 16: the author deletes their own comment and the count decreases by one', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Удалить меня',
-    }),
-  ]
-  serve()
-  const { currentPath, user } = renderApp('/posts?tab=all')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Удалить меня')
+  const { currentPath, user } = renderAppWithServer('/posts?tab=all', {
+    uid: 'uid-1',
+  })
   await screen.findByText('Продам горный велосипед')
   expect(within(commentButton()).getByText('1')).toBeInTheDocument()
 
@@ -230,14 +202,17 @@ test('happy-path 16: the author deletes their own comment and the count decrease
   await waitFor(() =>
     expect(within(commentButton()).getByText('0')).toBeInTheDocument(),
   )
+  expect(fake.getDoc('posts/post-1')?.commentCount).toBe(0)
+  expect(fake.getDoc('posts/post-1/comments/c1')).toBeUndefined()
 })
 
 test('happy-path 17: Administration deletes another member’s comment regardless of authorship', async () => {
-  postComments = [
-    seedComment({ id: 'c1', isMine: false, text: 'Чужое сообщение' }),
-  ]
-  serve('administration')
-  const { user } = renderApp('/posts/post-1/comments')
+  seedResident('administration')
+  seedPost({ commentCount: 1 })
+  seedOther('posts/post-1/comments/c1', 'Чужое сообщение')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
   await screen.findByText('Чужое сообщение')
 
   const sheet = await openActions(user, 'Чужое сообщение')
@@ -256,19 +231,16 @@ test('happy-path 17: Administration deletes another member’s comment regardles
   await waitFor(() =>
     expect(screen.queryByText('Чужое сообщение')).not.toBeInTheDocument(),
   )
+  expect(fake.getDoc('posts/post-1/comments/c1')).toBeUndefined()
 })
 
 test('validation 15: canceling the delete confirmation leaves the comment in the thread', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Не удаляй меня',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Не удаляй меня')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
   await screen.findByText('Не удаляй меня')
 
   const sheet = await openActions(user, 'Не удаляй меня')
@@ -282,20 +254,15 @@ test('validation 15: canceling the delete confirmation leaves the comment in the
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
   )
   expect(screen.getByText('Не удаляй меня')).toBeInTheDocument()
+  expect(fake.getDoc('posts/post-1/comments/c1')).toBeDefined()
 })
 
 test('edge-cases 17: a member sees actions only on their own comment', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'own',
-      isMine: true,
-      text: 'Моё сообщение',
-    }),
-    seedComment({ id: 'other', isMine: false, text: 'Чужое сообщение' }),
-  ]
-  serve('resident')
-  renderApp('/posts/post-1/comments')
+  seedResident('resident')
+  seedPost({ commentCount: 2 })
+  seedMine('posts/post-1/comments/own', 'Моё сообщение', 1000)
+  seedOther('posts/post-1/comments/other', 'Чужое сообщение', 2000)
+  renderAppWithServer('/posts/post-1/comments', { uid: 'uid-1' })
   await screen.findByText('Моё сообщение')
 
   expect(messageActions('Моё сообщение')).not.toBeNull()
@@ -303,11 +270,12 @@ test('edge-cases 17: a member sees actions only on their own comment', async () 
 })
 
 test('edge-cases 17: Administration sees the delete action on every comment', async () => {
-  postComments = [
-    seedComment({ id: 'other', isMine: false, text: 'Чужое сообщение' }),
-  ]
-  serve('administration')
-  const { user } = renderApp('/posts/post-1/comments')
+  seedResident('administration')
+  seedPost({ commentCount: 1 })
+  seedOther('posts/post-1/comments/other', 'Чужое сообщение')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
   await screen.findByText('Чужое сообщение')
 
   const sheet = await openActions(user, 'Чужое сообщение')
@@ -317,16 +285,12 @@ test('edge-cases 17: Administration sees the delete action on every comment', as
 })
 
 test('error-states 7 / error-states 9: a failed edit surfaces an error and keeps the edited text in edit mode', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Исходный текст',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Исходный текст')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
   await screen.findByText('Исходный текст')
 
   const sheet = await openActions(user, 'Исходный текст')
@@ -346,16 +310,12 @@ test('error-states 7 / error-states 9: a failed edit surfaces an error and keeps
 })
 
 test('error-states 7 / error-states 9: a failed delete leaves the message visible in the thread', async () => {
-  postComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'c1',
-      isMine: true,
-      text: 'Останься на месте',
-    }),
-  ]
-  serve()
-  const { user } = renderApp('/posts/post-1/comments')
+  seedResident()
+  seedPost({ commentCount: 1 })
+  seedMine('posts/post-1/comments/c1', 'Останься на месте')
+  const { user } = renderAppWithServer('/posts/post-1/comments', {
+    uid: 'uid-1',
+  })
   await screen.findByText('Останься на месте')
 
   const sheet = await openActions(user, 'Останься на месте')
@@ -374,19 +334,16 @@ test('error-states 7 / error-states 9: a failed delete leaves the message visibl
     ),
   ).toBeInTheDocument()
   expect(screen.getByText('Останься на месте')).toBeInTheDocument()
+  expect(fake.getDoc('posts/post-1/comments/c1')).toBeDefined()
 })
 
 test('edge-cases 7: deleting a comment on an issue decrements the issue’s comment count identically to a post', async () => {
-  issueComments = [
-    seedComment({
-      author: { apartment: 42, avatarUrl: null, block: 1, name: 'Алиса' },
-      id: 'i1',
-      isMine: true,
-      text: 'Удалить меня',
-    }),
-  ]
-  serve()
-  const { currentPath, user } = renderApp('/issues?status=all')
+  seedResident()
+  seedIssue({ commentCount: 1 })
+  seedMine('issues/issue-1/comments/i1', 'Удалить меня')
+  const { currentPath, user } = renderAppWithServer('/issues?status=all', {
+    uid: 'uid-1',
+  })
   await screen.findByText('Не работает домофон')
   const issueCommentButton = () =>
     screen.getByRole('button', { name: /Комментарии/ })
@@ -411,4 +368,5 @@ test('edge-cases 7: deleting a comment on an issue decrements the issue’s comm
   await waitFor(() =>
     expect(within(issueCommentButton()).getByText('0')).toBeInTheDocument(),
   )
+  expect(fake.getDoc('issues/issue-1')?.commentCount).toBe(0)
 })
