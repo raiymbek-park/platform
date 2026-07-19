@@ -104,29 +104,34 @@ const phone = optionalPhoneSchema.transform(v =>
   v.trim() === '' ? '' : normalizePhone(v),
 )
 
+const residentCoreFields = {
+  apartment: z.coerce
+    .number()
+    .int()
+    .positive('Номер квартиры должен быть положительным'),
+  block: z.coerce
+    .number()
+    .refine(v => parseBlockId(v) !== null, 'Неизвестный блок'),
+  name: nameSchema,
+  role: z.enum(roles),
+}
+
+const isApartmentInSelectedBlock = (value: {
+  apartment: number
+  block: number
+}) => {
+  const block = parseBlockId(value.block)
+  return block !== null && isApartmentInBlock(block, value.apartment)
+}
+
+const apartmentRangeError = {
+  message: APARTMENT_RANGE_MESSAGE,
+  path: ['apartment'],
+}
+
 export const registerInputSchema = z
-  .object({
-    apartment: z.coerce
-      .number()
-      .int()
-      .positive('Номер квартиры должен быть положительным'),
-    block: z.coerce
-      .number()
-      .refine(v => parseBlockId(v) !== null, 'Неизвестный блок'),
-    name: nameSchema,
-    phone,
-    role: z.enum(roles),
-  })
-  .refine(
-    value => {
-      const block = parseBlockId(value.block)
-      return block !== null && isApartmentInBlock(block, value.apartment)
-    },
-    {
-      message: APARTMENT_RANGE_MESSAGE,
-      path: ['apartment'],
-    },
-  )
+  .object({ ...residentCoreFields, phone })
+  .refine(isApartmentInSelectedBlock, apartmentRangeError)
 
 export type RegisterInput = z.infer<typeof registerInputSchema>
 
@@ -134,31 +139,14 @@ export const CARS_DUPLICATE_MESSAGE = 'Номера машин не должны
 
 export const profileUpdateSchema = z
   .object({
-    apartment: z.coerce
-      .number()
-      .int()
-      .positive('Номер квартиры должен быть положительным'),
+    ...residentCoreFields,
     avatarUrl: z.string().nullable(),
-    block: z.coerce
-      .number()
-      .refine(v => parseBlockId(v) !== null, 'Неизвестный блок'),
     cars: z
       .array(plateSchema)
       .max(CARS_MAX, 'Можно добавить не более 3 номеров'),
     isPhoneVisible: z.boolean(),
-    name: nameSchema,
-    role: z.enum(roles),
   })
-  .refine(
-    value => {
-      const block = parseBlockId(value.block)
-      return block !== null && isApartmentInBlock(block, value.apartment)
-    },
-    {
-      message: APARTMENT_RANGE_MESSAGE,
-      path: ['apartment'],
-    },
-  )
+  .refine(isApartmentInSelectedBlock, apartmentRangeError)
   .refine(value => new Set(value.cars).size === value.cars.length, {
     message: CARS_DUPLICATE_MESSAGE,
     path: ['cars'],

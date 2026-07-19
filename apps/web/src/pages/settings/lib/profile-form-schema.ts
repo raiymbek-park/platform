@@ -9,7 +9,6 @@ import { t } from '@lingui/core/macro'
 import {
   blockIds,
   CARS_MAX,
-  isApartmentInBlock,
   nameSchema,
   normalizePlate,
   PLATE_MAX,
@@ -17,6 +16,8 @@ import {
   roles,
 } from '@raiymbek-park/shared/validation-schemas'
 import { z } from 'zod'
+
+import { apartmentMessage, nullableBlockField } from '@/entities/resident'
 
 export type ProfileFormValues = {
   apartment: number
@@ -42,15 +43,6 @@ export const toFormValues = (profile: ResidentProfile): ProfileFormValues => ({
   role: roleFromProfile(profile.role),
 })
 
-const apartmentMessage = (block: BlockId | null, apartment: number) => {
-  if (block === null) return t`Сначала выберите блок`
-  if (Number.isNaN(apartment)) return t`Введите номер квартиры`
-  if (!isApartmentInBlock(block, apartment)) {
-    return t`Квартира вне диапазона выбранного блока`
-  }
-  return undefined
-}
-
 const plateMessage = (raw: string) => {
   const plate = normalizePlate(raw)
   if (plate.length < PLATE_MIN || plate.length > PLATE_MAX) {
@@ -67,10 +59,7 @@ const plateMessage = (raw: string) => {
 export const profileFormSchema = z
   .object({
     apartment: z.number().or(z.nan()),
-    block: z
-      .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-      .nullable()
-      .refine(v => v !== null, { error: () => t`Выберите блок` }),
+    block: nullableBlockField,
     cars: z.array(z.string()),
     isPhoneVisible: z.boolean(),
     name: nameSchema,

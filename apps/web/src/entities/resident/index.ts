@@ -1,3 +1,4 @@
+export { apartmentMessage, nullableBlockField } from './lib/field-validation'
 export { ApartmentField } from './ui/apartment-field'
 export { BlockPicker } from './ui/block-picker'
 export { NameField } from './ui/name-field'
