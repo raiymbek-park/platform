@@ -6,7 +6,11 @@ type Data = Record<string, unknown>
 
 type Ref = { path: string }
 
-type Where = { field: string; op: '==' | 'array-contains-any'; value: unknown }
+type Where = {
+  field: string
+  op: '==' | 'array-contains-any' | '>'
+  value: unknown
+}
 
 type Constraints = {
   limit?: number
@@ -98,6 +102,8 @@ const compare = (a: unknown, b: unknown): number => {
 const matchesWhere = (data: Data, where: Where): boolean => {
   const field = data[where.field]
   if (where.op === '==') return field === where.value
+  if (where.op === '>')
+    return field !== undefined && compare(field, where.value) > 0
   const values = Array.isArray(where.value) ? where.value : []
   return Array.isArray(field) && field.some(item => values.includes(item))
 }

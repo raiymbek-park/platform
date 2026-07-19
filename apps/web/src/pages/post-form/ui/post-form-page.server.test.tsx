@@ -1,35 +1,36 @@
 import type { PermissionRole } from '@raiymbek-park/shared/validation-schemas'
 
+import { fake, injectFake, resetFirestore } from '@raiymbek-park/api/testing'
 import { screen, waitFor } from '@testing-library/react'
-import { beforeEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test } from 'vitest'
 
-import {
-  firebaseAuth,
-  renderApp,
-  residentMe,
-  trpcQueries,
-  trpcServer,
-} from '@/shared/test'
+import { firebaseAuth } from '@/shared/test'
+import { renderAppWithServer } from '@/shared/test/render-app-server'
 
-const serveRole = (
-  role: PermissionRole,
-  extraQueries: Record<string, (input: unknown) => unknown> = {},
-) =>
-  trpcServer.use(
-    trpcQueries({
-      'resident.me': () => residentMe({ role }),
-      ...extraQueries,
-    }),
-  )
+const seedResident = (role: PermissionRole) =>
+  fake.seed('residents/uid-1', {
+    apartment: 42,
+    avatarUrl: null,
+    block: 1,
+    cars: [],
+    isPhoneVisible: false,
+    name: 'Алиса',
+    phone: '+77781234455',
+    role,
+  })
 
 beforeEach(() => {
   firebaseAuth.reset()
   firebaseAuth.signIn()
+  fake.reset()
+  injectFake()
 })
 
+afterEach(resetFirestore)
+
 test('validation 8: a Resident opening the create FAB reaches only the offer form', async () => {
-  serveRole('resident')
-  renderApp('/posts/new')
+  seedResident('resident')
+  renderAppWithServer('/posts/new', { uid: 'uid-1' })
 
   expect(await screen.findByText('Новое объявление')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Продам/ })).toBeInTheDocument()
@@ -39,8 +40,8 @@ test('validation 8: a Resident opening the create FAB reaches only the offer for
 })
 
 test('validation 8: an Owner opening the create FAB reaches only the offer form', async () => {
-  serveRole('owner')
-  renderApp('/posts/new')
+  seedResident('owner')
+  renderAppWithServer('/posts/new', { uid: 'uid-1' })
 
   expect(await screen.findByText('Новое объявление')).toBeInTheDocument()
   expect(
@@ -49,8 +50,8 @@ test('validation 8: an Owner opening the create FAB reaches only the offer form'
 })
 
 test('validation 8: a Manager opening the create FAB reaches only the announcement form', async () => {
-  serveRole('manager')
-  renderApp('/posts/new')
+  seedResident('manager')
+  renderAppWithServer('/posts/new', { uid: 'uid-1' })
 
   expect(await screen.findByText('Новое уведомление')).toBeInTheDocument()
   expect(
@@ -62,8 +63,8 @@ test('validation 8: a Manager opening the create FAB reaches only the announceme
 })
 
 test('validation 8: Administration opening the create FAB can select either kind', async () => {
-  serveRole('administration')
-  renderApp('/posts/new')
+  seedResident('administration')
+  renderAppWithServer('/posts/new', { uid: 'uid-1' })
 
   expect(
     await screen.findByRole('group', { name: 'Тип объявления' }),
@@ -77,8 +78,8 @@ test('validation 8: Administration opening the create FAB can select either kind
 })
 
 test('validation 8: a Viewer has no create entry and is redirected away from the create route', async () => {
-  serveRole('viewer', { 'posts.list': () => ({ nextCursor: null, posts: [] }) })
-  const { currentPath } = renderApp('/posts/new')
+  seedResident('viewer')
+  const { currentPath } = renderAppWithServer('/posts/new', { uid: 'uid-1' })
 
   await waitFor(() => expect(currentPath()).toBe('/posts'))
   expect(

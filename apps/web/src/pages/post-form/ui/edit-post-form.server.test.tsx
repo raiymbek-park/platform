@@ -1,20 +1,19 @@
-import type { Post } from '@raiymbek-park/api'
-import type { PostUpdateInput } from '@raiymbek-park/shared/validation-schemas'
-
-import { postUpdateInputSchema } from '@raiymbek-park/shared/validation-schemas'
+import {
+  fake,
+  injectFake,
+  resetFirestore,
+  Timestamp,
+} from '@raiymbek-park/api/testing'
 import { screen, waitFor, within } from '@testing-library/react'
-import { beforeEach, expect, test } from 'vitest'
+import { afterEach, beforeEach, expect, test } from 'vitest'
 
 import {
   firebaseAuth,
   firebaseStorage,
-  renderApp,
-  residentMe,
-  trpcMutation,
   trpcMutationError,
-  trpcQueries,
   trpcServer,
 } from '@/shared/test'
+import { renderAppWithServer } from '@/shared/test/render-app-server'
 
 if (!URL.createObjectURL)
   Object.assign(URL, {
@@ -24,55 +23,40 @@ if (!URL.createObjectURL)
 
 const makeFile = (name: string) => new File([], name, { type: 'image/jpeg' })
 
-const seedPost: Post = {
-  author: {
-    apartment: 12,
-    block: 3,
+const seedResident = () =>
+  fake.seed('residents/uid-1', {
+    apartment: 42,
+    avatarUrl: null,
+    block: 1,
+    cars: [],
+    isPhoneVisible: false,
     name: 'Алиса',
-    phone: '+7 700 000 00 00',
-  },
-  category: 'sell',
-  commentCount: 0,
-  createdAt: 1_700_000_000_000,
-  description: 'Продаю велосипед в отличном состоянии, почти не использовался',
-  dislikeCount: 0,
-  id: 'post-1',
-  isMine: true,
-  isPinned: false,
-  isTranslated: false,
-  keywords: [],
-  kind: 'offer',
-  likeCount: 0,
-  media: [],
-  myReaction: null,
-  original: null,
-  originalLang: 'ru',
-  title: 'Продам горный велосипед',
-}
+    phone: '+77781234455',
+    role: 'resident',
+  })
 
-let currentPost: Post = { ...seedPost }
-let lastUpdate: PostUpdateInput | null = null
-
-const serve = () =>
-  trpcServer.use(
-    trpcQueries({
-      'posts.get': () => currentPost,
-      'posts.list': () => ({ nextCursor: null, posts: [currentPost] }),
-      'resident.me': () => residentMe(),
-    }),
-    trpcMutation('posts.update', raw => {
-      const input = postUpdateInputSchema.parse(raw)
-      lastUpdate = input
-      currentPost = {
-        ...currentPost,
-        category: input.category,
-        description: input.description,
-        media: input.media,
-        title: input.title,
-      }
-      return { ok: true }
-    }),
-  )
+const seedPost = (overrides: Record<string, unknown> = {}) =>
+  fake.seed('posts/post-1', {
+    author: {
+      apartment: 12,
+      block: 3,
+      name: 'Алиса',
+      phone: '+7 700 000 00 00',
+    },
+    authorId: 'uid-1',
+    category: 'sell',
+    commentCount: 0,
+    createdAt: Timestamp.fromMillis(1_700_000_000_000),
+    description:
+      'Продаю велосипед в отличном состоянии, почти не использовался',
+    keywords: [],
+    kind: 'offer',
+    lang: 'ru',
+    media: [],
+    reactions: {},
+    title: 'Продам горный велосипед',
+    ...overrides,
+  })
 
 const titleField = () => screen.getByRole('textbox', { name: 'Заголовок' })
 
@@ -94,13 +78,16 @@ beforeEach(() => {
   firebaseAuth.reset()
   firebaseAuth.signIn()
   firebaseStorage.reset()
-  currentPost = { ...seedPost }
-  lastUpdate = null
+  fake.reset()
+  injectFake()
 })
 
+afterEach(resetFirestore)
+
 test('happy-path 10: opening edit pre-fills the offer form with the post’s current values', async () => {
-  serve()
-  renderApp('/posts/edit/post-1')
+  seedResident()
+  seedPost()
+  renderAppWithServer('/posts/edit/post-1', { uid: 'uid-1' })
 
   await ready()
   expect(titleField()).toHaveValue('Продам горный велосипед')
@@ -114,8 +101,9 @@ test('happy-path 10: opening edit pre-fills the offer form with the post’s cur
 })
 
 test('validation 7: the kind is not editable — no kind switcher is offered while editing', async () => {
-  serve()
-  renderApp('/posts/edit/post-1')
+  seedResident()
+  seedPost()
+  renderAppWithServer('/posts/edit/post-1', { uid: 'uid-1' })
 
   await ready()
   expect(
@@ -123,9 +111,12 @@ test('validation 7: the kind is not editable — no kind switcher is offered whi
   ).not.toBeInTheDocument()
 })
 
-test('happy-path 10a: saving an edited field reflects the change in the feed and keeps the kind unchanged', async () => {
-  serve()
-  const { currentPath, user } = renderApp('/posts/edit/post-1')
+test('happy-path 10a: saving an edited title runs the real update — the feed reflects it and the kind stays unchanged', async () => {
+  seedResident()
+  seedPost()
+  const { currentPath, user } = renderAppWithServer('/posts/edit/post-1', {
+    uid: 'uid-1',
+  })
 
   await ready()
   await user.clear(titleField())
@@ -137,14 +128,20 @@ test('happy-path 10a: saving an edited field reflects the change in the feed and
     await screen.findByText('Продам городской велосипед'),
   ).toBeInTheDocument()
   expect(await screen.findByText('Изменения сохранены.')).toBeInTheDocument()
-  expect(lastUpdate?.kind).toBe('offer')
   expect(feedTab('Частные объявления')).toHaveAttribute('aria-pressed', 'true')
+
+  const stored = fake.getDoc('posts/post-1')
+  expect(stored?.title).toBe('Продам городской велосипед')
+  expect(stored?.kind).toBe('offer')
 })
 
-test('a partially failed re-upload still saves the edit and reports the failed photo count', async () => {
-  serve()
+test('a partially failed re-upload still saves the edit and stores only the media that uploaded', async () => {
+  seedResident()
+  seedPost()
   firebaseStorage.failUploadsNamed('bad.jpg')
-  const { currentPath, user } = renderApp('/posts/edit/post-1')
+  const { currentPath, user } = renderAppWithServer('/posts/edit/post-1', {
+    uid: 'uid-1',
+  })
 
   await ready()
   await user.upload(fileInput(), [makeFile('ok.jpg'), makeFile('bad.jpg')])
@@ -154,15 +151,19 @@ test('a partially failed re-upload still saves the edit and reports the failed p
   expect(
     await screen.findByText('Изменения сохранены. Файлов не загрузилось: 1'),
   ).toBeInTheDocument()
-  expect(lastUpdate?.media).toHaveLength(1)
+  expect(fake.getDoc('posts/post-1')?.media).toHaveLength(1)
 })
 
-test('error-states: a NOT_FOUND update error redirects to the feed with a not-found toast', async () => {
-  serve()
-  trpcServer.use(trpcMutationError('posts.update', 'NOT_FOUND', 404))
-  const { currentPath, user } = renderApp('/posts/edit/post-1')
+test('error-states: a NOT_FOUND from the real backend redirects to the feed with a not-found toast', async () => {
+  seedResident()
+  seedPost()
+  const { currentPath, user } = renderAppWithServer('/posts/edit/post-1', {
+    uid: 'uid-1',
+  })
 
   await ready()
+  fake.reset()
+  seedResident()
   await user.clear(titleField())
   await user.type(titleField(), 'Продам городской велосипед')
   await user.click(submit())
@@ -172,11 +173,14 @@ test('error-states: a NOT_FOUND update error redirects to the feed with a not-fo
 })
 
 test('error-states 4: a failed edit shows an error toast and preserves the form input for retry', async () => {
-  serve()
-  trpcServer.use(trpcMutationError('posts.update'))
-  const { currentPath, user } = renderApp('/posts/edit/post-1')
+  seedResident()
+  seedPost()
+  const { currentPath, user } = renderAppWithServer('/posts/edit/post-1', {
+    uid: 'uid-1',
+  })
 
   await ready()
+  trpcServer.use(trpcMutationError('posts.update'))
   await user.clear(titleField())
   await user.type(titleField(), 'Продам городской велосипед')
   await user.click(submit())
@@ -188,4 +192,5 @@ test('error-states 4: a failed edit shows an error toast and preserves the form 
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/posts/edit/post-1')
   expect(titleField()).toHaveValue('Продам городской велосипед')
+  expect(fake.getDoc('posts/post-1')?.title).toBe('Продам горный велосипед')
 })
