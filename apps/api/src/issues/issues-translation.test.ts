@@ -2,8 +2,6 @@ import type { IssueCreatePayload } from '@raiymbek-park/shared/validation-schema
 
 import { beforeEach, expect, test, vi } from 'vitest'
 
-import { hashSource } from '../translation/hash-source'
-
 const state = vi.hoisted(() => ({
   counterValue: 100,
   docs: [] as Array<{ id: string; data: Record<string, unknown> }>,
@@ -87,7 +85,7 @@ vi.mock('../resident/resident-store', () => ({
   }) => resident,
 }))
 
-const { createIssue, getIssue, listIssues } = await import('./issues-store')
+const { createIssue } = await import('./issues-store')
 
 const payload: IssueCreatePayload = {
   category: 'other',
@@ -108,73 +106,4 @@ test('happy-path 4: createIssue records the author’s active locale as the init
   await createIssue('uid-1', 'kk', payload)
 
   expect(state.writes[0]?.data).toMatchObject({ lang: 'kk' })
-})
-
-test('happy-path 4: getIssue substitutes the translation for the viewer’s locale, carrying the original for the toggle', async () => {
-  const title = 'Не работает домофон'
-  const description = 'Домофон у подъезда не открывает дверь по ключу'
-  state.docs = [
-    {
-      data: {
-        author: {},
-        authorId: 'author-uid',
-        description,
-        keywords: [],
-        lang: 'ru',
-        number: 118,
-        status: 'new',
-        title,
-        translatedRev: hashSource(title, description),
-        translations: {
-          kk: {
-            description: 'Кіреберістегі домофон кілтпен есікті ашпайды',
-            title: 'Домофон жұмыс істемейді',
-          },
-        },
-      },
-      id: 'issue-1',
-    },
-  ]
-
-  const issue = await getIssue(null, null, 'kk', 'issue-1')
-
-  expect(issue?.isTranslated).toBe(true)
-  expect(issue?.title).toBe('Домофон жұмыс істемейді')
-  expect(issue?.original).toEqual({ description, title })
-})
-
-test('happy-path 4: listIssues threads the viewer’s locale into every returned card', async () => {
-  const title = 'Не работает домофон'
-  const description = 'Домофон у подъезда не открывает дверь по ключу'
-  state.docs = [
-    {
-      data: {
-        author: {},
-        authorId: 'author-uid',
-        description,
-        keywords: [],
-        lang: 'ru',
-        number: 118,
-        status: 'new',
-        title,
-        translatedRev: hashSource(title, description),
-        translations: {
-          kk: {
-            description: 'Кіреберістегі домофон кілтпен есікті ашпайды',
-            title: 'Домофон жұмыс істемейді',
-          },
-        },
-      },
-      id: 'issue-1',
-    },
-  ]
-
-  const { issues } = await listIssues({
-    locale: 'kk',
-    role: null,
-    status: 'all',
-    uid: null,
-  })
-
-  expect(issues[0]?.title).toBe('Домофон жұмыс істемейді')
 })

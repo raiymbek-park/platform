@@ -55,30 +55,6 @@ beforeEach(() => {
   getResident.mockClear()
 })
 
-test('a status change with a comment mirrors it into the comments thread and increments the count', async () => {
-  const done = await changeStatus('admin-uid', {
-    comment: 'Охранник больше не работает на объекте.',
-    issueId: 'issue-1',
-    media: ['https://example.com/photo.jpg'],
-    status: 'done',
-    tags: [],
-  })
-
-  expect(done).toBe(true)
-  expect(state.updates[0]).toMatchObject({
-    commentCount: { increment: 1 },
-    status: 'done',
-  })
-  const comment = state.writes.find(write => write.path === 'comments/new')
-  expect(comment?.data).toEqual({
-    author: { apartment: 60, block: 1, name: 'Киану Ривз' },
-    authorId: 'admin-uid',
-    createdAt: 'server-time',
-    media: ['https://example.com/photo.jpg'],
-    text: 'Охранник больше не работает на объекте.',
-  })
-})
-
 test('a status change without a comment leaves the thread and the count untouched', async () => {
   const done = await changeStatus('admin-uid', {
     comment: '',

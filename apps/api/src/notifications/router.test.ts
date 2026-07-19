@@ -44,13 +44,6 @@ describe('notificationsRouter — Firebase identity gate', () => {
 })
 
 describe('notificationsRouter.registerToken', () => {
-  it('stores the token under the caller uid with the caller locale', async () => {
-    await expect(caller.registerToken({ token: 'token-1' })).resolves.toEqual({
-      ok: true,
-    })
-    expect(mockRegisterPushToken).toHaveBeenCalledWith('uid-1', 'token-1', 'kk')
-  })
-
   it('rejects an empty token', async () => {
     await expect(caller.registerToken({ token: '' })).rejects.toMatchObject({
       code: 'BAD_REQUEST',

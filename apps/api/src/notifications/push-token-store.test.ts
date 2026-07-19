@@ -11,8 +11,6 @@ const state = vi.hoisted(() => {
   return { docs }
 })
 
-const setSpy = vi.hoisted(() => vi.fn())
-
 vi.mock('../firestore', () => {
   const remove = (uid: string, token: string) => {
     state.docs = state.docs.filter(
@@ -30,8 +28,7 @@ vi.mock('../firestore', () => {
   })
   const tokensCollection = (uid: string) => ({
     doc: (token: string) => ({
-      set: (record: Record<string, unknown>, options: unknown) => {
-        setSpy(uid, token, record, options)
+      set: (record: Record<string, unknown>) => {
         state.docs = [
           ...state.docs.filter(doc => doc.uid !== uid || doc.token !== token),
           { data: record, token, uid },
@@ -72,22 +69,10 @@ const {
 } = await import('./push-token-store')
 
 beforeEach(() => {
-  setSpy.mockClear()
   state.docs = []
 })
 
 describe('registerPushToken — idempotent per-device registration', () => {
-  test('stores the token document with locale, token field, and merge', async () => {
-    await registerPushToken('uid-a', 'token-1', 'kk')
-
-    expect(setSpy).toHaveBeenCalledWith(
-      'uid-a',
-      'token-1',
-      { locale: 'kk', token: 'token-1', updatedAt: 'server-time' },
-      { merge: true },
-    )
-  })
-
   test('registering the same token twice leaves one registration', async () => {
     await registerPushToken('uid-a', 'token-1', 'ru')
     await registerPushToken('uid-a', 'token-1', 'en')

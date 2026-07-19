@@ -96,7 +96,7 @@ describe('getResident — edge-cases 1: legacy documents default missing profile
   })
 })
 
-describe('createResidentIfAbsent — atomic one-record-per-identity write', () => {
+describe('createResidentIfAbsent — returns the stored profile without writing, and writes when absent', () => {
   const input: Resident = {
     apartment: 42,
     avatarUrl: null,

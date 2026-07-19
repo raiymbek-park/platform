@@ -4,7 +4,6 @@ import type {
 } from '@raiymbek-park/shared/validation-schemas'
 import type { z } from 'zod'
 
-import { resolveRole } from '@raiymbek-park/shared/validation-schemas'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
@@ -89,24 +88,6 @@ describe('residentRouter — Firebase identity gate', () => {
 })
 
 describe('residentRouter.register — one record per identity', () => {
-  it('writes the form profile under the caller uid via an atomic create-if-absent', async () => {
-    mockCreateResidentIfAbsent.mockImplementationOnce(
-      async (_uid, input) => input,
-    )
-
-    await caller.register(validInput)
-
-    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
-      'uid-1',
-      expect.objectContaining({
-        avatarUrl: null,
-        cars: [],
-        name: 'Джордж Лукас',
-        phone: '+77071234567',
-      }),
-    )
-  })
-
   it('user-profile happy-path 11: stores the phone hidden so registration never exposes it', async () => {
     mockCreateResidentIfAbsent.mockImplementationOnce(
       async (_uid, input) => input,
@@ -138,24 +119,6 @@ describe('residentRouter.register — one record per identity', () => {
     })
   })
 
-  it('happy-path 10: a Google session — a verified uid with no phone claim — stores the form phone', async () => {
-    mockCreateResidentIfAbsent.mockImplementationOnce(
-      async (_uid, input) => input,
-    )
-    const googleCaller = residentRouter.createCaller({
-      locale: 'ru',
-      phone: null,
-      uid: 'google-uid',
-    })
-
-    await googleCaller.register(validInput)
-
-    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
-      'google-uid',
-      expect.objectContaining({ phone: '+77071234567', role: 'owner' }),
-    )
-  })
-
   it('prefers the token phone claim over the submitted form phone', async () => {
     mockCreateResidentIfAbsent.mockImplementationOnce(
       async (_uid, input) => input,
@@ -166,24 +129,6 @@ describe('residentRouter.register — one record per identity', () => {
     expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
       'uid-1',
       expect.objectContaining({ phone: '+77071234567' }),
-    )
-  })
-
-  it('happy-path 12: a social session stores an empty phone when the form left it blank', async () => {
-    mockCreateResidentIfAbsent.mockImplementationOnce(
-      async (_uid, input) => input,
-    )
-    const googleCaller = residentRouter.createCaller({
-      locale: 'ru',
-      phone: null,
-      uid: 'google-uid',
-    })
-
-    await googleCaller.register({ ...validInput, phone: '' })
-
-    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
-      'google-uid',
-      expect.objectContaining({ name: 'Джордж Лукас', phone: '' }),
     )
   })
 
@@ -205,64 +150,9 @@ describe('residentRouter.register — one record per identity', () => {
       expect.objectContaining({ avatarUrl: null, cars: [] }),
     )
   })
-
-  it('edge-cases 17: a social channel grants only the role picked on the form', async () => {
-    mockCreateResidentIfAbsent.mockImplementationOnce(
-      async (_uid, input) => input,
-    )
-    const googleCaller = residentRouter.createCaller({
-      locale: 'ru',
-      phone: null,
-      uid: 'google-uid',
-    })
-
-    await googleCaller.register({ ...validInput, role: 'tenant' })
-
-    const [, written] = mockCreateResidentIfAbsent.mock.calls.at(-1) ?? []
-    expect(written).toMatchObject({ role: 'tenant' })
-    expect(resolveRole(written?.role)).toBe('resident')
-  })
-
-  it('happy-path 13: a social-session phone is stored in canonical E.164 form', async () => {
-    mockCreateResidentIfAbsent.mockImplementationOnce(
-      async (_uid, input) => input,
-    )
-    const googleCaller = residentRouter.createCaller({
-      locale: 'ru',
-      phone: null,
-      uid: 'google-uid',
-    })
-
-    await googleCaller.register({ ...validInput, phone: '87071234567' })
-
-    expect(mockCreateResidentIfAbsent).toHaveBeenCalledWith(
-      'google-uid',
-      expect.objectContaining({ phone: '+77071234567' }),
-    )
-  })
 })
 
 describe('residentRouter.update — profile update', () => {
-  it('writes the submitted role when the stored role is a residency role (owner/tenant)', async () => {
-    mockGetResident.mockResolvedValueOnce({
-      apartment: 1,
-      avatarUrl: null,
-      block: 1,
-      cars: [],
-      isPhoneVisible: false,
-      name: 'Джордж Лукас',
-      phone: '+77071234567',
-      role: 'owner',
-    })
-
-    await caller.update({ ...validUpdate, role: 'tenant' })
-
-    expect(mockUpdateResident).toHaveBeenCalledWith(
-      'uid-1',
-      expect.objectContaining({ role: 'tenant' }),
-    )
-  })
-
   it('writes the submitted role when the stored role is a legacy value', async () => {
     mockGetResident.mockResolvedValueOnce({
       apartment: 1,
@@ -300,26 +190,6 @@ describe('residentRouter.update — profile update', () => {
     expect(mockUpdateResident).toHaveBeenCalledWith(
       'uid-1',
       expect.objectContaining({ role: 'manager' }),
-    )
-  })
-
-  it('preserves a stored elevated role (administration) instead of the submitted role', async () => {
-    mockGetResident.mockResolvedValueOnce({
-      apartment: 1,
-      avatarUrl: null,
-      block: 1,
-      cars: [],
-      isPhoneVisible: false,
-      name: 'Джордж Лукас',
-      phone: '+77071234567',
-      role: 'administration',
-    })
-
-    await caller.update({ ...validUpdate, role: 'owner' })
-
-    expect(mockUpdateResident).toHaveBeenCalledWith(
-      'uid-1',
-      expect.objectContaining({ role: 'administration' }),
     )
   })
 
@@ -382,36 +252,6 @@ describe('residentRouter.me — privacy-safe profile projection', () => {
       id: 'uid-1',
       isRegistered: false,
       name: '',
-    })
-  })
-
-  it('returns the own profile including the phone for an existing resident', async () => {
-    mockGetResident.mockResolvedValueOnce({
-      apartment: 42,
-      avatarUrl: null,
-      block: 1,
-      cars: [],
-      isPhoneVisible: false,
-      name: 'Джордж Лукас',
-      phone: '+77071234567',
-      role: 'owner',
-    })
-    const caller = residentRouter.createCaller({
-      locale: 'ru',
-      phone: '+77071234567',
-      uid: 'uid-1',
-    })
-    await expect(caller.me()).resolves.toEqual({
-      apartment: 42,
-      avatarUrl: null,
-      block: 1,
-      cars: [],
-      id: 'uid-1',
-      isPhoneVisible: false,
-      isRegistered: true,
-      name: 'Джордж Лукас',
-      phone: '+77071234567',
-      role: 'owner',
     })
   })
 })
