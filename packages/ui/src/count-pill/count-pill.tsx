@@ -6,7 +6,7 @@ import { joinCss } from '@raiymbek-park/shared'
 import { Icon } from '../icon'
 import css from './count-pill.module.scss'
 
-export type CountPillProps = ComponentProps<'button'> & {
+export type CountPillProps = Omit<ComponentProps<'button'>, 'children'> & {
   count: number
   glyph: IconGlyph
 }

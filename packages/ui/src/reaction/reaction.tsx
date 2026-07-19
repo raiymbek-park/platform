@@ -25,10 +25,10 @@ export const Reaction = ({
   ...restProps
 }: ReactionProps) => (
   <CountPill
+    {...restProps}
     aria-pressed={isActive}
     className={reactionCss({ isActive, kind }, className)}
     count={count}
     glyph={glyph[kind]}
-    {...restProps}
   />
 )

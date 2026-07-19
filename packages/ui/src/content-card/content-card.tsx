@@ -5,7 +5,7 @@ import { joinCss } from '@raiymbek-park/shared'
 import { CardMedia } from './card-media'
 import css from './content-card.module.scss'
 
-export type ContentCardProps = ComponentProps<'article'> & {
+export type ContentCardProps = Omit<ComponentProps<'article'>, 'children'> & {
   children: ReactNode
   isExpanded?: boolean
   media?: string[]
