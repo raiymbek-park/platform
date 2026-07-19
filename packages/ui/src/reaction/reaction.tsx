@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react'
 
 import { pickCss } from '@raiymbek-park/shared'
 
-import { Icon } from '../icon'
+import { CountPill } from '../count-pill/count-pill'
 import css from './reaction.module.scss'
 
 export type ReactionKind = 'like' | 'dislike'
@@ -22,16 +22,13 @@ export const Reaction = ({
   count,
   isActive,
   kind,
-  type = 'button',
   ...restProps
 }: ReactionProps) => (
-  <button
+  <CountPill
+    {...restProps}
     aria-pressed={isActive}
     className={reactionCss({ isActive, kind }, className)}
-    type={type}
-    {...restProps}
-  >
-    <Icon glyph={glyph[kind]} size={16} />
-    <span className={css.count}>{count}</span>
-  </button>
+    count={count}
+    glyph={glyph[kind]}
+  />
 )

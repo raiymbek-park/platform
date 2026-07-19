@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react'
 
 import { joinCss } from '@raiymbek-park/shared'
 
-import { Icon } from '../icon'
+import { CountPill } from '../count-pill/count-pill'
 import css from './comment-count.module.scss'
 
 export type CommentCountProps = ComponentProps<'button'> & {
@@ -12,15 +12,12 @@ export type CommentCountProps = ComponentProps<'button'> & {
 export const CommentCount = ({
   className,
   count,
-  type = 'button',
   ...restProps
 }: CommentCountProps) => (
-  <button
+  <CountPill
     className={joinCss(css.comment, className)}
-    type={type}
+    count={count}
+    glyph='message-circle'
     {...restProps}
-  >
-    <Icon glyph='message-circle' size={16} />
-    <span className={css.count}>{count}</span>
-  </button>
+  />
 )

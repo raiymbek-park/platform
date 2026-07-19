@@ -4,30 +4,18 @@ import type { IconChipTone } from '../icon-chip/icon-chip'
 import type { ContentCardContact } from './card-contacts'
 import type { ContentCardBadge } from './card-tags'
 
-import { joinCss } from '@raiymbek-park/shared'
-
 import { Divider } from '../divider/divider'
 import { CardBody } from './card-body'
 import { CardContacts } from './card-contacts'
 import { CardDetails } from './card-details'
 import { CardFooter } from './card-footer'
 import { CardHeader } from './card-header'
-import { CardMedia } from './card-media'
 import { CardTags } from './card-tags'
+import { ContentCard } from './content-card'
 import css from './content-card.module.scss'
 
 export type PostCardBadge = ContentCardBadge
 export type PostCardContact = ContentCardContact
-
-type PostCardMediaProps = {
-  isExpanded?: boolean
-  media?: string[]
-}
-
-const PostCardMedia = ({ isExpanded, media }: PostCardMediaProps) => {
-  if (!media?.length) return null
-  return <CardMedia isExpanded={isExpanded} media={media} />
-}
 
 const PostCardTags = ({ tags }: { tags?: PostCardBadge[] }) => {
   if (!tags?.length) return null
@@ -96,30 +84,32 @@ export const PostCard = ({
   onToggleExpand,
   ...restProps
 }: PostCardProps) => (
-  <article className={joinCss(css.card, className)} {...restProps}>
-    <PostCardMedia isExpanded={isExpanded} media={media} />
-    <div className={css.content}>
-      <CardHeader
-        glyph={media?.length ? undefined : badgeGlyph}
-        meta={meta}
-        title={title}
-        tone={badgeTone}
-      />
-      <CardBody description={description} isExpanded={isExpanded} />
-      <PostCardTags tags={tags} />
-      <PostCardDetails
-        actions={actions}
-        contacts={contacts}
-        isExpanded={isExpanded}
-        translation={translation}
-      />
-      <CardFooter
-        collapseLabel={collapseLabel}
-        expandLabel={expandLabel}
-        isExpanded={isExpanded}
-        reactions={reactions}
-        onToggleExpand={onToggleExpand}
-      />
-    </div>
-  </article>
+  <ContentCard
+    className={className}
+    isExpanded={isExpanded}
+    media={media}
+    {...restProps}
+  >
+    <CardHeader
+      glyph={media?.length ? undefined : badgeGlyph}
+      meta={meta}
+      title={title}
+      tone={badgeTone}
+    />
+    <CardBody description={description} isExpanded={isExpanded} />
+    <PostCardTags tags={tags} />
+    <PostCardDetails
+      actions={actions}
+      contacts={contacts}
+      isExpanded={isExpanded}
+      translation={translation}
+    />
+    <CardFooter
+      collapseLabel={collapseLabel}
+      expandLabel={expandLabel}
+      isExpanded={isExpanded}
+      reactions={reactions}
+      onToggleExpand={onToggleExpand}
+    />
+  </ContentCard>
 )

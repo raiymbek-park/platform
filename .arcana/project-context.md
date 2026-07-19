@@ -169,7 +169,7 @@ the transport-contract set. Api tests duplicated by harness coverage were remove
 - Naming: kebab-case files, PascalCase components, descriptive `is*/has*` flags; hooks follow `use{Entity}{Store|Data}` / `useCreate|Update|Delete{Entity}`
 - Query keys via `{entity}Keys` factory (`all`/`list()`/`detail(id)`, `as const`)
 - Styling: CSS modules (`*.module.scss`), design tokens in `app/tokens.scss`, class composition via `pickCss`/`cssVariables`, semantic color tokens only
-- HTML: prefer semantic tags (`<section>`/`<header>`/`<button type>`/`<dialog>`/`<fieldset>`) over `<div onClick>`; mobile-only, no manual keyboard a11y
+- HTML: prefer semantic tags (`<section>`/`<header>`/`<button type>`/`<dialog>`/`<fieldset>`) over `<div onClick>`; mobile-only, no manual keyboard a11y; collapse single-child wrappers whose styles merge onto the parent (merge-up test) — no wrapper for anticipated-but-absent structure
 - State boundaries: server→TanStack Query, navigation→Router (URL/search params), UI→Zustand; optimistic via ID-based overlays, not cache surgery
 
 ## CI
@@ -187,7 +187,7 @@ Rule files (enumerated for downstream skills — `/arc:code validate` and any
 other skill that needs to load rules reads this list):
 - `CLAUDE.md` — Pencil MCP usage policy (never call `mcp__pencil__*` in this project; `.pen` files are plain JSON edited via the `pencil` skill)
 - `.claude/rules/coding.md` — naming, arrow-only functions, JSX prop order, imports/`@`-alias, TypeScript safety (no `as`/`!`/enums), hook & query-key conventions
-- `.claude/rules/html.md` — semantic HTML decision matrix, native-element preference, anti-patterns, mobile-only keyboard policy
+- `.claude/rules/html.md` — semantic HTML decision matrix, native-element preference, anti-patterns, single-child wrapper merge-up test, mobile-only keyboard policy
 - `.claude/rules/styling.md` — CSS modules, design tokens, `pickCss`/`cssVariables` composition, global SCSS scope, touch targets, viewport units
 - `.claude/rules/state-boundaries.md` — server / navigation / UI state separation, overlay-based optimistic updates, query-key factories
 

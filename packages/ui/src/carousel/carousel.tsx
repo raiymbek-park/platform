@@ -130,8 +130,8 @@ export const Carousel = ({
 
   return (
     <div
-      ref={rootRef}
       className={joinCss(css.carousel, className)}
+      ref={rootRef}
       {...restProps}
       onPointerCancel={reset}
       onPointerDown={handlePointerDown}
@@ -139,8 +139,8 @@ export const Carousel = ({
       onPointerUp={handlePointerUp}
     >
       <div
-        ref={trackRef}
         className={trackCss({ isDragging })}
+        ref={trackRef}
         style={{
           transform: `translateX(calc(${-index * 100}% + ${drag}px))`,
         }}

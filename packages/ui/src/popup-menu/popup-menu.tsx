@@ -29,8 +29,8 @@ export const PopupMenu = ({
   return (
     // biome-ignore lint/a11y/useKeyWithClickEvents: native <dialog> backdrop dismiss; ESC is handled via onCancel and keyboard a11y is not required (mobile-only)
     <dialog
-      ref={ref}
       className={joinCss(css.sheet, className)}
+      ref={ref}
       onCancel={event => {
         event.preventDefault()
         onClose()

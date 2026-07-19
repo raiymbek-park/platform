@@ -150,6 +150,35 @@ It does NOT mean reject semantic tags that include keyboard support for free. Us
 
 If you reach for the third nested `<div>` in a row, ask whether the outermost should be `<section>` / `<article>` / `<figure>` / `<header>` / `<footer>` first.
 
+## Collapse Single-Child Wrappers (Merge-Up Test)
+
+Semantic-tag choice is one axis; wrapper *count* is another. An element that wraps a single child — or is the sole child of its parent — is a redundancy suspect. Every rule above can pass while the markup still carries a layer that earns nothing.
+
+**The test:** move the wrapper's `className` onto the parent (or onto the child) and delete the wrapper. If the rendered result is identical, the wrapper was dead weight — ship the merged version.
+
+Keep the wrapper ONLY when it earns its place:
+- It is one of **several slots** in the parent's layout (a `space-between` header, a `sidebar + content` grid) and a sibling slot exists **now** — not "might be added later".
+- The parent's box role genuinely conflicts and can't live on one element — e.g. the parent is the scroll / overflow container, or its `padding` / `background` must not participate in the inner flex/grid flow.
+- The wrapper is reused elsewhere, or swapped by a condition.
+
+"A trailing action might land here someday" is NOT a reason — that is the premature generalization the coding rules forbid (see `coding.md` § General Principles). Add the wrapper when the second slot actually arrives.
+
+```jsx
+// ❌ header holds one cluster; the inner div only re-declares flex the header could own
+<header className={css.bar}>
+  <div className={css.cluster}>
+    <IconChip glyph='building-2' />
+    <span className={css.brand}>{title}</span>
+  </div>
+</header>
+
+// ✅ the cluster's layout moves onto <header>; reintroduce a wrapper when a right-side slot exists
+<header className={css.bar}>
+  <IconChip glyph='building-2' />
+  <span className={css.brand}>{title}</span>
+</header>
+```
+
 ## Forbidden
 
 - `<div>` / `<span>` with `onClick` for actions → use `<button type="button">`
@@ -162,3 +191,4 @@ If you reach for the third nested `<div>` in a row, ask whether the outermost sh
 - Inputs without an associated `<label>`
 - More than 3 nested `<div>` where a semantic tag would replace one
 - Multiple `<main>` per page (HTML5 allows only one)
+- A single-child wrapper whose `className` merges onto the parent (or child) with no visual change → delete it (merge-up test). Keep a wrapper only when a sibling slot exists **now**, the parent's box role conflicts, or it's reused — never for anticipated-but-absent structure
