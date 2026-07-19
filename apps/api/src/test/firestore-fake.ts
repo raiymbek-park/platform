@@ -153,6 +153,12 @@ const makeDoc = (docPath: string) => ({
   path: docPath,
   collection: (name: string) => makeCollection(`${docPath}/${name}`),
   get: () => Promise.resolve(snapshot(docPath)),
+  create: (data: Data) => {
+    if (store.has(docPath))
+      return Promise.reject(new Error(`ALREADY_EXISTS: ${docPath}`))
+    applyWrite({ op: 'set', path: docPath, data, merge: false })
+    return Promise.resolve()
+  },
   set: (data: Data, options?: { merge?: boolean }) => {
     applyWrite({ op: 'set', path: docPath, data, merge: options?.merge })
     return Promise.resolve()
