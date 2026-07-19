@@ -38,7 +38,7 @@ const seedResident = (role = 'resident') =>
     block: 1,
     cars: [],
     isPhoneVisible: false,
-    name: 'Алиса',
+    name: 'Alice',
     phone: '+77781234455',
     role,
   })
@@ -64,14 +64,14 @@ const seedPost = ({
     author: {
       apartment: 12,
       block: 1,
-      name: 'Житель',
+      name: 'George Lucas',
       phone: '+7 747 000 11 22',
     },
     authorId: 'author-uid',
     category,
     commentCount: 0,
     createdAt: Timestamp.fromMillis(createdAt),
-    description: 'Описание для проверки ленты.',
+    description: 'Description for feed testing.',
     keywords: keywordsOf(title),
     kind,
     lang: 'ru',
@@ -87,25 +87,25 @@ const named: Seed[] = [
     createdAt: 2000,
     kind: 'offer',
     media: ['/photo.jpg'],
-    title: 'Продам горный велосипед',
+    title: 'Selling a mountain bike',
   },
   {
     category: 'services',
     createdAt: 1999,
     kind: 'offer',
-    title: 'Мастер по ремонту обуви',
+    title: 'Shoe repair specialist',
   },
   {
     category: 'management',
     createdAt: 1998,
     kind: 'announcement',
-    title: 'Новые правила парковки',
+    title: 'New parking rules',
   },
   {
     category: 'city',
     createdAt: 1997,
     kind: 'announcement',
-    title: 'Плановое отключение воды',
+    title: 'Scheduled water shutdown',
   },
 ]
 
@@ -113,14 +113,14 @@ const filler: Seed[] = Array.from({ length: 20 }, (_, index) => ({
   category: 'other',
   createdAt: 1989 - index,
   kind: 'offer',
-  title: `Прочее объявление ${index}`,
+  title: `Other post ${index}`,
 }))
 
 const garage: Seed = {
   category: 'wanted',
   createdAt: 1900,
   kind: 'offer',
-  title: 'Ищу гараж в аренду',
+  title: 'Looking for a garage to rent',
 }
 
 const seedFeed = (role = 'resident') => {
@@ -135,7 +135,7 @@ const seedTranslatedPost = () => {
   const title = 'Суды өшіру'
   const description = 'Жоспарлы сумен өшіру 10:00-ден'
   fake.seed('posts/post-translated', {
-    author: { apartment: 12, block: 1, name: 'Житель' },
+    author: { apartment: 12, block: 1, name: 'George Lucas' },
     authorId: 'author-uid',
     category: 'city',
     commentCount: 0,
@@ -149,9 +149,9 @@ const seedTranslatedPost = () => {
     title,
     translatedRev: hashSource(title, description),
     translations: {
-      ru: {
-        description: 'Плановое отключение с 10:00',
-        title: 'Отключение воды',
+      en: {
+        description: 'Scheduled shutdown from 10:00',
+        title: 'Water shutdown',
       },
     },
   })
@@ -203,7 +203,7 @@ const firstButton = (name: string) => {
   return button
 }
 
-const like = () => firstButton('Нравится')
+const like = () => firstButton('Like')
 
 const feedTab = (name: string) =>
   within(screen.getByRole('group', { name: 'Фильтр объявлений' })).getByRole(
@@ -232,54 +232,56 @@ test('happy-path 1: a card shows the title, author meta, and reaction controls',
   renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
   const first = within(await firstCard())
 
-  expect(first.getByText('Продам горный велосипед')).toBeInTheDocument()
-  expect(first.getAllByText(/Житель/).length).toBeGreaterThan(0)
-  expect(first.getByRole('button', { name: 'Нравится' })).toBeInTheDocument()
-  expect(first.getByRole('button', { name: 'Не нравится' })).toBeInTheDocument()
+  expect(first.getByText('Selling a mountain bike')).toBeInTheDocument()
+  expect(first.getAllByText(/George Lucas/).length).toBeGreaterThan(0)
+  expect(first.getByRole('button', { name: 'Like' })).toBeInTheDocument()
+  expect(first.getByRole('button', { name: 'Dislike' })).toBeInTheDocument()
 })
 
 test('happy-path 2: the announcements tab shows only announcements, offers only offers', async () => {
   seedFeed()
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
-  await user.click(feedTab('Уведомления'))
+  await user.click(feedTab('Notices'))
 
-  expect(await screen.findByText('Новые правила парковки')).toBeInTheDocument()
+  expect(await screen.findByText('New parking rules')).toBeInTheDocument()
   await waitFor(() =>
     expect(
-      screen.queryByText('Продам горный велосипед'),
+      screen.queryByText('Selling a mountain bike'),
     ).not.toBeInTheDocument(),
   )
 
-  await user.click(feedTab('Частные объявления'))
+  await user.click(feedTab('Private ads'))
 
-  expect(await screen.findByText('Продам горный велосипед')).toBeInTheDocument()
+  expect(await screen.findByText('Selling a mountain bike')).toBeInTheDocument()
   await waitFor(() =>
-    expect(
-      screen.queryByText('Новые правила парковки'),
-    ).not.toBeInTheDocument(),
+    expect(screen.queryByText('New parking rules')).not.toBeInTheDocument(),
   )
 })
 
 test('happy-path 3: a search finds a post beyond the loaded pages, clearing restores the feed', async () => {
   seedFeed()
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
-  expect(screen.queryByText('Ищу гараж в аренду')).not.toBeInTheDocument()
+  await screen.findByText('Selling a mountain bike')
+  expect(
+    screen.queryByText('Looking for a garage to rent'),
+  ).not.toBeInTheDocument()
 
-  await user.type(search(), 'гараж')
+  await user.type(search(), 'garage')
 
-  expect(await screen.findByText('Ищу гараж в аренду')).toBeInTheDocument()
+  expect(
+    await screen.findByText('Looking for a garage to rent'),
+  ).toBeInTheDocument()
   await waitFor(() =>
     expect(
-      screen.queryByText('Продам горный велосипед'),
+      screen.queryByText('Selling a mountain bike'),
     ).not.toBeInTheDocument(),
   )
 
-  await user.click(screen.getByRole('button', { name: 'Очистить поиск' }))
+  await user.click(screen.getByRole('button', { name: 'Clear search' }))
 
-  expect(await screen.findByText('Продам горный велосипед')).toBeInTheDocument()
+  expect(await screen.findByText('Selling a mountain bike')).toBeInTheDocument()
 })
 
 test('happy-path 4: expanding an offer reveals the author phone for every viewer', async () => {
@@ -287,16 +289,16 @@ test('happy-path 4: expanding an offer reveals the author phone for every viewer
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
   const card = await firstCard()
 
-  await user.click(within(card).getByRole('button', { name: /Подробнее/ }))
+  await user.click(within(card).getByRole('button', { name: /Details/ }))
 
   expect(within(card).getByText('+7 747 000 11 22')).toBeInTheDocument()
   expect(
-    within(card).getByRole('button', { name: /Свернуть/ }),
+    within(card).getByRole('button', { name: /Collapse/ }),
   ).toBeInTheDocument()
 
-  await user.click(within(card).getByRole('button', { name: /Свернуть/ }))
+  await user.click(within(card).getByRole('button', { name: /Collapse/ }))
   expect(
-    within(card).getByRole('button', { name: /Подробнее/ }),
+    within(card).getByRole('button', { name: /Details/ }),
   ).toBeInTheDocument()
 })
 
@@ -306,15 +308,15 @@ test('edge-cases 4: an announcement card has no category tag and reads further',
   const card = await firstCard()
 
   expect(
-    within(card).getByRole('button', { name: /Читать далее/ }),
+    within(card).getByRole('button', { name: /Read more/ }),
   ).toBeInTheDocument()
-  expect(within(card).queryByText('Продам')).not.toBeInTheDocument()
+  expect(within(card).queryByText('For sale')).not.toBeInTheDocument()
 })
 
 test('happy-path 5: tapping like records it through the real backend, tapping again removes it', async () => {
   seedFeed()
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
   await user.click(like())
   await waitFor(() => expect(like()).toHaveAttribute('aria-pressed', 'true'))
@@ -336,7 +338,7 @@ test('happy-path 5: tapping like records it through the real backend, tapping ag
 test('error-states 5: a failed reaction rolls back the optimistic like', async () => {
   seedFeed()
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
   trpcServer.use(trpcMutationError('posts.react'))
 
   await user.click(like())
@@ -348,12 +350,16 @@ test('error-states 5: a failed reaction rolls back the optimistic like', async (
 test('happy-path 6: reaching the end of the feed loads the next page', async () => {
   seedFeed()
   renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
-  expect(screen.queryByText('Ищу гараж в аренду')).not.toBeInTheDocument()
+  await screen.findByText('Selling a mountain bike')
+  expect(
+    screen.queryByText('Looking for a garage to rent'),
+  ).not.toBeInTheDocument()
 
   intersectionObserver.trigger()
 
-  expect(await screen.findByText('Ищу гараж в аренду')).toBeInTheDocument()
+  expect(
+    await screen.findByText('Looking for a garage to rent'),
+  ).toBeInTheDocument()
 })
 
 test('pinned: an active pinnedUntil post stays above newer posts', async () => {
@@ -364,13 +370,13 @@ test('pinned: an active pinnedUntil post stays above newer posts', async () => {
     createdAt: 1500,
     kind: 'announcement',
     pinnedUntil: Date.now() + 60 * 60 * 1000,
-    title: 'Запуск цифрового сервиса',
+    title: 'Digital service launch',
   })
   renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
 
-  await screen.findByText('Запуск цифрового сервиса')
+  await screen.findByText('Digital service launch')
   const card = await firstCard()
-  expect(within(card).getByText('Запуск цифрового сервиса')).toBeInTheDocument()
+  expect(within(card).getByText('Digital service launch')).toBeInTheDocument()
 })
 
 test('edge-cases 1: an empty tab shows the empty state once resolved', async () => {
@@ -387,34 +393,30 @@ test('error-states 1: a failed feed shows an error, and retrying recovers it', a
   const list = breakList()
 
   await screen.findByTestId('post-error', undefined, { timeout: 4000 })
-  expect(
-    await screen.findByText('Не удалось загрузить ленту'),
-  ).toBeInTheDocument()
+  expect(await screen.findByText('Failed to load the feed')).toBeInTheDocument()
 
   list.broken = false
-  await user.click(screen.getByRole('button', { name: 'Повторить' }))
+  await user.click(screen.getByRole('button', { name: 'Retry' }))
 
-  expect(await screen.findByText('Продам горный велосипед')).toBeInTheDocument()
+  expect(await screen.findByText('Selling a mountain bike')).toBeInTheDocument()
 })
 
 test('validation 8: a Viewer sees no create entry on the feed', async () => {
   seedFeed('viewer')
   renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
   expect(
-    screen.queryByRole('link', { name: 'Новое объявление' }),
+    screen.queryByRole('link', { name: 'New post' }),
   ).not.toBeInTheDocument()
 })
 
 test('validation 8: a Resident sees the create entry on the feed', async () => {
   seedFeed('resident')
   renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
-  expect(
-    screen.getByRole('link', { name: 'Новое объявление' }),
-  ).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: 'New post' })).toBeInTheDocument()
 })
 
 test('happy-path 1 / happy-path 2: the feed shows the localized title, toggles to the original and back with no extra request', async () => {
@@ -424,22 +426,22 @@ test('happy-path 1 / happy-path 2: the feed shows the localized title, toggles t
   const calls = countList()
   const card = await firstCard()
 
-  await within(card).findByText('Отключение воды')
+  await within(card).findByText('Water shutdown')
 
-  await user.click(within(card).getByRole('button', { name: /Читать далее/ }))
+  await user.click(within(card).getByRole('button', { name: /Read more/ }))
   expect(
-    within(card).getByRole('button', { name: 'Показать оригинальный текст' }),
+    within(card).getByRole('button', { name: 'Show original text' }),
   ).toBeInTheDocument()
 
   await user.click(
-    within(card).getByRole('button', { name: 'Показать оригинальный текст' }),
+    within(card).getByRole('button', { name: 'Show original text' }),
   )
   expect(within(card).getByText('Суды өшіру')).toBeInTheDocument()
 
   await user.click(
-    within(card).getByRole('button', { name: 'Показать перевод' }),
+    within(card).getByRole('button', { name: 'Show translation' }),
   )
-  expect(within(card).getByText('Отключение воды')).toBeInTheDocument()
+  expect(within(card).getByText('Water shutdown')).toBeInTheDocument()
   expect(calls.count).toBe(1)
 })
 
@@ -449,13 +451,13 @@ test('happy-path 3: a same-locale post shows the original with no translation in
     category: 'city',
     createdAt: 2000,
     kind: 'announcement',
-    title: 'Отключение воды',
+    title: 'Water shutdown',
   })
   renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
   const card = await firstCard()
 
-  await within(card).findByText('Отключение воды')
+  await within(card).findByText('Water shutdown')
   expect(
-    screen.queryByRole('button', { name: 'Показать оригинальный текст' }),
+    screen.queryByRole('button', { name: 'Show original text' }),
   ).not.toBeInTheDocument()
 })

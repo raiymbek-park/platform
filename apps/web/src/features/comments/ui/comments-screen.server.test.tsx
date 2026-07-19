@@ -37,7 +37,7 @@ const seedResident = (role = 'resident') =>
     block: 1,
     cars: [],
     isPhoneVisible: false,
-    name: 'Алиса',
+    name: 'Alice',
     phone: '+77781234455',
     role,
   })
@@ -47,51 +47,51 @@ const seedPost = (overrides: Record<string, unknown> = {}) =>
     author: {
       apartment: 42,
       block: 1,
-      name: 'Алиса',
+      name: 'Alice',
       phone: '+7 700 000 00 00',
     },
     authorId: 'author-uid',
     category: 'sell',
     commentCount: 0,
     createdAt: Timestamp.fromMillis(1000),
-    description: 'Описание объявления для проверки треда комментариев.',
-    keywords: ['велосипед'],
+    description: 'Post description for testing the comment thread.',
+    keywords: ['bike'],
     kind: 'offer',
     lang: 'ru',
     media: [],
     reactions: {},
-    title: 'Продам горный велосипед',
+    title: 'Selling a mountain bike',
     ...overrides,
   })
 
 const seedIssue = (overrides: Record<string, unknown> = {}) =>
   fake.seed('issues/issue-1', {
-    author: { apartment: 12, block: 1, name: 'Житель' },
+    author: { apartment: 12, block: 1, name: 'George Lucas' },
     authorId: 'author-uid',
     category: 'other',
     commentCount: 0,
     createdAt: Timestamp.fromMillis(1000),
-    description: 'Домофон у подъезда не открывает дверь по ключу',
-    keywords: ['домофон'],
+    description: "The entrance intercom won't open the door with a key",
+    keywords: ['intercom'],
     lang: 'ru',
     media: [],
     number: 301,
     reactions: {},
     status: 'in-progress',
     tags: [],
-    title: 'Не работает домофон',
+    title: 'The intercom is broken',
     urgent: false,
     ...overrides,
   })
 
 const seedComment = (path: string, overrides: Record<string, unknown> = {}) =>
   fake.seed(path, {
-    author: { apartment: 12, block: 1, name: 'Джеки Чан' },
+    author: { apartment: 12, block: 1, name: 'Jackie Chan' },
     authorId: 'author-uid',
     createdAt: Timestamp.fromMillis(1000),
     lang: 'ru',
     media: [],
-    text: 'Отличное предложение',
+    text: 'Great offer',
     ...overrides,
   })
 
@@ -102,7 +102,7 @@ const mineComment = (
 ): [string, Record<string, unknown>] => [
   path,
   {
-    author: { apartment: 42, block: 1, name: 'Алиса' },
+    author: { apartment: 42, block: 1, name: 'Alice' },
     authorId: 'uid-1',
     createdAt: Timestamp.fromMillis(createdAt),
     text,
@@ -128,11 +128,11 @@ const breakCommentsList = () =>
     }),
   )
 
-const commentButton = () => screen.getByRole('button', { name: /Комментарии/ })
+const commentButton = () => screen.getByRole('button', { name: /Comments/ })
 
-const commentField = () => screen.getByPlaceholderText('Наберите текст')
+const commentField = () => screen.getByPlaceholderText('Type a message')
 
-const sendButton = () => screen.getByRole('button', { name: 'Отправить' })
+const sendButton = () => screen.getByRole('button', { name: 'Submit' })
 
 const fileInput = () => {
   const input = document.querySelector<HTMLInputElement>('input[type="file"]')
@@ -156,32 +156,36 @@ test('happy-path 13: opening a post’s comment thread shows the post’s title,
   seedPost({ commentCount: 2 })
   seedComment('posts/post-1/comments/c1', {
     media: ['https://cdn.test/photo.jpg'],
-    text: 'Отличное предложение',
+    text: 'Great offer',
   })
-  seedComment(...mineComment('posts/post-1/comments/c2', 'Спасибо!'))
+  seedComment(...mineComment('posts/post-1/comments/c2', 'Thanks!'))
   const { currentPath, user } = renderAppWithServer('/posts?tab=all', {
     uid: 'uid-1',
   })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
   await user.click(commentButton())
 
   expect(currentPath()).toBe('/posts/post-1/comments')
-  expect(await screen.findByText('Продам горный велосипед')).toBeInTheDocument()
-  expect(await screen.findByText('Отличное предложение')).toBeInTheDocument()
-  expect(screen.getByText('Спасибо!')).toBeInTheDocument()
-  expect(screen.getByText('ДЧ')).toBeInTheDocument()
+  expect(await screen.findByText('Selling a mountain bike')).toBeInTheDocument()
+  expect(await screen.findByText('Great offer')).toBeInTheDocument()
+  expect(screen.getByText('Thanks!')).toBeInTheDocument()
+  expect(screen.getByText('JC')).toBeInTheDocument()
   expect(document.querySelectorAll('img').length).toBeGreaterThan(0)
 })
 
 test('edge-cases 7: the same thread reused on an issue shows its title and messages identically', async () => {
   seedResident()
   seedIssue({ commentCount: 1 })
-  seedComment('issues/issue-1/comments/i1', { text: 'Когда почините домофон?' })
+  seedComment('issues/issue-1/comments/i1', {
+    text: 'When will you fix the intercom?',
+  })
   renderAppWithServer('/issues/issue-1/comments', { uid: 'uid-1' })
 
-  expect(await screen.findByText('Не работает домофон')).toBeInTheDocument()
-  expect(await screen.findByText('Когда почините домофон?')).toBeInTheDocument()
+  expect(await screen.findByText('The intercom is broken')).toBeInTheDocument()
+  expect(
+    await screen.findByText('When will you fix the intercom?'),
+  ).toBeInTheDocument()
   expect(commentField()).toBeInTheDocument()
 })
 
@@ -191,21 +195,21 @@ test('edge-cases 7: writing a comment on an issue appends it and increments the 
   const { currentPath, user } = renderAppWithServer('/issues?status=all', {
     uid: 'uid-1',
   })
-  await screen.findByText('Не работает домофон')
+  await screen.findByText('The intercom is broken')
   const issueCommentButton = () =>
-    screen.getByRole('button', { name: /Комментарии/ })
+    screen.getByRole('button', { name: /Comments/ })
   expect(within(issueCommentButton()).getByText('0')).toBeInTheDocument()
 
   await user.click(issueCommentButton())
   expect(currentPath()).toBe('/issues/issue-1/comments')
 
-  await user.type(commentField(), 'Когда планируете чинить?')
+  await user.type(commentField(), 'When do you plan to fix it?')
   await user.click(sendButton())
   expect(
-    await screen.findByText('Когда планируете чинить?'),
+    await screen.findByText('When do you plan to fix it?'),
   ).toBeInTheDocument()
 
-  await user.click(screen.getByRole('button', { name: 'Назад' }))
+  await user.click(screen.getByRole('button', { name: 'Back' }))
   await waitFor(() => expect(currentPath()).toBe('/issues'))
   await waitFor(() =>
     expect(within(issueCommentButton()).getByText('1')).toBeInTheDocument(),
@@ -217,12 +221,12 @@ test('edge-cases 7: writing a comment on an issue appends it and increments the 
 test('validation: a Viewer sees no way to write a comment', async () => {
   seedResident('viewer')
   seedPost({ commentCount: 1 })
-  seedComment('posts/post-1/comments/c1', { text: 'Отличное предложение' })
+  seedComment('posts/post-1/comments/c1', { text: 'Great offer' })
   renderAppWithServer('/posts/post-1/comments', { uid: 'uid-1' })
-  await screen.findByText('Отличное предложение')
+  await screen.findByText('Great offer')
 
   expect(
-    screen.queryByPlaceholderText('Наберите текст'),
+    screen.queryByPlaceholderText('Type a message'),
   ).not.toBeInTheDocument()
 })
 
@@ -232,21 +236,21 @@ test('happy-path 14: writing a comment with text and an image appends it to the 
   const { currentPath, user } = renderAppWithServer('/posts?tab=all', {
     uid: 'uid-1',
   })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
   expect(within(commentButton()).getByText('0')).toBeInTheDocument()
 
   await user.click(commentButton())
   expect(currentPath()).toBe('/posts/post-1/comments')
 
   await user.upload(fileInput(), makeFile('photo.jpg'))
-  await user.type(commentField(), 'Здравствуйте, ещё актуально?')
+  await user.type(commentField(), 'Hello, is this still available?')
   await user.click(sendButton())
 
   expect(
-    await screen.findByText('Здравствуйте, ещё актуально?'),
+    await screen.findByText('Hello, is this still available?'),
   ).toBeInTheDocument()
 
-  await user.click(screen.getByRole('button', { name: 'Назад' }))
+  await user.click(screen.getByRole('button', { name: 'Back' }))
   await waitFor(() => expect(currentPath()).toBe('/posts'))
   await waitFor(() =>
     expect(within(commentButton()).getByText('1')).toBeInTheDocument(),
@@ -260,7 +264,7 @@ test('validation 5: sending is blocked with empty text and no media', async () =
   const { user } = renderAppWithServer('/posts/post-1/comments', {
     uid: 'uid-1',
   })
-  await screen.findByPlaceholderText('Наберите текст')
+  await screen.findByPlaceholderText('Type a message')
 
   expect(sendButton()).toBeDisabled()
 
@@ -274,12 +278,12 @@ test('validation 5a / edge-cases 15: comment text beyond 1000 characters is capp
   const { user } = renderAppWithServer('/posts/post-1/comments', {
     uid: 'uid-1',
   })
-  await screen.findByPlaceholderText('Наберите текст')
+  await screen.findByPlaceholderText('Type a message')
 
   await user.click(commentField())
-  await user.paste('а'.repeat(1005))
+  await user.paste('a'.repeat(1005))
 
-  expect(commentField()).toHaveValue('а'.repeat(1000))
+  expect(commentField()).toHaveValue('a'.repeat(1000))
   expect(sendButton()).toBeEnabled()
 })
 
@@ -287,11 +291,11 @@ test('validation 6a: a comment with raw HTML and a script tag renders only the s
   seedResident()
   seedPost({ commentCount: 1 })
   seedComment('posts/post-1/comments/c1', {
-    text: '**Важно** <script>window.__xss = true</script>',
+    text: '**Important** <script>window.__xss = true</script>',
   })
   renderAppWithServer('/posts/post-1/comments', { uid: 'uid-1' })
 
-  const emphasis = await screen.findByText('Важно')
+  const emphasis = await screen.findByText('Important')
   expect(emphasis.tagName).toBe('STRONG')
   expect(document.querySelector('script')).toBeNull()
   expect((window as unknown as { __xss?: boolean }).__xss).toBeUndefined()
@@ -303,7 +307,7 @@ test('validation 13: attaching more than 10 files to a comment is rejected', asy
   const { user } = renderAppWithServer('/posts/post-1/comments', {
     uid: 'uid-1',
   })
-  await screen.findByPlaceholderText('Наберите текст')
+  await screen.findByPlaceholderText('Type a message')
 
   const files = Array.from({ length: 11 }, (_, index) =>
     makeFile(`photo-${index}.jpg`),
@@ -311,10 +315,10 @@ test('validation 13: attaching more than 10 files to a comment is rejected', asy
   await user.upload(fileInput(), files)
 
   expect(
-    await screen.findByText('Можно прикрепить не более 10 файлов'),
+    await screen.findByText('You can attach at most 10 files'),
   ).toBeInTheDocument()
   expect(
-    screen.queryByRole('button', { name: 'Удалить' }),
+    screen.queryByRole('button', { name: 'Delete' }),
   ).not.toBeInTheDocument()
 })
 
@@ -324,7 +328,7 @@ test('edge-cases 16: attaching exactly 10 media items whose combined size is exa
   const { user } = renderAppWithServer('/posts/post-1/comments', {
     uid: 'uid-1',
   })
-  await screen.findByPlaceholderText('Наберите текст')
+  await screen.findByPlaceholderText('Type a message')
 
   const files = Array.from({ length: 10 }, (_, index) =>
     makeFile(`photo-${index}.jpg`, {
@@ -333,11 +337,11 @@ test('edge-cases 16: attaching exactly 10 media items whose combined size is exa
   )
   await user.upload(fileInput(), files)
 
+  expect(await screen.findAllByRole('button', { name: 'Delete' })).toHaveLength(
+    10,
+  )
   expect(
-    await screen.findAllByRole('button', { name: 'Удалить' }),
-  ).toHaveLength(10)
-  expect(
-    screen.queryByText('Можно прикрепить не более 10 файлов'),
+    screen.queryByText('You can attach at most 10 files'),
   ).not.toBeInTheDocument()
   expect(sendButton()).toBeEnabled()
 })
@@ -349,7 +353,7 @@ test('validation 14: the send action disables while the comment mutation is pend
   const { user } = renderAppWithServer('/posts/post-1/comments', {
     uid: 'uid-1',
   })
-  await screen.findByPlaceholderText('Наберите текст')
+  await screen.findByPlaceholderText('Type a message')
   trpcServer.use(
     http.post(`${env.apiUrl}/comments.create`, async () => {
       createCalls += 1
@@ -358,7 +362,7 @@ test('validation 14: the send action disables while the comment mutation is pend
     }),
   )
 
-  await user.type(commentField(), 'Привет')
+  await user.type(commentField(), 'Hello')
   await user.click(sendButton())
 
   await waitFor(() => expect(sendButton()).toBeDisabled())
@@ -373,7 +377,7 @@ test('error-states 6: a failed thread query shows an error while the input bar a
   const { currentPath, user } = renderAppWithServer('/posts?tab=all', {
     uid: 'uid-1',
   })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
   breakCommentsList()
 
   await user.click(commentButton())
@@ -381,10 +385,10 @@ test('error-states 6: a failed thread query shows an error while the input bar a
   expect(
     await screen.findByTestId('comment-error', undefined, { timeout: 4000 }),
   ).toBeInTheDocument()
-  await user.type(commentField(), 'Ещё работает')
-  expect(commentField()).toHaveValue('Ещё работает')
+  await user.type(commentField(), 'Still available')
+  expect(commentField()).toHaveValue('Still available')
 
-  await user.click(screen.getByRole('button', { name: 'Назад' }))
+  await user.click(screen.getByRole('button', { name: 'Back' }))
   await waitFor(() => expect(currentPath()).toBe('/posts'))
 })
 
@@ -394,24 +398,22 @@ test('error-states 7 / error-states 9: a failed send surfaces an error, preserve
   const { currentPath, user } = renderAppWithServer('/posts?tab=all', {
     uid: 'uid-1',
   })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
   await user.click(commentButton())
-  await screen.findByPlaceholderText('Наберите текст')
+  await screen.findByPlaceholderText('Type a message')
   trpcServer.use(trpcMutationError('comments.create'))
 
   await user.upload(fileInput(), makeFile('photo.jpg'))
-  await user.type(commentField(), 'Ещё актуально?')
+  await user.type(commentField(), 'Still available?')
   await user.click(sendButton())
 
   expect(
-    await screen.findByText(
-      'Не удалось отправить сообщение. Попробуйте ещё раз.',
-    ),
+    await screen.findByText('Failed to send the message. Please try again.'),
   ).toBeInTheDocument()
-  expect(commentField()).toHaveValue('Ещё актуально?')
-  expect(screen.getByRole('button', { name: 'Удалить' })).toBeInTheDocument()
+  expect(commentField()).toHaveValue('Still available?')
+  expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument()
 
-  await user.click(screen.getByRole('button', { name: 'Назад' }))
+  await user.click(screen.getByRole('button', { name: 'Back' }))
   await waitFor(() => expect(currentPath()).toBe('/posts'))
   expect(within(commentButton()).getByText('0')).toBeInTheDocument()
   expect(fake.getDoc('posts/post-1')?.commentCount).toBe(0)

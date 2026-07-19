@@ -27,15 +27,16 @@ const makeFile = (
   return file
 }
 
-const submit = () => screen.getByRole('button', { name: 'Опубликовать' })
+const submit = () => screen.getByRole('button', { name: 'Publish' })
 
-const titleField = () => screen.getByRole('textbox', { name: 'Заголовок' })
+const titleField = () => screen.getByRole('textbox', { name: 'Title' })
 
-const descriptionField = () => screen.getByRole('textbox', { name: 'Описание' })
+const descriptionField = () =>
+  screen.getByRole('textbox', { name: 'Description' })
 
-const fileInput = () => screen.getByLabelText('Добавить')
+const fileInput = () => screen.getByLabelText('Add')
 
-const ready = () => screen.findByRole('textbox', { name: 'Заголовок' })
+const ready = () => screen.findByRole('textbox', { name: 'Title' })
 
 const feedTab = (name: string) =>
   within(screen.getByRole('group', { name: 'Фильтр объявлений' })).getByRole(
@@ -50,7 +51,7 @@ const seedResident = (role: string) =>
     block: 1,
     cars: [],
     isPhoneVisible: false,
-    name: 'Алиса',
+    name: 'Alice',
     phone: '+77781234455',
     role,
   })
@@ -59,8 +60,8 @@ const fillValidForm = async (
   user: ReturnType<typeof renderAppWithServer>['user'],
   category: string,
   {
-    title = 'Продам горный велосипед',
-    description = 'Почти новый велосипед, катался месяц',
+    title = 'Selling a mountain bike',
+    description = 'Almost new bike, rode it for a month',
   } = {},
 ) => {
   await ready()
@@ -78,27 +79,23 @@ beforeEach(() => {
 
 afterEach(resetFirestore)
 
-test('happy-path 8: a Resident publishes an offer through the real backend — it is stored, shows the phone notice, and appears under Частные объявления', async () => {
+test('happy-path 8: a Resident publishes an offer, sees the phone notice, and it appears under Private ads', async () => {
   seedResident('resident')
   const { currentPath, user } = renderAppWithServer('/posts/new', {
     uid: 'uid-1',
   })
 
   expect(
-    await screen.findByText(
-      'Ваш номер телефона будет виден всем пользователям.',
-    ),
+    await screen.findByText('Your phone number will be visible to everyone.'),
   ).toBeInTheDocument()
 
-  await fillValidForm(user, 'Услуги')
+  await fillValidForm(user, 'Services')
   await user.click(submit())
 
   await waitFor(() => expect(currentPath()).toBe('/posts'))
-  expect(await screen.findByText('Продам горный велосипед')).toBeInTheDocument()
-  expect(
-    await screen.findByText('Объявление опубликовано.'),
-  ).toBeInTheDocument()
-  expect(feedTab('Частные объявления')).toHaveAttribute('aria-pressed', 'true')
+  expect(await screen.findByText('Selling a mountain bike')).toBeInTheDocument()
+  expect(await screen.findByText('Post published.')).toBeInTheDocument()
+  expect(feedTab('Private ads')).toHaveAttribute('aria-pressed', 'true')
 
   const stored = fake.listDocs('posts')
   expect(stored).toHaveLength(1)
@@ -106,11 +103,11 @@ test('happy-path 8: a Resident publishes an offer through the real backend — i
     authorId: 'uid-1',
     category: 'services',
     kind: 'offer',
-    title: 'Продам горный велосипед',
+    title: 'Selling a mountain bike',
   })
 })
 
-test('happy-path 9: a Manager publishes an announcement through the real backend — it is stored with no phone notice and appears under Уведомления', async () => {
+test('happy-path 9: a Manager publishes an announcement with no phone notice, and it appears under Notices', async () => {
   seedResident('manager')
   const { currentPath, user } = renderAppWithServer('/posts/new', {
     uid: 'uid-1',
@@ -118,18 +115,18 @@ test('happy-path 9: a Manager publishes an announcement through the real backend
 
   await ready()
   expect(
-    screen.queryByText('Ваш номер телефона будет виден всем пользователям.'),
+    screen.queryByText('Your phone number will be visible to everyone.'),
   ).not.toBeInTheDocument()
 
-  await fillValidForm(user, 'Управляющая компания', {
-    description: 'Плановое отключение воды на всех этажах дома',
-    title: 'Отключение воды',
+  await fillValidForm(user, 'Management company', {
+    description: 'Scheduled water shutdown on all floors of the building',
+    title: 'Water shutdown',
   })
   await user.click(submit())
 
   await waitFor(() => expect(currentPath()).toBe('/posts'))
-  expect(await screen.findByText('Отключение воды')).toBeInTheDocument()
-  expect(feedTab('Уведомления')).toHaveAttribute('aria-pressed', 'true')
+  expect(await screen.findByText('Water shutdown')).toBeInTheDocument()
+  expect(feedTab('Notices')).toHaveAttribute('aria-pressed', 'true')
 
   const stored = fake.listDocs('posts')
   expect(stored).toHaveLength(1)
@@ -137,7 +134,7 @@ test('happy-path 9: a Manager publishes an announcement through the real backend
     authorId: 'uid-1',
     category: 'management',
     kind: 'announcement',
-    title: 'Отключение воды',
+    title: 'Water shutdown',
   })
 })
 
@@ -148,15 +145,13 @@ test('a partially failed upload still publishes the offer and stores only the me
     uid: 'uid-1',
   })
 
-  await fillValidForm(user, 'Услуги')
+  await fillValidForm(user, 'Services')
   await user.upload(fileInput(), [makeFile('ok.jpg'), makeFile('bad.jpg')])
   await user.click(submit())
 
   await waitFor(() => expect(currentPath()).toBe('/posts'))
   expect(
-    await screen.findByText(
-      'Объявление опубликовано. Файлов не загрузилось: 1',
-    ),
+    await screen.findByText('Post published. Files failed to upload: 1'),
   ).toBeInTheDocument()
 
   const stored = fake.listDocs('posts')
@@ -171,15 +166,13 @@ test('an entirely failed upload still publishes the offer with no media stored',
     uid: 'uid-1',
   })
 
-  await fillValidForm(user, 'Услуги')
+  await fillValidForm(user, 'Services')
   await user.upload(fileInput(), makeFile('bad.jpg'))
   await user.click(submit())
 
   await waitFor(() => expect(currentPath()).toBe('/posts'))
   expect(
-    await screen.findByText(
-      'Объявление опубликовано. Файлов не загрузилось: 1',
-    ),
+    await screen.findByText('Post published. Files failed to upload: 1'),
   ).toBeInTheDocument()
 
   const stored = fake.listDocs('posts')
@@ -192,20 +185,20 @@ test('validation 1 / edge-cases 12: a title under 3 characters blocks submission
   const { user } = renderAppWithServer('/posts/new', { uid: 'uid-1' })
 
   await ready()
-  await user.click(screen.getByRole('button', { name: /Услуги/ }))
-  await user.type(descriptionField(), 'Почти новый велосипед, катался месяц')
+  await user.click(screen.getByRole('button', { name: /Services/ }))
+  await user.type(descriptionField(), 'Almost new bike, rode it for a month')
 
-  await user.type(titleField(), 'ав')
+  await user.type(titleField(), 'ab')
   expect(submit()).toBeDisabled()
 
   await user.clear(titleField())
   await user.click(titleField())
-  await user.paste('а'.repeat(3))
+  await user.paste('a'.repeat(3))
   await waitFor(() => expect(submit()).toBeEnabled())
 
   await user.clear(titleField())
   await user.click(titleField())
-  await user.paste('а'.repeat(80))
+  await user.paste('a'.repeat(80))
   await waitFor(() => expect(submit()).toBeEnabled())
 })
 
@@ -214,20 +207,20 @@ test('validation 2 / edge-cases 13: a description under 10 characters blocks sub
   const { user } = renderAppWithServer('/posts/new', { uid: 'uid-1' })
 
   await ready()
-  await user.click(screen.getByRole('button', { name: /Услуги/ }))
-  await user.type(titleField(), 'Продам горный велосипед')
+  await user.click(screen.getByRole('button', { name: /Services/ }))
+  await user.type(titleField(), 'Selling a mountain bike')
 
-  await user.type(descriptionField(), 'а'.repeat(9))
+  await user.type(descriptionField(), 'a'.repeat(9))
   expect(submit()).toBeDisabled()
 
   await user.clear(descriptionField())
   await user.click(descriptionField())
-  await user.paste('а'.repeat(10))
+  await user.paste('a'.repeat(10))
   await waitFor(() => expect(submit()).toBeEnabled())
 
   await user.clear(descriptionField())
   await user.click(descriptionField())
-  await user.paste('а'.repeat(1000))
+  await user.paste('a'.repeat(1000))
   await waitFor(() => expect(submit()).toBeEnabled())
 })
 
@@ -236,8 +229,8 @@ test('validation 3: no category selected keeps the submit button disabled', asyn
   const { user } = renderAppWithServer('/posts/new', { uid: 'uid-1' })
 
   await ready()
-  await user.type(titleField(), 'Продам горный велосипед')
-  await user.type(descriptionField(), 'Почти новый велосипед, катался месяц')
+  await user.type(titleField(), 'Selling a mountain bike')
+  await user.type(descriptionField(), 'Almost new bike, rode it for a month')
 
   expect(submit()).toBeDisabled()
 })
@@ -253,10 +246,10 @@ test('validation 4: attaching more than 10 files is rejected and no photo is add
   await user.upload(fileInput(), files)
 
   expect(
-    await screen.findByText('Можно прикрепить не более 10 файлов'),
+    await screen.findByText('You can attach at most 10 files'),
   ).toBeInTheDocument()
   expect(
-    screen.queryByRole('button', { name: 'Удалить' }),
+    screen.queryByRole('button', { name: 'Delete' }),
   ).not.toBeInTheDocument()
 })
 
@@ -273,11 +266,11 @@ test('validation 4: attaching a file over 200 MB is rejected and no photo is add
 
   expect(
     await screen.findByText(
-      'Файл слишком большой: суммарный размер вложений не должен превышать 200 МБ',
+      'File too large: the total size of attachments must not exceed 200 MB',
     ),
   ).toBeInTheDocument()
   expect(
-    screen.queryByRole('button', { name: 'Удалить' }),
+    screen.queryByRole('button', { name: 'Delete' }),
   ).not.toBeInTheDocument()
 })
 
@@ -294,14 +287,14 @@ test('edge-cases 14: attaching exactly 10 files whose combined size is exactly 2
   await user.upload(fileInput(), files)
 
   expect(
-    await screen.findByRole('button', { name: 'Удалить' }),
+    await screen.findByRole('button', { name: 'Delete' }),
   ).toBeInTheDocument()
   expect(
-    screen.queryByText('Можно прикрепить не более 10 файлов'),
+    screen.queryByText('You can attach at most 10 files'),
   ).not.toBeInTheDocument()
   expect(
     screen.queryByText(
-      'Файл слишком большой: суммарный размер вложений не должен превышать 200 МБ',
+      'File too large: the total size of attachments must not exceed 200 MB',
     ),
   ).not.toBeInTheDocument()
 })
@@ -319,7 +312,7 @@ test('validation 11: the save action disables while the mutation is pending, and
     }),
   )
 
-  await fillValidForm(user, 'Услуги')
+  await fillValidForm(user, 'Services')
   await user.click(submit())
 
   await waitFor(() => expect(submit()).toBeDisabled())
@@ -334,18 +327,16 @@ test('error-states 3: a lost session during save aborts the create and preserves
     uid: 'uid-1',
   })
 
-  await fillValidForm(user, 'Услуги')
+  await fillValidForm(user, 'Services')
   firebaseAuth.signOut()
   await user.click(submit())
 
   expect(
-    await screen.findByText(
-      'Не удалось опубликовать объявление. Попробуйте ещё раз.',
-    ),
+    await screen.findByText('Could not publish the post. Please try again.'),
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/posts/new')
-  expect(titleField()).toHaveValue('Продам горный велосипед')
-  expect(descriptionField()).toHaveValue('Почти новый велосипед, катался месяц')
+  expect(titleField()).toHaveValue('Selling a mountain bike')
+  expect(descriptionField()).toHaveValue('Almost new bike, rode it for a month')
   expect(fake.listDocs('posts')).toHaveLength(0)
 })
 
@@ -357,23 +348,21 @@ test('error-states 4 / error-states 8: a failed create surfaces the error and pr
 
   trpcServer.use(trpcMutationError('posts.create'))
 
-  await fillValidForm(user, 'Услуги')
+  await fillValidForm(user, 'Services')
   await user.upload(fileInput(), makeFile('photo.jpg'))
   await user.click(submit())
 
   expect(
-    await screen.findByText(
-      'Не удалось опубликовать объявление. Попробуйте ещё раз.',
-    ),
+    await screen.findByText('Could not publish the post. Please try again.'),
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/posts/new')
-  expect(titleField()).toHaveValue('Продам горный велосипед')
-  expect(descriptionField()).toHaveValue('Почти новый велосипед, катался месяц')
-  expect(screen.getByRole('button', { name: /Услуги/ })).toHaveAttribute(
+  expect(titleField()).toHaveValue('Selling a mountain bike')
+  expect(descriptionField()).toHaveValue('Almost new bike, rode it for a month')
+  expect(screen.getByRole('button', { name: /Services/ })).toHaveAttribute(
     'aria-pressed',
     'true',
   )
-  expect(screen.getByRole('button', { name: 'Удалить' })).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument()
   expect(submit()).toBeEnabled()
   expect(fake.listDocs('posts')).toHaveLength(0)
 })

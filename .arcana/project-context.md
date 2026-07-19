@@ -80,6 +80,13 @@ use** — ADR 017.
 - Naming/lint: harness files use the `*.server.test.tsx` name; `apps/web/steiger.config.ts` has a scoped
   `fsd/no-public-api-sidestep: off` for them so they can import `render-app-server` directly (keeping
   `appRouter` out of the `@/shared/test` barrel and thus out of every other web test).
+- **Language: harness tests are authored in English.** `renderAppWithServer` activates the English lingui
+  catalog and sets `createContext` locale to `en`, so the UI renders in English — assert English chrome
+  (buttons/toasts/labels/category/status names, taken from `src/shared/i18n/locales/en/messages.po`), and
+  write sample user content in English too. Test names are English only — no localized UI labels quoted in
+  the title, and no filler restating what the harness already guarantees ("through the real backend", "it is
+  stored", "runs the real router"); name the user-visible behaviour. (Narrow non-harness tests still render
+  the Russian default until they migrate — `vitest.setup` resets the locale to `ru` per test.)
 
 **Known limitation.** `createContext` injects `uid` directly, so **role-based authorization is testable**
 (seed the resident's `role`; the real `getRole` runs), but **server-side identity rejection** (missing/invalid

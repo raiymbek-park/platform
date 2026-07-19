@@ -25,19 +25,19 @@ const seedManager = () =>
     block: 1,
     cars: [],
     isPhoneVisible: false,
-    name: 'Менеджер',
+    name: 'Johnny Depp',
     phone: '+77781234455',
     role: 'manager',
   })
 
 const seedIssue = () =>
   fake.seed('issues/issue-115', {
-    author: { apartment: 12, block: 1, name: 'Житель' },
+    author: { apartment: 12, block: 1, name: 'George Lucas' },
     authorId: 'author-uid',
     category: 'replacement',
     commentCount: 0,
     createdAt: Timestamp.fromMillis(1_700_000_000_000),
-    description: 'Изношены тросы лифта в первом блоке',
+    description: 'The elevator cables in block one are worn',
     keywords: [],
     lang: 'ru',
     media: [],
@@ -45,13 +45,13 @@ const seedIssue = () =>
     reactions: {},
     status: 'in-progress',
     tags: ['warranty'],
-    title: 'Замена тросов лифта',
+    title: 'Elevator cable replacement',
     urgent: false,
   })
 
-const submit = () => screen.getByRole('button', { name: 'Сохранить' })
+const submit = () => screen.getByRole('button', { name: 'Save' })
 
-const ready = () => screen.findByText('Смена статуса')
+const ready = () => screen.findByText('Change status')
 
 beforeEach(() => {
   firebaseAuth.reset()
@@ -68,17 +68,16 @@ test('happy-path: the form preselects the current status and existing tags', asy
   renderAppWithServer('/issues/status/issue-115', { uid: 'uid-1' })
 
   await ready()
-  expect(screen.getByRole('button', { name: /В работе/ })).toHaveAttribute(
+  expect(screen.getByRole('button', { name: /In progress/ })).toHaveAttribute(
     'aria-pressed',
     'true',
   )
-  expect(screen.getByRole('button', { name: /По гарантии/ })).toHaveAttribute(
-    'aria-pressed',
-    'true',
-  )
+  expect(
+    screen.getByRole('button', { name: /Under warranty/ }),
+  ).toHaveAttribute('aria-pressed', 'true')
 })
 
-test('happy-path: a Manager changes the status — the real backend stores the new status, returns to the matching filter, and confirms with a toast', async () => {
+test('happy-path: a Manager changes the status — it stores the new status, returns to the matching filter, and confirms with a toast', async () => {
   seedManager()
   seedIssue()
   const { currentPath, user } = renderAppWithServer(
@@ -89,15 +88,15 @@ test('happy-path: a Manager changes the status — the real backend stores the n
   )
 
   await ready()
-  await user.click(screen.getByRole('button', { name: /Выполнено/ }))
+  await user.click(screen.getByRole('button', { name: /Done/ }))
   await user.click(submit())
 
   await waitFor(() => expect(currentPath()).toBe('/issues'))
-  expect(await screen.findByText('Статус обновлён.')).toBeInTheDocument()
+  expect(await screen.findByText('Status updated.')).toBeInTheDocument()
   expect(fake.getDoc('issues/issue-115')?.status).toBe('done')
 })
 
-test('happy-path: a comment, a tag change, and a photo are persisted by the real backend as a status change', async () => {
+test('happy-path: a comment, a tag change, and a photo are persisted as a status change', async () => {
   seedManager()
   seedIssue()
   const { user } = renderAppWithServer('/issues/status/issue-115', {
@@ -105,19 +104,19 @@ test('happy-path: a comment, a tag change, and a photo are persisted by the real
   })
 
   await ready()
-  await user.click(screen.getByRole('button', { name: /Дубликат/ }))
+  await user.click(screen.getByRole('button', { name: /Duplicate/ }))
   await user.type(
-    screen.getByRole('textbox', { name: 'Комментарий' }),
-    'Работы выполнены',
+    screen.getByRole('textbox', { name: 'Comment' }),
+    'Work completed',
   )
-  await user.upload(screen.getByLabelText('Добавить'), makeFile('fix.jpg'))
+  await user.upload(screen.getByLabelText('Add'), makeFile('fix.jpg'))
   await user.click(submit())
 
   await waitFor(() =>
     expect(fake.listDocs('issues/issue-115/statusChanges')).toHaveLength(1),
   )
   const [change] = fake.listDocs('issues/issue-115/statusChanges')
-  expect(change?.comment).toBe('Работы выполнены')
+  expect(change?.comment).toBe('Work completed')
   expect(change?.tags).toEqual(
     expect.arrayContaining(['warranty', 'duplicate']),
   )
@@ -137,11 +136,11 @@ test('error-states: a failed status change shows an error toast, keeps the form,
 
   await ready()
   trpcServer.use(trpcMutationError('issues.changeStatus'))
-  await user.click(screen.getByRole('button', { name: /Выполнено/ }))
+  await user.click(screen.getByRole('button', { name: /Done/ }))
   await user.click(submit())
 
   expect(
-    await screen.findByText('Не удалось сменить статус. Попробуйте ещё раз.'),
+    await screen.findByText('Could not change the status. Please try again.'),
   ).toBeInTheDocument()
   expect(currentPath()).toBe('/issues/status/issue-115')
   expect(fake.getDoc('issues/issue-115')?.status).toBe('in-progress')

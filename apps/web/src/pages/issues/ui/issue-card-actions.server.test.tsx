@@ -25,19 +25,19 @@ const seedResident = (role: PermissionRole) =>
     block: 1,
     cars: [],
     isPhoneVisible: false,
-    name: 'Алиса',
+    name: 'Alice',
     phone: '+77781234455',
     role,
   })
 
 const seedIssue = (overrides: Record<string, unknown> = {}) =>
   fake.seed('issues/issue-301', {
-    author: { apartment: 12, block: 1, name: 'Житель' },
+    author: { apartment: 12, block: 1, name: 'George Lucas' },
     authorId: 'author-uid',
     category: 'other',
     commentCount: 0,
     createdAt: Timestamp.fromMillis(1_700_000_000_000),
-    description: 'Домофон у подъезда не открывает дверь по ключу',
+    description: "The entrance intercom won't open the door with a key",
     keywords: [],
     lang: 'ru',
     media: [],
@@ -45,7 +45,7 @@ const seedIssue = (overrides: Record<string, unknown> = {}) =>
     reactions: {},
     status: 'in-progress',
     tags: [],
-    title: 'Не работает домофон',
+    title: 'The intercom is broken',
     urgent: false,
     ...overrides,
   })
@@ -55,7 +55,7 @@ const expandCard = async (
 ) => {
   const [element] = await screen.findAllByRole('article')
   if (!element) throw new Error('no card rendered')
-  await user.click(within(element).getByRole('button', { name: /Подробнее/ }))
+  await user.click(within(element).getByRole('button', { name: /Details/ }))
   return element
 }
 
@@ -74,14 +74,14 @@ test('permissions: a Manager sees the change-status action and it opens the stat
   const { currentPath, user } = renderAppWithServer('/issues?status=all', {
     uid: 'uid-1',
   })
-  await screen.findByText('Не работает домофон')
+  await screen.findByText('The intercom is broken')
 
   const card = await expandCard(user)
   expect(
-    within(card).queryByRole('button', { name: 'Редактировать' }),
+    within(card).queryByRole('button', { name: 'Edit' }),
   ).not.toBeInTheDocument()
 
-  await user.click(within(card).getByRole('button', { name: 'Сменить статус' }))
+  await user.click(within(card).getByRole('button', { name: 'Change status' }))
   await waitFor(() => expect(currentPath()).toBe('/issues/status/issue-301'))
 })
 
@@ -89,11 +89,11 @@ test('permissions: a Resident sees no change-status action', async () => {
   seedResident('resident')
   seedIssue()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Не работает домофон')
+  await screen.findByText('The intercom is broken')
 
   const card = await expandCard(user)
   expect(
-    within(card).queryByRole('button', { name: 'Сменить статус' }),
+    within(card).queryByRole('button', { name: 'Change status' }),
   ).not.toBeInTheDocument()
 })
 
@@ -101,11 +101,11 @@ test('permissions: an Administration user sees the change-status action', async 
   seedResident('administration')
   seedIssue()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Не работает домофон')
+  await screen.findByText('The intercom is broken')
 
   const card = await expandCard(user)
   expect(
-    within(card).getByRole('button', { name: 'Сменить статус' }),
+    within(card).getByRole('button', { name: 'Change status' }),
   ).toBeInTheDocument()
 })
 
@@ -115,9 +115,9 @@ test('permissions: the edit action on an own new issue opens the edit screen', a
   const { currentPath, user } = renderAppWithServer('/issues?status=all', {
     uid: 'uid-1',
   })
-  await screen.findByText('Не работает домофон')
+  await screen.findByText('The intercom is broken')
 
   const card = await expandCard(user)
-  await user.click(within(card).getByRole('button', { name: 'Редактировать' }))
+  await user.click(within(card).getByRole('button', { name: 'Edit' }))
   await waitFor(() => expect(currentPath()).toBe('/issues/edit/issue-301'))
 })

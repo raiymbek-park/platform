@@ -37,7 +37,7 @@ const seedResident = () =>
     block: 1,
     cars: [],
     isPhoneVisible: false,
-    name: 'Алиса',
+    name: 'Alice',
     phone: '+77781234455',
     role: 'resident',
   })
@@ -60,7 +60,7 @@ const seedIssue = ({
   title,
 }: IssueSeed) =>
   fake.seed(`issues/${id}`, {
-    author: { apartment: 12, block: 1, name: 'Житель' },
+    author: { apartment: 12, block: 1, name: 'George Lucas' },
     authorId: 'author-uid',
     category: 'other',
     commentCount: 0,
@@ -84,35 +84,35 @@ const named: IssueSeed[] = [
     media: ['/photo.jpg'],
     number: 118,
     status: 'new',
-    title: 'Протечка трубы в подвале',
+    title: 'Pipe leak in the basement',
   },
   {
     createdAt: 1019,
     id: 'issue-117',
     number: 117,
     status: 'new',
-    title: 'Ночной шум от соседей',
+    title: 'Night noise from neighbours',
   },
   {
     createdAt: 1018,
     id: 'issue-116',
     number: 116,
     status: 'new',
-    title: 'Скамейки во дворе',
+    title: 'Benches in the courtyard',
   },
   {
     createdAt: 1017,
     id: 'issue-115',
     number: 115,
     status: 'in-progress',
-    title: 'Замена тросов лифта в первом блоке',
+    title: 'Elevator cable replacement in block one',
   },
   {
     createdAt: 1000,
     id: 'issue-113',
     number: 113,
     status: 'blocked',
-    title: 'Не работает домофон',
+    title: 'The intercom is broken',
   },
 ]
 
@@ -121,7 +121,7 @@ const filler: IssueSeed[] = Array.from({ length: 16 }, (_, index) => ({
   id: `issue-f${index}`,
   number: 200 + index,
   status: 'new',
-  title: `Прочая заявка ${index}`,
+  title: `Other issue ${index}`,
 }))
 
 const seedIssues = () => {
@@ -178,7 +178,7 @@ const seedTranslatedIssue = () => {
   const title = 'Домофон жұмыс істемейді'
   const description = 'Кіреберістегі домофон кілтпен есікті ашпайды'
   fake.seed('issues/issue-translated', {
-    author: { apartment: 12, block: 1, name: 'Житель' },
+    author: { apartment: 12, block: 1, name: 'George Lucas' },
     authorId: 'author-uid',
     category: 'other',
     commentCount: 0,
@@ -194,9 +194,9 @@ const seedTranslatedIssue = () => {
     title,
     translatedRev: hashSource(title, description),
     translations: {
-      ru: {
-        description: 'Домофон у подъезда не открывает дверь по ключу',
-        title: 'Не работает домофон',
+      en: {
+        description: "The entrance intercom won't open the door with a key",
+        title: 'The intercom is broken',
       },
     },
     urgent: false,
@@ -211,9 +211,9 @@ const firstButton = (name: string) => {
   return button
 }
 
-const like = () => firstButton('Нравится')
+const like = () => firstButton('Like')
 
-const dislike = () => firstButton('Не нравится')
+const dislike = () => firstButton('Dislike')
 
 const statusTab = (name: string) =>
   within(screen.getByRole('group', { name: 'Фильтр по статусу' })).getByRole(
@@ -242,46 +242,46 @@ afterEach(resetFirestore)
 test('happy-path 12: a search narrows the list to the matching issue, clearing restores it', async () => {
   seedIssues()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
+  await screen.findByText('Pipe leak in the basement')
 
-  await user.type(search(), 'лифта')
+  await user.type(search(), 'elevator')
 
   expect(
-    await screen.findByText('Замена тросов лифта в первом блоке'),
+    await screen.findByText('Elevator cable replacement in block one'),
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(
-      screen.queryByText('Протечка трубы в подвале'),
+      screen.queryByText('Pipe leak in the basement'),
     ).not.toBeInTheDocument(),
   )
 
-  await user.click(screen.getByRole('button', { name: 'Очистить поиск' }))
+  await user.click(screen.getByRole('button', { name: 'Clear search' }))
 
   expect(
-    await screen.findByText('Протечка трубы в подвале'),
+    await screen.findByText('Pipe leak in the basement'),
   ).toBeInTheDocument()
 })
 
 test('edge-cases 16: a query under two characters shows the full list, the second character narrows it', async () => {
   seedIssues()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
+  await screen.findByText('Pipe leak in the basement')
 
-  await user.type(search(), 'л')
+  await user.type(search(), 'e')
 
   await waitFor(() =>
-    expect(screen.getByText('Протечка трубы в подвале')).toBeInTheDocument(),
+    expect(screen.getByText('Pipe leak in the basement')).toBeInTheDocument(),
   )
   expect(screen.queryByTestId('issue-empty')).not.toBeInTheDocument()
 
-  await user.type(search(), 'ифта')
+  await user.type(search(), 'levator')
 
   expect(
-    await screen.findByText('Замена тросов лифта в первом блоке'),
+    await screen.findByText('Elevator cable replacement in block one'),
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(
-      screen.queryByText('Протечка трубы в подвале'),
+      screen.queryByText('Pipe leak in the basement'),
     ).not.toBeInTheDocument(),
   )
 })
@@ -293,50 +293,50 @@ test('happy-path 17: a search shows loading placeholders, not the empty state, u
     release = resolve
   })
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
-  gateList(gate, input => input.includes('домофон'))
+  await screen.findByText('Pipe leak in the basement')
+  gateList(gate, input => input.includes('intercom'))
 
-  await user.type(search(), 'домофон')
+  await user.type(search(), 'intercom')
 
   expect(await screen.findByTestId('issue-skeletons')).toBeInTheDocument()
   expect(screen.queryByTestId('issue-empty')).not.toBeInTheDocument()
 
   release()
 
-  expect(await screen.findByText('Не работает домофон')).toBeInTheDocument()
+  expect(await screen.findByText('The intercom is broken')).toBeInTheDocument()
 })
 
 test('edge-cases 17: a search finds a matching issue that is not among the loaded pages', async () => {
   seedIssues()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
-  expect(screen.queryByText('Не работает домофон')).not.toBeInTheDocument()
+  await screen.findByText('Pipe leak in the basement')
+  expect(screen.queryByText('The intercom is broken')).not.toBeInTheDocument()
 
-  await user.type(search(), 'домофон')
+  await user.type(search(), 'intercom')
 
-  expect(await screen.findByText('Не работает домофон')).toBeInTheDocument()
+  expect(await screen.findByText('The intercom is broken')).toBeInTheDocument()
 })
 
 test('validation 20: the search query persists when the status filter changes', async () => {
   seedIssues()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
+  await screen.findByText('Pipe leak in the basement')
 
-  await user.type(search(), 'лифта')
-  await screen.findByText('Замена тросов лифта в первом блоке')
+  await user.type(search(), 'elevator')
+  await screen.findByText('Elevator cable replacement in block one')
 
-  await user.click(statusTab('В работе'))
+  await user.click(statusTab('In progress'))
 
-  expect(search()).toHaveValue('лифта')
+  expect(search()).toHaveValue('elevator')
   expect(
-    await screen.findByText('Замена тросов лифта в первом блоке'),
+    await screen.findByText('Elevator cable replacement in block one'),
   ).toBeInTheDocument()
 })
 
-test('happy-path 8: tapping like records a like through the real backend and increments the count', async () => {
+test('happy-path 8: tapping like records a like and increments the count', async () => {
   seedIssues()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
+  await screen.findByText('Pipe leak in the basement')
 
   await user.click(like())
 
@@ -352,7 +352,7 @@ test('happy-path 8: tapping like records a like through the real backend and inc
 test('edge-cases 4: tapping like again removes the like and decrements the count', async () => {
   seedIssues()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
+  await screen.findByText('Pipe leak in the basement')
 
   await user.click(like())
   await waitFor(() => expect(like()).toHaveAttribute('aria-pressed', 'true'))
@@ -366,7 +366,7 @@ test('edge-cases 4: tapping like again removes the like and decrements the count
 test('edge-cases 5: tapping dislike after like switches the reaction', async () => {
   seedIssues()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
+  await screen.findByText('Pipe leak in the basement')
 
   await user.click(like())
   await waitFor(() => expect(like()).toHaveAttribute('aria-pressed', 'true'))
@@ -381,7 +381,7 @@ test('edge-cases 5: tapping dislike after like switches the reaction', async () 
 test('error-states 4: a failed reaction rolls back the optimistic like', async () => {
   seedIssues()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
+  await screen.findByText('Pipe leak in the basement')
   trpcServer.use(trpcMutationError('issues.react'))
 
   await user.click(like())
@@ -396,25 +396,25 @@ test('happy-path 1: a card shows the issue title, number, and reaction controls'
   const card = await firstIssueCard()
   const first = within(card)
 
-  expect(first.getByText('Протечка трубы в подвале')).toBeInTheDocument()
+  expect(first.getByText('Pipe leak in the basement')).toBeInTheDocument()
   expect(first.getByText(/№118/)).toBeInTheDocument()
-  expect(first.getByRole('button', { name: 'Нравится' })).toBeInTheDocument()
-  expect(first.getByRole('button', { name: 'Не нравится' })).toBeInTheDocument()
+  expect(first.getByRole('button', { name: 'Like' })).toBeInTheDocument()
+  expect(first.getByRole('button', { name: 'Dislike' })).toBeInTheDocument()
 })
 
 test('happy-path 2: selecting a status tab shows only issues of that status', async () => {
   seedIssues()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
+  await screen.findByText('Pipe leak in the basement')
 
-  await user.click(statusTab('В работе'))
+  await user.click(statusTab('In progress'))
 
   expect(
-    await screen.findByText('Замена тросов лифта в первом блоке'),
+    await screen.findByText('Elevator cable replacement in block one'),
   ).toBeInTheDocument()
   await waitFor(() =>
     expect(
-      screen.queryByText('Протечка трубы в подвале'),
+      screen.queryByText('Pipe leak in the basement'),
     ).not.toBeInTheDocument(),
   )
 })
@@ -424,13 +424,15 @@ test('happy-path 16: the All tab shows issues across statuses', async () => {
   const { user } = renderAppWithServer('/issues?status=in-progress', {
     uid: 'uid-1',
   })
-  await screen.findByText('Замена тросов лифта в первом блоке')
-  expect(screen.queryByText('Протечка трубы в подвале')).not.toBeInTheDocument()
+  await screen.findByText('Elevator cable replacement in block one')
+  expect(
+    screen.queryByText('Pipe leak in the basement'),
+  ).not.toBeInTheDocument()
 
-  await user.click(statusTab('Все'))
+  await user.click(statusTab('All'))
 
   expect(
-    await screen.findByText('Протечка трубы в подвале'),
+    await screen.findByText('Pipe leak in the basement'),
   ).toBeInTheDocument()
 })
 
@@ -444,12 +446,12 @@ test('happy-path 3: a status with no issues shows the empty state', async () => 
 test('happy-path 14: reaching the end of the list loads the next page', async () => {
   seedIssues()
   renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Протечка трубы в подвале')
-  expect(screen.queryByText('Не работает домофон')).not.toBeInTheDocument()
+  await screen.findByText('Pipe leak in the basement')
+  expect(screen.queryByText('The intercom is broken')).not.toBeInTheDocument()
 
   intersectionObserver.trigger()
 
-  expect(await screen.findByText('Не работает домофон')).toBeInTheDocument()
+  expect(await screen.findByText('The intercom is broken')).toBeInTheDocument()
 })
 
 test('happy-path 15: expanding a card with media toggles its expanded state', async () => {
@@ -459,14 +461,14 @@ test('happy-path 15: expanding a card with media toggles its expanded state', as
 
   expect(card.querySelector('img')).toBeInTheDocument()
 
-  await user.click(within(card).getByRole('button', { name: /Подробнее/ }))
+  await user.click(within(card).getByRole('button', { name: /Details/ }))
   expect(
-    within(card).getByRole('button', { name: /Свернуть/ }),
+    within(card).getByRole('button', { name: /Collapse/ }),
   ).toBeInTheDocument()
 
-  await user.click(within(card).getByRole('button', { name: /Свернуть/ }))
+  await user.click(within(card).getByRole('button', { name: /Collapse/ }))
   expect(
-    within(card).getByRole('button', { name: /Подробнее/ }),
+    within(card).getByRole('button', { name: /Details/ }),
   ).toBeInTheDocument()
 })
 
@@ -476,15 +478,13 @@ test('error-states 1: a failed list shows an error, and retrying recovers it', a
   const list = breakList()
 
   await screen.findByTestId('issue-error', undefined, { timeout: 4000 })
-  expect(
-    await screen.findByText('Не удалось загрузить заявки'),
-  ).toBeInTheDocument()
+  expect(await screen.findByText('Couldn’t load issues')).toBeInTheDocument()
 
   list.broken = false
-  await user.click(screen.getByRole('button', { name: 'Повторить' }))
+  await user.click(screen.getByRole('button', { name: 'Retry' }))
 
   expect(
-    await screen.findByText('Протечка трубы в подвале'),
+    await screen.findByText('Pipe leak in the basement'),
   ).toBeInTheDocument()
 })
 
@@ -503,7 +503,7 @@ test('error-states 9: a slow list keeps skeletons and shows no error before it r
   release()
 
   expect(
-    await screen.findByText('Протечка трубы в подвале'),
+    await screen.findByText('Pipe leak in the basement'),
   ).toBeInTheDocument()
 })
 
@@ -513,21 +513,21 @@ test('happy-path 4: the list shows the localized title, and the expanded detail 
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
   const card = await firstIssueCard()
 
-  await within(card).findByText('Не работает домофон')
+  await within(card).findByText('The intercom is broken')
 
-  await user.click(within(card).getByRole('button', { name: /Подробнее/ }))
+  await user.click(within(card).getByRole('button', { name: /Details/ }))
 
   expect(
-    within(card).getByRole('button', { name: 'Показать оригинальный текст' }),
+    within(card).getByRole('button', { name: 'Show original text' }),
   ).toBeInTheDocument()
 
   await user.click(
-    within(card).getByRole('button', { name: 'Показать оригинальный текст' }),
+    within(card).getByRole('button', { name: 'Show original text' }),
   )
   expect(within(card).getByText('Домофон жұмыс істемейді')).toBeInTheDocument()
 
   await user.click(
-    within(card).getByRole('button', { name: 'Показать перевод' }),
+    within(card).getByRole('button', { name: 'Show translation' }),
   )
-  expect(within(card).getByText('Не работает домофон')).toBeInTheDocument()
+  expect(within(card).getByText('The intercom is broken')).toBeInTheDocument()
 })

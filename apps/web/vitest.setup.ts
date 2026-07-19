@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/vitest'
 
 import { i18n } from '@lingui/core'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest'
 
 import { queryClient } from '@/shared/api'
@@ -15,6 +15,8 @@ import { trpcServer } from '@/shared/test/trpc-server'
 import { useToastStore } from '@/shared/toast/use-toast-store'
 
 i18n.loadAndActivate({ locale: 'ru', messages: {} })
+
+configure({ asyncUtilTimeout: 5000 })
 
 vi.mock(
   'firebase/app',
@@ -45,7 +47,10 @@ if (!Element.prototype.scrollIntoView)
 
 beforeAll(() => trpcServer.listen({ onUnhandledRequest: 'bypass' }))
 
-beforeEach(() => localStorage.setItem('locale', 'ru'))
+beforeEach(() => {
+  localStorage.setItem('locale', 'ru')
+  i18n.loadAndActivate({ locale: 'ru', messages: {} })
+})
 
 afterEach(() => {
   cleanup()

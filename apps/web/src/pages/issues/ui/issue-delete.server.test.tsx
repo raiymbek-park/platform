@@ -26,27 +26,27 @@ const seedResident = (role: PermissionRole = 'resident') =>
     block: 1,
     cars: [],
     isPhoneVisible: false,
-    name: 'Алиса',
+    name: 'Alice',
     phone: '+77781234455',
     role,
   })
 
 const seedIssue = (overrides: Record<string, unknown> = {}) =>
   fake.seed('issues/issue-201', {
-    author: { apartment: 42, block: 1, name: 'Алиса' },
+    author: { apartment: 42, block: 1, name: 'Alice' },
     authorId: 'uid-1',
     category: 'other',
     commentCount: 0,
     createdAt: Timestamp.fromMillis(1000),
-    description: 'Течёт кран уже неделю',
-    keywords: ['кран'],
+    description: 'The tap has been leaking for a week',
+    keywords: ['tap'],
     lang: 'ru',
     media: [],
     number: 201,
     reactions: {},
     status: 'new',
     tags: [],
-    title: 'Течёт кран на кухне',
+    title: "Kitchen tap won't stop dripping",
     urgent: false,
     ...overrides,
   })
@@ -61,12 +61,10 @@ const openDeleteConfirm = async (
   user: ReturnType<typeof renderAppWithServer>['user'],
 ) => {
   const cardElement = await card()
-  await user.click(
-    within(cardElement).getByRole('button', { name: /Подробнее/ }),
-  )
-  await user.click(within(cardElement).getByRole('button', { name: 'Удалить' }))
+  await user.click(within(cardElement).getByRole('button', { name: /Details/ }))
+  await user.click(within(cardElement).getByRole('button', { name: 'Delete' }))
   return within(await screen.findByRole('dialog')).getByRole('button', {
-    name: 'Удалить',
+    name: 'Delete',
   })
 }
 
@@ -80,18 +78,20 @@ beforeEach(() => {
 
 afterEach(resetFirestore)
 
-test('happy-path 10: confirming delete on an own new issue runs the real delete — it leaves the datastore and the list with a success toast', async () => {
+test('happy-path 10: confirming delete on an own new issue removes it from the datastore and the list with a success toast', async () => {
   seedResident()
   seedIssue()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Течёт кран на кухне')
+  await screen.findByText("Kitchen tap won't stop dripping")
 
   const confirmButton = await openDeleteConfirm(user)
   await user.click(confirmButton)
 
-  expect(await screen.findByText('Заявка удалена.')).toBeInTheDocument()
+  expect(await screen.findByText('Issue deleted.')).toBeInTheDocument()
   await waitFor(() =>
-    expect(screen.queryByText('Течёт кран на кухне')).not.toBeInTheDocument(),
+    expect(
+      screen.queryByText("Kitchen tap won't stop dripping"),
+    ).not.toBeInTheDocument(),
   )
   expect(fake.getDoc('issues/issue-201')).toBeUndefined()
 })
@@ -100,33 +100,37 @@ test('error-states 6: a failed delete rolls back and shows an error toast, keepi
   seedResident()
   seedIssue()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Течёт кран на кухне')
+  await screen.findByText("Kitchen tap won't stop dripping")
 
   const confirmButton = await openDeleteConfirm(user)
   trpcServer.use(trpcMutationError('issues.delete'))
   await user.click(confirmButton)
 
   expect(
-    await screen.findByText('Не удалось удалить заявку. Попробуйте ещё раз.'),
+    await screen.findByText('Could not delete the issue. Please try again.'),
   ).toBeInTheDocument()
-  expect(screen.getByText('Течёт кран на кухне')).toBeInTheDocument()
+  expect(
+    screen.getByText("Kitchen tap won't stop dripping"),
+  ).toBeInTheDocument()
   expect(fake.getDoc('issues/issue-201')).toBeDefined()
 })
 
-test('error-states 8: a NOT_FOUND from the real backend is treated as already deleted, keeping the issue removed with a success toast', async () => {
+test('error-states 8: a NOT_FOUND from the backend is treated as already deleted, keeping the issue removed with a success toast', async () => {
   seedResident()
   seedIssue()
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Течёт кран на кухне')
+  await screen.findByText("Kitchen tap won't stop dripping")
 
   const confirmButton = await openDeleteConfirm(user)
   fake.reset()
   seedResident()
   await user.click(confirmButton)
 
-  expect(await screen.findByText('Заявка удалена.')).toBeInTheDocument()
+  expect(await screen.findByText('Issue deleted.')).toBeInTheDocument()
   await waitFor(() =>
-    expect(screen.queryByText('Течёт кран на кухне')).not.toBeInTheDocument(),
+    expect(
+      screen.queryByText("Kitchen tap won't stop dripping"),
+    ).not.toBeInTheDocument(),
   )
 })
 
@@ -134,15 +138,13 @@ test('edge-cases 9: an issue past the New status shows no delete action on its c
   seedResident()
   seedIssue({ status: 'in-progress' })
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Течёт кран на кухне')
+  await screen.findByText("Kitchen tap won't stop dripping")
 
   const cardElement = await card()
-  await user.click(
-    within(cardElement).getByRole('button', { name: /Подробнее/ }),
-  )
+  await user.click(within(cardElement).getByRole('button', { name: /Details/ }))
 
   expect(
-    within(cardElement).queryByRole('button', { name: 'Удалить' }),
+    within(cardElement).queryByRole('button', { name: 'Delete' }),
   ).not.toBeInTheDocument()
 })
 
@@ -150,14 +152,16 @@ test('happy-path 11: an Administration user can delete a new issue opened by som
   seedResident('administration')
   seedIssue({ authorId: 'author-uid' })
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Течёт кран на кухне')
+  await screen.findByText("Kitchen tap won't stop dripping")
 
   const confirmButton = await openDeleteConfirm(user)
   await user.click(confirmButton)
 
-  expect(await screen.findByText('Заявка удалена.')).toBeInTheDocument()
+  expect(await screen.findByText('Issue deleted.')).toBeInTheDocument()
   await waitFor(() =>
-    expect(screen.queryByText('Течёт кран на кухне')).not.toBeInTheDocument(),
+    expect(
+      screen.queryByText("Kitchen tap won't stop dripping"),
+    ).not.toBeInTheDocument(),
   )
   expect(fake.getDoc('issues/issue-201')).toBeUndefined()
 })
@@ -166,14 +170,12 @@ test('validation 12: a Resident sees no delete action on an issue opened by some
   seedResident('resident')
   seedIssue({ authorId: 'author-uid' })
   const { user } = renderAppWithServer('/issues?status=all', { uid: 'uid-1' })
-  await screen.findByText('Течёт кран на кухне')
+  await screen.findByText("Kitchen tap won't stop dripping")
 
   const cardElement = await card()
-  await user.click(
-    within(cardElement).getByRole('button', { name: /Подробнее/ }),
-  )
+  await user.click(within(cardElement).getByRole('button', { name: /Details/ }))
 
   expect(
-    within(cardElement).queryByRole('button', { name: 'Удалить' }),
+    within(cardElement).queryByRole('button', { name: 'Delete' }),
   ).not.toBeInTheDocument()
 })

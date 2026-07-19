@@ -118,6 +118,8 @@ For each AC scenario, write the test following the 5-step algorithm from [refere
 
 **AC traceability lives in the test name, never a comment.** Put the scenario reference inside the `it(...)` / `test(...)` title — e.g. `it('re-enables RESEND when the countdown reaches 0:00 (error-states 10)')` — not as a `// error-states 10` comment above it. A `// scenario N` marker duplicates the title and violates the project's "no comments unless they explain a workaround or non-obvious logic" rule (it explains nothing the name can't). Tests are code: they're bound by the same coding rules as production, so honor the project's comment/naming conventions when generating them.
 
+**Name the behaviour, not the mechanics.** The title states the user-visible outcome; do NOT restate what the test's *level* already implies — that it hits the real backend, stores a row, or runs the real router. At the integration level those are givens, not part of the scenario. "publishes an offer and it appears in the feed" — not "publishes an offer through the real backend, which stores it and returns it".
+
 Produce a mapping showing which AC scenario maps to which test at which level:
 
 ```

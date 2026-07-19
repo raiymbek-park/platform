@@ -28,7 +28,7 @@ const seedResident = (role: PermissionRole = 'resident') =>
     block: 1,
     cars: [],
     isPhoneVisible: false,
-    name: 'Алиса',
+    name: 'Alice',
     phone: '+77781234455',
     role,
   })
@@ -38,20 +38,20 @@ const seedPost = (overrides: Record<string, unknown> = {}) =>
     author: {
       apartment: 12,
       block: 3,
-      name: 'Алиса',
+      name: 'Alice',
       phone: '+7 700 000 00 00',
     },
     authorId: 'uid-1',
     category: 'sell',
     commentCount: 0,
     createdAt: Timestamp.fromMillis(1000),
-    description: 'Продаю велосипед в отличном состоянии',
-    keywords: ['велосипед'],
+    description: 'Selling a bike in excellent condition',
+    keywords: ['bike'],
     kind: 'offer',
     lang: 'ru',
     media: [],
     reactions: {},
-    title: 'Продам горный велосипед',
+    title: 'Selling a mountain bike',
     ...overrides,
   })
 
@@ -64,16 +64,16 @@ const card = async () => {
 const expandCard = async (
   user: ReturnType<typeof renderAppWithServer>['user'],
   cardElement: HTMLElement,
-) => user.click(within(cardElement).getByRole('button', { name: /Подробнее/ }))
+) => user.click(within(cardElement).getByRole('button', { name: /Details/ }))
 
 const openDeleteConfirm = async (
   user: ReturnType<typeof renderAppWithServer>['user'],
 ) => {
   const cardElement = await card()
   await expandCard(user, cardElement)
-  await user.click(within(cardElement).getByRole('button', { name: 'Удалить' }))
+  await user.click(within(cardElement).getByRole('button', { name: 'Delete' }))
   return within(await screen.findByRole('dialog')).getByRole('button', {
-    name: 'Удалить',
+    name: 'Delete',
   })
 }
 
@@ -86,19 +86,19 @@ beforeEach(() => {
 
 afterEach(resetFirestore)
 
-test('happy-path 11: the author confirms delete — the real backend removes the post from the datastore and the feed', async () => {
+test('happy-path 11: the author confirms delete and the post leaves the datastore and the feed', async () => {
   seedResident()
   seedPost()
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
   const confirmButton = await openDeleteConfirm(user)
   await user.click(confirmButton)
 
-  expect(await screen.findByText('Объявление удалено.')).toBeInTheDocument()
+  expect(await screen.findByText('Post deleted.')).toBeInTheDocument()
   await waitFor(() =>
     expect(
-      screen.queryByText('Продам горный велосипед'),
+      screen.queryByText('Selling a mountain bike'),
     ).not.toBeInTheDocument(),
   )
   expect(fake.getDoc('posts/post-201')).toBeUndefined()
@@ -108,18 +108,18 @@ test('validation 12: canceling the delete confirmation leaves the post stored an
   seedResident()
   seedPost()
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
   const cardElement = await card()
   await expandCard(user, cardElement)
-  await user.click(within(cardElement).getByRole('button', { name: 'Удалить' }))
+  await user.click(within(cardElement).getByRole('button', { name: 'Delete' }))
   const dialog = await screen.findByRole('dialog')
-  await user.click(within(dialog).getByRole('button', { name: 'Отмена' }))
+  await user.click(within(dialog).getByRole('button', { name: 'Cancel' }))
 
   await waitFor(() =>
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument(),
   )
-  expect(screen.getByText('Продам горный велосипед')).toBeInTheDocument()
+  expect(screen.getByText('Selling a mountain bike')).toBeInTheDocument()
   expect(fake.getDoc('posts/post-201')).toBeDefined()
 })
 
@@ -127,18 +127,16 @@ test('error-states 4: a failed delete shows an error toast and keeps the post st
   seedResident()
   seedPost()
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
   const confirmButton = await openDeleteConfirm(user)
   trpcServer.use(trpcMutationError('posts.delete'))
   await user.click(confirmButton)
 
   expect(
-    await screen.findByText(
-      'Не удалось удалить объявление. Попробуйте ещё раз.',
-    ),
+    await screen.findByText('Failed to delete the post. Please try again.'),
   ).toBeInTheDocument()
-  expect(screen.getByText('Продам горный велосипед')).toBeInTheDocument()
+  expect(screen.getByText('Selling a mountain bike')).toBeInTheDocument()
   expect(fake.getDoc('posts/post-201')).toBeDefined()
 })
 
@@ -146,12 +144,12 @@ test('happy-path 12: an Administration user deletes a post authored by someone e
   seedResident('administration')
   seedPost({ authorId: 'author-uid' })
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
   const confirmButton = await openDeleteConfirm(user)
   await user.click(confirmButton)
 
-  expect(await screen.findByText('Объявление удалено.')).toBeInTheDocument()
+  expect(await screen.findByText('Post deleted.')).toBeInTheDocument()
   expect(fake.getDoc('posts/post-201')).toBeUndefined()
 })
 
@@ -161,13 +159,11 @@ test('happy-path 12: an Administration user can reach edit for a post authored b
   const { currentPath, user } = renderAppWithServer('/posts?tab=all', {
     uid: 'uid-1',
   })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
   const cardElement = await card()
   await expandCard(user, cardElement)
-  await user.click(
-    within(cardElement).getByRole('button', { name: 'Редактировать' }),
-  )
+  await user.click(within(cardElement).getByRole('button', { name: 'Edit' }))
 
   expect(currentPath()).toBe('/posts/edit/post-201')
 })
@@ -176,15 +172,15 @@ test('edge-cases 6: a Resident sees no edit or delete action on a post authored 
   seedResident('resident')
   seedPost({ authorId: 'author-uid' })
   const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Продам горный велосипед')
+  await screen.findByText('Selling a mountain bike')
 
   const cardElement = await card()
   await expandCard(user, cardElement)
 
   expect(
-    within(cardElement).queryByRole('button', { name: 'Удалить' }),
+    within(cardElement).queryByRole('button', { name: 'Delete' }),
   ).not.toBeInTheDocument()
   expect(
-    within(cardElement).queryByRole('button', { name: 'Редактировать' }),
+    within(cardElement).queryByRole('button', { name: 'Edit' }),
   ).not.toBeInTheDocument()
 })
