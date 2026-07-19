@@ -16,7 +16,7 @@ import {
 } from '@/entities/resident'
 import { LocaleSelect, useSwitchLocale } from '@/features/locale-select'
 import { formatPhoneDisplay } from '@/features/onboarding'
-import { inputState } from '@/shared/form'
+import { inputState, toErrorMessage } from '@/shared/form'
 import { i18n, resolveLocale } from '@/shared/i18n'
 import { showToastMessage } from '@/shared/toast'
 
@@ -28,15 +28,6 @@ import css from './profile-form.module.scss'
 
 const fieldOrder = ['name', 'block', 'apartment', 'role', 'cars'] as const
 
-const toMessage = (error: unknown): string | undefined => {
-  if (typeof error === 'string') return error
-  if (typeof error === 'object' && error !== null && 'message' in error) {
-    const { message } = error
-    return typeof message === 'string' ? message : undefined
-  }
-  return undefined
-}
-
 const firstInvalidMessage = (
   fields: Record<string, { errors: unknown[] }>,
 ): string | undefined =>
@@ -46,7 +37,7 @@ const firstInvalidMessage = (
         .filter(([key]) => key === name || key.startsWith(`${name}[`))
         .flatMap(([, field]) => field.errors),
     )
-    .map(toMessage)
+    .map(toErrorMessage)
     .find(message => Boolean(message))
 
 export type ProfileFormProps = {

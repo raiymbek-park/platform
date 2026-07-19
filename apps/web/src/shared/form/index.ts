@@ -1,3 +1,4 @@
+export { toErrorMessage } from './error-message'
 export { inputState } from './field-state'
 export { FormScreen } from './form-screen'
 export { SearchField } from './search-field'
