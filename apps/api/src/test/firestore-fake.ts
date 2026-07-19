@@ -287,4 +287,4 @@ export const fake = {
 
 export const getFirestore = (): Firestore => db as unknown as Firestore
 
-export { FieldValue, Timestamp }
+export { FieldValue }

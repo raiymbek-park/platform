@@ -4,10 +4,11 @@ import { fake } from './firestore-fake'
 
 vi.mock('../firestore', async () => {
   const module = await import('./firestore-fake')
+  const { Timestamp } = await import('firebase-admin/firestore')
   return {
     getDb: () => module.fake.db,
     FieldValue: module.FieldValue,
-    Timestamp: module.Timestamp,
+    Timestamp,
   }
 })
 
