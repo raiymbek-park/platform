@@ -25,11 +25,11 @@ import { getResident, residentSnapshot } from '../resident/resident-store'
 import { deleteIssueMedia } from '../storage'
 import {
   modifyWithOutcome,
+  parseAuthorMeta,
   searchedPage,
   toggleReaction,
   toMillis,
   toNumber,
-  toReactions,
   toStringArray,
   toText,
 } from '../store-helpers'
@@ -105,11 +105,7 @@ const parseIssue = (
   locale: Locale,
   isWatched: boolean,
 ): Issue => {
-  const reactions = toReactions(data.reactions)
-  const kinds = Object.values(reactions)
-  const author =
-    typeof data.author === 'object' && data.author !== null ? data.author : {}
-  const authorId = toText(data.authorId)
+  const { author, authorId, kinds, reactions } = parseAuthorMeta(data)
   return {
     ...localizedFields(data, locale),
     author: toAuthor(author, canSeePhone(role, uid, authorId)),

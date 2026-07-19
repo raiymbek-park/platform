@@ -40,6 +40,18 @@ export const toReactions = (value: unknown): Record<string, ReactionKind> => {
   )
 }
 
+export const parseAuthorMeta = (data: DocumentData) => {
+  const reactions = toReactions(data.reactions)
+  const author: DocumentData =
+    typeof data.author === 'object' && data.author !== null ? data.author : {}
+  return {
+    author,
+    authorId: toText(data.authorId),
+    kinds: Object.values(reactions),
+    reactions,
+  }
+}
+
 export const toggleReaction = (
   ref: DocumentReference,
   uid: string,

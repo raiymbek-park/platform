@@ -23,11 +23,11 @@ import { getResident, residentSnapshot } from '../resident/resident-store'
 import { deletePostMedia } from '../storage'
 import {
   modifyWithOutcome,
+  parseAuthorMeta,
   searchedPage,
   toggleReaction,
   toMillis,
   toNumber,
-  toReactions,
   toStringArray,
   toText,
 } from '../store-helpers'
@@ -85,11 +85,7 @@ const parsePost = (
   uid: string | null,
   locale: Locale,
 ): Post => {
-  const reactions = toReactions(data.reactions)
-  const kinds = Object.values(reactions)
-  const author =
-    typeof data.author === 'object' && data.author !== null ? data.author : {}
-  const authorId = toText(data.authorId)
+  const { author, authorId, kinds, reactions } = parseAuthorMeta(data)
   const kind = toKind(data.kind)
   return {
     ...localizedFields(data, locale),
