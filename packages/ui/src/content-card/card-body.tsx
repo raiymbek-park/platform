@@ -38,7 +38,7 @@ export const CardBody = ({ description, isExpanded }: CardBodyProps) => {
           setClamped(true)
       }}
     >
-      <div ref={contentRef} className={isClamped ? css.clamp : undefined}>
+      <div className={isClamped ? css.clamp : undefined} ref={contentRef}>
         <Markdown content={description} />
       </div>
     </div>

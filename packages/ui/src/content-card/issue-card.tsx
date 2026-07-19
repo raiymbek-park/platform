@@ -4,16 +4,14 @@ import type { IconChipTone } from '../icon-chip/icon-chip'
 import type { ContentCardContact } from './card-contacts'
 import type { ContentCardBadge } from './card-tags'
 
-import { joinCss } from '@raiymbek-park/shared'
-
 import { Divider } from '../divider/divider'
 import { CardBody } from './card-body'
 import { CardContacts } from './card-contacts'
 import { CardDetails } from './card-details'
 import { CardFooter } from './card-footer'
 import { CardHeader } from './card-header'
-import { CardMedia } from './card-media'
 import { CardTags } from './card-tags'
+import { ContentCard } from './content-card'
 import css from './content-card.module.scss'
 
 export type IssueCardBadge = ContentCardBadge
@@ -58,33 +56,28 @@ export const IssueCard = ({
   onToggleExpand,
   ...restProps
 }: IssueCardProps) => (
-  <article className={joinCss(css.card, className)} {...restProps}>
-    {media && media.length > 0 && (
-      <CardMedia isExpanded={isExpanded} media={media} />
-    )}
-    <div className={css.content}>
-      <CardHeader
-        glyph={badgeGlyph}
-        meta={meta}
-        title={title}
-        tone={badgeTone}
-      />
-      <CardBody description={description} isExpanded={isExpanded} />
-      {tags && tags.length > 0 && <CardTags tags={tags} />}
-      <CardDetails isExpanded={isExpanded}>
-        {translation}
-        {follow}
-        <Divider />
-        <CardContacts contacts={contacts} />
-        {actions && <div className={css.actions}>{actions}</div>}
-      </CardDetails>
-      <CardFooter
-        collapseLabel={collapseLabel}
-        expandLabel={expandLabel}
-        isExpanded={isExpanded}
-        reactions={reactions}
-        onToggleExpand={onToggleExpand}
-      />
-    </div>
-  </article>
+  <ContentCard
+    className={className}
+    isExpanded={isExpanded}
+    media={media}
+    {...restProps}
+  >
+    <CardHeader glyph={badgeGlyph} meta={meta} title={title} tone={badgeTone} />
+    <CardBody description={description} isExpanded={isExpanded} />
+    {tags && tags.length > 0 && <CardTags tags={tags} />}
+    <CardDetails isExpanded={isExpanded}>
+      {translation}
+      {follow}
+      <Divider />
+      <CardContacts contacts={contacts} />
+      {actions && <div className={css.actions}>{actions}</div>}
+    </CardDetails>
+    <CardFooter
+      collapseLabel={collapseLabel}
+      expandLabel={expandLabel}
+      isExpanded={isExpanded}
+      reactions={reactions}
+      onToggleExpand={onToggleExpand}
+    />
+  </ContentCard>
 )
