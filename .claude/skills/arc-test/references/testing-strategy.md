@@ -80,10 +80,13 @@ Top-down — from most expensive to cheapest. Levels do NOT duplicate each other
 | Error/Empty/Loading state | — | ✅ with network mocking | — |
 | Visual bug (spacing, color) | — | — | — |
 
+**Assign top-down — cover at the highest level that can exercise the behavior, push only the remainder lower.** Start from the top (a full flow / page / main form). Whatever that level can drive end-to-end is covered there and nowhere else. Drop to a lower level (component, hook, pure function) ONLY for what the top cannot reach or cannot exercise economically: a shared utility, isolated logic with many branches, a state a full flow can't force. **One integration file per screen** — a single integration test that renders the screen exercises its client-side behavior (field validation, disabled states, limits) AND its backend-touching behavior; never split one screen into a "narrow/UI-only" file and a "wide" file.
+
 **Rules:**
 1. E2E covered happy path → Integration does NOT repeat it, covers edge cases
 2. Integration covered behavior → Unit does NOT duplicate, only covers isolated logic
 3. Shared utilities used across project → Unit test mandatory regardless of integration coverage
+4. A behavior the page/main-flow test already drives → NOT re-tested at component/unit level
 
 **Three properties of a good test:**
 ```
@@ -139,6 +142,8 @@ an authorization allow/deny verdict, a localized or filtered projection)
 ```
 
 **Widest-boundary rule:** if the real server / business logic *can* run inside the test — in-process, or against a disposable test datastore — it **must**. Stopping one layer higher (canned server responses) is a violation even when it is technically "at the network layer." Reserve canned server responses for behavior that involves no server logic at all (pure client-side rendering, form-field validation, disabled states), or for a genuinely external third-party server.
+
+**Carve-out — forcing an error / empty / loading response is NOT fabricating the backend.** Making a boundary return an error, an empty result, or hang — to check how the UI copes — is a legitimate mock: the subject under test is the client's *reaction*, and you assert on the UI, not on any business output the server computed. What the litmus forbids is a canned *success* payload that stands in for real server logic. So: canned error / empty / loading at the boundary → allowed; canned success output that encodes the server's computation → fabricated backend.
 
 For tool-specific patterns, consult the relevant example file from `project-context.md`.
 

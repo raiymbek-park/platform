@@ -26,6 +26,9 @@ See `## Decision Matrix` in testing-strategy.md.
 - [ ] Shared utilities covered by unit tests
 - [ ] No duplication between levels — E2E happy path is NOT repeated in integration
 - [ ] No unit tests for things already covered by integration (unless shared utility)
+- [ ] Top-down: each behavior is covered at the HIGHEST level that can exercise it — nothing a page/main-flow integration test drives is also (re)tested at component/unit level
+- [ ] One integration file per screen — a screen's UI-only and backend-touching behaviors are NOT split across a "narrow" and a "wide" file
+- [ ] Lower-level tests exist ONLY for what the top cannot reach (shared utilities, isolated multi-branch logic, states a full flow can't force)
 
 #### B. Implementation Detail Coupling
 
@@ -62,6 +65,8 @@ The application's OWN server/business output — assigned ids, derived or aggreg
 fields, status codes, authorization allow/deny verdicts, localized/filtered projections
   → CRITICAL finding: the server logic that produces that value never runs.
 ```
+
+**Carve-out — do NOT flag error / empty / loading injection.** A canned error, empty result, or hang at the boundary to test how the UI *reacts* is allowed (the subject is the client's reaction, asserted on the UI). Only a canned *success* payload standing in for server logic is the fabrication this rule targets — do not confuse the two.
 
 **Checklist:**
 

@@ -74,6 +74,8 @@ For each AC scenario, determine the test level using the decision matrix (top-do
 - Integration covered behavior → Unit does NOT duplicate it, only covers isolated logic
 - Shared utilities (formatPrice, validateEmail, parseDate) → Unit test mandatory even if integration covers them
 
+**Top-down, highest-level-first — the anti-duplication rule.** Assign each behavior to the HIGHEST level that can exercise it, and push only the remainder lower. A behavior a full-flow / page / main-form integration test can drive is covered *there* — do NOT also write a component or unit test for it. **One integration file per screen:** it covers that screen's client-side behavior (field validation, disabled states, limits) AND its backend-touching behavior together — never split a screen into a "narrow/UI-only" file and a "wide" file. Reserve lower levels (component, hook, pure function) for what the top cannot reach: shared utilities, isolated logic with many branches, states a full flow can't force.
+
 ### Step 3: Apply Mocking Rules
 
 See `## Mocking Rules` in [references/testing-strategy.md](references/testing-strategy.md).
@@ -93,6 +95,8 @@ Your own server's computed output (ids, derived/aggregated fields, status codes,
 authorization allow/deny verdicts, localized/filtered projections)  → fabricated
 backend. Rewrite: seed the datastore and let real code produce it.
 ```
+
+Carve-out: a canned **error / empty / loading** response at the boundary is allowed even under this litmus — you are testing the UI's *reaction*, not fabricating server success. Only a canned *success* payload that stands in for server logic is a fabricated backend.
 
 A test generated under this self-check is exactly what §D verifies — write and review apply one rule, so they can never diverge. If following it is impossible because the project has no way to run the real server logic in a test, do NOT fall back to fabricating the backend: surface that the in-process harness is a prerequisite (see below) and stop, rather than generating a test the review step will reject.
 
