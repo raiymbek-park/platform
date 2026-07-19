@@ -24,6 +24,7 @@ export type FieldValueApi = {
 
 let db: Firestore | null = null
 let injectedDb: Firestore | null = null
+let injectedAuth: Auth | null = null
 
 export let FieldValue: FieldValueApi = adminFieldValue
 
@@ -34,7 +35,14 @@ export const injectFirestore = (
   FieldValue = parts?.fieldValue ?? adminFieldValue
 }
 
-export const resetFirestore = (): void => injectFirestore(null)
+export const injectAuth = (auth: Auth | null): void => {
+  injectedAuth = auth
+}
+
+export const resetFirestore = (): void => {
+  injectFirestore(null)
+  injectAuth(null)
+}
 
 export const getDb = (): Firestore => {
   if (injectedDb) return injectedDb
@@ -45,6 +53,7 @@ export const getDb = (): Firestore => {
 }
 
 export const getAuthAdmin = (): Auth => {
+  if (injectedAuth) return injectedAuth
   ensureApp()
   return getAuth()
 }

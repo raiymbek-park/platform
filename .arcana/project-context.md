@@ -52,6 +52,15 @@ use** — ADR 017.
   `fake.seed('residents/<uid>', { role, … })`; `afterEach(resetFirestore)`. `injectFake()` makes
   `getDb()` return the fake and swaps `FieldValue`, so **firebase-admin never initializes — tests
   never touch production**.
+- **Firebase Auth + SMS (onboarding / auth flows):** `injectFake` also injects a fake Firebase Auth
+  admin — `getUserByPhoneNumber`/`createUser`/`createCustomToken` via `authFake` from
+  `@raiymbek-park/api/testing` (`authFake.seedUser(phone, uid)` for a returning user, `authFake.reset()`).
+  For the SMS+code, set `process.env.OTP_TEST_MODE = 'true'` and use the test phone `+77781234455`
+  (→ fixed code `123456` via `test-codes.ts`) so the real otp router runs (reserveSend / verifyAttempt /
+  getOrCreateUid) with no real SMS. Verified in `apps/api/src/test/auth-fake.test.ts`. Auth injection is
+  cleared by `resetFirestore()`. Note: `createContext` injects a fixed `uid`, so for the post-verify
+  registration step render with the uid the flow produces (OTP procedures ignore `uid`) and align it with
+  the client `firebaseAuth` mock.
 - **Fake:** `apps/api/src/test/firestore-fake.ts` — faithful subset (collections/subcollections with
   auto-ids, `runTransaction` and direct `doc().get/set/update/delete/create` + merge, queries
   `==`/`array-contains-any`/`orderBy`/`startAfter`/`limit`, `FieldValue.serverTimestamp`/`increment`,
