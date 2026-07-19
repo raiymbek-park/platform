@@ -91,6 +91,19 @@ const tryWrite = (write: Write): Promise<void> => {
   }
 }
 
+const commitWrites = (writes: Write[]): void => {
+  const backup = new Map(store)
+  try {
+    writes.forEach(applyWrite)
+  } catch (error) {
+    store.clear()
+    backup.forEach((value, key) => {
+      store.set(key, value)
+    })
+    throw error
+  }
+}
+
 const lastSegment = (path: string): string =>
   path.slice(path.lastIndexOf('/') + 1)
 
@@ -222,7 +235,7 @@ const runTransaction = <T>(run: (tx: TxApi) => Promise<T>): Promise<T> => {
     },
   }
   return run(tx).then(result => {
-    staged.forEach(applyWrite)
+    commitWrites(staged)
     return result
   })
 }
@@ -251,8 +264,12 @@ const batch = () => {
       return self
     },
     commit: () => {
-      staged.forEach(applyWrite)
-      return Promise.resolve()
+      try {
+        commitWrites(staged)
+        return Promise.resolve()
+      } catch (error) {
+        return Promise.reject(error)
+      }
     },
   }
   return self
