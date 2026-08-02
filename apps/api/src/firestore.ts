@@ -67,8 +67,7 @@ export const verifyIdToken = async (
   idToken: string,
 ): Promise<Identity | null> => {
   try {
-    ensureApp()
-    const decoded = await getAuth().verifyIdToken(idToken)
+    const decoded = await getAuthAdmin().verifyIdToken(idToken)
     return { phone: decoded.phone_number ?? null, uid: decoded.uid }
   } catch {
     return null

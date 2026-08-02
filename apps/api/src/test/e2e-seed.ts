@@ -7,8 +7,9 @@ import type {
 
 import { searchPrefixes, tokenize } from '@raiymbek-park/shared'
 
-import { getAuthAdmin, Timestamp } from '../firestore'
+import { Timestamp } from '../firestore'
 import { e2ePhones } from '../otp/test-codes'
+import { authFake } from './auth-fake'
 import { fake } from './firestore-fake'
 
 const SEEDED_AT = 1_699_000_000_000
@@ -207,19 +208,16 @@ const contacts: ContactSeed[] = [
 const seedContact = (contact: ContactSeed) =>
   fake.seed(`service-contacts/contact-${contact.order}`, contact)
 
-const ensureAuthUser = (uid: string, phoneNumber: string) =>
-  getAuthAdmin()
-    .createUser({ phoneNumber, uid })
-    .catch(() => null)
+const seedAuthUser = ({ key }: ResidentSeed) =>
+  authFake.seedUser(e2ePhones[key], e2eUid(key))
 
-export const seedE2eFixtures = async (): Promise<void> => {
+export const seedE2eFixtures = (): void => {
   fake.reset()
+  authFake.reset()
   residents.forEach(seedResident)
+  residents.forEach(seedAuthUser)
   posts.forEach(seedPost)
   issues.forEach(seedIssue)
   contacts.forEach(seedContact)
   fake.seed('counters/issues', { value: 118 })
-  await Promise.all(
-    residents.map(({ key }) => ensureAuthUser(e2eUid(key), e2ePhones[key])),
-  )
 }
