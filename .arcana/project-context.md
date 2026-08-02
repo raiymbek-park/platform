@@ -207,6 +207,7 @@ the transport-contract set. Api tests duplicated by harness coverage were remove
 
 ## CI
 - GitHub Actions: `.github/workflows/fallow.yml` (workflow name "CI / Deploy") — runs on `push` + `pull_request`
+  - `e2e` job: `npm ci` → `npx playwright install --with-deps chromium` → `npm run test:e2e` (Auth emulator + api on the in-memory datastore + vite `e2e` build). Blocking; `deploy-web` and `deploy-firebase` need it alongside `checks`. Failure screenshots upload as the `e2e-failure-screenshots` artifact
   - `fallow` job: `npm ci` → `npx fallow --format sarif` → uploads `fallow-results.sarif` artifact (report-only, `continue-on-error` — advisory findings don't block CI)
   - `badge` job: on push to `main`, publishes a fallow health badge JSON to the `badges` branch via `peaceiris/actions-gh-pages`
   - `deploy-web` + `deploy-firebase` jobs: on push to `main`, gated on `needs: checks`. `deploy-web` builds with `VITE_BASE=/platform/` + `vars.VITE_API_URL` and publishes to GitHub Pages via `actions/deploy-pages` (Pages source = "GitHub Actions"); `deploy-firebase` runs `firebase deploy --only functions,firestore,storage` authenticated via an `authorized_user` ADC file built in-step from the `FIREBASE_TOKEN` secret (`firebase login:ci` token, used as the refresh token with the well-known firebase-tools OAuth client) and pointed at by `GOOGLE_APPLICATION_CREDENTIALS` — the same keyless approach as `apps/api/src/dev-credentials.ts`, avoiding the deprecated `--token`/`FIREBASE_TOKEN` auth path. Each target deploys atomically (no half-deploy)
