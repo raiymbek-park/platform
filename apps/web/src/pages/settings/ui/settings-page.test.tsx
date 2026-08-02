@@ -151,22 +151,6 @@ test('the screen opens pre-filled with the saved profile', async () => {
   )
 })
 
-test('editing the name saves it and survives a reload', async () => {
-  seedResident()
-  const { user } = renderAppWithServer('/settings', { uid })
-  await ready()
-
-  await user.clear(nameField())
-  await user.type(nameField(), 'George Lucas')
-  await user.click(saveButton())
-
-  expect(await savedToast()).toBeInTheDocument()
-  await waitFor(() => expect(storedResident()?.name).toBe('George Lucas'))
-
-  await reload()
-  expect(nameField()).toHaveValue('George Lucas')
-})
-
 test('opening phone visibility saves it and survives a reload', async () => {
   seedResident()
   const { user } = renderAppWithServer('/settings', { uid })

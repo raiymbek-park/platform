@@ -8,6 +8,8 @@ export const config = {
       url: 'http://localhost:5173',
       show: false,
       browser: 'chromium',
+      locale: 'ru-RU',
+      windowSize: '390x844',
     },
   },
 }

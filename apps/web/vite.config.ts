@@ -25,7 +25,16 @@ const emitNotFoundHtml = (): Plugin => ({
   },
 })
 
-export default defineConfig({
+const e2eAliases = (mode: string) =>
+  mode === 'e2e'
+    ? {
+        'firebase/auth': fileURLToPath(
+          new URL('./src/shared/test/firebase-auth-e2e.ts', import.meta.url),
+        ),
+      }
+    : {}
+
+export default defineConfig(({ mode }) => ({
   base: process.env.VITE_BASE ?? '/',
   plugins: [
     tanstackRouter({
@@ -45,6 +54,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      ...e2eAliases(mode),
     },
   },
   css: {
@@ -63,4 +73,4 @@ export default defineConfig({
       },
     },
   },
-})
+}))

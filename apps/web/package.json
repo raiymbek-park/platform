@@ -13,9 +13,9 @@
     "lint:fsd": "steiger ./src",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:e2e": "start-server-and-test 'npm --prefix ../api run start' http://localhost:3001 'npm run dev:e2e' http://localhost:5173 'npm run e2e'",
+    "test:e2e": "start-server-and-test 'npm --prefix ../api run start:e2e' tcp:127.0.0.1:3001 'npm run dev:e2e' http://localhost:5173 'npm run e2e'",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p src/test"
   },
   "dependencies": {
     "@lingui/core": "6.4.0",

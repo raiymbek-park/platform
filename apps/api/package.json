@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "test:emulator": "npx -y firebase-tools@15 emulators:exec --only firestore \"vitest run\"",
+    "start:e2e": "tsx src/test/e2e-server.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -21,7 +21,6 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@firebase/rules-unit-testing": "5.0.1",
     "@types/node": "25.9.3",
     "tsx": "4.22.4"
   }

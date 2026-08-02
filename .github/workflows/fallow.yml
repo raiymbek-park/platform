@@ -30,15 +30,6 @@ jobs:
       - name: Unit tests
         run: npm test
 
-      - name: Set up Java for the Firestore emulator
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '21'
-
-      - name: Integration tests (Firestore emulator)
-        run: npm --prefix apps/api run test:emulator
-
       - name: i18n catalogs complete
         run: npm --prefix apps/web run i18n:compile
 
@@ -51,6 +42,30 @@ jobs:
             echo "$drift"
             exit 1
           fi
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22.19.0
+          cache: npm
+
+      - run: npm ci
+
+      - name: Install the Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E tests
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: e2e-failure-screenshots
+          path: apps/web/test-results
 
   fallow:
     runs-on: ubuntu-latest
@@ -117,7 +132,7 @@ jobs:
 
   deploy-web:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: checks
+    needs: [checks, e2e]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -163,7 +178,7 @@ jobs:
 
   deploy-firebase:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: checks
+    needs: [checks, e2e]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5

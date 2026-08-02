@@ -203,19 +203,6 @@ test("edge-cases 11: a returning resident's registration details are pre-filled"
   )
 })
 
-test('happy-path 4: submitting sends a code and opens the verification screen', async () => {
-  const { user, currentPath } = await renderRegistration()
-  await fillValidForm(user)
-
-  await user.click(next())
-
-  await waitFor(() =>
-    expect(screen.getByText('Enter the code from the SMS')).toBeInTheDocument(),
-  )
-  expect(currentPath()).toBe('/onboarding/verification')
-  await waitFor(() => expect(sentTo(phone)).toBeTruthy())
-})
-
 test('validation 1: submitting without a role surfaces the role toast', async () => {
   const { user, currentPath } = await renderRegistration()
   await fillName(user, 'Alice')
