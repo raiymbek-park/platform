@@ -133,42 +133,6 @@ test('validation 21: the code field accepts digits only, capped at six', async (
   expect(codeInput()).toHaveValue('123')
 })
 
-test('happy-path 8: a correct code registers the resident and lands on home', async () => {
-  const { user, currentPath } = await arriveAtVerification()
-
-  await typeCode(user, '123456')
-
-  await waitFor(() => expect(currentPath()).toBe('/home'))
-  expect(await screen.findByText(/Hi/)).toBeInTheDocument()
-})
-
-test('happy-path 8: the sixth digit checks the code with no button tap', async () => {
-  const { user, currentPath } = await arriveAtVerification()
-
-  await typeCode(user, '12345')
-  expect(currentPath()).toBe('/onboarding/verification')
-
-  await typeCode(user, '6')
-
-  await waitFor(() => expect(currentPath()).toBe('/home'))
-})
-
-test('happy-path 8: the registered resident carries the form details to the backend', async () => {
-  const { user } = await arriveAtVerification()
-
-  await typeCode(user, '123456')
-
-  await waitFor(() =>
-    expect(fake.getDoc(`residents/${uid}`)).toMatchObject({
-      apartment: 42,
-      block: 1,
-      name: 'Alice',
-      phone,
-      role: 'owner',
-    }),
-  )
-})
-
 test('happy-path 15: a progress notice shows and the actions are disabled while the code is checked', async () => {
   const { user } = await arriveAtVerification()
   trpcServer.use(

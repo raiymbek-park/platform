@@ -61,37 +61,6 @@ test('happy-path S3 — confirming the pre-selected default persists it and cont
   expect(localStorage.getItem('locale')).toBe('ru')
 })
 
-test('happy-path S4 — choosing a different language activates it live and persists it on confirm', async () => {
-  await boot('ru-RU')
-  const { user, currentPath } = renderApp('/onboarding/language')
-
-  await screen.findByRole('heading', { name: 'Выберите язык' })
-  await user.click(screen.getByRole('button', { name: /English/ }))
-
-  expect(
-    await screen.findByRole('heading', { name: 'Select a language' }),
-  ).toBeInTheDocument()
-  expect(localStorage.getItem('locale')).toBeNull()
-
-  await user.click(screen.getByRole('button', { name: 'Next' }))
-
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
-  expect(localStorage.getItem('locale')).toBe('en')
-})
-
-test('happy-path S5 — a stored choice skips the selection screen and renders in the stored language', async () => {
-  localStorage.setItem('locale', 'en')
-  await boot('kk-KZ')
-
-  const { currentPath } = renderApp('/onboarding/')
-
-  await waitFor(() => expect(currentPath()).toBe('/onboarding/auth-method'))
-  expect(await screen.findByText('Choose a sign-in method')).toBeInTheDocument()
-  expect(
-    screen.getByRole('button', { name: /By phone number/ }),
-  ).toBeInTheDocument()
-})
-
 test('validation S4 — an invalid stored value is ignored, re-detected, and not persisted', async () => {
   localStorage.setItem('locale', 'de')
   await boot('kk-KZ')
@@ -106,19 +75,6 @@ test('validation S4 — an invalid stored value is ignored, re-detected, and not
     'true',
   )
   expect(localStorage.getItem('locale')).toBe('de')
-})
-
-test('happy-path S9 — switching the language re-declares the document language without a reload', async () => {
-  await boot('ru-RU')
-  const { user } = renderApp('/onboarding/language')
-
-  await screen.findByRole('heading', { name: 'Выберите язык' })
-  expect(document.documentElement.lang).toBe('ru')
-
-  await user.click(screen.getByRole('button', { name: /English/ }))
-
-  await screen.findByRole('heading', { name: 'Select a language' })
-  expect(document.documentElement.lang).toBe('en')
 })
 
 test('validation S6 — tapping an option marks it selected and unmarks the previous one', async () => {

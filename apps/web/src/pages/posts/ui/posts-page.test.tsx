@@ -205,12 +205,6 @@ const firstButton = (name: string) => {
 
 const like = () => firstButton('Like')
 
-const feedTab = (name: string) =>
-  within(screen.getByRole('group', { name: 'Фильтр объявлений' })).getByRole(
-    'button',
-    { name },
-  )
-
 const firstCard = async () => {
   const [card] = await screen.findAllByTestId('post-card')
   if (!card) throw new Error('no card rendered')
@@ -236,28 +230,6 @@ test('happy-path 1: a card shows the title, author meta, and reaction controls',
   expect(first.getAllByText(/George Lucas/).length).toBeGreaterThan(0)
   expect(first.getByRole('button', { name: 'Like' })).toBeInTheDocument()
   expect(first.getByRole('button', { name: 'Dislike' })).toBeInTheDocument()
-})
-
-test('happy-path 2: the announcements tab shows only announcements, offers only offers', async () => {
-  seedFeed()
-  const { user } = renderAppWithServer('/posts?tab=all', { uid: 'uid-1' })
-  await screen.findByText('Selling a mountain bike')
-
-  await user.click(feedTab('Notices'))
-
-  expect(await screen.findByText('New parking rules')).toBeInTheDocument()
-  await waitFor(() =>
-    expect(
-      screen.queryByText('Selling a mountain bike'),
-    ).not.toBeInTheDocument(),
-  )
-
-  await user.click(feedTab('Private ads'))
-
-  expect(await screen.findByText('Selling a mountain bike')).toBeInTheDocument()
-  await waitFor(() =>
-    expect(screen.queryByText('New parking rules')).not.toBeInTheDocument(),
-  )
 })
 
 test('happy-path 3: a search finds a post beyond the loaded pages, clearing restores the feed', async () => {

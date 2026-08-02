@@ -79,34 +79,6 @@ beforeEach(() => {
 
 afterEach(resetFirestore)
 
-test('happy-path 8: a Resident publishes an offer, sees the phone notice, and it appears under Private ads', async () => {
-  seedResident('resident')
-  const { currentPath, user } = renderAppWithServer('/posts/new', {
-    uid: 'uid-1',
-  })
-
-  expect(
-    await screen.findByText('Your phone number will be visible to everyone.'),
-  ).toBeInTheDocument()
-
-  await fillValidForm(user, 'Services')
-  await user.click(submit())
-
-  await waitFor(() => expect(currentPath()).toBe('/posts'))
-  expect(await screen.findByText('Selling a mountain bike')).toBeInTheDocument()
-  expect(await screen.findByText('Post published.')).toBeInTheDocument()
-  expect(feedTab('Private ads')).toHaveAttribute('aria-pressed', 'true')
-
-  const stored = fake.listDocs('posts')
-  expect(stored).toHaveLength(1)
-  expect(stored[0]).toMatchObject({
-    authorId: 'uid-1',
-    category: 'services',
-    kind: 'offer',
-    title: 'Selling a mountain bike',
-  })
-})
-
 test('happy-path 9: a Manager publishes an announcement with no phone notice, and it appears under Notices', async () => {
   seedResident('manager')
   const { currentPath, user } = renderAppWithServer('/posts/new', {

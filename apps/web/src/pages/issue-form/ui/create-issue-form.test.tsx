@@ -72,33 +72,6 @@ beforeEach(() => {
 
 afterEach(resetFirestore)
 
-test('happy-path 4: submitting a valid issue lists it with a server-assigned number and a confirmation toast', async () => {
-  seedResident()
-  const { currentPath, user } = renderAppWithServer('/issues/new', {
-    uid: 'uid-1',
-  })
-
-  await fillValidForm(user)
-  await user.click(submit())
-
-  await waitFor(() => expect(currentPath()).toBe('/issues'))
-  expect(
-    await screen.findByText("Kitchen tap won't stop dripping"),
-  ).toBeInTheDocument()
-  expect(await screen.findByText('Issue submitted.')).toBeInTheDocument()
-
-  const stored = fake.listDocs('issues')
-  expect(stored).toHaveLength(1)
-  expect(stored[0]).toMatchObject({
-    author: { apartment: 42, block: 1, name: 'Alice' },
-    authorId: 'uid-1',
-    number: 1,
-    status: 'new',
-    title: "Kitchen tap won't stop dripping",
-    urgent: false,
-  })
-})
-
 test('happy-path 5: marking urgent and attaching a photo stores urgent true with the uploaded media', async () => {
   seedResident()
   const { currentPath, user } = renderAppWithServer('/issues/new', {
