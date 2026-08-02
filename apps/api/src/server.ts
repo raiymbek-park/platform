@@ -27,5 +27,5 @@ export const startServer = (port: number): void => {
 
   server.listen(port)
 
-  console.info(`tRPC stub server listening on http://localhost:${port}`)
+  console.info(`tRPC server listening on http://localhost:${port}`)
 }

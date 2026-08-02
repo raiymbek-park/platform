@@ -4,7 +4,6 @@ const MANUAL_TEST_PHONE = '+77781234455'
 
 export const e2ePhones = {
   home: '+77010000001',
-  i18n: '+77010000002',
   issues: '+77010000003',
   newcomer: '+77010000004',
   posts: '+77010000005',

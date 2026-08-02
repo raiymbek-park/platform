@@ -15,6 +15,10 @@
   // Loaded only via dynamic import() inside vi.mock factories in vitest.setup.ts,
   // which the static analyzer cannot trace — its exports are not actually dead.
   "dynamicallyLoaded": [
+    // Substituted for `firebase/auth` by a vite resolve.alias in `e2e` mode only
+    // (vite.config.ts), so the import that consumes its exports exists at build
+    // time and never appears in the static graph.
+    "apps/web/src/shared/test/firebase-auth-e2e.ts",
     "apps/web/src/shared/test/firebase-auth.ts",
     "apps/web/src/shared/test/firebase-messaging.ts",
     "apps/web/src/shared/test/firebase-storage.ts"

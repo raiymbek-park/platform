@@ -3,6 +3,7 @@ import type {
   IssueStatus,
   PostCategory,
   PostKind,
+  Role,
 } from '@raiymbek-park/shared/validation-schemas'
 
 import { searchPrefixes, tokenize } from '@raiymbek-park/shared'
@@ -29,36 +30,35 @@ type ResidentSeed = {
   block: number
   key: keyof typeof e2ePhones
   name: string
-  role: string
+  role: Role
 }
 
 const residents: ResidentSeed[] = [
-  { apartment: 42, block: 1, key: 'home', name: 'Алина Ким', role: 'resident' },
-  { apartment: 7, block: 2, key: 'i18n', name: 'Ержан Абай', role: 'resident' },
+  { apartment: 42, block: 1, key: 'home', name: 'Алина Ким', role: 'owner' },
   {
     apartment: 15,
     block: 1,
     key: 'issues',
     name: 'Мария Ли',
-    role: 'resident',
+    role: 'tenant',
   },
   {
     apartment: 23,
     block: 3,
     key: 'posts',
     name: 'Данияр Сеит',
-    role: 'resident',
+    role: 'owner',
   },
   {
     apartment: 88,
     block: 2,
     key: 'profile',
     name: 'Сауле Нур',
-    role: 'resident',
+    role: 'owner',
   },
 ]
 
-export const e2eUid = (key: keyof typeof e2ePhones): string => `e2e-${key}`
+const e2eUid = (key: keyof typeof e2ePhones): string => `e2e-${key}`
 
 const keywordsOf = (...parts: string[]): string[] => [
   ...new Set(parts.flatMap(tokenize).flatMap(searchPrefixes)),
