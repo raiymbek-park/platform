@@ -22,8 +22,9 @@ the working rules (`references/rules.md`) and the jq recipes + validation suite
 Tests are integration-first: drive behaviour through the real server — the web harness runs the real
 tRPC router in-process against an injected in-memory Firestore fake — and assert the **read-back
 result**. Mock only the outside world; never fabricate a backend response, test the mock, or duplicate a
-behaviour a higher-level test already covers. Persistence / atomicity / rules guarantees belong on the
-**emulator tier** (`npm --prefix apps/api run test:emulator`, needs Java 21), not a mock. Full policy + the
+behaviour a higher-level test already covers. **No tier boots an emulator** — the datastore and the
+third-party edge are fakes everywhere, so `firestore.rules`, real transaction contention and index
+coverage are verified by hand, not by a test. Full policy + the
 harness API live in `.arcana/project-context.md` ("Integration test boundary" + "Test tiers"); the
 portable principles in the `arc-test` skill. Load the `arc-test` skill when writing or reviewing tests.
 

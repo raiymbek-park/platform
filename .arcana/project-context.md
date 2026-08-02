@@ -145,22 +145,24 @@ onboarding, home, posts, issue-tracker, user-profile, i18n. Each spec is derived
   real code, and assert the read-back result. Fast, parallel, `npm test`. This is the bulk.
 - **E2E (real browser, in-memory fake)** — one happy path per user-drivable feature, `npm run test:e2e`,
   required in CI. See the section above.
-- **Emulator (real Firestore)** — `apps/api/src/infra-2.test.ts`, gated by `describe.skipIf(!FIRESTORE_EMULATOR_HOST)`,
-  run via `npm --prefix apps/api run test:emulator` (`npx firebase-tools@15 emulators:exec --only firestore …`,
-  **needs Java 21**). Reserved for what a fake can't prove — transaction atomicity/concurrency, real `increment`/
-  `merge`, query/index correctness, and `firestore.rules` (via `@firebase/rules-unit-testing`). Each test does
-  `clearAll` + seed (so order-independent); run serially (or per-`projectId`), never in the fast parallel pool.
-  Wired into CI as a step in the `checks` job (with a Java 21 setup); NOT part of the default `npm test`. Keep it THIN.
+**No emulator tier (ADR 019).** Every tier runs on in-memory fakes; nothing in the suite boots an emulator.
+What that leaves unverified — accept it knowingly rather than re-adding a tier:
+- **`firestore.rules` is not covered by any test.** Review rule changes by reading them, and check them by
+  hand against a running emulator before merging a change to `firestore.rules`.
+- **Transaction atomicity and concurrency are asserted against the fake's `runTransaction`, not Firestore's.**
+  The fake serialises; it cannot prove a real contended write converges. Keep transactional code obviously
+  correct (read-then-write inside one transaction) rather than leaning on a test to catch a race.
+- **Query/index correctness** (composite indexes, `orderBy` + `where` combinations) shows up only at runtime.
+  When a store adds a new query shape, verify `firestore.indexes.json` covers it by hand.
 
 Assign top-down (arc-test `testing-strategy.md`): cover a behaviour at the highest tier that reaches it — a web
 harness test that drives the real router+store already covers that server logic, so don't duplicate it in an api
 store/router test. Keep api tests for server-only flows (digests, triggers), UI-unreachable branches (non-author
-authorization, identity gates, legacy/malformed data), pure utilities, and the emulator-grade guarantees above.
+authorization, identity gates, legacy/malformed data), and pure utilities.
 
 **STATUS (2026-07-19): rollout complete.** All web screens are on the harness (English); the fabricated-backend
 `serve()` resolvers in `apps/web/src/shared/test/trpc-server.ts` remain only for error-injection carve-outs and
-the transport-contract set. Api tests duplicated by harness coverage were removed; two atomicity guarantees
-(`createResidentIfAbsent`, `otp-store`) moved to the emulator tier.
+the transport-contract set. Api tests duplicated by harness coverage were removed.
 
 ## API
 - Type: tRPC (v11) — `apps/api` exports `./src/router.ts`; web consumes via `@trpc/client` + `@trpc/tanstack-react-query`. Types flow end-to-end (no codegen needed).
@@ -196,7 +198,7 @@ the transport-contract set. Api tests duplicated by harness coverage were remove
 - Features directory: `docs/features/{feature}/prd.md`
 - AC directory: `docs/features/{feature}/ac/*.md` (e.g. `happy-path.md`, `edge-cases.md`, `error-states.md`, `validation.md`)
 - Existing features: `infrastructure`, `onboarding`, `home`, `design-system`, `i18n`, `posts`, `issue-tracker`, `user-profile`, `content-translation`, `push-notifications`
-- Decisions directory: `docs/decisions/` — ADRs as `{NNN}-{slug}.md` (001 state boundaries, 002 tRPC, 003 FSD, 004 Biome, 005 pencil .pen editing, 006 testing strategy, 007 monorepo tooling, 008 styling, 009 lingui i18n, 010 Firebase phone auth, 011 language selection at first launch, 012 content translation, 013 SMSC SMS gateway, 014 push notifications, 015 Google sign-in channel, 016 Facebook sign-in channel, 017 integration test boundary, 018 e2e tier)
+- Decisions directory: `docs/decisions/` — ADRs as `{NNN}-{slug}.md` (001 state boundaries, 002 tRPC, 003 FSD, 004 Biome, 005 pencil .pen editing, 006 testing strategy, 007 monorepo tooling, 008 styling, 009 lingui i18n, 010 Firebase phone auth, 011 language selection at first launch, 012 content translation, 013 SMSC SMS gateway, 014 push notifications, 015 Google sign-in channel, 016 Facebook sign-in channel, 017 integration test boundary, 018 e2e tier, 019 no emulator tier)
 
 ## Conventions
 - Arrow functions only (no `function` decls); implicit return for single expressions; `const`/immutability, avoid `let`
