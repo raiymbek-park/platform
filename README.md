@@ -4,8 +4,8 @@
 
 <img src="design/images/building.png" alt="Raiymbek Park" width="640" />
 
-Приложение для жителей ЖК **Raiymbek Park** — объявления, заявки на ремонт и
-быстрая связь с теми, кто поможет, когда что-то ломается.
+An app for residents of **Raiymbek Park** — announcements, maintenance requests,
+and a fast line to the people who can help when something breaks.
 
 <br />
 
@@ -29,58 +29,58 @@
 
 </div>
 
-## О проекте
+## About
 
-Онлайн-пространство для жильцов и собственников квартир ЖК «Raiymbek Park».
-Здесь создаются и поддерживаются цифровые сервисы, которые делают повседневную
-жизнь в доме удобнее, а управление им — понятнее и прозрачнее.
+An online space for the residents and owners of the Raiymbek Park apartment
+complex. It is home to the digital services that make day-to-day life in the
+building easier and the way it is run clearer and more transparent.
 
-Сервисы:
+Services:
 
-- Новости и объявления по ЖК — плановые работы коммунальных служб и другие
-  важные события.
-- Голосования, собрания и принятие совместных решений жильцов.
-- Заявки на устранение неполадок и нарушений.
-- Статус и история обращений.
-- Связь с дежурным техническим персоналом.
-- Общий чат дома.
+- News and announcements for the complex — scheduled utility work and other
+  events worth knowing about.
+- Polls, meetings, and decisions residents make together.
+- Requests to fix faults and report violations.
+- Status and history of every request.
+- A direct line to the on-duty maintenance staff.
+- A building-wide chat.
 
-## Структура
+## Layout
 
 ```
 .
 ├── apps/
-│   ├── web/        React SPA — слои FSD, TanStack Router, tRPC + TanStack Query
-│   └── api/        tRPC-сервер
+│   ├── web/        React SPA — FSD layers, TanStack Router, tRPC + TanStack Query
+│   └── api/        tRPC server
 ├── packages/
-│   ├── ui/         Примитивы дизайн-системы
-│   └── shared/     Фреймворк-независимые хелперы
-└── design/         Исходники .pen и графические ассеты
+│   ├── ui/         Design-system primitives
+│   └── shared/     Framework-agnostic helpers
+└── design/         .pen sources and image assets
 ```
 
-## Запуск
+## Getting started
 
 ```bash
-# рекомендуется Node 20+
+# Node 20+ recommended
 npm install
 
-# скопируй и поправь env веба (эндпоинт tRPC, опционально base-путь)
+# copy and adjust the web env (tRPC endpoint, optional base path)
 cp apps/web/.env.example apps/web/.env
 
-# запустить web + api вместе (Turborepo)
+# run web + api together (Turborepo)
 npm run dev
 ```
 
-Веб поднимается на `http://localhost:5173`, tRPC-сервер-заглушка — на
+The web app comes up on `http://localhost:5173`, the tRPC stub server on
 `http://localhost:3001`.
 
-## Соглашения
+## Conventions
 
-- **Feature-Sliced Design** — слои `app` / `pages` / `features` / `shared`
-  (проверяются линтером Steiger: `npm run lint:fsd` в `apps/web`).
-- **Файлы** в kebab-case, **компоненты** в PascalCase, именованные экспорты.
-- **Стили** через CSS-модули и дизайн-токены (`apps/web/src/app/tokens.scss`).
-- **Тесты** рядом с реализацией; e2e — в `apps/web/src/test`.
+- **Feature-Sliced Design** — the `app` / `pages` / `features` / `shared` layers
+  (enforced by the Steiger linter: `npm run lint:fsd` in `apps/web`).
+- **Files** in kebab-case, **components** in PascalCase, named exports.
+- **Styles** through CSS modules and design tokens (`apps/web/src/app/tokens.scss`).
+- **Tests** live next to the implementation; e2e sits in `apps/web/src/test`.
 
-Полные правила (код, HTML-семантика, стили, управление состоянием) — в
+The full rules (code, HTML semantics, styling, state management) are in
 `.claude/rules/`.
