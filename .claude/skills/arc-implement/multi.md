@@ -1,11 +1,13 @@
 # Implement — Multi-Ticket (PRD)
 
-Implement all tickets from a PRD. Builds a dependency graph, runs tickets in waves. Each ticket runs as a separate `arc:archmage` agent with the full single-ticket cycle in one context (no nested agents).
+Implement all tickets from a PRD. Builds a dependency graph, runs tickets in waves. Each ticket's
+writing work runs as a separate `arc:archmage` agent in one context; its checks run from the
+orchestrator so they never land in the context that produced the work (no nested agents).
 
 **Agent tiers:**
-- `arc:archmage` — each ticket in a wave gets its own archmage (full cycle: AC → plan → code → test → verify → PR)
-- `arc:mage` — not used directly (archmage handles everything per ticket)
-- `arc:apprentice` — not used directly
+- `arc:archmage` — each ticket in a wave gets its own archmage (AC enrich → plan → code → tests)
+- `arc:apprentice` — per-ticket gate from the orchestrator (ac validate → ac verify), then PR
+- `arc:mage` — not used directly (archmage handles the writing half per ticket)
 
 ## Steps
 
@@ -16,7 +18,7 @@ Implement all tickets from a PRD. Builds a dependency graph, runs tickets in wav
 3. Find all tickets associated with this PRD (via tracker skill or AC file references)
 4. If no tickets found → error: "No tickets found for `{feature-name}`. Run `/arc:prd create {feature-name}` first." and stop
 
-### Step 1.5: Validate PRD (arc:apprentice)
+### Step 2: Validate PRD (arc:apprentice)
 
 ```
 /arc:apprentice
@@ -30,7 +32,7 @@ Write result to .arcana/{feature}/prd-validate-report.md.
 
 If `--skip=prd-validate` → skip this step. Use only when the PRD is known-good.
 
-### Step 2: Build Dependency Graph
+### Step 3: Build Dependency Graph
 
 Analyze ticket dependencies and group into waves:
 
@@ -59,7 +61,7 @@ Write wave status to `.arcana/{feature}/wave-status.md`:
 
 **Confirmation gate:** If not `--yes` → show dependency graph and ask: "Proceed with this execution order?" Wait for confirmation.
 
-### Step 3: Execute Waves
+### Step 4: Execute Waves
 
 For each wave, launch all tickets as separate `arc:archmage` agents:
 
@@ -70,20 +72,50 @@ For each ticket in wave:
   /arc:archmage
   Read .arcana/project-context.md, AC files for {ticket-id},
   test/references/testing-strategy.md, relevant example references from project-context.
-  Execute full single-ticket cycle in this context:
-    1. ac validate → ac enrich → ac validate
+  Execute the writing half of the single-ticket cycle in this context:
+    1. ac enrich
     2. plan
     3. code
     4. test write → test review → test validate → test mutate
-    5. ac verify
-    6. code review-request
   Handle all feedback loops internally (max {--max-retries}).
+  Do NOT run ac validate or ac verify on your own output, and do NOT open the PR —
+  the orchestrator gates both (Step 5).
   Flags: --yes --max-retries={N}.
   Write result to .arcana/{feature}/{ticket-id}/full-cycle-result.md.
 ```
 
-- Tickets within a wave run in parallel (independent of each other)
+### Step 5: Per-Ticket Gate (arc:apprentice, orchestrator level)
+
+Each ticket's archmage holds one context from AC through tests. Left to also run `ac validate`
+and `ac verify` there, it would be grading work it produced minutes earlier in the same context
+— the rubber stamp `single.md` Steps 3 and 8 exist to prevent. Archmage cannot spawn its own
+verifier (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1`), so the gate runs from the orchestrator, which
+sits at depth 0.
+
+As each ticket's archmage returns — not after the whole wave — run:
+
+```
+/arc:apprentice
+Read .arcana/project-context.md, AC files for {ticket-id},
+production code and test files for the ticket.
+Run in order: ac validate → ac verify.
+Report findings with file-and-line evidence. Do NOT amend AC, code, or tests.
+Flags: --yes --max-retries={N}.
+Write result to .arcana/{feature}/{ticket-id}/gate-result.md.
+```
+
+On findings, route back to that ticket's `/arc:archmage` and re-run this gate (loop, max
+`{--max-retries}`). Only after the gate is clean does the orchestrator run
+`/arc:code review-request {ticket-id}` and mark the ticket as PR-open in wave-status.md.
+
+Gating per ticket rather than per wave keeps the concurrency budget honest: with
+`CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS=3`, a returning archmage frees a slot that the gate then
+occupies, instead of every gate queueing behind the slowest ticket in the wave.
+
+- Tickets within a wave run in parallel (independent of each other), bounded by
+  `CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS`; a wave wider than that cap runs in batches
 - Each archmage has its own context — no interference between tickets
+- Every ticket passes the Step 5 gate before its PR is opened
 - When all tickets in a wave are merged → start next wave
 
 **Without `--yes` (pair mode):**
@@ -96,7 +128,7 @@ Update `.arcana/{feature}/wave-status.md` as tickets progress:
 - [ ] {ticket-id}: {title} — PR open, review in progress
 ```
 
-### Step 4: Wave Transitions
+### Step 6: Wave Transitions
 
 Monitor wave progress:
 - Ticket merged → update wave-status.md → check if all tickets in current wave are done
@@ -110,13 +142,13 @@ Monitor wave progress:
 - Developer resolves the issue manually, then re-invokes `/arc:implement {ticket-id} --yes` for the failed ticket
 - Once the failed ticket's PR is merged → resume dependent waves
 
-### Step 5: Completion
+### Step 7: Completion
 
 When all waves are complete:
 1. Update wave-status.md → all done
 2. Invoke `/arc:project skill-up` to analyze the full feature cycle
 
-### Step 6: Output
+### Step 8: Output
 
 > **Implement PRD — {feature-name}:**
 > Waves: {number}
@@ -130,12 +162,12 @@ When all waves are complete:
 
   1. Build dependency graph → .arcana/checkout/wave-status.md
   2. Wave 1 (parallel — 3 archmage agents):
-     /arc:archmage TASK-101 → full cycle → PR
-     /arc:archmage TASK-102 → full cycle → PR
-     /arc:archmage TASK-103 → full cycle → PR
+     /arc:archmage TASK-101 → write → /arc:apprentice gate → PR
+     /arc:archmage TASK-102 → write → /arc:apprentice gate → PR
+     /arc:archmage TASK-103 → write → /arc:apprentice gate → PR
   3. All Wave 1 PRs merged → start Wave 2:
-     /arc:archmage TASK-104 → full cycle → PR
+     /arc:archmage TASK-104 → write → /arc:apprentice gate → PR
   4. Wave 2 merged → start Wave 3:
-     /arc:archmage TASK-105 → full cycle → PR
+     /arc:archmage TASK-105 → write → /arc:apprentice gate → PR
   5. All done → /arc:project skill-up
 ```

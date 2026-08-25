@@ -34,15 +34,31 @@ Show the draft to the developer:
 
 Wait for approval. Revise as needed. Loop until developer confirms.
 
-### Step 3.5: Validate PRD
+### Step 4: Proofread PRD
 
-Run validation against the seven criteria. Read [validate.md](validate.md) Steps 2–3 and apply them to the just-drafted PRD as an in-line check (no separate report file needed at this stage — the goal is gate-keeping, not auditing).
+Scan the drafted PRD for the defects that are visible as **text patterns**, not as judgment
+calls — this pass is a proofread, not an audit:
 
-Any FAIL → return to Step 3 and rewrite. Do not proceed to AC until all seven criteria pass. This gate exists because a vague PRD produces interpretive AC; fixing AC is harder than fixing the PRD.
+- Placeholders and unresolved values: `TBD`, `???`, "minimum allowed", "after several", "some", any
+  numeric or format slot without a concrete value (Criterion 3)
+- Narrative-in-time framing: "previously X, now Y", "until now it was…", before/after prose (Criterion 6)
+- Version numbers and library/wiring detail: `React 19`, `Lingui v6`, transport or path specifics
+  that belong in `package.json` or an ADR (Criterion 7)
+- Anything under `## Open Questions` that a Scope or User Journey section already depends on (Criterion 4)
+- Items in `What's NOT included` phrased as unknowns rather than exclusions (Criterion 5)
 
-The criteria themselves live in [references/prd-validation-criteria.md](references/prd-validation-criteria.md). The validator that consumes them is [validate.md](validate.md) — single source of truth for both this gate and the standalone `/arc:prd validate {feature-name}` command.
+Any hit → return to Step 3 and rewrite before continuing.
 
-### Step 4: Write AC Scenarios
+**This is deliberately not the full seven-criterion audit.** The judgment criteria —
+source-of-truth boundary, implementation-free phrasing — cannot be graded here: the agent that
+just wrote this PRD had those criteria in view while writing and will mark its own draft as
+passing. That audit runs later with fresh context, in a separate agent, via `/arc:prd validate`
+— which is exactly what `arc-implement/single.md` Step 1 and `multi.md` Step 2 do before any
+ticket work begins. Do not duplicate it here; keep this pass cheap.
+
+The criteria themselves live in [references/prd-validation-criteria.md](references/prd-validation-criteria.md); the full validator is [validate.md](validate.md).
+
+### Step 5: Write AC Scenarios
 
 Based on the approved PRD, write AC scenarios in Given/When/Then format. Start with happy path, then add validation, error states, and edge cases.
 
@@ -62,7 +78,7 @@ Show AC scenarios to the developer:
 
 Wait for approval. Revise as needed. Loop until developer confirms.
 
-### Step 5: Slice into Tasks
+### Step 6: Slice into Tasks
 
 Split the feature into tasks. Each task is a vertical slice — a complete piece of behavior that can be deployed and verified independently.
 
@@ -71,7 +87,7 @@ Rules from [references/prd-structure.md](references/prd-structure.md):
 - Each task references a specific AC file and lists which scenarios it implements
 - Each task explicitly states what is NOT included → which task covers it
 - Tasks sliced by behavior, not by layers (not "UI task" + "API task")
-- Tasks must be small enough for one skill to complete in one context window
+- Each task is one independent behavior — split on behavior, not on size or file count
 - If a task looks too large → split into subtasks, each with its own AC
 
 Show the task breakdown to the developer:
@@ -80,11 +96,11 @@ Show the task breakdown to the developer:
 
 Wait for approval. Revise as needed.
 
-### Step 6: Write Files
+### Step 7: Write Files
 
 Write PRD and AC files to the repository.
 
-### Step 7: Create Tickets (if tracker available)
+### Step 8: Create Tickets (if tracker available)
 
 If a tracker skill is configured in `.arcana/project-context.md`:
 1. Create Epic for the feature via the tracker skill
@@ -93,7 +109,7 @@ If a tracker skill is configured in `.arcana/project-context.md`:
 
 If no tracker skill → skip this step, inform the developer.
 
-### Step 8: Output
+### Step 9: Output
 
 > **PRD Created — {feature-name}:**
 > - PRD: `{path}/prd.md`

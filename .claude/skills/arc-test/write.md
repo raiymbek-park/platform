@@ -31,7 +31,7 @@ in the report".
 
 ## Steps
 
-### Step 0: Confirm Order
+### Step 1: Confirm Order
 
 By default this command runs **after** `arc:code` in the canonical pipeline (see `arc-implement/single.md`). If the production code referenced by the AC scenarios for `ticket-id` doesn't exist yet:
 
@@ -39,14 +39,14 @@ By default this command runs **after** `arc:code` in the canonical pipeline (see
 - If TDD was not requested, surface this and ask: "Code for `{ticket-id}` isn't implemented yet. Run `/arc:code {ticket-id}` first, or proceed with TDD-style test-first?" Wait for confirmation.
 - Do not silently generate tests against unwritten code — TDD vs code-first is a workflow choice the developer should make consciously.
 
-### Step 1: Locate AC and Code
+### Step 2: Locate AC and Code
 
 1. Read `.arcana/project-context.md` for AC file locations, test runner, API type, framework, conventions, and active example references
 2. Find AC files for `ticket-id`
 3. If no AC files found → error and stop
 4. Read production code relevant to the feature
 
-### Step 2: Apply Decision Matrix
+### Step 3: Apply Decision Matrix
 
 For each AC scenario, determine the test level using the decision matrix (top-down, no duplication between levels). See `## Decision Matrix` in [references/testing-strategy.md](references/testing-strategy.md).
 
@@ -76,7 +76,7 @@ For each AC scenario, determine the test level using the decision matrix (top-do
 
 **Top-down, highest-level-first — the anti-duplication rule.** Assign each behavior to the HIGHEST level that can exercise it, and push only the remainder lower. A behavior a full-flow / page / main-form integration test can drive is covered *there* — do NOT also write a component or unit test for it. **One integration file per screen:** it covers that screen's client-side behavior (field validation, disabled states, limits) AND its backend-touching behavior together — never split a screen into a "narrow/UI-only" file and a "wide" file. Reserve lower levels (component, hook, pure function) for what the top cannot reach: shared utilities, isolated logic with many branches, states a full flow can't force.
 
-### Step 3: Apply Mocking Rules
+### Step 4: Apply Mocking Rules
 
 See `## Mocking Rules` in [references/testing-strategy.md](references/testing-strategy.md).
 
@@ -104,7 +104,7 @@ A test generated under this self-check is exactly what §D verifies — write an
 
 If `project-context.md` specifies how the real server logic runs in tests (an in-process harness, a disposable test datastore) with example references → load the relevant example file for implementation patterns.
 
-### Step 4: Apply Optional Layers
+### Step 5: Apply Optional Layers
 
 Check `.arcana/project-context.md` for optional testing layers enabled for the project:
 
@@ -114,7 +114,7 @@ Check `.arcana/project-context.md` for optional testing layers enabled for the p
 If enabled and example references exist → load relevant example files and generate corresponding tests alongside the main test files.
 If not configured → skip.
 
-### Step 5: Write Test Files
+### Step 6: Write Test Files
 
 For each AC scenario, write the test following the 5-step algorithm from [references/testing-strategy.md](references/testing-strategy.md) (`## Test Writing Algorithm`).
 
@@ -132,7 +132,7 @@ AC scenario → test file : test name → level (E2E / Integration / Unit)
 
 Commit test files to the feature branch with a dedicated test commit.
 
-### Step 6: Output
+### Step 7: Output
 
 > **Tests Written — {ticket-id}:**
 > - E2E: {number} tests

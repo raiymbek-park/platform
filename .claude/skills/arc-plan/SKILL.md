@@ -73,14 +73,17 @@ Investigate:
 
 ### Step 4: Assess Complexity
 
-Evaluate task size. If the task is too large for one context window:
+Evaluate task size. If the ticket bundles work that does not belong together:
 - Recommend splitting via `/arc:prd create` or `/arc:prd update`
 - Identify natural split points (vertical slices)
 
-Signals that a task is too large:
-- Plan + AC + affected code exceed ~50% of context window
-- More than 3-5 main files need changes
-- Multiple independent behaviors bundled in one ticket
+**The only signal that a ticket is too large: it bundles multiple independent behaviors** —
+slices that ship, and can be verified, separately. Split on that and nothing else.
+
+Do NOT recommend a split because of file count or context volume. Multi-file features, larger
+refactors, and end-to-end feature work are meant to run as one ticket with the full spec given
+up front; slicing them costs coherence and buys nothing. A ticket touching a dozen files for one
+coherent behavior is one ticket.
 
 ### Step 5: Write Plan
 
@@ -135,16 +138,16 @@ Actions:
 5. Write plan.md — 4 files affected, follows existing form pattern, small scope
 Result: Plan ready for `/arc:code TASK-512`
 
-### Example 2: Task too large
+### Example 2: Ticket bundles independent behaviors
 
 User says: `/arc:plan TASK-600 -y`
 Actions:
 1. Fetch TASK-600 — "Complete checkout flow with payments"
 2. Find AC — 15 scenarios across 4 AC files
-3. Scan codebase — 8+ files affected, multiple independent behaviors
-4. Assess: task too large for one context window
+3. Scan codebase — cart, payment authorization, and receipt delivery ship and verify independently
+4. Assess: three independent behaviors in one ticket — not a file-count judgment
 5. Write plan with recommendation to split
-Result: Plan written with split recommendation — suggest `/arc:prd update` to break into smaller tickets
+Result: Plan written with split recommendation — suggest `/arc:prd update` to break into vertical slices
 
 ## Troubleshooting
 

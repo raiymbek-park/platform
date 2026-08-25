@@ -42,13 +42,17 @@ Report format:
 
 ## Per-Scenario Results
 
-### {ac-file}: {scenario-name}
+DONE scenarios collapse to one line each, carrying just the evidence:
+
+- ✅ {ac-file}: {scenario-name} — `{code file}:{line}` · `{test file}` › {test name}
+
+PARTIAL and MISSING scenarios get the full breakdown:
+
+### ⚠ {ac-file}: {scenario-name} — PARTIAL | MISSING
 - Implemented: YES | NO — {evidence: file and line}
 - Test exists: YES | NO — {evidence: test file and name}
 - Test verifies behavior: YES | NO — {explanation}
-- **Status:** DONE | PARTIAL | MISSING
-
-### ...
+- Gap: {what is missing, and which tier should close it}
 
 ## Summary
 
@@ -61,6 +65,9 @@ Report format:
 
 {What to do next — which scenarios need implementation or tests}
 ```
+
+Detail only what is not DONE. Spelling out three YES lines for a scenario that passed adds length
+without adding information the one-line form does not already carry.
 
 **Confirmation gate:** If `-y` → write report and output summary. Otherwise → show report and ask: "AC verification complete. Write report to `.arcana/{feature}/{ticket-id}/verify-report.md`?" Wait for confirmation.
 

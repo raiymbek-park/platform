@@ -59,18 +59,22 @@ If a tracker skill is configured:
 
 If no tracker skill → list affected tasks in the output for the developer to update manually.
 
-### Step 6: Re-validate
+### Step 6: Proofread
 
-After applying changes, re-run validation against the seven PRD criteria. Read [validate.md](validate.md) Steps 2–3 and apply them to the updated PRD.
+Apply the same text-pattern scan as `create.md` Step 4 — placeholders and unresolved values,
+narrative-in-time framing, version/wiring detail, Open Questions that Scope now depends on,
+unknowns filed as exclusions. Cascade updates reintroduce exactly these: stale numbers left over
+from before the change, "previously X, now Y" prose describing the update itself.
 
-If any criterion fails:
-- Surface the failures in the output
-- Do not block — the developer may have intentionally introduced a temporary inconsistency mid-update — but flag clearly so it cannot be silently shipped
+If anything is hit:
+- Surface it in the output
+- Do not block — the developer may have intentionally introduced a temporary inconsistency
+  mid-update — but flag clearly so it cannot be silently shipped
 - Recommend `/arc:prd update {feature-name}` again or a targeted manual fix
 
-If all seven criteria pass, note the result in the output.
-
-This step exists because cascade updates can introduce the same defects the create-time gate catches: leaked implementation language, unresolved open questions, stale numeric values from before the update. Catching them here prevents drift between PRD and AC.
+The full seven-criterion audit is not run here, for the same reason as at create time: this agent
+just wrote the changes and would be grading its own work. It runs with fresh context via
+`/arc:prd validate {feature-name}`, and again at the top of any `/arc:implement` run.
 
 ### Step 7: Output
 
@@ -79,6 +83,6 @@ This step exists because cascade updates can introduce the same defects the crea
 > - AC: {number} scenarios modified, {number} added, {number} removed
 > - Tickets affected: {list of ticket IDs or "no tracker configured — manual update needed"}
 > - Change: {brief description of what changed}
-> - Validation: {PASS — all seven criteria | FAIL — list failed criteria}
+> - Proofread: {clean | flagged — list what was hit}
 >
-> {If FAIL:} Next: `/arc:prd update {feature-name}` to fix the validation failures, or run `/arc:prd validate {feature-name}` for a full report.
+> {If flagged:} Next: `/arc:prd update {feature-name}` to fix, or run `/arc:prd validate {feature-name}` for the full independent audit.

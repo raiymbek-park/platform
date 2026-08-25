@@ -3,9 +3,9 @@
 Short implementation cycle for bug fixes. Groups related skills into tiered agent calls. Single skills run directly in main chat.
 
 **Agent tiers:**
-- `arc:archmage` — deep reasoning, code generation (opus)
+- `arc:archmage` — deep reasoning, code generation (fable)
 - `arc:mage` — analysis, enrichment, tests (opus)
-- `arc:apprentice` — validation, checks, execution (sonnet)
+- `arc:apprentice` — independent verification, fresh context (opus, low effort)
 
 ## Pipeline
 
@@ -13,7 +13,8 @@ Short implementation cycle for bug fixes. Groups related skills into tiered agen
 main            — create ticket (if no ticket-id)
 [gate]
 
-/arc:mage       — AC Phase: read bug → prd update → ac update → ac validate
+/arc:mage       — AC Phase: read bug → prd update → ac update
+/arc:apprentice — AC Gate: ac validate (fresh context)
 [gate]
 
 /arc:archmage   — Fix Phase: test write → code → test validate
@@ -22,7 +23,7 @@ main            — create ticket (if no ticket-id)
 main            — Validate: code validate
 [gate]
 
-/arc:mage       — Verify Phase: ac verify
+/arc:apprentice — Verify Phase: ac verify (fresh context)
 [gate]
 
 main            — code review-request
@@ -34,7 +35,7 @@ main            — code review-request
 
 ## Steps
 
-### Step 0: Gather Bug Details and Create Ticket (main — if no ticket-id)
+### Step 1: Gather Bug Details and Create Ticket (main — if no ticket-id)
 
 If the developer provided a `ticket-id` → skip this step.
 
@@ -59,7 +60,7 @@ From the collected details:
 
 **Gate:** If not `--yes` → show the created ticket and ask: "Proceed?"
 
-### Step 1: AC Phase (arc:mage)
+### Step 2: AC Phase (arc:mage)
 
 ```
 /arc:mage
@@ -68,15 +69,32 @@ Run in order:
   1. Analyze the bug report — identify what's broken, reproduction steps, affected feature.
   2. If PRD is vague or missing context for this bug → prd update.
   3. ac update — add scenario covering the bug (describe expected behavior, not the bug).
-  4. ac validate — verify new scenario quality.
-     If fail → ac update → ac validate (loop, max {--max-retries}).
 Flags: {pass --yes and --max-retries}.
 Write result to .arcana/{feature}/{ticket-id}/ac-phase-result.md.
 ```
 
+Quality grading of the new scenario is deliberately not in this block: the agent that wrote it
+would be marking its own work against criteria it already had in view. It moves to Step 3.
+
 **Gate:** Read ac-phase-result.md. If FAILED → stop. If not `--yes` → show new AC scenario and ask: "Proceed?"
 
-### Step 2: Fix Phase (arc:archmage)
+### Step 3: AC Gate (arc:apprentice)
+
+```
+/arc:apprentice
+Read .arcana/project-context.md and AC files for {ticket-id}.
+Run: ac validate.
+If fail → report which scenarios failed which criteria; do NOT rewrite them yourself.
+Flags: {pass --yes and --max-retries}.
+Write result to .arcana/{feature}/{ticket-id}/ac-gate-result.md.
+```
+
+On fail, route back to `/arc:mage` for `ac update`, then re-run this gate (loop, max
+`{--max-retries}`). Writer and grader stay in separate contexts on every iteration.
+
+**Gate:** Read ac-gate-result.md. If FAILED after retries → stop, show report. If not `--yes` → show findings and ask: "Proceed?"
+
+### Step 4: Fix Phase (arc:archmage)
 
 ```
 /arc:archmage
@@ -94,7 +112,7 @@ Write result to .arcana/{feature}/{ticket-id}/fix-phase-result.md.
 
 **Gate:** Read fix-phase-result.md. If FAILED → stop. If not `--yes` → show results and ask: "Proceed?"
 
-### Step 2.5: Validate (main)
+### Step 5: Validate (main)
 
 Run `/arc:code validate` directly in main chat to audit the branch diff against the project's coding rules before the verify phase.
 
@@ -109,27 +127,32 @@ If `--skip=validate` → skip this step.
 
 **Gate:** With `--yes` → proceed. With pair mode → show validate report and ask: "Proceed?"
 
-### Step 3: Verify Phase (arc:mage)
+### Step 6: Verify Phase (arc:apprentice)
 
 ```
-/arc:mage
+/arc:apprentice
 Read .arcana/project-context.md, AC files for {ticket-id},
 production code and test files for the feature.
 Run: ac verify.
-If partial → fix code → ac verify (loop, max {--max-retries}).
+Report DONE / PARTIAL / MISSING per scenario with file-and-line evidence.
+Do NOT write or amend code or tests — report the gap, the orchestrator routes the fix.
 Flags: {pass --yes and --max-retries}.
 Write result to .arcana/{feature}/{ticket-id}/verify-phase-result.md.
 ```
 
+The fix-phase archmage just wrote this code, so it cannot be the one to judge whether the code
+satisfies the AC. On PARTIAL, route back to `/arc:archmage` and re-run this phase (loop, max
+`{--max-retries}`); the verifier never fixes what it flagged.
+
 **Gate:** Read verify-phase-result.md. If FAILED → stop. If not `--yes` → show verify report and ask: "Proceed?"
 
-### Step 4: PR (main)
+### Step 7: PR (main)
 
 Run `/arc:code review-request {ticket-id}` directly in main chat.
 
 **Gate:** If not `--yes` → show PR link.
 
-### Step 5: PR Resolution (arc:archmage — on demand)
+### Step 8: PR Resolution (arc:archmage — on demand)
 
 When review comments appear:
 
@@ -144,6 +167,6 @@ Write result to .arcana/{feature}/{ticket-id}/review-resolve-result.md.
 
 Without `--yes` → developer invokes `/arc:code review-resolve {pr-id}` manually.
 
-### Step 6: Merge
+### Step 9: Merge
 
 **Always human.** Merge is irreversible. Agent does not press the merge button.

@@ -2,5 +2,9 @@
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
     "playwright@claude-plugins-official": true
+  },
+  "env": {
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "1",
+    "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS": "3"
   }
 }

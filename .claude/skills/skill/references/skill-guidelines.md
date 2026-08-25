@@ -107,13 +107,20 @@ description: Implements the Project entity model with hierarchical relationships
 8. **Show expected outputs** — so the developer knows what success looks like
 9. **Add examples** — concrete scenarios with user input and expected skill behavior
 10. **Keep SKILL.md under 5,000 words** — move detailed reference to `references/` files
+11. **Calibrate the length of what the skill writes to disk** — when a skill emits a report,
+    plan, or document, its template should cover the substance without padding. Collapse
+    uniform passing results to one line each and spend the detail on what failed; a report
+    whose bulk restates `PASS` carries no more than its summary line.
 
 ## Project-Specific Conventions
 
 Match the patterns used by existing skills in this project:
 
 - Use `## Usage` with a code block showing commands/arguments
-- Use `### Step N:` for workflow steps
+- Use `### Step N:` for workflow steps. **N is always a whole number, starting at 1**,
+  consecutive with no gaps. Inserting a step means renumbering the ones after it and updating
+  every reference — never `Step 0`, `Step 3.5`, `Step 4a`, or a repeated number with a
+  parenthetical variant
 - Use blockquotes (`>`) for messages shown to the developer
 - Use **Confirmation gate:** pattern for actions needing approval
 - Use `-y` / `--yes` flag convention for skipping confirmations

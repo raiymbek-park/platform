@@ -47,17 +47,15 @@ Report format:
 
 ## Per-Scenario Results
 
-### {ac-file}: {scenario-name}
-- Falsifiable: PASS | FAIL — {explanation if fail}
-- Observable: PASS | FAIL — {explanation if fail}
-- Testable: PASS | FAIL — {explanation if fail}
-- Implementation-free: PASS | FAIL — {explanation if fail}
-- Self-contained: PASS | FAIL — {explanation if fail}
-- Non-derivative: PASS | FAIL — {explanation if fail}
-- PRD-traceable: PASS | FAIL — {explanation if fail}
-- Atomic Then clauses: PASS | FAIL — {explanation if fail}
+Passing scenarios collapse to one line each:
 
-### ...
+- ✅ {ac-file}: {scenario-name}
+
+Failing scenarios list only the criteria that failed, with the reason:
+
+### ⛔ {ac-file}: {scenario-name}
+- {failed criterion}: FAIL — {why, and what would fix it}
+- {failed criterion}: FAIL — {why, and what would fix it}
 
 ## Completeness
 
@@ -71,6 +69,9 @@ Report format:
 {number} scenarios validated, {number} passed, {number} failed.
 {Completeness status.}
 ```
+
+Do not restate a passing criterion. A report whose bulk is `PASS` lines carries the same
+information as its summary line and costs a re-read to confirm that.
 
 **Confirmation gate:** If `-y` → write report and output summary. Otherwise → show report and ask: "AC validation complete. Write report to `.arcana/{feature}/{ticket-id}/validate-report.md`?" Wait for confirmation.
 

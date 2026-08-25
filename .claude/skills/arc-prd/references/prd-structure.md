@@ -123,12 +123,13 @@ ac/edge-cases.md     → Task 4 (last)
 
 ### Task sizing
 
-Tasks must be small enough for one skill to complete in one context window. A large task = agent loses context mid-work = poor result.
+Each task is one independent behavior — a slice that ships and can be verified on its own.
+Split on behavior, not on size: a task touching many files for one coherent behavior stays one
+task, and gets its full specification up front.
 
 Sizing signals:
-- Plan + AC + affected code should fit in ~50% of the context window (rest is for work)
-- One vertical slice, 1-3 main files changed
-- A task a developer would do in 2-4 hours
+- One vertical slice — a single behavior that ships and is verified on its own
+- Splitting it further would produce a slice that cannot be deployed or verified alone
 
 If a task looks too large → split into subtasks. Each subtask is an independent vertical slice with its own AC.
 

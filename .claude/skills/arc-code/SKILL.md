@@ -81,11 +81,11 @@ Check if `.arcana/{feature}/{ticket-id}/progress.md` exists:
 4. If no plan exists → invoke `/arc:plan {ticket-id}` internally to create one, then read it
 5. Read existing codebase files listed in the plan
 
-### Step 4.5: Ensure feature branch
+### Step 5: Ensure feature branch
 
-Before writing any code, if the current branch is `main`/`master` (or another integration branch), use the project's git skill to create a feature branch. Do NOT defer branch creation until Step 7 (Commit) — the troubleshooting "No feature branch" entry below is the safety net, not the primary path.
+Before writing any code, if the current branch is `main`/`master` (or another integration branch), use the project's git skill to create a feature branch. Do NOT defer branch creation until Step 8 (Commit) — the troubleshooting "No feature branch" entry below is the safety net, not the primary path.
 
-### Step 5: Implement
+### Step 6: Implement
 
 Write production code following the plan:
 - Follow the order of changes from the plan
@@ -94,7 +94,7 @@ Write production code following the plan:
 - Only production code — do NOT write tests (that's `/arc:test write`)
 - Atomic commits — each commit is a logical unit of change
 
-### Step 6: Update Progress
+### Step 7: Update Progress
 
 After each logical step, update `.arcana/{feature}/{ticket-id}/progress.md`:
 
@@ -117,13 +117,13 @@ After each logical step, update `.arcana/{feature}/{ticket-id}/progress.md`:
 
 This file enables resume if context is lost. The next session reads it and continues.
 
-### Step 7: Commit
+### Step 8: Commit
 
 **Confirmation gate:** If `-y` → commit changes. Otherwise → show summary of changes and ask: "Commit these changes?" Wait for confirmation.
 
 Commit to the feature branch. Use the project's git skill if configured, otherwise commit directly.
 
-### Step 8: Output
+### Step 9: Output
 
 > **Code — {ticket-id}:** {complete|in-progress}
 > Files changed: {number}
@@ -189,8 +189,8 @@ Cause: No AC for this ticket — coding without requirements.
 Solution: Run `/arc:prd create` or `/arc:ac enrich` first. Code without AC risks implementing the wrong behavior.
 
 ### Error: Plan recommends splitting the task
-Cause: Task is too large for one context window.
-Solution: Follow the plan's recommendation — use `/arc:prd update` to split into smaller tickets, then `/arc:code` each one separately.
+Cause: The ticket bundles multiple independent behaviors.
+Solution: Follow the plan's recommendation — use `/arc:prd update` to split into vertical slices, then `/arc:code` each one separately. File count is not a split criterion.
 
 ### Implementation diverges from plan
 Cause: During coding, the plan turns out to be wrong or incomplete.

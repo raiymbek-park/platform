@@ -5,9 +5,10 @@ Unified onboarding and context management. First run does full setup (external s
 ## Routing
 
 1. Check if `.arcana/project-context.md` exists
-   - **No** → full onboarding (Step 1 → Step 7)
-   - **Yes + `--refresh`** → rescan codebase (Step 3 → Step 5, preserve Required Skills and Model Assignment sections)
-   - **Yes + `--refine`** → interactive refinement (Step 6)
+   - **No** → full onboarding: Steps 1-7, then 9-10. Step 8 is `--refine` only.
+   - **Yes + `--refresh`** → rescan: Steps 3-5, then write the context in Step 7. Skip Step 6 —
+     the existing Model Assignment and Required Skills sections are preserved as-is.
+   - **Yes + `--refine`** → interactive refinement (Step 8)
    - **Yes + no flags** → warn: "Project context already exists. Use `--refresh` to rescan or `--refine` to edit sections." Ask to proceed with full re-init or stop.
 
 ## Steps
@@ -61,9 +62,9 @@ Investigate:
 - **CI configuration:** what runs on push/PR
 - **PRD/AC locations:** where requirements docs live (if any exist)
 - **Decisions directory:** where ADRs live (if any exist)
-- **Project rules:** existing conventions and guidelines (see Step 4b)
+- **Project rules:** existing conventions and guidelines (see Step 5)
 
-### Step 4b: Detect and Reconcile Project Rules
+### Step 5: Detect and Reconcile Project Rules
 
 Scan for existing project conventions and rules. These may live in different locations depending on the AI provider or project setup:
 
@@ -125,25 +126,29 @@ Warnings: none
 
 If a rule file lives outside the listed paths (e.g., `CLAUDE.md`, `AGENT.md`, `.cursorrules`, `.editorconfig`), include it with the same enumerated bullet shape. Tool-enforced rules (eslint, biome) are listed but flagged so downstream skills know they are mechanically enforced and not the human-readable source of truth.
 
-### Step 5: Configure Model Assignment
+### Step 6: Configure Model Assignment
 
 Ask the developer about model preferences:
 
-> Arcana uses three agent tiers with different model assignments:
+> Arcana uses three agent tiers:
 >
-> **arc:apprentice (Sonnet):** ac validate, ac verify, test validate, code review-request
+> **arc:apprentice (Opus, low effort):** prd validate, ac validate, ac verify, test validate, code review-request
 > **arc:mage (Opus):** ac enrich, ac update, plan, test write, test review, test mutate, skill-up
-> **arc:archmage (Opus):** prd create, code, code review-resolve
+> **arc:archmage (Fable):** prd create, code, code review-resolve
 >
-> Default models are for Claude. For other providers, map to equivalent tiers:
-> - OpenAI: archmage=gpt-4o, mage=gpt-4o-mini, apprentice=gpt-4o-mini
-> - Google: archmage=gemini-pro, mage=gemini-flash, apprentice=gemini-flash
+> The apprentice tier is defined by **fresh context**, not by a cheaper model — it runs the
+> checks that must not be graded by the agent that produced the work. Cost there is controlled
+> by effort, not by dropping to a weaker model: a weaker verifier produces false positives on
+> judgment criteria, which is what drives retry loops.
+>
+> Default models are for Claude. For other providers, map archmage and mage to the strongest
+> available model and keep apprentice on the same model as mage at the cheapest effort setting.
 >
 > Use these defaults, or customize?
 
 On `--refresh` → preserve existing model assignment, skip this step.
 
-### Step 6: Write Project Context
+### Step 7: Write Project Context
 
 Write or update `.arcana/project-context.md`:
 
@@ -209,9 +214,9 @@ Tool-enforced (mechanically applied, not the human-readable source of truth):
 
 | Tier | Model | Skills |
 |------|-------|--------|
-| arc:archmage | {opus} | prd create, code, code review-resolve |
+| arc:archmage | {fable} | prd create, code, code review-resolve |
 | arc:mage | {opus} | ac enrich, ac update, plan, test write, test review, test mutate, skill-up |
-| arc:apprentice | {sonnet} | ac validate, ac verify, test validate, code review-request |
+| arc:apprentice | {opus, low effort} | prd validate, ac validate, ac verify, test validate, code review-request |
 ```
 
 Also create `.arcana/.gitignore` if it doesn't exist:
@@ -224,7 +229,7 @@ Also create `.arcana/.gitignore` if it doesn't exist:
 
 **Confirmation gate:** If `-y` → write. Otherwise → show project context and ask: "Write project context to `.arcana/project-context.md`?" Wait for confirmation.
 
-### Step 6 (--refine): Interactive Refinement
+### Step 8: Interactive Refinement (--refine)
 
 When `--refine` is passed and project-context exists:
 
@@ -246,12 +251,12 @@ When `--refine` is passed and project-context exists:
 3. Wait for selection
 4. For selected sections:
    - **1-7:** Show current value, ask for corrections, update
-   - **8:** Re-run Step 4b (rule discovery and reconciliation). Re-enumerate every rule file under `## Project Rules` so downstream skills (e.g., `/arc:code validate`) pick up new files or removed ones.
+   - **8:** Re-run Step 5 (rule discovery and reconciliation). Re-enumerate every rule file under `## Project Rules` so downstream skills (e.g., `/arc:code validate`) pick up new files or removed ones.
    - **9:** Re-run Step 1 + Step 2 (tooling detection and installation)
-   - **10:** Re-run Step 5 (model assignment)
+   - **10:** Re-run Step 6 (model assignment)
 5. Write updated project-context
 
-### Step 7: Update Provider Configuration File
+### Step 9: Update Provider Configuration File
 
 Add Arcana skill entries to the project's AI provider configuration file so skills are discoverable. Detect which file to update:
 
@@ -280,7 +285,7 @@ Add or update an **Arcana** section with available commands:
 
 **Confirmation gate:** If `-y` → write. Otherwise → show changes and ask: "Update {file}?" Wait for confirmation.
 
-### Step 8: Output
+### Step 10: Output
 
 > **Arcana Init Complete:**
 > - Stack: {framework} + {language}

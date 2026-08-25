@@ -45,25 +45,25 @@ Report format:
 
 ## Per-Criterion Results
 
-### Criterion 1: Source-of-truth boundary
-- Result: PASS | FAIL
-- Findings: {specific section + line if FAIL, e.g., "User Journey paragraph 2: 'After 3 seconds (or on tap to skip) it fades into SelectLanguage' restates AC happy-path Scenario 1 in prose"}
+Passing criteria collapse to one line each:
 
-### Criterion 2: Implementation-free at PRD level
-- Result: PASS | FAIL
-- Findings: {specific phrases, e.g., "Scope > What's included: 'no white flash', 'no layout shift'"}
+- ✅ Criterion {n}: {name}
 
-### Criterion 3: Concrete parameters
-- Result: PASS | FAIL
-- Findings: {specific placeholders, e.g., "Identity formats: 'phone shorter than allowed minimum' — no minimum length defined"}
+Failing criteria get the section, the offending text, and what would fix it:
 
-### Criterion 4: Open Questions are blockers
-- Result: PASS | FAIL
-- Findings: {specific AC references, e.g., "edge-cases.md Scenario 17 says 'documented in plan.md' for an unresolved timer-expiry behavior"}
+### ⛔ Criterion {n}: {name}
+- Findings: {specific section + line + quoted phrase}
+- Fix: {what to change}
 
-### Criterion 5: Scope and Unknowns are separate
-- Result: PASS | FAIL
-- Findings: {misplaced items, e.g., "What's NOT included contains 'home destination route name is undecided' — this is an open question, not an exclusion"}
+Worked examples of the finding shape, one per criterion:
+
+1. Source-of-truth boundary — "User Journey paragraph 2: 'After 3 seconds (or on tap to skip) it fades into SelectLanguage' restates AC happy-path Scenario 1 in prose"
+2. Implementation-free at PRD level — "Scope > What's included: 'no white flash', 'no layout shift'"
+3. Concrete parameters — "Identity formats: 'phone shorter than allowed minimum' — no minimum length defined"
+4. Open Questions are blockers — "edge-cases.md Scenario 17 says 'documented in plan.md' for an unresolved timer-expiry behavior"
+5. Scope and Unknowns are separate — "What's NOT included contains 'home destination route name is undecided' — this is an open question, not an exclusion"
+6. Current-state, not narrative-in-time — "Problem and Goal: 'until now the splash showed no language step' — before/after framing"
+7. Versions and wiring live outside the PRD — "Dependencies: 'Lingui v6' — version is owned by package.json"
 
 ## Summary
 

@@ -110,6 +110,19 @@ Quality does not drop in `--yes` mode. Analysis always happens — `--yes` is ab
 
 Each loop: maximum `--max-retries` iterations (default 3). After that → stop and escalate to the developer.
 
+**Writer and grader never share a context.** In every loop above where a check follows a write,
+the check runs as its own `/arc:apprentice` call with fresh context — `ac validate` after
+`ac update`/`ac enrich`, `ac verify` after code and tests. An agent grading output it just
+produced marks it as passing: it was already optimizing for those criteria while writing. The
+verifier reports the gap and never repairs it; the orchestrator routes the repair back to the
+writer tier.
+
+The cost of that independence is convergence. A fresh grader has no memory of the previous
+round and can raise a different set of objections each time, which is precisely what
+`--max-retries` bounds. When retries exhaust with findings still open, stop — never raise the
+cap to force agreement. Persistent divergence on one artifact usually means the defect is
+upstream (see `arc-ac/validate.md` § Troubleshooting for the PRD-traceability case).
+
 ## Troubleshooting
 
 ### Error: No project context
@@ -117,8 +130,10 @@ Cause: `.arcana/project-context.md` doesn't exist.
 Solution: Run `/arc:project init` first.
 
 ### Error: Task too large
-Cause: `/arc:plan` determined the task exceeds one context window.
-Solution: Use `/arc:prd update` to split the task into smaller tickets, then `/arc:implement` each one.
+Cause: `/arc:plan` determined the ticket bundles multiple independent behaviors.
+Solution: Use `/arc:prd update` to split it into vertical slices, then `/arc:implement` each one.
+File count alone is not a reason to split — multi-file features and larger refactors are
+expected to run as one ticket.
 
 ### Stuck in a feedback loop
 Cause: A skill keeps failing after max retries (e.g., tests stay red, AC keeps failing validation).

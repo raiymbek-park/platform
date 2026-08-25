@@ -38,3 +38,18 @@ portable principles in the `arc-test` skill. Load the `arc-test` skill when writ
 - `/arc:code {ticket-id}` — Write production code
 - `/arc:test write|validate|review|mutate` — Write and audit tests
 - `/arc:plan {ticket-id}` — Investigation and planning
+
+## Communication
+
+Keep responses focused and concise. Keep disclaimers and caveats short, and spend most of the
+response on the main answer. When asked to explain something, give a high-level summary unless an
+in-depth explanation was specifically requested.
+
+During long agent phases: say in one sentence what you're about to do before the first tool call,
+then give a brief update only when you find something important or change direction. When a phase
+finishes, lead with the outcome — the first sentence answers "what happened" or "what did you
+find", with supporting detail after it. The `> **{Skill} — {ticket-id}:** …` output blocks the
+Arcana skills define are the reference shape for that closing summary.
+
+Match the length of files written to disk (reports, plans, PRDs, ADRs) to what the task needs:
+cover the substance, do not pad with filler sections, redundant summaries, or boilerplate.

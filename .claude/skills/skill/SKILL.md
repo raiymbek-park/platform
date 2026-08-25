@@ -2,7 +2,7 @@
 name: skill
 description: Interactive skill creator and refiner. Use when developer wants to create a new skill, build a skill, scaffold a skill, refine or improve an existing skill, or says "new skill". Walks through use case definition, structure planning, SKILL.md generation, and validation.
 user-invocable: true
-argument-hint: "create|refine <skill-name> [-y]"
+argument-hint: "create|refine {skill-name} [-y]"
 license: MIT
 compatibility: "Any AI coding assistant that supports skills (Claude Code, Open Code, etc.)"
 metadata:

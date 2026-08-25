@@ -24,7 +24,7 @@ For each rule file, extract testable rules:
 
 Each rule gets a stable id of the form `<file-stem>:<heading-slug>` for report cross-reference.
 
-**Don't rely on keyword triggers alone.** Some real rules are phrased without "must/never" and need semantic judgment to check — e.g. "No comments unless they explain a workaround or non-obvious logic", "Avoid over-engineering / premature abstraction", "Use descriptive naming instead of comments". These are exactly the rules biome/tsc can't enforce and that slip through unnoticed. Load them too, and audit them in the mandatory judgment pass (Step 4a) — never skip a rule just because it isn't keyword-matchable.
+**Don't rely on keyword triggers alone.** Some real rules are phrased without "must/never" and need semantic judgment to check — e.g. "No comments unless they explain a workaround or non-obvious logic", "Avoid over-engineering / premature abstraction", "Use descriptive naming instead of comments". These are exactly the rules biome/tsc can't enforce and that slip through unnoticed. Load them too, and audit them in the mandatory judgment pass (Step 5) — never skip a rule just because it isn't keyword-matchable.
 
 ### Step 3: Determine Scope
 
@@ -48,7 +48,7 @@ Classify each finding:
 - **mechanical** — the rule maps to a single-pass transform (e.g., strip `async () => { sync }` wrapper, swap `../../` for `@/`, add `type="button"` to a bare `<button>`).
 - **review** — requires judgment (architectural intent, naming choice, scope of abstraction, etc.).
 
-### Step 4a: Judgment-rule checklist (mandatory)
+### Step 5: Judgment-rule checklist (mandatory)
 
 The keyword scan in Step 4 reliably catches mechanical/syntactic rules but routinely misses judgment rules. For **every** validate run, walk this checklist explicitly and state a verdict (pass / finding) on each — even when the scan surfaced nothing. Silence is not a pass; a checklist item with no stated verdict is a skipped audit.
 
@@ -62,7 +62,7 @@ Default checklist (extend from the project's loaded rules):
 
 These are usually `review`-class findings (judgment, not a single-pass transform), so report them; don't auto-apply.
 
-### Step 5: Report
+### Step 6: Report
 
 Print findings grouped by file:
 
@@ -77,14 +77,14 @@ Print findings grouped by file:
 Summary line:
 `N findings (M mechanical, K review-only) across F files.`
 
-### Step 6: Fix Gate
+### Step 7: Fix Gate
 
 - `report_only` → stop here.
 - 0 mechanical fixes → stop here.
 - `skip_confirmations` → apply all mechanical fixes.
 - Otherwise → list the mechanical fixes and ask: `Apply N mechanical fixes? [Y/n]`. Wait. No → stop.
 
-### Step 7: Apply Fixes
+### Step 8: Apply Fixes
 
 For each mechanical fix:
 - Apply via `Edit` (exact `old` → `new` substitution; refuse if `old` is non-unique in the file — surface as a review-only finding instead).
@@ -93,7 +93,7 @@ For each mechanical fix:
 
 The skill does NOT commit. Committing is the developer's call (use the `/git` skill).
 
-### Step 8: Output
+### Step 9: Output
 
 > **Validate — {scope-summary}:**
 > Rules loaded: {N}
