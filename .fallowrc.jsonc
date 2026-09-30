@@ -1,5 +1,6 @@
 {
   "$schema": "https://fallow.dev/schema/config.json",
+  "production": true,
   "entry": [
     // Firebase Cloud Function entry — bundled by esbuild and invoked by the
     // Firebase runtime, so it is never imported in the JS graph.
