@@ -18,7 +18,7 @@ msgstr ""
 msgid "{0} жилых этажей"
 msgstr "{0} жилых этажей"
 
-#: src/pages/home/model/contact-roles.ts:31
+#: src/pages/home/model/contact-roles.ts:33
 msgid "Аварийная сантехника"
 msgstr "Аварийная сантехника"
 
@@ -212,7 +212,7 @@ msgstr "Добро пожаловать в личное пространство
 msgid "Добро пожаловать!"
 msgstr "Добро пожаловать!"
 
-#: src/pages/home/model/contact-roles.ts:29
+#: src/pages/home/model/contact-roles.ts:31
 msgid "Домофон и видео-камеры"
 msgstr "Домофон и видео-камеры"
 
@@ -459,6 +459,10 @@ msgstr "Кратко опишите проблему"
 msgid "Кто вы?"
 msgstr "Кто вы?"
 
+#: src/pages/home/model/contact-roles.ts:30
+msgid "Механик лифта"
+msgstr "Механик лифта"
+
 #: src/pages/settings/lib/profile-form-schema.ts:88
 msgid "Можно добавить не более 3 номеров"
 msgstr "Можно добавить не более 3 номеров"
@@ -649,10 +653,6 @@ msgstr "Новое уведомление"
 msgid "Новости и уведомления от УК"
 msgstr "Новости и уведомления от УК"
 
-#: src/pages/home/ui/services-section.tsx:20
-#~ msgid "Новости, уведомления и частные предложения"
-#~ msgstr "Новости, уведомления и частные предложения"
-
 #: src/pages/posts/ui/posts-page.tsx:32
 msgid "Новостная лента и частные объявления от жильцов."
 msgstr "Новостная лента и частные объявления от жильцов."
@@ -800,7 +800,7 @@ msgstr "Отправить"
 msgid "Отслеживайте ход ваших обращений"
 msgstr "Отслеживайте ход ваших обращений"
 
-#: src/pages/home/model/contact-roles.ts:33
+#: src/pages/home/model/contact-roles.ts:35
 msgid "Охрана"
 msgstr "Охрана"
 
@@ -895,7 +895,7 @@ msgstr "Показать оригинальный текст"
 msgid "Показать перевод"
 msgstr "Показать перевод"
 
-#: src/pages/home/model/contact-roles.ts:32
+#: src/pages/home/model/contact-roles.ts:34
 msgid "Полиция"
 msgstr "Полиция"
 
@@ -1168,7 +1168,7 @@ msgstr "Удалить сообщение?"
 msgid "Удалить фото"
 msgstr "Удалить фото"
 
-#: src/pages/home/model/contact-roles.ts:30
+#: src/pages/home/model/contact-roles.ts:32
 #: src/pages/post-form/model/use-post-categories.ts:76
 #: src/pages/posts/model/use-post-badges.ts:49
 msgid "Управляющая компания"
@@ -1224,7 +1224,7 @@ msgstr "Читать далее"
 msgid "Что-то пошло не так"
 msgstr "Что-то пошло не так"
 
-#: src/pages/home/model/contact-roles.ts:28
+#: src/pages/home/model/contact-roles.ts:29
 msgid "Электрослужба"
 msgstr "Электрослужба"
 

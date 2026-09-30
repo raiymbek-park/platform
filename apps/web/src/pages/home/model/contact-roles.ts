@@ -15,6 +15,7 @@ type RoleVisual = {
 
 const roleVisuals: Record<string, RoleVisual> = {
   electrician: { glyph: 'zap', tone: 'warning' },
+  elevator: { glyph: 'elevator', tone: 'info' },
   intercom: { glyph: 'camera', tone: 'warning' },
   manager: { glyph: 'building-2', tone: 'brand' },
   plumber: { glyph: 'droplets', tone: 'info' },
@@ -26,6 +27,7 @@ const fallbackVisual: RoleVisual = { glyph: 'phone', tone: 'neutral' }
 
 const roleLabels = (): Record<string, string> => ({
   electrician: t`Электрослужба`,
+  elevator: t`Механик лифта`,
   intercom: t`Домофон и видео-камеры`,
   manager: t`Управляющая компания`,
   plumber: t`Аварийная сантехника`,

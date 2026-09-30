@@ -25,6 +25,7 @@ export type IconGlyph =
   | 'door-closed'
   | 'droplet-off'
   | 'droplets'
+  | 'elevator'
   | 'ellipsis'
   | 'eraser'
   | 'eye'
