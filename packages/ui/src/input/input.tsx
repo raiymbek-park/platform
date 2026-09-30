@@ -48,22 +48,10 @@ export const Input = ({
             type='button'
             onClick={onIconClick}
           >
-            <IconChip
-              className={css.chip}
-              glyph={icon}
-              iconSize={18}
-              size={34}
-              tone={tone}
-            />
+            <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />
           </button>
         ) : (
-          <IconChip
-            className={css.chip}
-            glyph={icon}
-            iconSize={18}
-            size={34}
-            tone={tone}
-          />
+          <IconChip glyph={icon} iconSize={18} size={34} tone={tone} />
         ))}
       <input className={css.field} ref={ref} {...restProps} />
       {trailing}
